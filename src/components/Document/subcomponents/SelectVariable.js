@@ -48,8 +48,12 @@ const SelectVariable = ({ variables, variable, setVariable, minHeight, editAll }
     }
   }, [variable, variables, setVariable, variableNames]);
 
-  const variableObj = variables.find((v) => v.name === variable);
-  let helpText = variableObj?.instruction;
+  //if (!variables) return null;
+  let helpText = null;
+  if (variables) {
+    const variableObj = variables.find((v) => v.name === variable);
+    helpText = variableObj?.instruction;
+  }
   if (variable === "EDIT ALL") helpText = "Show and edit all variables";
 
   return (
@@ -83,7 +87,8 @@ const SelectVariable = ({ variables, variable, setVariable, minHeight, editAll }
 };
 
 const VariableButtons = ({ variable, setVariable, variables, variableNames, minHeight }) => {
-  if (!variables || variables.length === 1) {
+  if (!variables) return null;
+  if (variables.length === 1) {
     setVariable(variables[0].name);
     return null;
   }

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Annotator from "components/Annotator/Annotator";
-import { Grid } from "semantic-ui-react";
+import { Grid, Header } from "semantic-ui-react";
 import useBackend from "./useBackend";
 import JobServerAPI from "./lib/JobServerAPI";
 
 //   http://localhost:3000/CCS_annotator#/annotator?url=http://localhost:5000/codingjob/25
 
 const AnnotatorAPIClient = () => {
-  const [host, jobId] = parseUrl(window.location.href);
-  const [backend, loginForm] = useBackend(host);
-  const jobServer = useJobServerBackend(backend, jobId);
+  const [urlHost, urlJobId] = parseUrl(window.location.href);
+  const [backend, loginForm] = useBackend(urlHost);
+  const jobServer = useJobServerBackend(backend, urlJobId);
 
   if (!backend)
     // If backend isn't connected, show login screen
@@ -23,10 +23,25 @@ const AnnotatorAPIClient = () => {
   if (!jobServer) {
     // if backend is connected, but there is no jobServer (because no job_id was passed in the url)
     // show a screen with some relevant info for the user on this host. Like current / new jobs
-    return null;
+    return <JobOverview backend={backend} loginForm={loginForm} />;
   }
 
   return <Annotator jobServer={jobServer} />;
+};
+
+const JobOverview = ({ backend, loginForm }) => {
+  console.log(backend);
+  return (
+    <Grid inverted textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
+      <Grid.Row>
+        <Grid.Column>
+          <Header>{backend.host}</Header>
+          {loginForm}
+        </Grid.Column>
+      </Grid.Row>
+      <Grid.Row>test</Grid.Row>
+    </Grid>
+  );
 };
 
 const useJobServerBackend = (backend, jobId) => {

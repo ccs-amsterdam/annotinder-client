@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "semantic-ui-react";
-
-import { CSVDownloader } from "react-papaparse";
 
 const DownloadAnnotations = ({ jobServer }) => {
   const [data, setData] = useState(null);
 
+  // in development. jobServer will need 'getAllAnnotations' and 'downloader' methods
+
   useEffect(() => {
+    if (!jobServer.downloader) return;
     switch (jobServer.codebook.type) {
       case "annotate":
         formatAnnotateTaskResults(jobServer, setData);
@@ -19,22 +19,25 @@ const DownloadAnnotations = ({ jobServer }) => {
     }
   }, [jobServer]);
 
-  return (
-    <CSVDownloader
-      filename={`CSSannotator_${jobServer.title}_${jobServer.set}_${jobServer.coderName}.json`}
-      data={data}
-      style={{ cursor: "pointer" }}
-    >
-      <Button
-        loading={data === null}
-        primary
-        content="Download results"
-        icon="download"
-        labelPosition="left"
-        size="huge"
-      />
-    </CSVDownloader>
-  );
+  if (!jobServer.downloader) return null;
+  return <>{jobServer.downloader(data)}</>;
+
+  // return (
+  //   <CSVDownloader
+  //     filename={`CSSannotator_${jobServer.title}_${jobServer.set}_${jobServer.coderName}.json`}
+  //     data={data}
+  //     style={{ cursor: "pointer" }}
+  //   >
+  //     <Button
+  //       loading={data === null}
+  //       primary
+  //       content="Download results"
+  //       icon="download"
+  //       labelPosition="left"
+  //       size="huge"
+  //     />
+  //   </CSVDownloader>
+  // );
 };
 
 const formatAnnotateTaskResults = async (jobServer, setData) => {
@@ -43,10 +46,8 @@ const formatAnnotateTaskResults = async (jobServer, setData) => {
     obj[unit.unit_id] = unit;
     return obj;
   }, {});
-  console.log(unitMap);
 
   const annotationsPerUnit = jobServer.getAllAnnotations(); // this needs to be replaced by a method of the jobServer
-  //const annotationsPerUnit = await db.getAllAnnotations(jobServer.id);
 
   const results = [];
   for (let unitAnnotations of annotationsPerUnit) {

@@ -28,8 +28,6 @@ export const LoginForm = ({ host = null }) => {
 const SignOut = ({ backend, setLogout }) => {
   return (
     <>
-      <Header icon="user" content="Sign out" />
-
       <Grid textAlign="center">
         <Grid.Column>
           <Button secondary onClick={setLogout}>
@@ -51,7 +49,7 @@ const SignIn = ({ backend, setLogin }) => {
     setPassword("");
     try {
       const token = await getToken(host, email, password);
-      setLogin({ ...backend, token });
+      setLogin({ host, email, token });
     } catch (e) {
       setInvalidPassword(true);
       console.log(e);
@@ -110,7 +108,7 @@ const SignIn = ({ backend, setLogin }) => {
             <Grid.Column>
               <Form>
                 <Button circular primary fluid style={{ width: "7em", height: "7em" }}>
-                  Send link by email
+                  Login by email (not yet functional)
                 </Button>
               </Form>
             </Grid.Column>

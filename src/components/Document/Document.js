@@ -76,6 +76,7 @@ const Document = ({
   }, [tokensReady, setAnnotations, setReady]);
 
   if (!preparedUnit.tokens) return null;
+  console.log(preparedUnit);
   return (
     <div style={{ display: "flex", height: "100%", maxHeight: "100%", flexDirection: "column" }}>
       <Tokens

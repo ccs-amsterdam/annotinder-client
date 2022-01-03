@@ -8,8 +8,9 @@ export async function getToken(host, email, password) {
 }
 
 class Backend {
-  constructor(host, token) {
+  constructor(host, email, token) {
     this.host = host;
+    this.email = email;
     this.token = token;
     this.api = Axios.create({
       baseURL: host,
@@ -17,8 +18,14 @@ class Backend {
     });
   }
 
-  // add init that checks token and gets info like admin
-  // in usebackend.js -> login, then check by using init
+  async init() {
+    try {
+      await getToken();
+      console.log(this.email);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   // GET
   async getToken() {

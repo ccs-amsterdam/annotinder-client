@@ -29,8 +29,10 @@ export const parseTokens = (text_fields) => {
     let offset = text_field.offset || 0;
 
     text = text_field.value;
+    console.log("test");
     t = nlp.tokenize(text).paragraphs().json({ offset: true });
     // map to single array.
+    console.log("test tokenize");
     for (let par = 0; par < t.length; par++) {
       for (let sent = 0; sent < t[par].sentences.length; sent++) {
         for (let sent2 = 0; sent2 < t[par].sentences[sent].length; sent2++) {
