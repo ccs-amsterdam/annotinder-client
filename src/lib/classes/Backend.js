@@ -41,9 +41,7 @@ class Backend {
     return res.data;
   }
   async getProgress(job_id) {
-    console.log("test");
     const res = await this.api.get(`/codingjob/${job_id}/progress`);
-    console.log(res);
     return res.data;
   }
   async getUnit(job_id, i) {

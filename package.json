@@ -1,6 +1,6 @@
 {
-  "name": "react-annotools",
-  "description": "React components for doing various types of annotations",
+  "name": "react-ccs-annotator",
+  "description": "The main workhorse behind the CCS Annotator",
   "author": "Kasper Welbers",
   "keywords": [
     "react",
@@ -9,7 +9,7 @@
   "version": "0.1.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ccs-amsterdam/react-annotools"
+    "url": "https://github.com/ccs-amsterdam/react-ccs-annotator"
   },
   "license": "MIT",
   "dependencies": {
