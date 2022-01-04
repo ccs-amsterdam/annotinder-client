@@ -47,8 +47,8 @@ const Tokens = ({ tokens, text_fields, meta_fields, setReady, maxHeight }) => {
             width: "100%",
           }}
         >
-          {/* <div style={{ height: "10em" }} /> */}
           <div
+            key="meta"
             style={{
               width: "100%",
               textAlign: "right",
@@ -57,8 +57,10 @@ const Tokens = ({ tokens, text_fields, meta_fields, setReady, maxHeight }) => {
           >
             <Meta meta_fields={meta_fields} />
           </div>
-          <div style={{ padding: "20px" }}>{text["text"]}</div>
-          <div style={{ height: "25px" }} />
+          <div key="text" style={{ padding: "20px" }}>
+            {text["text"]}
+          </div>
+          <div key="empty_space" style={{ height: "25px" }} />
         </div>
       </div>
     </Ref>
@@ -182,8 +184,7 @@ const renderParagraph = (layout, paragraph_nr, sentences, end) => {
 
   return (
     // uses span behaving like p, because p is not allowed due to nested div (for Label)
-    <div style={{ display: "flex" }}>
-      {/* <div style={{ flex: "1 2%" }}>{paragraphAnnotateButton()}</div> */}
+    <div key={"pardiv" + paragraph_nr} style={{ display: "flex" }}>
       <span
         key={"par" + paragraph_nr}
         className="paragraph"
@@ -202,8 +203,7 @@ const renderParagraph = (layout, paragraph_nr, sentences, end) => {
 
 const renderSentence = (position, sentence_nr, tokens) => {
   return (
-    <span className="sentence" key={"sent" + sentence_nr}>
-      {/* {sentenceAnnotateButton()} */}
+    <span key={position + "_" + sentence_nr} className="sentence">
       {tokens}
     </span>
   );
@@ -211,18 +211,22 @@ const renderSentence = (position, sentence_nr, tokens) => {
 
 const renderToken = (token, codingUnit) => {
   return (
-    <>
-      <span
-        key={"token" + token.index}
-        ref={token.ref}
-        className={codingUnit ? "token codingUnit" : "token"}
-        tokenindex={token.arrayIndex}
-      >
-        <span className="pre">{token.pre}</span>
-        <span className="text">{token.text}</span>
-        <span className="post">{token.post}</span>
+    <span
+      key={"token" + token.index}
+      ref={token.ref}
+      className={codingUnit ? "token codingUnit" : "token"}
+      tokenindex={token.arrayIndex}
+    >
+      <span key={"pre" + token.index} className="pre">
+        {token.pre}
       </span>
-    </>
+      <span key={"text" + token.index} className="text">
+        {token.text}
+      </span>
+      <span key={"post" + token.index} className="post">
+        {token.post}
+      </span>
+    </span>
   );
 };
 

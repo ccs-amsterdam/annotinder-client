@@ -65,7 +65,7 @@ const AskFullScreenModal = _ref3 => {
   (0, _react.useEffect)(() => {
     // this used to have location as dep
     setAskFullscreen(true);
-  }, [setAskFullscreen]); // Disable for now. Seems to not work in Apple devices
+  }, [setAskFullscreen, handle]); // Disable for now. Seems to not work in Apple devices
   //askFullscreen = false;
 
   return /*#__PURE__*/_react.default.createElement(_semanticUiReact.Modal, {
@@ -112,7 +112,7 @@ const FullScreenButton = _ref4 => {
     }
   }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Icon, {
     link: true,
-    name: handle.active ? "window close" : "expand",
+    name: handle.active ? "compress" : "expand",
     onClick: () => {
       handle.active ? handle.exit() : handle.enter();
     }

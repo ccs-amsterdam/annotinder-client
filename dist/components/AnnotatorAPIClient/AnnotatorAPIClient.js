@@ -9,6 +9,10 @@ require("core-js/modules/web.dom-collections.iterator.js");
 
 require("core-js/modules/es.regexp.exec.js");
 
+require("core-js/modules/es.string.search.js");
+
+require("core-js/modules/es.string.replace.js");
+
 require("core-js/modules/es.string.split.js");
 
 require("core-js/modules/es.array.reduce.js");
@@ -27,6 +31,10 @@ var _useBackend = _interopRequireDefault(require("./useBackend"));
 
 var _JobServerAPI = _interopRequireDefault(require("../../classes/JobServerAPI"));
 
+var _JobsTable = _interopRequireDefault(require("./JobsTable"));
+
+var _reactRouterDom = require("react-router-dom");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -35,7 +43,8 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 
 //   http://localhost:3000/CCS_annotator#/annotator?url=http://localhost:5000/codingjob/25
 const AnnotatorAPIClient = () => {
-  const [urlHost, urlJobId] = parseUrl(window.location.href);
+  const location = (0, _reactRouterDom.useLocation)();
+  const [urlHost, urlJobId, setJobId] = useParseUrl(location);
   const [backend, loginForm] = (0, _useBackend.default)(urlHost);
   const jobServer = useJobServerBackend(backend, urlJobId);
   if (!backend) // If backend isn't connected, show login screen
@@ -58,6 +67,7 @@ const AnnotatorAPIClient = () => {
     // show a screen with some relevant info for the user on this host. Like current / new jobs
     return /*#__PURE__*/_react.default.createElement(JobOverview, {
       backend: backend,
+      setJobId: setJobId,
       loginForm: loginForm
     });
   }
@@ -70,17 +80,29 @@ const AnnotatorAPIClient = () => {
 const JobOverview = _ref => {
   let {
     backend,
+    setJobId,
     loginForm
   } = _ref;
-  backend.getJobs().then(j => console.log(j));
   return /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid, {
     inverted: true,
     textAlign: "center",
     style: {
-      height: "100vh"
+      height: "100vh",
+      maxHeight: "800px",
+      width: "100vw"
     },
     verticalAlign: "middle"
-  }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Row, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Column, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Header, null, backend.host), loginForm)), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Row, null, "test"));
+  }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Column, {
+    width: "16",
+    style: {
+      maxWidth: "500px"
+    }
+  }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Row, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Header, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Icon, {
+    name: "home"
+  }), backend.host), loginForm), /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Row, null, /*#__PURE__*/_react.default.createElement(_JobsTable.default, {
+    backend: backend,
+    setJobId: setJobId
+  }))));
 };
 
 const useJobServerBackend = (backend, jobId) => {
@@ -104,20 +126,34 @@ const useJobServerBackend = (backend, jobId) => {
  */
 
 
-const parseUrl = href => {
-  var _href$split;
+const useParseUrl = location => {
+  const [host, setHost] = (0, _react.useState)();
+  const [jobId, setJobId] = (0, _react.useState)();
+  (0, _react.useEffect)(() => {
+    var _href$split;
 
-  const params = (_href$split = href.split("?")) === null || _href$split === void 0 ? void 0 : _href$split[1];
-  if (!params) return [null, null];
-  const parts = params.split("&");
-  const queries = parts.reduce((obj, part) => {
-    const [key, value] = part.split("=");
-    obj[decodeURIComponent(key)] = decodeURIComponent(value);
-    return obj;
-  }, {});
-  if (!queries.url) return [null, null];
-  const url = new URL(queries.url);
-  return [url.origin, url.pathname.split("/").slice(-1)[0]];
+    if (!location.search) {
+      setHost(null);
+      setJobId(null);
+      return;
+    }
+
+    const href = location.search.replace("%colon%", ":"); // hack for issue with QR code URLs
+
+    const params = (_href$split = href.split("?")) === null || _href$split === void 0 ? void 0 : _href$split[1];
+    if (!params) return [null, null];
+    const parts = params.split("&");
+    const queries = parts.reduce((obj, part) => {
+      const [key, value] = part.split("=");
+      obj[decodeURIComponent(key)] = decodeURIComponent(value);
+      return obj;
+    }, {});
+    if (!queries.url) return [null, null];
+    const url = new URL(queries.url);
+    setHost(url.origin);
+    setJobId(url.pathname.split("/").slice(-1)[0]);
+  }, [setHost, setJobId, location]);
+  return [host, jobId];
 };
 
 var _default = AnnotatorAPIClient;

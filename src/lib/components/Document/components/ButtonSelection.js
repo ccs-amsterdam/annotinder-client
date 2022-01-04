@@ -137,7 +137,7 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
     }
 
     return (
-      <>
+      <div key={id + "_buttons"}>
         <div key={id + "_1"} style={{ display: "flex", flexWrap: "wrap", marginBottom: "10px" }}>
           {selectButtons}
         </div>
@@ -152,7 +152,7 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
         <div key={id + "_3"} style={{ display: "flex", flexWrap: "wrap" }}>
           {cancelButton}
         </div>
-      </>
+      </div>
     );
   };
 

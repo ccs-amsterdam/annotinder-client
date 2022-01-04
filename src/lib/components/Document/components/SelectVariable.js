@@ -87,18 +87,11 @@ const SelectVariable = ({ variables, variable, setVariable, minHeight, editAll }
 };
 
 const VariableButtons = ({ variable, setVariable, variables, variableNames, minHeight }) => {
-  if (!variables) return null;
-  if (variables.length === 1) {
-    setVariable(variables[0].name);
-    return null;
-  }
-
   const mapVariables = () => {
-    if (!variableNames.includes(variable)) setVariable(variableNames[0]);
-
     return variableNames.map((name) => {
       return (
         <Button
+          key={name}
           primary
           active={name === variable}
           style={{
@@ -113,6 +106,15 @@ const VariableButtons = ({ variable, setVariable, variables, variableNames, minH
       );
     });
   };
+
+  useEffect(() => {
+    if (!variables) return null;
+    if (variables.length === 1) {
+      setVariable(variables[0].name);
+      return null;
+    }
+    if (!variableNames.includes(variable)) setVariable(variableNames[0]);
+  }, [variables, setVariable, variableNames, variable]);
 
   return (
     <>

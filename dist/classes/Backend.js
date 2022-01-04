@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-exports.getToken = getToken;
+exports.passwordLogin = passwordLogin;
 
 require("core-js/modules/es.promise.js");
 
@@ -12,7 +12,7 @@ var _axios = _interopRequireDefault(require("axios"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-async function getToken(host, email, password) {
+async function passwordLogin(host, email, password) {
   const response = await _axios.default.get("".concat(host, "/token"), {
     auth: {
       username: email,
@@ -37,8 +37,7 @@ class Backend {
 
   async init() {
     try {
-      await getToken();
-      console.log(this.email);
+      await this.getToken();
     } catch (e) {
       console.log(e);
     }

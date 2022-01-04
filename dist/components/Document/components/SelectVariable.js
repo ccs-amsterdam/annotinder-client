@@ -114,17 +114,11 @@ const VariableButtons = _ref2 => {
     variableNames,
     minHeight
   } = _ref2;
-  if (!variables) return null;
-
-  if (variables.length === 1) {
-    setVariable(variables[0].name);
-    return null;
-  }
 
   const mapVariables = () => {
-    if (!variableNames.includes(variable)) setVariable(variableNames[0]);
     return variableNames.map(name => {
       return /*#__PURE__*/_react.default.createElement(_semanticUiReact.Button, {
+        key: name,
         primary: true,
         active: name === variable,
         style: {
@@ -137,6 +131,16 @@ const VariableButtons = _ref2 => {
     });
   };
 
+  (0, _react.useEffect)(() => {
+    if (!variables) return null;
+
+    if (variables.length === 1) {
+      setVariable(variables[0].name);
+      return null;
+    }
+
+    if (!variableNames.includes(variable)) setVariable(variableNames[0]);
+  }, [variables, setVariable, variableNames, variable]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Button.Group, {
     attached: "bottom",
     fluid: true,

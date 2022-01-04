@@ -42,7 +42,7 @@ const AskFullScreenModal = ({ handle }) => {
   useEffect(() => {
     // this used to have location as dep
     setAskFullscreen(true);
-  }, [setAskFullscreen]);
+  }, [setAskFullscreen, handle]);
 
   // Disable for now. Seems to not work in Apple devices
   //askFullscreen = false;
@@ -92,7 +92,7 @@ const FullScreenButton = ({ handle }) => {
     >
       <Icon
         link
-        name={handle.active ? "window close" : "expand"}
+        name={handle.active ? "compress" : "expand"}
         onClick={() => {
           handle.active ? handle.exit() : handle.enter();
         }}

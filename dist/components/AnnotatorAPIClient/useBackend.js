@@ -143,11 +143,11 @@ const SignIn = _ref3 => {
   const [password, setPassword] = (0, _react.useState)("");
   const [invalidPassword, setInvalidPassword] = (0, _react.useState)(false);
 
-  const passwordLogin = async () => {
+  const tryPasswordLogin = async () => {
     setPassword("");
 
     try {
-      const token = await (0, _Backend.getToken)(host, email, password);
+      const token = await (0, _Backend.passwordLogin)(host, email, password);
       setLogin({
         host,
         email,
@@ -227,7 +227,7 @@ const SignIn = _ref3 => {
     disabled: password.length === 0,
     primary: true,
     fluid: true,
-    onClick: passwordLogin
+    onClick: tryPasswordLogin
   }, "Sign in")))))));
 };
 

@@ -257,12 +257,12 @@ const SelectVariablePage = ({ variable, setVariable, annotations, span, setOpen,
     }));
   };
 
-  if (variable || !span) return null;
-
   const options = getOptions();
-  if (options.length === 1) {
-    setVariable(options[0].value);
-  }
+  useEffect(() => {
+    if (options.length === 1) setVariable(options[0].value);
+  }, [options, setVariable]);
+
+  if (variable || !span) return null;
 
   return (
     <div>

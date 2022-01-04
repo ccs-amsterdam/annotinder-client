@@ -71,6 +71,7 @@ const Tokens = _ref => {
       width: "100%"
     }
   }, /*#__PURE__*/_react.default.createElement("div", {
+    key: "meta",
     style: {
       width: "100%",
       textAlign: "right",
@@ -79,10 +80,12 @@ const Tokens = _ref => {
   }, /*#__PURE__*/_react.default.createElement(_Meta.default, {
     meta_fields: meta_fields
   })), /*#__PURE__*/_react.default.createElement("div", {
+    key: "text",
     style: {
       padding: "20px"
     }
   }, text["text"]), /*#__PURE__*/_react.default.createElement("div", {
+    key: "empty_space",
     style: {
       height: "25px"
     }
@@ -188,6 +191,7 @@ const renderParagraph = (layout, paragraph_nr, sentences, end) => {
     /*#__PURE__*/
     // uses span behaving like p, because p is not allowed due to nested div (for Label)
     _react.default.createElement("div", {
+      key: "pardiv" + paragraph_nr,
       style: {
         display: "flex"
       }
@@ -206,24 +210,27 @@ const renderParagraph = (layout, paragraph_nr, sentences, end) => {
 
 const renderSentence = (position, sentence_nr, tokens) => {
   return /*#__PURE__*/_react.default.createElement("span", {
-    className: "sentence",
-    key: "sent" + sentence_nr
+    key: position + "_" + sentence_nr,
+    className: "sentence"
   }, tokens);
 };
 
 const renderToken = (token, codingUnit) => {
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
+  return /*#__PURE__*/_react.default.createElement("span", {
     key: "token" + token.index,
     ref: token.ref,
     className: codingUnit ? "token codingUnit" : "token",
     tokenindex: token.arrayIndex
   }, /*#__PURE__*/_react.default.createElement("span", {
+    key: "pre" + token.index,
     className: "pre"
   }, token.pre), /*#__PURE__*/_react.default.createElement("span", {
+    key: "text" + token.index,
     className: "text"
   }, token.text), /*#__PURE__*/_react.default.createElement("span", {
+    key: "post" + token.index,
     className: "post"
-  }, token.post)));
+  }, token.post));
 };
 
 var _default = /*#__PURE__*/_react.default.memo(Tokens);

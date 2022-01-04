@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Annotator from "../Annotator/Annotator";
-import { Grid, Header } from "semantic-ui-react";
+import { Grid, Header, Icon } from "semantic-ui-react";
 import useBackend from "./useBackend";
 import JobServerAPI from "../../classes/JobServerAPI";
+import JobsTable from "./JobsTable";
+import { useLocation } from "react-router-dom";
 
 //   http://localhost:3000/CCS_annotator#/annotator?url=http://localhost:5000/codingjob/25
 
 const AnnotatorAPIClient = () => {
-  const [urlHost, urlJobId] = parseUrl(window.location.href);
+  const location = useLocation();
+  const [urlHost, urlJobId, setJobId] = useParseUrl(location);
   const [backend, loginForm] = useBackend(urlHost);
   const jobServer = useJobServerBackend(backend, urlJobId);
 
@@ -23,23 +26,33 @@ const AnnotatorAPIClient = () => {
   if (!jobServer) {
     // if backend is connected, but there is no jobServer (because no job_id was passed in the url)
     // show a screen with some relevant info for the user on this host. Like current / new jobs
-    return <JobOverview backend={backend} loginForm={loginForm} />;
+    return <JobOverview backend={backend} setJobId={setJobId} loginForm={loginForm} />;
   }
 
   return <Annotator jobServer={jobServer} />;
 };
 
-const JobOverview = ({ backend, loginForm }) => {
-  backend.getJobs().then((j) => console.log(j));
+const JobOverview = ({ backend, setJobId, loginForm }) => {
   return (
-    <Grid inverted textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
-      <Grid.Row>
-        <Grid.Column>
-          <Header>{backend.host}</Header>
+    <Grid
+      inverted
+      textAlign="center"
+      style={{ height: "100vh", maxHeight: "800px", width: "100vw" }}
+      verticalAlign="middle"
+    >
+      <Grid.Column width="16" style={{ maxWidth: "500px" }}>
+        <Grid.Row>
+          <Header>
+            <Icon name="home" />
+            {backend.host}
+          </Header>
           {loginForm}
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row>test</Grid.Row>
+        </Grid.Row>
+        <br />
+        <Grid.Row>
+          <JobsTable backend={backend} setJobId={setJobId} />
+        </Grid.Row>
+      </Grid.Column>
     </Grid>
   );
 };
@@ -65,20 +78,34 @@ const useJobServerBackend = (backend, jobId) => {
  * @param {*} href from window.location.href
  * @returns 
  */
-const parseUrl = (href) => {
-  const params = href.split("?")?.[1];
-  if (!params) return [null, null];
+const useParseUrl = (location) => {
+  const [host, setHost] = useState();
+  const [jobId, setJobId] = useState();
 
-  const parts = params.split("&");
-  const queries = parts.reduce((obj, part) => {
-    const [key, value] = part.split("=");
-    obj[decodeURIComponent(key)] = decodeURIComponent(value);
-    return obj;
-  }, {});
-  if (!queries.url) return [null, null];
+  useEffect(() => {
+    if (!location.search) {
+      setHost(null);
+      setJobId(null);
+      return;
+    }
+    const href = location.search.replace("%colon%", ":"); // hack for issue with QR code URLs
+    const params = href.split("?")?.[1];
+    if (!params) return [null, null];
 
-  const url = new URL(queries.url);
-  return [url.origin, url.pathname.split("/").slice(-1)[0]];
+    const parts = params.split("&");
+    const queries = parts.reduce((obj, part) => {
+      const [key, value] = part.split("=");
+      obj[decodeURIComponent(key)] = decodeURIComponent(value);
+      return obj;
+    }, {});
+    if (!queries.url) return [null, null];
+
+    const url = new URL(queries.url);
+    setHost(url.origin);
+    setJobId(url.pathname.split("/").slice(-1)[0]);
+  }, [setHost, setJobId, location]);
+
+  return [host, jobId];
 };
 
 export default AnnotatorAPIClient;

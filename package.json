@@ -7,7 +7,7 @@
     "react",
     "annotation"
   ],
-  "version": "0.1.2",
+  "version": "0.1.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/ccs-amsterdam/ccs-annotator-client"
@@ -25,9 +25,9 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.21.1",
-    "compromise": "^13.10.3",
-    "compromise-paragraphs": "0.0.5",
-    "compromise-syllables": "0.0.6",
+    "compromise": "^13.11.4",
+    "compromise-paragraphs": "^0.0.5",
+    "compromise-syllables": "^0.0.6",
     "randomcolor": "^0.6.2",
     "react": "^17.0.1",
     "react-cookie": "^4.1.1",
@@ -49,6 +49,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build_npm": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files"
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
   },
   "eslintConfig": {
     "extends": [

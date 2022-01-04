@@ -290,13 +290,11 @@ const SelectVariablePage = _ref2 => {
     }));
   };
 
-  if (variable || !span) return null;
   const options = getOptions();
-
-  if (options.length === 1) {
-    setVariable(options[0].value);
-  }
-
+  (0, _react.useEffect)(() => {
+    if (options.length === 1) setVariable(options[0].value);
+  }, [options, setVariable]);
+  if (variable || !span) return null;
   return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Popup.Header, {
     style: {
       textAlign: "center"

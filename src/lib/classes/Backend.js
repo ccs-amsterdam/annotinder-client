@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-export async function getToken(host, email, password) {
+export async function passwordLogin(host, email, password) {
   const response = await Axios.get(`${host}/token`, {
     auth: { username: email, password: password },
   });
@@ -20,8 +20,7 @@ class Backend {
 
   async init() {
     try {
-      await getToken();
-      console.log(this.email);
+      await this.getToken();
     } catch (e) {
       console.log(e);
     }

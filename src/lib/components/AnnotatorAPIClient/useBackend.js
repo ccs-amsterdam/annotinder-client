@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Backend, { getToken } from "../../classes/Backend";
+import Backend, { passwordLogin } from "../../classes/Backend";
 import { Header, Form, Button, Segment, Grid, Divider } from "semantic-ui-react";
 import { useCookies } from "react-cookie";
 
@@ -82,10 +82,10 @@ const SignIn = ({ backend, setLogin }) => {
   const [password, setPassword] = useState("");
   const [invalidPassword, setInvalidPassword] = useState(false);
 
-  const passwordLogin = async () => {
+  const tryPasswordLogin = async () => {
     setPassword("");
     try {
-      const token = await getToken(host, email, password);
+      const token = await passwordLogin(host, email, password);
       setLogin({ host, email, token });
     } catch (e) {
       setInvalidPassword(true);
@@ -166,7 +166,7 @@ const SignIn = ({ backend, setLogin }) => {
                     setPassword(d.value);
                   }}
                 />
-                <Button disabled={password.length === 0} primary fluid onClick={passwordLogin}>
+                <Button disabled={password.length === 0} primary fluid onClick={tryPasswordLogin}>
                   Sign in
                 </Button>
               </Form>

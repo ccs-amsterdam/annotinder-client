@@ -10,5 +10,6 @@ ReactDOM.render(
       <App />
     </CookiesProvider>
   </React.StrictMode>,
+
   document.querySelector("#root")
 );

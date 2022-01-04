@@ -141,7 +141,9 @@ const ButtonSelection = _ref => {
       i++;
     }
 
-    return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+    return /*#__PURE__*/_react.default.createElement("div", {
+      key: id + "_buttons"
+    }, /*#__PURE__*/_react.default.createElement("div", {
       key: id + "_1",
       style: {
         display: "flex",

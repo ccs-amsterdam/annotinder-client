@@ -86,7 +86,6 @@ const Document = _ref => {
     setAnnotations(state => _objectSpread({}, state)); //trigger DOM update after token refs have been prepared
   }, [tokensReady, setAnnotations, setReady]);
   if (!preparedUnit.tokens) return null;
-  console.log(preparedUnit);
   return /*#__PURE__*/_react.default.createElement("div", {
     style: {
       display: "flex",
