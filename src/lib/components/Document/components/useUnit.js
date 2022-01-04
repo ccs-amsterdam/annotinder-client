@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { prepareDocument } from "lib/functions/createDocuments";
+import { prepareDocument } from "../../../functions/createDocuments";
 
 const useUnit = (unit, safetyCheck, returnTokens, setCodeHistory) => {
   const [preparedUnit, setPreparedUnit] = useState({});

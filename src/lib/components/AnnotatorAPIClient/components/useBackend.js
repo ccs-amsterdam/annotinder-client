@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Backend from "lib/classes/Backend";
+import Backend, { getToken } from "../../../classes/Backend";
 import { Header, Form, Button, Segment, Grid, Divider } from "semantic-ui-react";
-import { getToken } from "lib/classes/Backend";
 import { useCookies } from "react-cookie";
 
 const useBackend = (urlHost) => {

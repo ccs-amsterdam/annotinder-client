@@ -12,7 +12,7 @@ import {
   Input,
 } from "semantic-ui-react";
 import AnnotateTable from "./AnnotateTable";
-import Document from "lib/components/Document/Document";
+import Document from "../../Document/Document";
 import { useCookies } from "react-cookie";
 
 const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNode }) => {

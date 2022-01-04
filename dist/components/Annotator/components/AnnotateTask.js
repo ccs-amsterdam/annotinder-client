@@ -15,7 +15,7 @@ var _semanticUiReact = require("semantic-ui-react");
 
 var _AnnotateTable = _interopRequireDefault(require("./AnnotateTable"));
 
-var _Document = _interopRequireDefault(require("lib/components/Document/Document"));
+var _Document = _interopRequireDefault(require("../../Document/Document"));
 
 var _reactCookie = require("react-cookie");
 

@@ -6,7 +6,7 @@ import { exportSpanAnnotations } from "../../functions/annotations";
 import useUnit from "./components/useUnit";
 import SelectVariable from "./components/SelectVariable";
 
-import "lib/components/Document/documentStyle.css";
+import "./documentStyle.css";
 
 /**
  * This is hopefully the only Component in this folder that you'll ever see. It should be fairly isolated

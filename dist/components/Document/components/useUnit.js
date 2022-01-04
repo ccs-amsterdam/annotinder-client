@@ -9,7 +9,7 @@ require("core-js/modules/web.dom-collections.iterator.js");
 
 var _react = require("react");
 
-var _createDocuments = require("lib/functions/createDocuments");
+var _createDocuments = require("../../../functions/createDocuments");
 
 const useUnit = (unit, safetyCheck, returnTokens, setCodeHistory) => {
   const [preparedUnit, setPreparedUnit] = (0, _react.useState)({});

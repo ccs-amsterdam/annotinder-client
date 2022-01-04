@@ -21,7 +21,7 @@ var _useUnit = _interopRequireDefault(require("./components/useUnit"));
 
 var _SelectVariable = _interopRequireDefault(require("./components/SelectVariable"));
 
-require("lib/components/Document/documentStyle.css");
+require("./documentStyle.css");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

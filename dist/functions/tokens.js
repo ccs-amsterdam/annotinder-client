@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.tokensRowToColumn = exports.tokensColumnToRow = exports.parseTokens = exports.importTokens = exports.importTokenAnnotations = void 0;
+exports.tokensColumnToRow = exports.parseTokens = exports.importTokens = exports.importTokenAnnotations = void 0;
 
 require("core-js/modules/web.dom-collections.iterator.js");
 
@@ -49,12 +49,9 @@ const parseTokens = text_fields => {
     let section = text_field.name || "text";
     let offset = text_field.offset || 0;
     text = text_field.value;
-    console.log("test");
     t = _compromise.default.tokenize(text).paragraphs().json({
       offset: true
     }); // map to single array.
-
-    console.log("test tokenize");
 
     for (let par = 0; par < t.length; par++) {
       for (let sent = 0; sent < t[par].sentences.length; sent++) {
@@ -272,6 +269,7 @@ const importTokenAnnotations = (tokens, codes) => {
  *  {doc_id: 1, token_id: 1}, {doc_id: 2, token_id: 2}
  *
  * row format is easier to work with, but column format is more efficient
+ * so allow it to be used as input.
  * @param {} tokens
  */
 
@@ -294,31 +292,5 @@ const tokensColumnToRow = tokens => {
 
   return tokensArray;
 };
-/**
- * Check if tokens are in row format
- *  {doc_id: 1, token_id: 1}, {doc_id: 2, token_id: 2}
- * and if so, change to column format
- *  [{doc_id: [1,1,1,1,...]},{token_id: [1,2,3,4,etc.]}]
- *
- * row format is easier to work with, but column format is more efficient
- * @param {} tokens
- */
-
 
 exports.tokensColumnToRow = tokensColumnToRow;
-
-const tokensRowToColumn = tokens => {
-  if (!Array.isArray(tokens)) return tokens;
-  const tokensObj = {};
-
-  for (let token of tokens) {
-    for (let column of Object.keys(token)) {
-      if (!tokensObj[column]) tokensObj[column] = [];
-      tokensObj[column].push(token[column]);
-    }
-  }
-
-  return tokensObj;
-};
-
-exports.tokensRowToColumn = tokensRowToColumn;

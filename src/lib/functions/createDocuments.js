@@ -1,5 +1,5 @@
-import { importTokens, importTokenAnnotations, parseTokens } from "lib/functions/tokens";
-import { importSpanAnnotations } from "lib/functions/annotations";
+import { importTokens, importTokenAnnotations, parseTokens } from "./tokens";
+import { importSpanAnnotations } from "./annotations";
 
 export const prepareDocument = (document, codes = {}) => {
   const doc = { ...document };

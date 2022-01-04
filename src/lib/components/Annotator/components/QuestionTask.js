@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import QuestionForm from "./QuestionForm";
-import Document from "lib/components/Document/Document";
+import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
-import { codeBookEdgesToMap, getCodeTreeArray } from "lib/functions/codebook";
+import { codeBookEdgesToMap, getCodeTreeArray } from "../../../functions/codebook";
 import { Form, Icon, Input, Popup } from "semantic-ui-react";
 import { useCookies } from "react-cookie";
 
@@ -11,7 +11,6 @@ const documentSettings = {
 };
 
 const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNode }) => {
-  console.log(fullScreenNode);
   const [tokens, setTokens] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState(null);

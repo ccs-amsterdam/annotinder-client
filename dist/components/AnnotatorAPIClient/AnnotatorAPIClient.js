@@ -19,13 +19,13 @@ require("core-js/modules/web.url-search-params.js");
 
 var _react = _interopRequireWildcard(require("react"));
 
-var _Annotator = _interopRequireDefault(require("lib/components/Annotator/Annotator"));
+var _Annotator = _interopRequireDefault(require("../Annotator/Annotator"));
 
 var _semanticUiReact = require("semantic-ui-react");
 
 var _useBackend = _interopRequireDefault(require("./components/useBackend"));
 
-var _JobServerAPI = _interopRequireDefault(require("lib/classes/JobServerAPI"));
+var _JobServerAPI = _interopRequireDefault(require("../../classes/JobServerAPI"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -72,7 +72,6 @@ const JobOverview = _ref => {
     backend,
     loginForm
   } = _ref;
-  console.log(backend);
   backend.getJobs().then(j => console.log(j));
   return /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid, {
     inverted: true,

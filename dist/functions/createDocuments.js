@@ -7,9 +7,9 @@ exports.prepareDocument = void 0;
 
 require("core-js/modules/web.dom-collections.iterator.js");
 
-var _tokens = require("lib/functions/tokens");
+var _tokens = require("./tokens");
 
-var _annotations = require("lib/functions/annotations");
+var _annotations = require("./annotations");
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 

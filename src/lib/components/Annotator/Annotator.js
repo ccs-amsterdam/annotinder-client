@@ -4,7 +4,7 @@ import DownloadAnnotations from "./components/DownloadAnnotations";
 import IndexController from "./components/IndexController";
 import Task from "./components/Task";
 import FullScreenWindow from "./components/FullScreenWindow";
-import "lib/components/Annotator/annotatorStyle.css";
+import "./annotatorStyle.css";
 
 /**
  * Render an annotator for the provided jobServer class

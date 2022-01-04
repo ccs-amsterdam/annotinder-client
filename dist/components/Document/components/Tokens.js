@@ -11,7 +11,7 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _semanticUiReact = require("semantic-ui-react");
 
-var _scroll = require("lib/functions/scroll");
+var _scroll = require("../../../functions/scroll");
 
 var _Meta = _interopRequireDefault(require("./Meta"));
 

@@ -17,7 +17,7 @@ require("core-js/modules/es.string.match.js");
 
 var _react = _interopRequireWildcard(require("react"));
 
-var _Backend = _interopRequireWildcard(require("lib/classes/Backend"));
+var _Backend = _interopRequireWildcard(require("../../../classes/Backend"));
 
 var _semanticUiReact = require("semantic-ui-react");
 

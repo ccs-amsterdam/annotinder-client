@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Ref } from "semantic-ui-react";
-import { scrollToMiddle } from "lib/functions/scroll";
+import { scrollToMiddle } from "../../../functions/scroll";
 import Meta from "./Meta";
 
 const Tokens = ({ tokens, text_fields, meta_fields, setReady, maxHeight }) => {

@@ -19,11 +19,11 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _QuestionForm = _interopRequireDefault(require("./QuestionForm"));
 
-var _Document = _interopRequireDefault(require("lib/components/Document/Document"));
+var _Document = _interopRequireDefault(require("../../Document/Document"));
 
 var _reactSwipeable = require("react-swipeable");
 
-var _codebook = require("lib/functions/codebook");
+var _codebook = require("../../../functions/codebook");
 
 var _semanticUiReact = require("semantic-ui-react");
 
@@ -55,7 +55,6 @@ const QuestionTask = _ref => {
     blockEvents,
     fullScreenNode
   } = _ref;
-  console.log(fullScreenNode);
   const [tokens, setTokens] = (0, _react.useState)([]);
   const [questionIndex, setQuestionIndex] = (0, _react.useState)(0);
   const [questions, setQuestions] = (0, _react.useState)(null);

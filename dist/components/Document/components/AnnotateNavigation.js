@@ -15,7 +15,7 @@ var _AnnotationEvents = require("./AnnotationEvents");
 
 var _semanticUiReact = require("semantic-ui-react");
 
-var _tokenDesign = require("lib/functions/tokenDesign");
+var _tokenDesign = require("../../../functions/tokenDesign");
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 

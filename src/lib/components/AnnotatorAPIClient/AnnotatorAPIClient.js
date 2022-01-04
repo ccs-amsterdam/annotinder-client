@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Annotator from "lib/components/Annotator/Annotator";
+import Annotator from "../Annotator/Annotator";
 import { Grid, Header } from "semantic-ui-react";
 import useBackend from "./components/useBackend";
-import JobServerAPI from "lib/classes/JobServerAPI";
+import JobServerAPI from "../../classes/JobServerAPI";
 
 //   http://localhost:3000/CCS_annotator#/annotator?url=http://localhost:5000/codingjob/25
 
@@ -30,7 +30,6 @@ const AnnotatorAPIClient = () => {
 };
 
 const JobOverview = ({ backend, loginForm }) => {
-  console.log(backend);
   backend.getJobs().then((j) => console.log(j));
   return (
     <Grid inverted textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">

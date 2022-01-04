@@ -11,7 +11,7 @@ var _react = _interopRequireDefault(require("react"));
 
 var _semanticUiReact = require("semantic-ui-react");
 
-var _tokenDesign = require("lib/functions/tokenDesign");
+var _tokenDesign = require("../../../functions/tokenDesign");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { Table } from "semantic-ui-react";
-import { getColor } from "lib/functions/tokenDesign";
+import { getColor } from "../../../functions/tokenDesign";
 
 const COLWIDTHS = [4, 4, 2, 2]; // for offset and text
 

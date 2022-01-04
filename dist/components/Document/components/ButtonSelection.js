@@ -11,7 +11,7 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _semanticUiReact = require("semantic-ui-react");
 
-var _refNavigation = require("lib/functions/refNavigation");
+var _refNavigation = require("../../../functions/refNavigation");
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 

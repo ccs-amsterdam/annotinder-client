@@ -1,17 +1,24 @@
 {
   "name": "react-ccs-annotator",
+  "homepage": "https://ccs-amsterdam.github.io/annotator",
   "description": "The main workhorse behind the CCS Annotator",
   "author": "Kasper Welbers",
   "keywords": [
     "react",
     "annotation"
   ],
-  "version": "0.1.1",
+  "version": "0.1.12",
   "repository": {
     "type": "git",
     "url": "https://github.com/ccs-amsterdam/react-ccs-annotator"
   },
   "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
     "@testing-library/jest-dom": "^5.11.4",
@@ -38,7 +45,8 @@
     "start": "react-scripts start",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "build": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files",
+    "build_npm": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

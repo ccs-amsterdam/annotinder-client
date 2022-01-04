@@ -21,7 +21,7 @@ var _Task = _interopRequireDefault(require("./components/Task"));
 
 var _FullScreenWindow = _interopRequireDefault(require("./components/FullScreenWindow"));
 
-require("lib/components/Annotator/annotatorStyle.css");
+require("./annotatorStyle.css");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
