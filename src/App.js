@@ -1,7 +1,7 @@
 import React from "react";
 
 // Main pages. Use below in items to include in header menu
-import AnnotatorAPIClient from "components/AnnotatorAPIClient/AnnotatorAPIClient";
+import AnnotatorAPIClient from "lib/components/AnnotatorAPIClient/AnnotatorAPIClient";
 
 const App = () => {
   return (
