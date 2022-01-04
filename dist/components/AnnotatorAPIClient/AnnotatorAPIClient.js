@@ -23,7 +23,7 @@ var _Annotator = _interopRequireDefault(require("../Annotator/Annotator"));
 
 var _semanticUiReact = require("semantic-ui-react");
 
-var _useBackend = _interopRequireDefault(require("./components/useBackend"));
+var _useBackend = _interopRequireDefault(require("./useBackend"));
 
 var _JobServerAPI = _interopRequireDefault(require("../../classes/JobServerAPI"));
 
@@ -49,7 +49,7 @@ const AnnotatorAPIClient = () => {
       verticalAlign: "middle"
     }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Column, {
       style: {
-        maxWidth: 450
+        maxWidth: "500px"
       }
     }, loginForm));
 

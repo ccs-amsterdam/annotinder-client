@@ -17,7 +17,7 @@ require("core-js/modules/es.string.match.js");
 
 var _react = _interopRequireWildcard(require("react"));
 
-var _Backend = _interopRequireWildcard(require("../../../classes/Backend"));
+var _Backend = _interopRequireWildcard(require("../../classes/Backend"));
 
 var _semanticUiReact = require("semantic-ui-react");
 
@@ -34,30 +34,34 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 const useBackend = urlHost => {
-  var _cookies$backend3;
+  var _cookies$backend4;
 
   const [cookies, setCookies] = (0, _reactCookie.useCookies)(["backend"]);
   const [backend, setBackend] = (0, _react.useState)(null);
-  console.log(cookies);
   (0, _react.useEffect)(() => {
-    var _cookies$backend, _cookies$backend2;
+    var _cookies$backend, _cookies$backend2, _cookies$backend3;
 
     // First check for host in URL, if missing, check for host in cookies.
     const host = urlHost || (cookies === null || cookies === void 0 ? void 0 : (_cookies$backend = cookies.backend) === null || _cookies$backend === void 0 ? void 0 : _cookies$backend.host) || null;
     if (host && host !== (backend === null || backend === void 0 ? void 0 : backend.host)) setBackend(null); // reset backend if host changes
 
-    if (backend || !host || !(cookies !== null && cookies !== void 0 && (_cookies$backend2 = cookies.backend) !== null && _cookies$backend2 !== void 0 && _cookies$backend2.token)) return;
+    if (!(cookies !== null && cookies !== void 0 && (_cookies$backend2 = cookies.backend) !== null && _cookies$backend2 !== void 0 && _cookies$backend2.token)) {
+      setBackend(null);
+      return;
+    }
+
+    if (backend || !host || !(cookies !== null && cookies !== void 0 && (_cookies$backend3 = cookies.backend) !== null && _cookies$backend3 !== void 0 && _cookies$backend3.token)) return;
     logIn(cookies, setCookies, setBackend);
   }, [cookies, backend, urlHost, setCookies, setBackend]);
   return [backend, /*#__PURE__*/_react.default.createElement(LoginForm, {
-    host: urlHost || (cookies === null || cookies === void 0 ? void 0 : (_cookies$backend3 = cookies.backend) === null || _cookies$backend3 === void 0 ? void 0 : _cookies$backend3.host) || null
+    host: urlHost || (cookies === null || cookies === void 0 ? void 0 : (_cookies$backend4 = cookies.backend) === null || _cookies$backend4 === void 0 ? void 0 : _cookies$backend4.host) || null
   })];
 };
 
 const logIn = async (cookies, setCookies, setBackend) => {
-  var _cookies$backend4, _cookies$backend5, _cookies$backend6;
+  var _cookies$backend5, _cookies$backend6, _cookies$backend7;
 
-  const backend = new _Backend.default(cookies === null || cookies === void 0 ? void 0 : (_cookies$backend4 = cookies.backend) === null || _cookies$backend4 === void 0 ? void 0 : _cookies$backend4.host, cookies === null || cookies === void 0 ? void 0 : (_cookies$backend5 = cookies.backend) === null || _cookies$backend5 === void 0 ? void 0 : _cookies$backend5.email, cookies === null || cookies === void 0 ? void 0 : (_cookies$backend6 = cookies.backend) === null || _cookies$backend6 === void 0 ? void 0 : _cookies$backend6.token);
+  const backend = new _Backend.default(cookies === null || cookies === void 0 ? void 0 : (_cookies$backend5 = cookies.backend) === null || _cookies$backend5 === void 0 ? void 0 : _cookies$backend5.host, cookies === null || cookies === void 0 ? void 0 : (_cookies$backend6 = cookies.backend) === null || _cookies$backend6 === void 0 ? void 0 : _cookies$backend6.email, cookies === null || cookies === void 0 ? void 0 : (_cookies$backend7 = cookies.backend) === null || _cookies$backend7 === void 0 ? void 0 : _cookies$backend7.token);
 
   try {
     // maybe add check for specific user later. For now just check if can get token

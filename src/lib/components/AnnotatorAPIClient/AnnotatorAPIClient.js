@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Annotator from "../Annotator/Annotator";
 import { Grid, Header } from "semantic-ui-react";
-import useBackend from "./components/useBackend";
+import useBackend from "./useBackend";
 import JobServerAPI from "../../classes/JobServerAPI";
 
 //   http://localhost:3000/CCS_annotator#/annotator?url=http://localhost:5000/codingjob/25
@@ -16,7 +16,7 @@ const AnnotatorAPIClient = () => {
     // If the url contained a host, this field is fixed
     return (
       <Grid inverted textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
-        <Grid.Column style={{ maxWidth: 450 }}>{loginForm}</Grid.Column>
+        <Grid.Column style={{ maxWidth: "500px" }}>{loginForm}</Grid.Column>
       </Grid>
     );
 

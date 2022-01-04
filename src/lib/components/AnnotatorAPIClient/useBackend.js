@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Backend, { getToken } from "../../../classes/Backend";
+import Backend, { getToken } from "../../classes/Backend";
 import { Header, Form, Button, Segment, Grid, Divider } from "semantic-ui-react";
 import { useCookies } from "react-cookie";
 
@@ -7,13 +7,15 @@ const useBackend = (urlHost) => {
   const [cookies, setCookies] = useCookies(["backend"]);
   const [backend, setBackend] = useState(null);
 
-  console.log(cookies);
-
   useEffect(() => {
     // First check for host in URL, if missing, check for host in cookies.
     const host = urlHost || cookies?.backend?.host || null;
 
     if (host && host !== backend?.host) setBackend(null); // reset backend if host changes
+    if (!cookies?.backend?.token) {
+      setBackend(null);
+      return;
+    }
     if (backend || !host || !cookies?.backend?.token) return;
     logIn(cookies, setCookies, setBackend);
   }, [cookies, backend, urlHost, setCookies, setBackend]);
