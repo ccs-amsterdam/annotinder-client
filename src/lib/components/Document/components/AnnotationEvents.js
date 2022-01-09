@@ -437,17 +437,17 @@ const moveToken = (tokens, key, space, mover) => {
   }
 
   if (space) {
-    // limit selection to current section
-    if (tokens[mover.position].section !== tokens[newPosition].section) {
+    // limit selection to current field
+    if (tokens[mover.position].field !== tokens[newPosition].field) {
       if (newPosition > mover.position) {
         for (let i = newPosition; i >= mover.position; i--)
-          if (tokens[i].section === tokens[mover.position].section) {
+          if (tokens[i].field === tokens[mover.position].field) {
             newPosition = i;
             break;
           }
       } else {
         for (let i = newPosition; i <= mover.position; i++) {
-          if (tokens[i].section === tokens[mover.position].section) {
+          if (tokens[i].field === tokens[mover.position].field) {
             newPosition = i;
             break;
           }
@@ -576,17 +576,17 @@ const updateSelection = (selection, tokens, index, add) => {
   if (!add || newSelection.length === 0) return returnSelectionIfChanged(selection, [index, index]);
   if (index === null) return returnSelectionIfChanged(selection, [newSelection[0], null]);
 
-  if (tokens[newSelection[0]].section === tokens[index].section) {
+  if (tokens[newSelection[0]].field === tokens[index].field) {
     newSelection = [newSelection[0], index];
   } else {
     if (index > newSelection[0]) {
       for (let i = index; i >= newSelection[0]; i--) {
-        if (tokens[newSelection[0]].section === tokens[i].section)
+        if (tokens[newSelection[0]].field === tokens[i].field)
           newSelection = [newSelection[0], i];
       }
     } else {
       for (let i = index; i <= newSelection[0]; i++) {
-        if (tokens[newSelection[0]].section === tokens[i].section)
+        if (tokens[newSelection[0]].field === tokens[i].field)
           newSelection = [newSelection[0], i];
       }
     }

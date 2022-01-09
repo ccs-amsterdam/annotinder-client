@@ -632,7 +632,7 @@ const updateAnnotations = (
   annotation.index = tokens[from].index;
   annotation.length = tokens[to].length + tokens[to].offset - tokens[from].offset;
   annotation.span = [tokens[from].index, tokens[to].index];
-  annotation.section = tokens[from].section;
+  annotation.field = tokens[from].field;
   annotation.offset = tokens[from].offset;
 
   setAnnotations((state) =>

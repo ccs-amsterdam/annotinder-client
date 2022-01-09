@@ -15,7 +15,7 @@ export const exportSpanAnnotations = (annotations, tokens, SpanAndText = false) 
       const ann_obj = {
         variable: ann[id].variable,
         value: ann[id].value,
-        section: ann[id].section,
+        field: ann[id].field,
         offset: ann[id].offset,
         length: ann[id].length,
       };
@@ -125,7 +125,7 @@ export const toggleSpanAnnotation = (annotations, newAnnotation, rm, keep_empty)
         span: [newAnnotation.span[0], newAnnotation.span[1]],
         length: newAnnotation.length,
         value: newAnnotation.value,
-        section: newAnnotation.section,
+        field: newAnnotation.field,
         offset: newAnnotation.offset,
       };
     }
@@ -136,16 +136,16 @@ export const toggleSpanAnnotation = (annotations, newAnnotation, rm, keep_empty)
 
 const prepareSpanAnnotations = (annotations) => {
   if (!annotations || annotations === "") return {};
-  // create an object where the key is a section+offset, and the
+  // create an object where the key is a field+offset, and the
   // value is an array that tells which ids (variable|value) start and end there
   // used in Tokens for matching to token indices
   return annotations.reduce((obj, ann) => {
-    if (!obj[ann.section]) obj[ann.section] = {};
-    if (!obj[ann.section][ann.offset]) obj[ann.section][ann.offset] = { start: [], end: [] };
-    if (!obj[ann.section][ann.offset + ann.length - 1])
-      obj[ann.section][ann.offset + ann.length - 1] = { start: [], end: [] };
-    obj[ann.section][ann.offset].start.push(ann); // for the starting point the full annotation is given, so that we have all the information
-    obj[ann.section][ann.offset + ann.length - 1].end.push(createId(ann)); // for the ending point we just need to know the id
+    if (!obj[ann.field]) obj[ann.field] = {};
+    if (!obj[ann.field][ann.offset]) obj[ann.field][ann.offset] = { start: [], end: [] };
+    if (!obj[ann.field][ann.offset + ann.length - 1])
+      obj[ann.field][ann.offset + ann.length - 1] = { start: [], end: [] };
+    obj[ann.field][ann.offset].start.push(ann); // for the starting point the full annotation is given, so that we have all the information
+    obj[ann.field][ann.offset + ann.length - 1].end.push(createId(ann)); // for the ending point we just need to know the id
     return obj;
   }, {});
 };
@@ -153,12 +153,12 @@ const prepareSpanAnnotations = (annotations) => {
 const findMatches = (token, importedAnnotations, trackAnnotations, matchedAnnotations) => {
   const start = token.offset;
   const end = token.offset + token.length - 1;
-  if (!importedAnnotations[token.section]) return;
-  const sectionAnnotations = importedAnnotations[token.section];
+  if (!importedAnnotations[token.field]) return;
+  const fieldAnnotations = importedAnnotations[token.field];
 
   for (let i = start; i <= end; i++) {
-    if (sectionAnnotations[i]) {
-      for (let annotation of sectionAnnotations[i].start) {
+    if (fieldAnnotations[i]) {
+      for (let annotation of fieldAnnotations[i].start) {
         const id = createId(annotation);
         trackAnnotations[id] = {
           ...token,
@@ -171,7 +171,7 @@ const findMatches = (token, importedAnnotations, trackAnnotations, matchedAnnota
         };
       }
 
-      for (let id of sectionAnnotations[i].end) {
+      for (let id of fieldAnnotations[i].end) {
         if (!trackAnnotations[id]) continue;
         trackAnnotations[id].span.push(token.index);
         trackAnnotations[id].length = token.offset + token.length - trackAnnotations[id].offset;

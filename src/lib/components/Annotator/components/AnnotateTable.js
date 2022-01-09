@@ -26,8 +26,8 @@ const AnnotateTable = ({ tokens, variableMap, annotations }) => {
           <Table.HeaderCell title="Vale" width={COLWIDTHS[1]}>
             Value
           </Table.HeaderCell>
-          <Table.HeaderCell title="Section" width={COLWIDTHS[2]}>
-            Section
+          <Table.HeaderCell title="Field" width={COLWIDTHS[2]}>
+            Field
           </Table.HeaderCell>
           <Table.HeaderCell title="Position" width={COLWIDTHS[3]}>
             Position
@@ -99,8 +99,8 @@ const AnnotationRow = ({ variable, variableMap, annotation, onClick, text }) => 
       <Table.Cell title={label} width={COLWIDTHS[1]} style={color ? { background: color } : null}>
         <span title={label}>{label}</span>
       </Table.Cell>
-      <Table.Cell title={annotation.section} width={COLWIDTHS[2]}>
-        {annotation.section}
+      <Table.Cell title={annotation.field} width={COLWIDTHS[2]}>
+        {annotation.field}
       </Table.Cell>
       <Table.Cell title={position} width={COLWIDTHS[3]}>
         {position}

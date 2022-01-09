@@ -3,8 +3,8 @@ import paragraphs from "compromise-paragraphs";
 nlp.extend(paragraphs);
 
 /**
- * Tokenize a document, but allowing for multiple text fields to be concatenated as different sections.
- * @param {*} text_fields  An array of objects, where each object has the structure {name, value}. 'name' becomes the name of the section, 'value' is the text
+ * Tokenize a document, but allowing for multiple text fields to be concatenated as different fields.
+ * @param {*} text_fields  An array of objects, where each object has the structure {name, value}. 'name' becomes the name of the field, 'value' is the text
  *                         each item can also have an 'offset' key with an integer value, in case the value is a subset starting at the [offset] character (this is needed to get the correct positions in the original document)
  *                         each item can also have a 'unit_start' and 'unit_end' key, each with an integer value to indicate where in this text_field the codingUnit starts/ends.
  *                              If both unit_start and unit_end is omitted, the whole text is considered codingUnit.
@@ -25,7 +25,7 @@ export const parseTokens = (text_fields) => {
   let unit_ended = false;
 
   for (let text_field of text_fields) {
-    let section = text_field.name || "text";
+    let field = text_field.name || "text";
     let offset = text_field.offset || 0;
 
     text = text_field.value;
@@ -48,7 +48,7 @@ export const parseTokens = (text_fields) => {
               unit_ended = true;
 
             const tokenobj = {
-              section: section,
+              field: field,
               offset: token.offset.start + offset,
               length: token.offset.length,
               paragraph: paragraph,
@@ -117,7 +117,7 @@ export const importTokens = (tokens) => {
     }
 
     if (i < tokens.length - 1) {
-      if (!tokens[i].section || tokens[i].section === tokens[i + 1].section) {
+      if (!tokens[i].field || tokens[i].field === tokens[i + 1].field) {
         if (tokens[i + 1].offset == null && tokens[i + 1].start != null)
           tokens[i + 1].offset = tokens[i + 1].start;
         if (tokens[i + 1].offset && tokens[i + 1].offset < tokens[i].offset + totalLength) {
@@ -160,7 +160,7 @@ export const importTokens = (tokens) => {
       tokens[i].paragraph = paragraph;
     }
 
-    if (tokens[i].section == null) tokens[i].section = "text";
+    if (tokens[i].field == null) tokens[i].field = "text";
     tokens[i].index = i;
   }
 
@@ -173,7 +173,7 @@ export const importTokenAnnotations = (tokens, codes) => {
   if (tokens.length === 0) return [];
   let annotations = [];
   let codeTracker = {};
-  let section = tokens[0].section;
+  let field = tokens[0].field;
   for (let i = 0; i < tokens.length; i++) {
     if (!tokens[i].annotations) {
       for (let annotation of Object.values(codeTracker)) annotations.push(annotation);
@@ -201,7 +201,7 @@ export const importTokenAnnotations = (tokens, codes) => {
           value: annotation.value,
           offset: tokens[i].offset,
           text: tokens[i].text,
-          section: tokens[i].section,
+          field: tokens[i].field,
           length: tokens[i].length,
         };
       if (codeTracker[annotation.name].value === annotation.value) {
@@ -225,16 +225,16 @@ export const importTokenAnnotations = (tokens, codes) => {
           value: annotationDict[key],
           offset: tokens[i].offset,
           text: tokens[i].text,
-          section: tokens[i].section,
+          field: tokens[i].field,
           length: tokens[i].length,
         };
       }
     }
 
-    if (i < tokens.length - 1 && tokens[i + 1].section !== section) {
+    if (i < tokens.length - 1 && tokens[i + 1].field !== field) {
       for (let annotation of Object.values(codeTracker)) annotations.push(annotation);
       codeTracker = {};
-      section = tokens[i].section;
+      field = tokens[i].field;
       continue;
     }
   }
