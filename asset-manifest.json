@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/ccs-annotator-client/static/css/main.82c8155d.chunk.css",
-    "main.js": "/ccs-annotator-client/static/js/main.f3bca455.chunk.js",
-    "main.js.map": "/ccs-annotator-client/static/js/main.f3bca455.chunk.js.map",
+    "main.js": "/ccs-annotator-client/static/js/main.c97520bd.chunk.js",
+    "main.js.map": "/ccs-annotator-client/static/js/main.c97520bd.chunk.js.map",
     "runtime-main.js": "/ccs-annotator-client/static/js/runtime-main.6132d86b.js",
     "runtime-main.js.map": "/ccs-annotator-client/static/js/runtime-main.6132d86b.js.map",
     "static/css/2.f0832032.chunk.css": "/ccs-annotator-client/static/css/2.f0832032.chunk.css",
@@ -19,6 +19,6 @@
     "static/css/2.f0832032.chunk.css",
     "static/js/2.38247701.chunk.js",
     "static/css/main.82c8155d.chunk.css",
-    "static/js/main.f3bca455.chunk.js"
+    "static/js/main.c97520bd.chunk.js"
   ]
 }
