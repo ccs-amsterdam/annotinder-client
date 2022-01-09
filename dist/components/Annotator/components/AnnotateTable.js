@@ -49,9 +49,9 @@ const AnnotateTable = _ref => {
     title: "Vale",
     width: COLWIDTHS[1]
   }, "Value"), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Table.HeaderCell, {
-    title: "Section",
+    title: "Field",
     width: COLWIDTHS[2]
-  }, "Section"), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Table.HeaderCell, {
+  }, "Field"), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Table.HeaderCell, {
     title: "Position",
     width: COLWIDTHS[3]
   }, "Position"), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Table.HeaderCell, {
@@ -129,9 +129,9 @@ const AnnotationRow = _ref2 => {
   }, /*#__PURE__*/_react.default.createElement("span", {
     title: label
   }, label)), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Table.Cell, {
-    title: annotation.section,
+    title: annotation.field,
     width: COLWIDTHS[2]
-  }, annotation.section), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Table.Cell, {
+  }, annotation.field), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Table.Cell, {
     title: position,
     width: COLWIDTHS[3]
   }, position), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Table.Cell, null, /*#__PURE__*/_react.default.createElement("span", {

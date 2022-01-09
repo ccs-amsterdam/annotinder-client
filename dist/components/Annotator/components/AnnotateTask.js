@@ -150,7 +150,7 @@ const useAnnotations = unit => {
 
 const annotationsHaveChanged = (old, current) => {
   if (old.length !== current.length) return true;
-  const compareOn = ["variable", "value", "section", "offset", "length"];
+  const compareOn = ["variable", "value", "field", "offset", "length"];
 
   for (let i = 0; i < old.length; i++) {
     for (let field of compareOn) {
@@ -168,7 +168,7 @@ const getCleanAnnotations = annotations => {
     return {
       variable: na.variable,
       value: na.value,
-      section: na.section,
+      field: na.field,
       offset: na.offset,
       length: na.length
     };

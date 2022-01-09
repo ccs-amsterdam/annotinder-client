@@ -115,7 +115,7 @@ const formatQuestionsTaskResults = async (jobServer, setData) => {
     }, unit.provenance), {}, {
       offset: annotations[0].offset,
       length: annotations[0].length,
-      section: annotations[0].section
+      field: annotations[0].field
     }, annotations[0].meta);
 
     if (unit.meta) {

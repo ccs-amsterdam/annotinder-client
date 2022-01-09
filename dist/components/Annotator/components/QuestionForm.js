@@ -319,7 +319,7 @@ const createAnnotationObject = (tokens, question, questionIndex) => {
   // value. This lets us check whether the annotations already exists, and add
   // or change the value.
   if (tokens.length === 0) return null;
-  const sections = {};
+  const fields = {};
   const lastToken = tokens[tokens.length - 1];
   const charspan = [0, lastToken.offset + lastToken.length];
   const indexspan = [0, tokens.length - 1];
@@ -327,7 +327,7 @@ const createAnnotationObject = (tokens, question, questionIndex) => {
   let i = 0;
 
   for (let token of tokens) {
-    if (token.codingUnit && !sections[token.section]) sections[token.section] = 1;
+    if (token.codingUnit && !fields[token.field]) fields[token.field] = 1;
 
     if (!unitStarted && token.codingUnit) {
       unitStarted = true;
@@ -353,7 +353,7 @@ const createAnnotationObject = (tokens, question, questionIndex) => {
   return {
     variable: "Q".concat(questionIndex + 1, "_").concat(question.name.replace(" ", "_")),
     value: null,
-    section: Object.keys(sections).join(" + "),
+    field: Object.keys(fields).join(" + "),
     offset: charspan[0],
     length: charspan[1] - charspan[0],
     meta
@@ -361,7 +361,7 @@ const createAnnotationObject = (tokens, question, questionIndex) => {
 };
 
 const sameQuestion = (x, y) => {
-  return x.variable === y.variable && x.section === y.section && x.offset === y.offset && x.length === y.length;
+  return x.variable === y.variable && x.field === y.field && x.offset === y.offset && x.length === y.length;
 };
 
 const getCurrentAnswer = (annotations, annotationObject) => {
