@@ -22,7 +22,7 @@ const Annotator = ({ jobServer }) => {
 
   useEffect(() => {
     // When unitIndex changes, get the unit
-    if (!jobServer) return;
+    if (!jobServer || unitIndex === null) return;
     getUnit(jobServer, unitIndex, setPreparedUnit, setUnitIndex);
   }, [unitIndex, jobServer, setUnitIndex, setPreparedUnit]);
 

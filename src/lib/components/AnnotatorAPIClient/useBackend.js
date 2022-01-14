@@ -10,8 +10,12 @@ const useBackend = (urlHost) => {
   useEffect(() => {
     // First check for host in URL, if missing, check for host in cookies.
     const host = urlHost || cookies?.backend?.host || null;
-
-    if (host && host !== backend?.host) setBackend(null); // reset backend if host changes
+    console.log(host);
+    console.log(backend?.host);
+    if (host && backend?.host && host !== backend?.host) {
+      setBackend(null); // reset backend if host changes
+      return;
+    }
     if (!cookies?.backend?.token) {
       setBackend(null);
       return;

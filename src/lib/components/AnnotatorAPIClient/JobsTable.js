@@ -29,7 +29,9 @@ const JobsTable = ({ backend, setJobId }) => {
     setJobId(rowObj.id);
   };
 
-  return <FullDataTable fullData={jobs} columns={columns} onClick={onClick} />;
+  const started = jobs ? jobs.filter((j) => j.modified !== "NEW") : [];
+  const newjobs = jobs ? jobs.filter((j) => j.modified === "NEW") : [];
+  return <FullDataTable fullData={[...started, ...newjobs]} columns={columns} onClick={onClick} />;
 };
 
 /**

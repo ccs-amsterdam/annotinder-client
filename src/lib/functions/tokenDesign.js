@@ -7,9 +7,11 @@
  */
 export const getColor = (annotationCode, codeMap) => {
   if (codeMap[annotationCode]) {
+    let color;
     const foldTo = codeMap[annotationCode].foldToParent;
-    if (foldTo && codeMap[foldTo]) return codeMap[foldTo].color + "50";
-    return codeMap[annotationCode].color + "50";
+    if (foldTo && codeMap[foldTo]) color = codeMap[foldTo].color;
+    color = codeMap[annotationCode].color;
+    return standardizeColor(color) + "50";
   } else {
     if (annotationCode === "EMPTY") return "lightgrey";
     return "#ffffff50";
@@ -39,4 +41,13 @@ export const getColorGradient = (colors) => {
   }, []);
 
   return `linear-gradient(to bottom, ${gradColors.join(", ")})`;
+};
+
+const standardizeColor = (str) => {
+  if (!str) return "#FFFFFF";
+  // https://stackoverflow.com/questions/1573053/javascript-function-to-convert-color-names-to-hex-codes
+  const ctx = document.createElement("canvas").getContext("2d");
+  ctx.fillStyle = str.trim();
+  const color = ctx.fillStyle; // make lighter
+  return color;
 };

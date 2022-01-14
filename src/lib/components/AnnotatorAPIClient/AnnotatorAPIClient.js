@@ -8,6 +8,11 @@ import { useLocation } from "react-router-dom";
 
 //   http://localhost:3000/CCS_annotator#/annotator?url=http://localhost:5000/codingjob/25
 
+// NOTE TO SELF
+// Add option to code without having to log in (needs to happen in backend too)
+// Then when coders first check in, they need to either give their email-adress OR say "stay anonymous"
+// Codingjobs can then specify whether stay anonymous is allowed, and whether registration is required.
+
 const AnnotatorAPIClient = () => {
   const location = useLocation();
   const [urlHost, urlJobId, setJobId] = useParseUrl(location);
@@ -29,6 +34,7 @@ const AnnotatorAPIClient = () => {
     return <JobOverview backend={backend} setJobId={setJobId} loginForm={loginForm} />;
   }
 
+  if (jobServer.job_id !== urlJobId) return null;
   return <Annotator jobServer={jobServer} />;
 };
 
@@ -65,6 +71,7 @@ const useJobServerBackend = (backend, jobId) => {
       setJobServer(null);
       return;
     }
+    setJobServer(null);
     const js = new JobServerAPI(backend, jobId);
     js.init().then(() => setJobServer(js)); // add a check for if job_id is invalid
   }, [backend, jobId]);
