@@ -20,7 +20,8 @@ export const parseTokens = (text_fields) => {
   let text = null;
 
   let has_unit_start = false;
-  for (let text_field of text_fields) if (text_field.unit_start != null) has_unit_start = true;
+  for (let text_field of text_fields)
+    if (text_field.unit_start != null || text_field.context_before != null) has_unit_start = true;
   let unit_started = !has_unit_start; // if unit start not specified, start from beginning
   let unit_ended = false;
 
@@ -29,6 +30,15 @@ export const parseTokens = (text_fields) => {
     let offset = text_field.offset || 0;
 
     text = text_field.value;
+    if (text_field.context_before != null) {
+      text = text_field.context_before + text;
+      text_field.unit_start = text_field.context_before.length();
+    }
+    if (text_field.context_after != null) {
+      text_field.unit_end = text.length();
+      text = text + text_field.context_after;
+    }
+
     t = nlp.tokenize(text).paragraphs().json({ offset: true });
     // map to single array.
     for (let par = 0; par < t.length; par++) {

@@ -4,6 +4,7 @@ import AnnotateTask from "./AnnotateTask";
 
 const Task = ({ unit, setUnitIndex, fullScreenNode }) => {
   const codebook = unit?.jobServer?.codebook;
+  console.log(codebook);
   if (!codebook || !unit) return null;
 
   const renderTaskPreview = (type) => {

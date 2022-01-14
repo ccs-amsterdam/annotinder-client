@@ -155,7 +155,7 @@ const renderField = (layout, paragraph_nr, paragraphs, field) => {
               fontSize: `${layout.size != null ? layout.size : 1}em`,
               fontWeight: layout.bold ? "bold" : "normal",
               fontStyle: layout.italic ? "italic" : "normal",
-              textAlign: layout.justify ? "justify" : "left",
+              textAlign: layout.justify == null || layout.justify ? "justify" : "left",
             }}
           >
             {paragraphs}
@@ -175,7 +175,7 @@ const renderField = (layout, paragraph_nr, paragraphs, field) => {
 };
 
 const renderParagraph = (layout, paragraph_nr, sentences, end) => {
-  if (!layout?.paragraphs)
+  if (layout?.paragraphs != null && !layout?.paragraphs)
     return (
       <span key={"par" + paragraph_nr}>
         <span>{sentences}</span>
