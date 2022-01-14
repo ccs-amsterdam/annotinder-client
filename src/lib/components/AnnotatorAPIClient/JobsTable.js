@@ -10,25 +10,26 @@ const columns = [
 ];
 
 const JobsTable = ({ backend, setJobId }) => {
-  const [jobs, setJobs] = useState(null);
+  //const [jobs, setJobs] = useState(null);
   const history = useHistory();
 
-  useEffect(() => {
-    let isSubscribed = true;
-    if (!backend) {
-      setJobs(null);
-    } else
-      backend.getJobs().then((d) => {
-        if (isSubscribed) setJobs(d.jobs);
-      });
-    return () => (isSubscribed = false);
-  }, [backend]);
+  // useEffect(() => {
+  //   let isSubscribed = true;
+  //   if (!backend) {
+  //     setJobs(null);
+  //   } else
+  //     backend.getJobs().then((d) => {
+  //       if (isSubscribed) setJobs(d.jobs);
+  //     });
+  //   return () => (isSubscribed = false);
+  // }, [backend]);
 
   const onClick = (rowObj) => {
     history.push("?url=" + backend.host + `/codingjob/${rowObj.id}`);
     setJobId(rowObj.id);
   };
 
+  const jobs = backend?.jobs;
   const started = jobs ? jobs.filter((j) => j.modified !== "NEW") : [];
   const newjobs = jobs ? jobs.filter((j) => j.modified === "NEW") : [];
   return <FullDataTable fullData={[...started, ...newjobs]} columns={columns} onClick={onClick} />;

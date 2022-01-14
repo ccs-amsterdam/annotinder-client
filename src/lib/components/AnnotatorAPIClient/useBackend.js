@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Backend, { passwordLogin } from "../../classes/Backend";
 import { Header, Form, Button, Segment, Grid, Divider } from "semantic-ui-react";
 import { useCookies } from "react-cookie";
@@ -6,28 +6,39 @@ import { useCookies } from "react-cookie";
 const useBackend = (urlHost) => {
   const [cookies, setCookies] = useCookies(["backend"]);
   const [backend, setBackend] = useState(null);
+  const triedCookies = useRef(false);
+
+  useEffect(() => {
+    triedCookies.current = false;
+  }, [cookies?.backend]);
 
   useEffect(() => {
     // First check for host in URL, if missing, check for host in cookies.
     const host = urlHost || cookies?.backend?.host || null;
-    console.log(host);
-    console.log(backend?.host);
     if (host && backend?.host && host !== backend?.host) {
       setBackend(null); // reset backend if host changes
       return;
     }
-    if (!cookies?.backend?.token) {
-      setBackend(null);
-      return;
-    }
-    if (backend || !host || !cookies?.backend?.token) return;
-    logIn(cookies, setCookies, setBackend);
+
+    // the problem is that if we login to a server that doesn't require auth,
+    // the backend has the host from the cookies, and so it deletes itself after verigying that it doesn't
+    // have the same as the urlHost.
+
+    // todo:
+    // make a preview mode or something. like a notoken argument. login=f
+    // replace the url argument with actualy host= and job=, much nicer
+
+    if (triedCookies.current) return;
+    if (backend || !host) return;
+    logIn(cookies, setBackend);
+    triedCookies.current = true;
   }, [cookies, backend, urlHost, setCookies, setBackend]);
 
+  console.log(backend);
   return [backend, <LoginForm host={urlHost || cookies?.backend?.host || null} />];
 };
 
-const logIn = async (cookies, setCookies, setBackend) => {
+const logIn = async (cookies, setBackend) => {
   const backend = new Backend(
     cookies?.backend?.host,
     cookies?.backend?.email,
@@ -40,14 +51,13 @@ const logIn = async (cookies, setCookies, setBackend) => {
   } catch (e) {
     console.log(e);
     setBackend(null);
-    setCookies("backend", JSON.stringify({ ...backend, token: null }), { path: "/" });
   }
 };
 
 export const LoginForm = ({ host = null }) => {
   const [cookies, setCookies] = useCookies(["backend"]);
 
-  const backend = cookies.backend || {
+  const backend = { ...cookies.backend } || {
     host: "http://localhost:5000",
     email: "test@user.com",
     token: null,
@@ -62,7 +72,8 @@ export const LoginForm = ({ host = null }) => {
     setCookies("backend", JSON.stringify({ ...backend, token: null }), { path: "/" });
   };
 
-  if (backend.token) return <SignOut backend={backend} setLogout={setLogout} />;
+  if (backend.token && backend.host === cookies?.backend?.host)
+    return <SignOut backend={backend} setLogout={setLogout} />;
   return <SignIn backend={backend} setLogin={setLogin} />;
 };
 

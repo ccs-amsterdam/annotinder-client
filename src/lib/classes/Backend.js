@@ -19,11 +19,8 @@ class Backend {
   }
 
   async init() {
-    try {
-      await this.getToken();
-    } catch (e) {
-      console.log(e);
-    }
+    const d = await this.getJobs();
+    this.jobs = d.jobs;
   }
 
   // GET

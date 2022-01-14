@@ -29,12 +29,14 @@ const AnnotatorAPIClient = () => {
     );
 
   if (!jobServer) {
+    if (!backend) return;
     // if backend is connected, but there is no jobServer (because no job_id was passed in the url)
     // show a screen with some relevant info for the user on this host. Like current / new jobs
     return <JobOverview backend={backend} setJobId={setJobId} loginForm={loginForm} />;
   }
 
   if (jobServer.job_id !== urlJobId) return null;
+  if (urlHost && backend.host !== urlHost) return null;
   return <Annotator jobServer={jobServer} />;
 };
 
