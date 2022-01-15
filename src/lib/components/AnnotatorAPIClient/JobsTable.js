@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Container, Pagination, Table, Icon } from "semantic-ui-react";
 
 const PAGESIZE = 10;
@@ -9,9 +9,10 @@ const columns = [
   { name: "modified" },
 ];
 
-const JobsTable = ({ backend, setJobId }) => {
+const JobsTable = ({ backend }) => {
   //const [jobs, setJobs] = useState(null);
-  const history = useHistory();
+  //const navigate = useNavigate();
+  const [, setSearchParams] = useSearchParams();
 
   // useEffect(() => {
   //   let isSubscribed = true;
@@ -25,8 +26,8 @@ const JobsTable = ({ backend, setJobId }) => {
   // }, [backend]);
 
   const onClick = (rowObj) => {
-    history.push("?url=" + backend.host + `/codingjob/${rowObj.id}`);
-    setJobId(rowObj.id);
+    setSearchParams({ host: backend.host, job_id: rowObj.id });
+    //navigate("?url=" + backend.host + `/codingjob/${rowObj.id}`);
   };
 
   const jobs = backend?.jobs;

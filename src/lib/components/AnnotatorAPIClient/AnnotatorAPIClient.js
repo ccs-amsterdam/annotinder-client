@@ -4,9 +4,7 @@ import { Grid, Header, Icon } from "semantic-ui-react";
 import useBackend from "./useBackend";
 import JobServerAPI from "../../classes/JobServerAPI";
 import JobsTable from "./JobsTable";
-import { useLocation } from "react-router-dom";
-
-//   http://localhost:3000/CCS_annotator#/annotator?url=http://localhost:5000/codingjob/25
+import { useSearchParams } from "react-router-dom";
 
 // NOTE TO SELF
 // Add option to code without having to log in (needs to happen in backend too)
@@ -14,9 +12,12 @@ import { useLocation } from "react-router-dom";
 // Codingjobs can then specify whether stay anonymous is allowed, and whether registration is required.
 
 const AnnotatorAPIClient = () => {
-  const location = useLocation();
-  const [urlHost, urlJobId, setJobId] = useParseUrl(location);
-  const [backend, loginForm] = useBackend(urlHost);
+  const [searchParams] = useSearchParams();
+  const urlHost = searchParams.get("host");
+  const urlToken = searchParams.get("token");
+  const urlJobId = searchParams.get("job_id");
+
+  const [backend, loginForm] = useBackend(urlHost, urlToken);
   const jobServer = useJobServerBackend(backend, urlJobId);
 
   if (!backend)
@@ -32,7 +33,7 @@ const AnnotatorAPIClient = () => {
     if (!backend) return;
     // if backend is connected, but there is no jobServer (because no job_id was passed in the url)
     // show a screen with some relevant info for the user on this host. Like current / new jobs
-    return <JobOverview backend={backend} setJobId={setJobId} loginForm={loginForm} />;
+    return <JobOverview backend={backend} loginForm={loginForm} />;
   }
 
   if (jobServer.job_id !== urlJobId) return null;
@@ -40,7 +41,7 @@ const AnnotatorAPIClient = () => {
   return <Annotator jobServer={jobServer} />;
 };
 
-const JobOverview = ({ backend, setJobId, loginForm }) => {
+const JobOverview = ({ backend, loginForm }) => {
   return (
     <Grid
       inverted
@@ -58,7 +59,7 @@ const JobOverview = ({ backend, setJobId, loginForm }) => {
         </Grid.Row>
         <br />
         <Grid.Row>
-          <JobsTable backend={backend} setJobId={setJobId} />
+          <JobsTable backend={backend} />
         </Grid.Row>
       </Grid.Column>
     </Grid>
@@ -79,42 +80,6 @@ const useJobServerBackend = (backend, jobId) => {
   }, [backend, jobId]);
 
   return jobServer;
-};
-
-/**
- * look for the query parameter url  (?url = ...)
-  /if it exists, return the origin/host and the last part of the path (which should be the job_id)
- * @param {*} href from window.location.href
- * @returns 
- */
-const useParseUrl = (location) => {
-  const [host, setHost] = useState();
-  const [jobId, setJobId] = useState();
-
-  useEffect(() => {
-    if (!location.search) {
-      setHost(null);
-      setJobId(null);
-      return;
-    }
-    const href = location.search.replace("%colon%", ":"); // hack for issue with QR code URLs
-    const params = href.split("?")?.[1];
-    if (!params) return [null, null];
-
-    const parts = params.split("&");
-    const queries = parts.reduce((obj, part) => {
-      const [key, value] = part.split("=");
-      obj[decodeURIComponent(key)] = decodeURIComponent(value);
-      return obj;
-    }, {});
-    if (!queries.url) return [null, null];
-
-    const url = new URL(queries.url);
-    setHost(url.origin);
-    setJobId(url.pathname.split("/").slice(-1)[0]);
-  }, [setHost, setJobId, location]);
-
-  return [host, jobId];
 };
 
 export default AnnotatorAPIClient;

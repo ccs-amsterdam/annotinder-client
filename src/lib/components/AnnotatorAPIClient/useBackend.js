@@ -1,55 +1,58 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Backend, { passwordLogin } from "../../classes/Backend";
 import { Header, Form, Button, Segment, Grid, Divider } from "semantic-ui-react";
 import { useCookies } from "react-cookie";
 
-const useBackend = (urlHost) => {
+const useBackend = (urlHost, urlToken) => {
+  // Hook that tries to log in with the host and token from the cookies.
+  // If this doesn't work (or there are not cookies), the second return value
+  // is a login form component. If the form is submitted, this updates the cookies,
+  // thus triggering useBackend to try the new host + token.
   const [cookies, setCookies] = useCookies(["backend"]);
   const [backend, setBackend] = useState(null);
-  const triedCookies = useRef(false);
+
+  console.log(cookies);
 
   useEffect(() => {
-    triedCookies.current = false;
-  }, [cookies?.backend]);
+    if (urlHost || urlToken) {
+      const newcookies = {};
+      if (urlHost) newcookies.host = urlHost;
+      if (urlToken) newcookies.token = urlToken;
+      setCookies("backend", newcookies);
+    }
+  }, [urlHost, urlToken, setCookies]);
 
   useEffect(() => {
     // First check for host in URL, if missing, check for host in cookies.
-    const host = urlHost || cookies?.backend?.host || null;
-    if (host && backend?.host && host !== backend?.host) {
-      setBackend(null); // reset backend if host changes
-      return;
+    const host = cookies?.backend?.host || null;
+    const token = cookies?.backend?.token || null;
+
+    if (backend) {
+      // if there is already a backend set, check if it matches host and token
+      // if it does, we can stop. If it doesn't, remove backend and try to login again
+      const sameHost = backend.host === host;
+      const sameToken = backend.token === token;
+      if (sameHost && sameToken) return;
+      setBackend(null);
     }
 
-    // the problem is that if we login to a server that doesn't require auth,
-    // the backend has the host from the cookies, and so it deletes itself after verigying that it doesn't
-    // have the same as the urlHost.
+    if (!host || !token) return;
+    logIn(host, token, setCookies, setBackend);
+  }, [cookies, backend, setCookies, setBackend]);
 
-    // todo:
-    // make a preview mode or something. like a notoken argument. login=f
-    // replace the url argument with actualy host= and job=, much nicer
-
-    if (triedCookies.current) return;
-    if (backend || !host) return;
-    logIn(cookies, setBackend);
-    triedCookies.current = true;
-  }, [cookies, backend, urlHost, setCookies, setBackend]);
-
-  console.log(backend);
   return [backend, <LoginForm host={urlHost || cookies?.backend?.host || null} />];
 };
 
-const logIn = async (cookies, setBackend) => {
-  const backend = new Backend(
-    cookies?.backend?.host,
-    cookies?.backend?.email,
-    cookies?.backend?.token
-  );
+const logIn = async (host, token, setCookies, setBackend) => {
+  const backend = new Backend(host, token);
+
   try {
     // maybe add check for specific user later. For now just check if can get token
     await backend.init();
+    setCookies("backend", JSON.stringify({ host, token })); // set host to last one logged in with
     setBackend(backend);
   } catch (e) {
-    console.log(e);
+    setCookies("backend", JSON.stringify({ host })); // remove token if token failed
     setBackend(null);
   }
 };
@@ -57,33 +60,26 @@ const logIn = async (cookies, setBackend) => {
 export const LoginForm = ({ host = null }) => {
   const [cookies, setCookies] = useCookies(["backend"]);
 
-  const backend = { ...cookies.backend } || {
-    host: "http://localhost:5000",
-    email: "test@user.com",
-    token: null,
+  const setLogin = (host, token) => {
+    setCookies("backend", JSON.stringify({ host, token }));
   };
 
-  if (host) backend.host = host;
-
-  const setLogin = (value) => {
-    setCookies("backend", JSON.stringify(value), { path: "/" });
-  };
   const setLogout = () => {
-    setCookies("backend", JSON.stringify({ ...backend, token: null }), { path: "/" });
+    setCookies("backend", JSON.stringify({ host }));
   };
 
-  if (backend.token && backend.host === cookies?.backend?.host)
-    return <SignOut backend={backend} setLogout={setLogout} />;
-  return <SignIn backend={backend} setLogin={setLogin} />;
+  const hostHasToken = !!cookies?.backend?.token;
+  if (hostHasToken) return <SignOut setLogout={setLogout} />;
+  return <SignIn recHost={host} setLogin={setLogin} />;
 };
 
-const SignOut = ({ backend, setLogout }) => {
+const SignOut = ({ setLogout }) => {
   return (
     <>
       <Grid textAlign="center">
         <Grid.Column>
           <Button secondary onClick={setLogout}>
-            Sign out from <span style={{ color: "lightblue" }}>{backend.email}</span>
+            Sign out
           </Button>
         </Grid.Column>
       </Grid>
@@ -91,31 +87,36 @@ const SignOut = ({ backend, setLogout }) => {
   );
 };
 
-const SignIn = ({ backend, setLogin }) => {
+const SignIn = ({ recHost, setLogin }) => {
   const [host, setHost] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [invalidEmail, setInvalidEmail] = useState(false);
   const [invalidPassword, setInvalidPassword] = useState(false);
 
   const tryPasswordLogin = async () => {
+    const notEmail = !email.match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+    if (notEmail) {
+      setInvalidEmail(true);
+      return;
+    }
+
     setPassword("");
     try {
       const token = await passwordLogin(host, email, password);
-      setLogin({ host, email, token });
+      setLogin(host, token);
     } catch (e) {
       setInvalidPassword(true);
       console.log(e);
     }
   };
 
-  const emailError = !email.match(
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  );
-
   useEffect(() => {
-    if (backend?.email) setEmail(backend.email);
-    if (backend?.host) setHost(backend.host);
-  }, [backend]);
+    // The recommended host is either the host in the url query or the last one logged in to (from cookie)
+    if (recHost) setHost(recHost);
+  }, [recHost]);
 
   return (
     <>
@@ -140,14 +141,17 @@ const SignIn = ({ backend, setLogin }) => {
                 />
                 <Form.Input
                   placeholder="email adress"
-                  error={emailError ? "Please enter a valid email adress" : false}
+                  error={invalidEmail ? "Please enter a valid email adress" : false}
                   name="email"
                   label="Email"
                   icon="mail"
                   iconPosition="left"
                   value={email}
                   onChange={(e, d) => {
-                    if (d.value.length < 100) setEmail(d.value);
+                    if (d.value.length < 100) {
+                      setInvalidEmail(false);
+                      setEmail(d.value);
+                    }
                   }}
                 />
               </Form>

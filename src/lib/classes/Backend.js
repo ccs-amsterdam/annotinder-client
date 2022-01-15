@@ -8,9 +8,8 @@ export async function passwordLogin(host, email, password) {
 }
 
 class Backend {
-  constructor(host, email, token) {
+  constructor(host, token) {
     this.host = host;
-    this.email = email;
     this.token = token;
     this.api = Axios.create({
       baseURL: host,
@@ -19,13 +18,16 @@ class Backend {
   }
 
   async init() {
-    const d = await this.getJobs();
+    const d = await this.getLogin();
+    console.log(d);
+    this.email = d.email;
+    this.is_admin = d.is_admin;
     this.jobs = d.jobs;
   }
 
   // GET
-  async getJobs() {
-    const res = await this.api.get("/codingjobs");
+  async getLogin() {
+    const res = await this.api.get("/login");
     return res.data;
   }
   async getToken() {
