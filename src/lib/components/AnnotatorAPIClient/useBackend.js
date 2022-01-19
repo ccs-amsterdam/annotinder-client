@@ -1,32 +1,45 @@
 import React, { useEffect, useState, useRef } from "react";
 import Backend, { passwordLogin } from "../../classes/Backend";
-import { Header, Form, Button, Segment, Grid } from "semantic-ui-react";
+import { Header, Form, Button, Segment, Grid, Icon } from "semantic-ui-react";
 import { useCookies } from "react-cookie";
 
-const useBackend = (urlHost, urlToken, localPort) => {
+const useBackend = (urlHost, urlToken, rport) => {
   // Hook that tries to log in with the host and token from the cookies.
   // If this doesn't work (or there are not cookies), the second return value
   // is a login form component. If the form is submitted, this updates the cookies,
   // thus triggering useBackend to try the new host + token.
   const [cookies, setCookies] = useCookies(["login"]);
   const [backend, setBackend] = useState(null);
-  const lastParam = useRef({ host: null, token: null }); // for checking updates within useffect
+  const lastUrlToken = useRef(null);
 
+  console.log(backend);
   useEffect(() => {
-    let host = cookies?.login?.host || null;
-    let token = cookies?.login?.[host + "__token__"] || null;
-
-    // check if urlHost or urlToken changed (kinda like a nested useEffect).
-    const urlHost_changed = urlHost && urlHost !== lastParam.current.host;
-    const urlToken_changed = urlToken && urlToken !== lastParam.current.token;
-    lastParam.current = { host: urlHost, token: urlToken };
-    if (urlHost_changed || urlToken_changed) {
-      host = urlHost || host;
-      token = cookies?.login?.[host + "__token__"] || null;
-      token = urlToken || token;
-      logIn(host, token, cookies, setCookies, setBackend);
+    if (rport) {
+      const host = "http://localhost:" + rport;
+      if (backend && backend.host === host) return;
+      logInR(host, setBackend);
       return;
     }
+
+    let host = urlHost || cookies?.login?.host || null;
+    let token = cookies?.login?.[host + "__token__"] || null;
+
+    if (urlToken && urlToken !== lastUrlToken.current) {
+      lastUrlToken.current = urlToken;
+      logIn(host, urlToken, cookies, setCookies, setBackend);
+      return;
+    }
+    // // check if urlHost or urlToken changed (kinda like a nested useEffect).
+    // const urlHost_changed = urlHost && urlHost !== lastParam.current.host;
+    // const urlToken_changed = urlToken && urlToken !== lastParam.current.token;
+    // lastParam.current = { host: urlHost, token: urlToken };
+    // if (urlHost_changed || urlToken_changed) {
+    //   host = urlHost || host;
+    //   token = cookies?.login?.[host + "__token__"] || null;
+    //   token = urlToken || token;
+    //   logIn(host, token, cookies, setCookies, setBackend);
+    //   return;
+    // }
 
     if (backend) {
       // if there is already a backend set, check if it matches host and token
@@ -39,9 +52,9 @@ const useBackend = (urlHost, urlToken, localPort) => {
 
     if (!host || token === "__INVALID__") return;
     logIn(host, token, cookies, setCookies, setBackend);
-  }, [urlHost, urlToken, cookies, backend, setCookies, setBackend]);
+  }, [urlHost, urlToken, cookies, backend, setCookies, setBackend, rport]);
 
-  return [backend, <LoginForm />];
+  return [backend, <LoginForm rport={rport} />];
 };
 
 const logIn = async (host, token, cookies, setCookies, setBackend) => {
@@ -59,7 +72,21 @@ const logIn = async (host, token, cookies, setCookies, setBackend) => {
   }
 };
 
-export const LoginForm = () => {
+const logInR = async (host, setBackend) => {
+  const backend = new Backend(host, null);
+
+  try {
+    // maybe add check for specific user later. For now just check if can get token
+    await backend.init();
+    setBackend(backend);
+  } catch (e) {
+    console.log(e.response);
+    // set backend on fail at intervalls to try again
+    setTimeout(() => setBackend(null), 1000);
+  }
+};
+
+export const LoginForm = ({ rport }) => {
   const [cookies, setCookies] = useCookies(["login"]);
   const host = cookies?.login?.host || null;
 
@@ -70,6 +97,15 @@ export const LoginForm = () => {
   const setLogout = () => {
     setCookies("login", { ...cookies.login, host, [host + "__token__"]: "__INVALID__" });
   };
+
+  if (rport) {
+    return (
+      <>
+        <Icon name="emergency" size="huge" />
+        <Header>{`Cannot connect to port ${rport}. Are you sure it's running?`}</Header>
+      </>
+    );
+  }
 
   const hostHasValidToken =
     !!cookies?.login?.[host + "__token__"] &&

@@ -7,7 +7,7 @@
     "react",
     "annotation"
   ],
-  "version": "0.1.6",
+  "version": "0.1.11",
   "repository": {
     "type": "git",
     "url": "https://github.com/ccs-amsterdam/ccs-annotator-client"
