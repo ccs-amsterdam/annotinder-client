@@ -48,7 +48,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build_npm": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files"
+    "build_npm": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files",
+    "build_r": "INLINE_RUNTIME_CHUNK=false && GENERATE_SOURCEMAP=false && SKIP_PREFLIGHT_CHECK=true && npm run build"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"

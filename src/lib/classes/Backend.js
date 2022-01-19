@@ -19,7 +19,6 @@ class Backend {
 
   async init() {
     const d = await this.getLogin();
-    console.log(d);
     this.email = d.email;
     this.is_admin = d.is_admin;
     this.jobs = d.jobs;
@@ -40,6 +39,7 @@ class Backend {
   }
   async getProgress(job_id) {
     const res = await this.api.get(`/codingjob/${job_id}/progress`);
+    console.log(res.data);
     return res.data;
   }
   async getUnit(job_id, i) {

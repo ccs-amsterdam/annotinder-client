@@ -13,21 +13,38 @@ import { useSearchParams } from "react-router-dom";
 
 const AnnotatorAPIClient = () => {
   const [searchParams] = useSearchParams();
-  const urlHost = searchParams.get("host");
-  const urlToken = searchParams.get("token");
-  const urlJobId = searchParams.get("job_id");
+  let urlHost = searchParams.get("host");
+  let urlToken = searchParams.get("token");
+  let urlJobId = searchParams.get("job_id");
+
+  // if local=[port], this is a local job without authentication and a single job (id=0)
+  const local = searchParams.get("local");
+  if (local) [urlHost, urlToken, urlJobId] = [`http://localhost:${local}`, "null", 0];
 
   const [backend, loginForm] = useBackend(urlHost, urlToken);
   const jobServer = useJobServerBackend(backend, urlJobId);
 
-  if (!backend)
-    // If backend isn't connected, show login screen
-    // If the url contained a host, this field is fixed
+  if (!backend) {
+    // If backend isn't connected
+
+    // if local job, just mention the local port isn't active or workign
+    if (local)
+      return (
+        <Grid inverted textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
+          <Grid.Column style={{ maxWidth: "500px" }}>
+            <Icon name="emergency" size="huge" />
+            <Header>{`Cannot connect to local server at port ${local}. Are you sure it's running?`}</Header>
+          </Grid.Column>
+        </Grid>
+      );
+
+    // If trying to connecty to server, show login screen
     return (
       <Grid inverted textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
         <Grid.Column style={{ maxWidth: "500px" }}>{loginForm}</Grid.Column>
       </Grid>
     );
+  }
 
   if (!jobServer) {
     if (!backend) return;
@@ -70,7 +87,8 @@ const useJobServerBackend = (backend, jobId) => {
   const [jobServer, setJobServer] = useState(null);
 
   useEffect(() => {
-    if (!backend || !jobId) {
+    console.log(backend, jobId);
+    if (!backend || jobId == null || jobId === null) {
       setJobServer(null);
       return;
     }

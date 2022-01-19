@@ -100,7 +100,8 @@ const useAnnotations = (unit) => {
       setAnnotations(newAnnotations);
       const cleanAnnotations = getCleanAnnotations(newAnnotations);
       if (!annotationsHaveChanged(unit.annotations, cleanAnnotations)) return;
-      unit.jobServer.postAnnotations(unit.unitId, cleanAnnotations, "IN_PROGRESS");
+      const newStatus = unit?.status === "DONE" ? "DONE" : "IN_PROGRESS";
+      unit.jobServer.postAnnotations(unit.unitId, cleanAnnotations, newStatus);
     },
     [unit]
   );
@@ -127,6 +128,7 @@ const getCleanAnnotations = (annotations) => {
       field: na.field,
       offset: na.offset,
       length: na.length,
+      text: na.text,
     };
   });
 };
