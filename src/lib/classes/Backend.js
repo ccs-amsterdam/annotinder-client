@@ -13,7 +13,7 @@ class Backend {
     this.token = token;
     this.api = Axios.create({
       baseURL: host,
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}`, crossdomain: true },
     });
   }
 
