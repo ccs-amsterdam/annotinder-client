@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { Icon, Modal, Button } from "semantic-ui-react";
 
-export const FullScreenWindow = ({ children }) => {
+export const FullScreenWindow = ({ children, askFullScreen }) => {
   const fsHandle = useFullScreenHandle();
   const fullScreenButton = <FullScreenButton handle={fsHandle} />;
 
@@ -13,7 +13,7 @@ export const FullScreenWindow = ({ children }) => {
           // FullScreenFix children should be called as a function to pass on the fullScreenNode argument
           return (
             <>
-              <AskFullScreenModal handle={fsHandle} />
+              <AskFullScreenModal handle={fsHandle} askFullScreenSetting={askFullScreen} />
               {children(fullScreenNode, fullScreenButton)}
             </>
           );
@@ -36,13 +36,13 @@ const DOMNodeProvider = ({ children }) => {
   );
 };
 
-const AskFullScreenModal = ({ handle }) => {
-  let [askFullscreen, setAskFullscreen] = useState(true);
+const AskFullScreenModal = ({ handle, askFullScreenSetting }) => {
+  let [askFullscreen, setAskFullscreen] = useState(false);
 
   useEffect(() => {
     // this used to have location as dep
-    setAskFullscreen(true);
-  }, [setAskFullscreen, handle]);
+    if (askFullScreenSetting) setAskFullscreen(true);
+  }, [setAskFullscreen, askFullScreenSetting, handle]);
 
   // Disable for now. Seems to not work in Apple devices
   //askFullscreen = false;

@@ -1,8 +1,9 @@
 class JobServerAPI {
-  constructor(backend, job_id) {
+  constructor(backend, job_id, setJobServer) {
     this.backend = backend;
     this.job_id = job_id;
     this.where = "remote";
+    this.setJobServer = setJobServer;
   }
 
   async init() {
@@ -20,11 +21,19 @@ class JobServerAPI {
   async getUnit(i) {
     const getNext = i >= this.progress.n_coded && !this.progress.seek_forwards;
     this.progress.n_coded = Math.max(i, this.progress.n_coded);
-    return await this.backend.getUnit(this.job_id, getNext ? null : i);
+    try {
+      return await this.backend.getUnit(this.job_id, getNext ? null : i);
+    } catch (e) {
+      if (this.setJobServer) this.setJobServer(null);
+    }
   }
 
-  postAnnotations(unit_id, annotation, status) {
-    this.backend.postAnnotation(this.job_id, unit_id, annotation, status);
+  async postAnnotations(unit_id, annotation, status) {
+    try {
+      await this.backend.postAnnotation(this.job_id, unit_id, annotation, status);
+    } catch (e) {
+      if (this.setJobServer) this.setJobServer(null);
+    }
   }
 }
 

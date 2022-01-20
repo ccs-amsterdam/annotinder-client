@@ -7,7 +7,7 @@
     "react",
     "annotation"
   ],
-  "version": "0.1.11",
+  "version": "0.1.14",
   "repository": {
     "type": "git",
     "url": "https://github.com/ccs-amsterdam/ccs-annotator-client"
@@ -34,7 +34,6 @@
     "react-dom": "^17.0.1",
     "react-full-screen": "^1.1.0",
     "react-papaparse": "^3.11.1",
-    "react-redux": "^7.2.2",
     "react-router-dom": "^6.2.1",
     "react-scripts": "4.0.3",
     "react-swipeable": "^6.2.0",

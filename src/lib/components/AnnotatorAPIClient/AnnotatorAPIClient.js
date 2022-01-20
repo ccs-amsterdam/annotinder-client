@@ -11,16 +11,15 @@ import { useSearchParams } from "react-router-dom";
 // Then when coders first check in, they need to either give their email-adress OR say "stay anonymous"
 // Codingjobs can then specify whether stay anonymous is allowed, and whether registration is required.
 
-const AnnotatorAPIClient = ({ fixedRPort }) => {
+const AnnotatorAPIClient = () => {
   const [searchParams] = useSearchParams();
   let urlHost = searchParams.get("host");
   let urlToken = searchParams.get("token");
   let urlJobId = searchParams.get("job_id");
-  let rport = searchParams.get("rport") || fixedRPort;
 
   // if local=[port], this is a local job without authentication and a single job (id=0)
-  const [backend, loginForm] = useBackend(urlHost, urlToken, rport);
-  const jobServer = useJobServerBackend(backend, rport ? 0 : urlJobId);
+  const [backend, loginForm] = useBackend(urlHost, urlToken);
+  const jobServer = useJobServerBackend(backend, urlJobId);
 
   if (!backend) {
     // If backend isn't connected
@@ -40,7 +39,7 @@ const AnnotatorAPIClient = ({ fixedRPort }) => {
 
   if (urlJobId && jobServer.job_id !== urlJobId) return null;
   if (urlHost && backend.host !== urlHost) return null;
-  return <Annotator jobServer={jobServer} />;
+  return <Annotator jobServer={jobServer} askFullScreen />;
 };
 
 const JobOverview = ({ backend, loginForm }) => {
@@ -77,7 +76,7 @@ const useJobServerBackend = (backend, jobId) => {
       return;
     }
     setJobServer(null);
-    const js = new JobServerAPI(backend, jobId);
+    const js = new JobServerAPI(backend, jobId, setJobServer);
     js.init().then(() => setJobServer(js)); // add a check for if job_id is invalid
   }, [backend, jobId]);
 

@@ -11,7 +11,7 @@ import "./annotatorStyle.css";
  *
  * @param {*} jobServer  A jobServer class
  */
-const Annotator = ({ jobServer }) => {
+const Annotator = ({ jobServer, askFullScreen }) => {
   const [unitIndex, setUnitIndex] = useState(-1);
   const [preparedUnit, setPreparedUnit] = useState(null);
 
@@ -35,7 +35,7 @@ const Annotator = ({ jobServer }) => {
   const [maxHeight, maxWidth] = getWindowSize(jobServer);
 
   return (
-    <FullScreenWindow>
+    <FullScreenWindow askFullScreen={askFullScreen}>
       {(fullScreenNode, fullScreenButton) => (
         // FullScreenWindow passes on the fullScreenNode needed to mount popups, and a fullScreenButton to handle on/off
         <div

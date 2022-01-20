@@ -14,8 +14,13 @@ import {
 } from "./functions/codebook";
 import { exportSpanAnnotations } from "./functions/annotations";
 
+import Backend from "./classes/Backend";
+import JobServerAPI from "./classes/JobServerAPI";
+
 export {
   Annotator as default,
+  Backend,
+  JobServerAPI,
   AnnotatorAPIClient,
   QuestionTask,
   AnnotateTask,

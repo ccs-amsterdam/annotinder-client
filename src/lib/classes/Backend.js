@@ -67,7 +67,7 @@ class Backend {
   }
   postAnnotation(job_id, unit_id, annotation, status) {
     const data = { annotation, status };
-    this.api.post(`/codingjob/${job_id}/unit/${unit_id}/annotation`, data);
+    return this.api.post(`/codingjob/${job_id}/unit/${unit_id}/annotation`, data);
   }
 }
 
