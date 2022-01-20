@@ -1,7 +1,6 @@
 import randomColor from "randomcolor";
 
 export const standardizeCodes = (codes) => {
-  console.log(codes);
   return codes.map((code, i) => {
     if (typeof code !== "object") code = { code };
     if (code.active == null) code.active = true;

@@ -15,6 +15,7 @@ const useBackend = (urlHost, urlToken) => {
   useEffect(() => {
     let host = urlHost || cookies?.login?.host || null;
     let token = cookies?.login?.[host + "__token__"] || null;
+    console.log(token);
 
     if (urlToken && urlToken !== lastUrlToken.current) {
       lastUrlToken.current = urlToken;

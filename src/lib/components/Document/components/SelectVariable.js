@@ -48,7 +48,7 @@ const SelectVariable = ({ variables, variable, setVariable, minHeight, editAll }
     }
   }, [variable, variables, setVariable, variableNames]);
 
-  //if (!variables) return null;
+  if (!variables) return null;
   let helpText = null;
   if (variables) {
     const variableObj = variables.find((v) => v.name === variable);
