@@ -20,7 +20,7 @@ const Meta = ({ meta_fields }) => {
           <Table.Cell width={1} style={{ borderTop: "none" }}>
             <b>{row.label || row.name}</b>
           </Table.Cell>
-          <Table.Cell style={cellStyle(row)}>{formatValue(row.value)}</Table.Cell>
+          <Table.Cell style={cellStyle(row)}>{row.value}</Table.Cell>
         </Table.Row>
       );
     });
@@ -44,22 +44,6 @@ const Meta = ({ meta_fields }) => {
       {rows()}
     </Table>
   );
-};
-
-const formatValue = (value) => {
-  //   try if value is a date, if so, format accordingly
-  //   Only remove T if time for now. Complicated due to time zones.
-  const dateInt = Date.parse(value);
-  if (dateInt) {
-    return value.replace("T", " ");
-  }
-  // if (dateInt) {
-  //   let date = new Date(dateInt);
-  //   const offset = date.getTimezoneOffset();
-  //   //date = new Date(date.getTime() - offset * 60 * 1000);
-  //   return date.toISOString().replace("T", " ").split(".")[0];
-  // }
-  return value;
 };
 
 export default Meta;
