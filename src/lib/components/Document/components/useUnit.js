@@ -12,7 +12,6 @@ const useUnit = (unit, safetyCheck, returnTokens, setCodeHistory) => {
     if (unit.importedAnnotations && unit.annotations.length === 0 && unit.status !== "DONE") {
       unit.annotations = unit.importedAnnotations;
     }
-    console.log(unit.annotations);
     initializeCodeHistory(unit.annotations, setCodeHistory);
 
     const document = prepareDocument(unit);
@@ -38,6 +37,7 @@ const useUnit = (unit, safetyCheck, returnTokens, setCodeHistory) => {
 
 const initializeCodeHistory = (annotations, setCodeHistory) => {
   const ch = {};
+
   for (let annotation of annotations) {
     if (!ch[annotation.variable]) ch[annotation.variable] = new Set();
     ch[annotation.variable].add(annotation.value);

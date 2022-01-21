@@ -90,6 +90,10 @@ const useCodeSelector = (
   }, [fullVariableMap, selectedVariable, setVariable, setVariableMap, setEditMode]);
 
   useEffect(() => {
+    setTmpCodeHistory(codeHistory);
+  }, [codeHistory, setTmpCodeHistory]);
+
+  useEffect(() => {
     if (open) return;
     setCodeHistory(tmpCodeHistory);
   }, [tmpCodeHistory, open, setCodeHistory]);
@@ -148,13 +152,13 @@ const useCodeSelector = (
       variable={variable}
       variableMap={variableMap}
       settings={variableMap?.[variable]}
-      codeHistory={codeHistory[variable] || []}
       annotations={annotations}
       tokenAnnotations={tokenAnnotations}
       setAnnotations={setAnnotations}
       span={span}
       editMode={editMode}
       setOpen={setOpen}
+      codeHistory={codeHistory[variable] || []}
       setCodeHistory={setTmpCodeHistory}
     />
   );
@@ -208,7 +212,7 @@ const CodeSelectorPopup = React.memo(
         mountNode={fullScreenNode || undefined}
         context={tokenRef}
         basic
-        wide
+        wide="very"
         position={position}
         hoverable
         open={open}
@@ -225,7 +229,7 @@ const CodeSelectorPopup = React.memo(
           //backdropFilter: "blur(3px)",
           minWidth: "15em",
           maxHeight,
-          overflow: "auto",
+          overflow: "visible",
         }}
       >
         <div style={{ margin: "5px", border: "0px" }}>{children}</div>
@@ -426,7 +430,7 @@ const NewCodePage = ({
       setOpen(false);
       return;
     }
-    updateAnnotations(tokens, annotation, setAnnotations, codeHistory, setCodeHistory, editMode);
+    updateAnnotations(tokens, annotation, setAnnotations, setCodeHistory, editMode);
 
     if (!variableMap?.[variable]?.multiple && !ctrlKey) setOpen(false);
   };
@@ -587,9 +591,13 @@ const NewCodePage = ({
           autoComplete={"on"}
           onClick={() => setFocusOnButtons(false)}
           onSearchChange={(e, d) => {
+            console.log(d.value);
             if (d.searchQuery === "") setFocusOnButtons(true);
           }}
-          onClose={() => setFocusOnButtons(true)}
+          onClose={(e, d) => {
+            setFocusOnButtons(true);
+          }}
+          selectOnBlur={false}
           onChange={(e, d) => {
             onSelect(d.value, e.ctrlKey);
           }}
@@ -621,14 +629,7 @@ const getTextSnippet = (tokens, span, maxlength = 8) => {
   return text.join("");
 };
 
-const updateAnnotations = (
-  tokens,
-  annotation,
-  setAnnotations,
-  codeHistory,
-  setCodeHistory,
-  editMode
-) => {
+const updateAnnotations = (tokens, annotation, setAnnotations, setCodeHistory, editMode) => {
   const [from, to] = annotation.span;
   annotation.index = tokens[from].index;
   annotation.length = tokens[to].length + tokens[to].offset - tokens[from].offset;
@@ -639,12 +640,13 @@ const updateAnnotations = (
   setAnnotations((state) =>
     toggleSpanAnnotation({ ...state }, annotation, annotation.delete, editMode)
   );
+
   setCodeHistory((state) => {
     return {
       ...state,
       [annotation.variable]: [
         annotation.value,
-        ...codeHistory.filter((v) => v !== annotation.value),
+        ...state[annotation.variable].filter((v) => v !== annotation.value),
       ],
     };
   });

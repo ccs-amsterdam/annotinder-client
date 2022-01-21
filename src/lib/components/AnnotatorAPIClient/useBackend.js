@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Backend, { passwordLogin } from "../../classes/Backend";
 import { Header, Form, Button, Segment, Grid } from "semantic-ui-react";
 import { useCookies } from "react-cookie";
@@ -8,34 +8,36 @@ const useBackend = (urlHost, urlToken) => {
   // If this doesn't work (or there are not cookies), the second return value
   // is a login form component. If the form is submitted, this updates the cookies,
   // thus triggering useBackend to try the new host + token.
-  const [cookies, setCookies] = useCookies(["login"]);
+  const [badCookies, setCookies] = useCookies(["auth"]);
   const [backend, setBackend] = useState(null);
-  const lastUrlToken = useRef(null);
+
+  // we want cookies to update, but not trigger the useEffect, so
+  // we'll pass it around as a ref
+  const cookieref = useRef();
+  cookieref.current = badCookies;
+
+  //const lastUrlToken = useRef(null);
 
   useEffect(() => {
-    let host = urlHost || cookies?.login?.host || null;
-    let token = cookies?.login?.[host + "__token__"] || null;
+    const cookies = cookieref.current;
+    let host = urlHost || cookies?.auth?.host || null;
+    let token = urlToken || cookies?.auth?.[host + "__token__"] || null;
+    console.log(host, token);
 
-    if (urlToken && urlToken !== lastUrlToken.current) {
-      lastUrlToken.current = urlToken;
-      logIn(host, urlToken, cookies, setCookies, setBackend);
-      return;
-    }
-
-    if (backend) {
-      // if there is already a backend set, check if it matches host and token
-      // if it does, we can stop. If it doesn't, remove backend and try to login again
-      const sameHost = backend.host === host;
-      const sameToken = backend.token === token;
-      if (sameHost && sameToken) return;
-      setBackend(null);
-    }
-
-    if (!host || token === "__INVALID__") return;
+    if (!host || !token) return;
     logIn(host, token, cookies, setCookies, setBackend);
-  }, [urlHost, urlToken, cookies, backend, setCookies, setBackend]);
+  }, [urlHost, urlToken, cookieref, setCookies, setBackend]);
 
-  return [backend, <LoginForm />];
+  return [
+    backend,
+    <LoginForm
+      urlHost={urlHost}
+      backend={backend}
+      cookies={cookieref.current}
+      setCookies={setCookies}
+      setBackend={setBackend}
+    />,
+  ];
 };
 
 const logIn = async (host, token, cookies, setCookies, setBackend) => {
@@ -45,30 +47,28 @@ const logIn = async (host, token, cookies, setCookies, setBackend) => {
     // maybe add check for specific user later. For now just check if can get token
     await backend.init();
     setBackend(backend);
-    setCookies("login", { ...cookies.login, host, [host + "__token__"]: token }); // set host to last one logged in with
+    setCookies("auth", { ...cookies.auth, host, [host + "__token__"]: token }, { path: "/" }); // set host to last one logged in with
   } catch (e) {
-    console.log(e.response);
-    setBackend(null);
-    setCookies("login", { ...cookies.login, host, [host + "__token__"]: "__INVALID__" }); // remove token if token failed
+    const newcookies = { ...cookies.auth, host, [host + "__token__"]: null };
+    setBackend((state) => (state === null ? state : null));
+    setCookies("auth", newcookies, { path: "/" }); // remove token if token failed
   }
 };
 
-export const LoginForm = () => {
-  const [cookies, setCookies] = useCookies(["login"]);
-  const host = cookies?.login?.host || null;
+export const LoginForm = ({ urlHost, backend, setBackend }) => {
+  const [cookies, setCookies] = useCookies([]);
+  const host = urlHost || cookies?.auth?.host || null;
 
   const setLogin = (host, token) => {
-    setCookies("login", { ...cookies.login, host, [host + "__token__"]: token });
+    logIn(host, token, cookies, setCookies, setBackend);
   };
 
   const setLogout = () => {
-    setCookies("login", { ...cookies.login, host, [host + "__token__"]: "__INVALID__" });
+    setBackend(null);
+    setCookies("auth", { ...cookies.auth, host, [host + "__token__"]: null }, { path: "/" });
   };
 
-  const hostHasValidToken =
-    !!cookies?.login?.[host + "__token__"] &&
-    cookies?.login?.[host + "__token__"] !== "__INVALID__";
-  if (hostHasValidToken) return <SignOut setLogout={setLogout} />;
+  if (backend) return <SignOut setLogout={setLogout} />;
   return <SignIn recHost={host} setLogin={setLogin} />;
 };
 
