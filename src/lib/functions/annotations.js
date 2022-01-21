@@ -152,7 +152,7 @@ const prepareSpanAnnotations = (annotations) => {
 
 const findMatches = (token, importedAnnotations, trackAnnotations, matchedAnnotations) => {
   const start = token.offset;
-  const end = token.offset + token.length - 1;
+  const end = token.offset + token.length + token.post.length - 1;
   if (!importedAnnotations[token.field]) return;
   const fieldAnnotations = importedAnnotations[token.field];
 
@@ -160,6 +160,7 @@ const findMatches = (token, importedAnnotations, trackAnnotations, matchedAnnota
     if (fieldAnnotations[i]) {
       for (let annotation of fieldAnnotations[i].start) {
         const id = createId(annotation);
+
         trackAnnotations[id] = {
           ...token,
           id,

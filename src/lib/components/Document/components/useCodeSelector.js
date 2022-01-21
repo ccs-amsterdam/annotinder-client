@@ -84,6 +84,7 @@ const useCodeSelector = (
       vmap = { [selectedVariable]: fullVariableMap[selectedVariable] };
     }
 
+    console.log(vmap?.[selectedVariable]);
     setVariableMap(vmap);
     setEditMode(vmap?.[selectedVariable]?.editMode || selectedVariable === "EDIT ALL");
   }, [fullVariableMap, selectedVariable, setVariable, setVariableMap, setEditMode]);

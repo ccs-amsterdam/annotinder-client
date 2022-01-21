@@ -21,11 +21,7 @@ class JobServerAPI {
   async getUnit(i) {
     const getNext = i >= this.progress.n_coded && !this.progress.seek_forwards;
     this.progress.n_coded = Math.max(i, this.progress.n_coded);
-    try {
-      return await this.backend.getUnit(this.job_id, getNext ? null : i);
-    } catch (e) {
-      if (this.setJobServer) this.setJobServer(null);
-    }
+    return await this.backend.getUnit(this.job_id, getNext ? null : i);
   }
 
   async postAnnotations(unit_id, annotation, status) {

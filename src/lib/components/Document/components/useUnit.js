@@ -9,10 +9,10 @@ const useUnit = (unit, safetyCheck, returnTokens, setCodeHistory) => {
     if (!unit?.text && !unit.text_fields && !unit.tokens) return null;
 
     if (!unit.annotations) unit.annotations = [];
-    if (unit.importedAnnotations && !unit.status) {
-      // only if status is new (which currently is just no status)
-      unit.annotations = unit.annotations.concat(unit.importedAnnotations);
+    if (unit.importedAnnotations && unit.annotations.length === 0 && unit.status !== "DONE") {
+      unit.annotations = unit.importedAnnotations;
     }
+    console.log(unit.annotations);
     initializeCodeHistory(unit.annotations, setCodeHistory);
 
     const document = prepareDocument(unit);

@@ -4,6 +4,9 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AnnotatorAPIClient from "lib/components/AnnotatorAPIClient/AnnotatorAPIClient";
 
+// just for quick testing
+//import AnnotatorRClient from "lib/components/AnnotatorAPIClient/AnnotatorRClient";
+
 const App = () => {
   return (
     <Router basename={process.env.PUBLIC_URL}>

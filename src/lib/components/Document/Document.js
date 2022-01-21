@@ -94,6 +94,7 @@ const Document = ({
         editAll={settings?.editAll}
         minHeight={variables && variables.length > 1 ? 60 : 30} //'px'
       />
+
       <AnnotateNavigation
         tokens={preparedUnit.tokens}
         variableMap={variableMap}
