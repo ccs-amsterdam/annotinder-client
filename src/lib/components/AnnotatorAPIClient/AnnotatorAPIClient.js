@@ -4,6 +4,7 @@ import { Grid, Header, Icon } from "semantic-ui-react";
 import useBackend from "./useBackend";
 import JobServerAPI from "../../classes/JobServerAPI";
 import JobsTable from "./JobsTable";
+import UsersTable from "./UsersTable";
 import { useSearchParams } from "react-router-dom";
 
 // NOTE TO SELF
@@ -34,7 +35,7 @@ const AnnotatorAPIClient = () => {
     if (!backend) return;
     // if backend is connected, but there is no jobServer (because no job_id was passed in the url)
     // show a screen with some relevant info for the user on this host. Like current / new jobs
-    return <JobOverview backend={backend} loginForm={loginForm} />;
+    return <Home backend={backend} loginForm={loginForm} />;
   }
 
   if (urlJobId && jobServer.job_id !== urlJobId) return null;
@@ -42,28 +43,43 @@ const AnnotatorAPIClient = () => {
   return <Annotator jobServer={jobServer} askFullScreen />;
 };
 
-const JobOverview = ({ backend, loginForm }) => {
+const Home = ({ backend, loginForm }) => {
   return (
     <Grid
+      container
       inverted
       textAlign="center"
-      style={{ height: "100vh", maxHeight: "800px", width: "100vw" }}
+      style={{ minHeight: "50vh", maxHeight: "800px", width: "100vw" }}
       verticalAlign="middle"
     >
-      <Grid.Column width="16" style={{ maxWidth: "500px" }}>
-        <Grid.Row>
+      <Grid.Row>
+        <Grid.Column>
           <Header>
             <Icon name="home" />
             {backend.host}
           </Header>
           {loginForm}
-        </Grid.Row>
-        <br />
-        <Grid.Row>
+        </Grid.Column>
+      </Grid.Row>
+      <Grid.Row>
+        <Grid.Column width="16" style={{ maxWidth: "500px" }}>
+          <Header>Jobs as coder</Header>
           <JobsTable backend={backend} />
-        </Grid.Row>
-      </Grid.Column>
+        </Grid.Column>
+        <UserManagement backend={backend} />
+      </Grid.Row>
     </Grid>
+  );
+};
+
+const UserManagement = ({ backend }) => {
+  if (!backend.is_admin) return null;
+
+  return (
+    <Grid.Column width="16" style={{ maxWidth: "500px" }}>
+      <Header>Users</Header>
+      <UsersTable backend={backend} />
+    </Grid.Column>
   );
 };
 
