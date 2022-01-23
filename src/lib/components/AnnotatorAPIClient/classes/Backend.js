@@ -64,6 +64,9 @@ class Backend {
       rules: codingjobPackage.rules,
     });
   }
+  postUsers(users) {
+    return this.api.post("/users", users);
+  }
   postAnnotation(job_id, unit_id, annotation, status) {
     const data = { annotation, status };
     return this.api.post(`/codingjob/${job_id}/unit/${unit_id}/annotation`, data);

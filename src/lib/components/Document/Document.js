@@ -7,6 +7,7 @@ import useUnit from "./components/useUnit";
 import SelectVariable from "./components/SelectVariable";
 
 import "./documentStyle.css";
+import useVariableMap from "./components/useVariableMap";
 
 /**
  * This is hopefully the only Component in this folder that you'll ever see. It should be fairly isolated
@@ -39,25 +40,26 @@ const Document = ({
   const safetyCheck = useRef(null); // ensures only new annotations for the current unit are passed to onChangeAnnotations
   const [variable, setVariable] = useState(null);
   const [codeHistory, setCodeHistory] = useState({});
-
   const [tokensReady, setTokensReady] = useState(0);
-  const [preparedUnit, annotations, setAnnotations] = useUnit(
+
+  const [preparedUnit, annotations, setAnnotations, importedCodes] = useUnit(
     unit,
     safetyCheck,
     returnTokens,
     setCodeHistory
   );
-  const [codeSelector, triggerCodeSelector, variableMap, codeSelectorOpen, editMode] =
-    useCodeSelector(
-      preparedUnit.tokens,
-      variables,
-      variable,
-      annotations,
-      setAnnotations,
-      codeHistory,
-      setCodeHistory,
-      fullScreenNode
-    );
+  const [variableMap, editMode] = useVariableMap(variables, variable, importedCodes);
+  const [codeSelector, triggerCodeSelector, codeSelectorOpen] = useCodeSelector(
+    preparedUnit.tokens,
+    variableMap,
+    editMode,
+    variables,
+    annotations,
+    setAnnotations,
+    codeHistory,
+    setCodeHistory,
+    fullScreenNode
+  );
 
   useEffect(() => {
     if (!annotations || !onChangeAnnotations) return;

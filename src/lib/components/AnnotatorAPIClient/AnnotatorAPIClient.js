@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Annotator from "../Annotator/Annotator";
-import { Grid, Header, Icon } from "semantic-ui-react";
-import useBackend from "./useBackend";
-import JobServerAPI from "../../classes/JobServerAPI";
-import JobsTable from "./JobsTable";
-import UsersTable from "./UsersTable";
+import { Grid } from "semantic-ui-react";
+import useBackend from "./components/useBackend";
+import JobServerAPI from "./classes/JobServerAPI";
+import HomeAdmin from "./components/HomeAdmin";
+import HomeCoder from "./components/HomeCoder";
+
 import { useSearchParams } from "react-router-dom";
 
 // NOTE TO SELF
@@ -35,52 +36,13 @@ const AnnotatorAPIClient = () => {
     if (!backend) return;
     // if backend is connected, but there is no jobServer (because no job_id was passed in the url)
     // show a screen with some relevant info for the user on this host. Like current / new jobs
-    return <Home backend={backend} loginForm={loginForm} />;
+    if (backend.is_admin) return <HomeAdmin backend={backend} loginForm={loginForm} />;
+    return <HomeCoder backend={backend} loginForm={loginForm} />;
   }
 
   if (urlJobId && jobServer.job_id !== urlJobId) return null;
   if (urlHost && backend.host !== urlHost) return null;
   return <Annotator jobServer={jobServer} askFullScreen />;
-};
-
-const Home = ({ backend, loginForm }) => {
-  return (
-    <Grid
-      container
-      inverted
-      textAlign="center"
-      style={{ minHeight: "50vh", maxHeight: "800px", width: "100vw" }}
-      verticalAlign="middle"
-    >
-      <Grid.Row>
-        <Grid.Column>
-          <Header>
-            <Icon name="home" />
-            {backend.host}
-          </Header>
-          {loginForm}
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row>
-        <Grid.Column width="16" style={{ maxWidth: "500px" }}>
-          <Header>Jobs as coder</Header>
-          <JobsTable backend={backend} />
-        </Grid.Column>
-        <UserManagement backend={backend} />
-      </Grid.Row>
-    </Grid>
-  );
-};
-
-const UserManagement = ({ backend }) => {
-  if (!backend.is_admin) return null;
-
-  return (
-    <Grid.Column width="16" style={{ maxWidth: "500px" }}>
-      <Header>Users</Header>
-      <UsersTable backend={backend} />
-    </Grid.Column>
-  );
 };
 
 const useJobServerBackend = (backend, jobId) => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Backend, { passwordLogin } from "../../classes/Backend";
+import Backend, { passwordLogin } from "../classes/Backend";
 import { Header, Form, Button, Segment, Grid } from "semantic-ui-react";
 import { useCookies } from "react-cookie";
 
