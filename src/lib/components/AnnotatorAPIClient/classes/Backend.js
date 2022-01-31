@@ -29,6 +29,10 @@ class Backend {
     const res = await this.api.get("/login");
     return res.data;
   }
+  async getToken(user) {
+    const res = await this.api.get("/token", { params: { user } });
+    return res.data.token;
+  }
   async getUsers() {
     const res = await this.api.get("/users");
     return res.data.users;
@@ -63,6 +67,11 @@ class Backend {
       provenance: codingjobPackage.provenance,
       rules: codingjobPackage.rules,
     });
+  }
+  postPassword(user, password) {
+    const body = { password };
+    if (user) body.user = user;
+    return this.api.post(`/password`, body);
   }
   postUsers(users) {
     return this.api.post("/users", users);

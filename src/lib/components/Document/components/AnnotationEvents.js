@@ -508,7 +508,7 @@ const moveSentence = (tokens, mover, direction = "up") => {
 };
 
 const getToken = (tokens, e) => {
-  const [n, annotated] = getNode(tokens, e);
+  const [n, annotated] = getNode(e);
   if (n === null) return { index: null, annotated: false };
   return { index: getTokenAttributes(tokens, n), annotated };
 };
@@ -523,12 +523,15 @@ const rmTapped = (tokens, i) => {
   if (ref?.current) ref.current.classList.remove("tapped");
 };
 
-const getNode = (tokens, e) => {
+const getNode = (e) => {
   try {
     // sometimes e is Restricted, and I have no clue why,
     // nor how to check this in a condition. hence the try clause
     let n;
-    if (e.type === "mousemove" || e.type === "mouseup") n = e.originalTarget || e.path[0];
+    if (e.type === "mousemove" || e.type === "mouseup") {
+      let path = e?.path || e.composedPath();
+      n = e.originalTarget || path[0];
+    }
     if (e.type === "touchmove" || e.type === "touchstart") {
       // stupid hack since someone decided touchmove target is always the starting target (weirdly inconsistent with mousemove)
       // also, this still doesn't work for touchend, which is just arrrggg
@@ -581,13 +584,11 @@ const updateSelection = (selection, tokens, index, add) => {
   } else {
     if (index > newSelection[0]) {
       for (let i = index; i >= newSelection[0]; i--) {
-        if (tokens[newSelection[0]].field === tokens[i].field)
-          newSelection = [newSelection[0], i];
+        if (tokens[newSelection[0]].field === tokens[i].field) newSelection = [newSelection[0], i];
       }
     } else {
       for (let i = index; i <= newSelection[0]; i++) {
-        if (tokens[newSelection[0]].field === tokens[i].field)
-          newSelection = [newSelection[0], i];
+        if (tokens[newSelection[0]].field === tokens[i].field) newSelection = [newSelection[0], i];
       }
     }
   }
