@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { CSVDownloader } from "react-papaparse";
+import { useCSVDownloader } from "react-papaparse";
 import { Button } from "semantic-ui-react";
 
 const DownloadAnnotations = ({ jobServer }) => {
   const [data, setData] = useState(null);
+  const [CSVDownloader, Type] = useCSVDownloader();
 
   useEffect(() => {
     switch (jobServer.codebook.type) {
@@ -20,6 +21,7 @@ const DownloadAnnotations = ({ jobServer }) => {
 
   return (
     <CSVDownloader
+      type={Type.Button}
       filename={`CSSannotator_${jobServer.title}_${jobServer.set}_${jobServer.coderName}.json`}
       data={data}
       style={{ cursor: "pointer" }}
