@@ -134,19 +134,28 @@ const getCleanAnnotations = (annotations) => {
 };
 
 const NextUnitButton = ({ unit, annotations, setUnitIndex }) => {
-  const [tempDisable, setTempDisable] = useState(false);
+  const [tempDisable, setTempDisable] = useState("ready");
 
   const onNext = () => {
-    if (tempDisable) return;
+    if (tempDisable !== "ready") return;
 
     // write DONE status
-    unit.jobServer.postAnnotations(unit.unitId, getCleanAnnotations(annotations), "DONE");
-
-    setTempDisable(true);
-    setUnitIndex((state) => state + 1);
-    setTimeout(() => {
-      setTempDisable(false);
-    }, 1000);
+    setTempDisable("loading");
+    unit.jobServer
+      .postAnnotations(unit.unitId, getCleanAnnotations(annotations), "DONE")
+      .then((res) => {
+        // wait until post succeeds before moving to next unit, because backend
+        // needs to know this unit is done.
+        setUnitIndex((state) => state + 1);
+        setTempDisable("cooldown");
+        setTimeout(() => {
+          setTempDisable("ready");
+        }, 1000);
+      })
+      .catch((e) => {
+        console.log(e);
+        setTempDisable("ready");
+      });
   };
 
   const onKeyDown = (e) => {
@@ -164,7 +173,13 @@ const NextUnitButton = ({ unit, annotations, setUnitIndex }) => {
   });
 
   return (
-    <Button disabled={tempDisable} loading={tempDisable} primary size="tiny" onClick={onNext}>
+    <Button
+      disabled={tempDisable !== "ready"}
+      loading={tempDisable === "loading"}
+      primary
+      size="tiny"
+      onClick={onNext}
+    >
       Next Unit
     </Button>
   );

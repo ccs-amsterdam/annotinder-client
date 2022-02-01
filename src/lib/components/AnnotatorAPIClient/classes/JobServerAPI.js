@@ -26,7 +26,7 @@ class JobServerAPI {
 
   async postAnnotations(unit_id, annotation, status) {
     try {
-      await this.backend.postAnnotation(this.job_id, unit_id, annotation, status);
+      return await this.backend.postAnnotation(this.job_id, unit_id, annotation, status);
     } catch (e) {
       if (this.setJobServer) this.setJobServer(null);
     }

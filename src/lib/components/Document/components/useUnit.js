@@ -21,6 +21,7 @@ const useUnit = (unit, safetyCheck, returnTokens, setCodeHistory) => {
       }
       setImportedCodes(importedCodes);
     }
+
     initializeCodeHistory(unit.annotations, setCodeHistory);
 
     const document = prepareDocument(unit);
@@ -51,6 +52,7 @@ const initializeCodeHistory = (annotations, setCodeHistory) => {
     if (!ch[annotation.variable]) ch[annotation.variable] = new Set();
     ch[annotation.variable].add(annotation.value);
   }
+
   for (let key of Object.keys(ch)) {
     ch[key] = [...ch[key]];
   }

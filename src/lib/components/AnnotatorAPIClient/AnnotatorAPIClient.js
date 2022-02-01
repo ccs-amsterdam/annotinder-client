@@ -42,7 +42,7 @@ const AnnotatorAPIClient = () => {
 
   if (urlJobId && jobServer.job_id !== urlJobId) return null;
   if (urlHost && backend.host !== urlHost) return null;
-  return <Annotator jobServer={jobServer} askFullScreen />;
+  return <Annotator jobServer={jobServer} />;
 };
 
 const useJobServerBackend = (backend, jobId) => {

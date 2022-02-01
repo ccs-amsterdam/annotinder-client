@@ -24,6 +24,7 @@ export default function useVariableMap(variables, selectedVariable, importedCode
       vm[variable.name] = { ...variable, codeMap: cm };
     }
 
+    console.log(vm);
     setFullVariableMap(vm);
   }, [variables, setFullVariableMap]);
 
@@ -42,15 +43,18 @@ export default function useVariableMap(variables, selectedVariable, importedCode
       vmap = { [selectedVariable]: fullVariableMap[selectedVariable] };
     }
 
+    // !! be carefull when changing to not break copying (otherwise fullVariableMap gets affected)
+    vmap = { ...vmap };
     for (let variable of Object.keys(vmap)) {
+      vmap[variable] = { ...vmap[variable] };
       if (vmap[variable]?.onlyImported) {
         vmap[variable].codeMap = Object.keys(vmap[variable].codeMap).reduce((imported, code) => {
-          if (importedCodes?.[variable]?.[code]) imported[code] = vmap[variable].codeMap[code];
+          if (importedCodes?.[variable]?.[code])
+            imported[code] = { ...vmap[variable].codeMap[code] };
           return imported;
         }, {});
       }
     }
-    console.log(vmap);
 
     setVariableMap(vmap);
     setEditMode(vmap?.[selectedVariable]?.editMode || selectedVariable === "EDIT ALL");
