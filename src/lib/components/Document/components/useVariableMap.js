@@ -24,7 +24,6 @@ export default function useVariableMap(variables, selectedVariable, importedCode
       vm[variable.name] = { ...variable, codeMap: cm };
     }
 
-    console.log(vm);
     setFullVariableMap(vm);
   }, [variables, setFullVariableMap]);
 

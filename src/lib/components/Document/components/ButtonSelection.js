@@ -83,7 +83,7 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
     const bgColor = option.color;
 
     return (
-      <Ref innerRef={option.ref}>
+      <Ref key={option.label + "_" + i} innerRef={option.ref}>
         <Button
           style={{
             flex: `1 1 auto`,

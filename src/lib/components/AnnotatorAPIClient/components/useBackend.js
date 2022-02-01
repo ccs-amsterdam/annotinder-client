@@ -22,7 +22,6 @@ const useBackend = (urlHost, urlToken) => {
     const cookies = cookieref.current;
     let host = urlHost || cookies?.auth?.host || null;
     let token = urlToken || cookies?.auth?.[host + "__token__"] || null;
-    console.log(host, token);
 
     if (!host || !token) return;
     logIn(host, token, cookies, setCookies, setBackend);

@@ -56,7 +56,6 @@ const initializeCodeHistory = (annotations, setCodeHistory) => {
   for (let key of Object.keys(ch)) {
     ch[key] = [...ch[key]];
   }
-  console.log(ch);
   setCodeHistory(ch);
 };
 
