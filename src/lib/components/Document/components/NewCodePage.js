@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Dropdown, Ref } from "semantic-ui-react";
+import { Dropdown, Header, Ref } from "semantic-ui-react";
 import { toggleSpanAnnotation } from "../../../functions/annotations";
 import { getColor } from "../../../functions/tokenDesign";
 import ButtonSelection from "./ButtonSelection";
@@ -191,9 +191,8 @@ export default function NewCodePage({
     if (options.length === 0) return null;
 
     // use searchBox if specified OR if settings are missing
-    // also, if buttonmode is 'recent', always show search box
-    if (settings && !settings.searchBox && settings.buttonMode !== "recent")
-      return <div style={{ height: "25px" }} />;
+    // if buttonmode is 'recent', always show search box
+    if (settings && !settings.searchBox && settings.buttonMode !== "recent") return null;
 
     return (
       <Ref innerRef={textInputRef}>
@@ -238,6 +237,9 @@ export default function NewCodePage({
 
   return (
     <>
+      <Header as="h5" textAlign="center">
+        "{getTextSnippet(tokens, span)}"
+      </Header>
       {asDropdownSelection(dropdownOptions)}
       {asButtonSelection(buttonOptions)}
     </>
@@ -245,7 +247,11 @@ export default function NewCodePage({
 }
 
 const getTextSnippet = (tokens, span, maxlength = 8) => {
-  let text = tokens.slice(span[0], span[1] + 1).map((t) => t.pre + t.text + t.post);
+  let text = tokens.slice(span[0], span[1] + 1).map((t, i) => {
+    if (i === 0) return t.text + t.post;
+    if (i === span[1] - span[0]) return t.pre + t.text;
+    return t.pre + t.text + t.post;
+  });
   if (text.length > maxlength)
     text = [
       text.slice(0, Math.floor(maxlength / 2)).join(""),

@@ -529,7 +529,7 @@ const getNode = (e) => {
     // nor how to check this in a condition. hence the try clause
     let n;
     if (e.type === "mousemove" || e.type === "mouseup") {
-      let path = e?.path || e.composedPath();
+      let path = e?.path || e.composedPath(); // path is not supported in Safari. composedPath should be standard, but just check for path first
       n = e.originalTarget || path[0];
     }
     if (e.type === "touchmove" || e.type === "touchstart") {
