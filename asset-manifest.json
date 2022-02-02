@@ -1,19 +1,27 @@
 {
   "files": {
-    "main.css": "/ccs-annotator-client/static/css/main.31243240.chunk.css",
-    "main.js": "/ccs-annotator-client/static/js/main.749d1a5a.chunk.js",
-    "runtime-main.js": "/ccs-annotator-client/static/js/runtime-main.6132d86b.js",
-    "static/css/2.26a694ac.chunk.css": "/ccs-annotator-client/static/css/2.26a694ac.chunk.css",
-    "static/js/2.7ed9ed2c.chunk.js": "/ccs-annotator-client/static/js/2.7ed9ed2c.chunk.js",
-    "index.html": "/ccs-annotator-client/index.html",
-    "static/js/2.7ed9ed2c.chunk.js.LICENSE.txt": "/ccs-annotator-client/static/js/2.7ed9ed2c.chunk.js.LICENSE.txt",
-    "static/media/semantic.min.css": "/ccs-annotator-client/static/media/outline-icons.ddae9b1b.woff"
+    "main.css": "/ccs-annotator-client/static/css/main.4711b0a5.css",
+    "main.js": "/ccs-annotator-client/static/js/main.08a23c5a.js",
+    "static/media/brand-icons.svg": "/ccs-annotator-client/static/media/brand-icons.6729d29753e000c17489.svg",
+    "static/media/icons.svg": "/ccs-annotator-client/static/media/icons.62d9dae4e0040e81c980.svg",
+    "static/media/outline-icons.svg": "/ccs-annotator-client/static/media/outline-icons.9c4845b4b41ef40a22fa.svg",
+    "static/media/icons.eot": "/ccs-annotator-client/static/media/icons.a01e3f2d6c83dc3aee17.eot",
+    "static/media/icons.ttf": "/ccs-annotator-client/static/media/icons.c656b8caa454ed19b9a2.ttf",
+    "static/media/brand-icons.eot": "/ccs-annotator-client/static/media/brand-icons.d68fa3e67dbb653a13ce.eot",
+    "static/media/brand-icons.ttf": "/ccs-annotator-client/static/media/brand-icons.65a2fb6d9aaa164b41a0.ttf",
+    "static/media/brand-icons.woff": "/ccs-annotator-client/static/media/brand-icons.cac87dc00c87a5d74711.woff",
+    "static/media/brand-icons.woff2": "/ccs-annotator-client/static/media/brand-icons.278156e41e0ad908cf7f.woff2",
+    "static/media/icons.woff": "/ccs-annotator-client/static/media/icons.425399f81e4ce7cbd967.woff",
+    "static/media/icons.woff2": "/ccs-annotator-client/static/media/icons.38c6d8bab26db77d8c80.woff2",
+    "static/media/outline-icons.eot": "/ccs-annotator-client/static/media/outline-icons.752905fa5edf21fc52a1.eot",
+    "static/media/outline-icons.ttf": "/ccs-annotator-client/static/media/outline-icons.5367103510b27b784827.ttf",
+    "static/media/flags.png": "/ccs-annotator-client/static/media/flags.99f63ae7a743f21ab308.png",
+    "static/media/outline-icons.woff": "/ccs-annotator-client/static/media/outline-icons.ddae9b1ba9b0b42f5880.woff",
+    "static/media/outline-icons.woff2": "/ccs-annotator-client/static/media/outline-icons.687a4990ea22bb1a49d4.woff2",
+    "index.html": "/ccs-annotator-client/index.html"
   },
   "entrypoints": [
-    "static/js/runtime-main.6132d86b.js",
-    "static/css/2.26a694ac.chunk.css",
-    "static/js/2.7ed9ed2c.chunk.js",
-    "static/css/main.31243240.chunk.css",
-    "static/js/main.749d1a5a.chunk.js"
+    "static/css/main.4711b0a5.css",
+    "static/js/main.08a23c5a.js"
   ]
 }
