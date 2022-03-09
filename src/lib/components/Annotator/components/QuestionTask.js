@@ -4,7 +4,7 @@ import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
 import { codeBookEdgesToMap, getCodeTreeArray } from "../../../functions/codebook";
 import { Form, Icon, Input, Popup } from "semantic-ui-react";
-import { useCookies } from "react-cookie";
+import useLocalStorage from "lib/hooks/useLocalStorage";
 
 const documentSettings = {
   centerVertical: true,
@@ -16,15 +16,11 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
   const [questions, setQuestions] = useState(null);
   const refs = { text: useRef(), box: useRef(), code: useRef() };
   const [textReady, setTextReady] = useState(0);
-  const [cookies, setCookie] = useCookies(["questionTaskSettings"]);
-  const [settings, setSettings] = useState(
-    cookies.questionTaskSettings || { splitHeight: 60, textSize: 1 }
-  );
+  const [settings, setSettings] = useLocalStorage("questionTaskSettings", {
+    splitHeight: 60,
+    textSize: 1,
+  });
   const divref = useRef(null);
-
-  useEffect(() => {
-    setCookie("questionTaskSettings", JSON.stringify(settings), { path: "/" });
-  }, [settings, setCookie]);
 
   useEffect(() => {
     if (!codebook?.questions) return;

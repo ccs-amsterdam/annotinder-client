@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Popup, Header } from "semantic-ui-react";
 import FullDataTable from "./FullDataTable";
+import QRCode from "react-qr-code";
 
 const columns = [
   { name: "role", width: 2, f: (row) => (row.is_admin ? "admin" : "coder") },
@@ -48,9 +49,11 @@ const LoginLinkButton = ({ row, backend }) => {
     backend
       .getToken(row.email)
       .then((token) => {
-        setLink(
-          `${window.location.host}/ccs-annotator-client/?host=${backend.host}&token=${token}`
-        );
+        const qrhost = backend.host.replace(":", "%colon%");
+        setLink({
+          url: `https://ccs-amsterdam.github.io/ccs-annotator-client/?host=${backend.host}&token=${token}`,
+          qrUrl: `https://ccs-amsterdam.github.io/ccs-annotator-client/?host=${qrhost}&token=${token}`,
+        });
       })
       .catch((e) => {
         console.log(e);
@@ -64,9 +67,20 @@ const LoginLinkButton = ({ row, backend }) => {
       hoverable
       trigger={<Button icon="linkify" style={buttonstyle} />}
     >
-      <Header>Login link for {row.email}</Header>
-      <p>{link}</p>
-      <Button onClick={() => navigator.clipboard.writeText(link)}>Copy link</Button>
+      <Header style={{ fontSize: "1.5em" }}>Login link for {row.email}</Header>
+      <QRCode value={encodeURI(link?.qrUrl)} size={256} />
+      <br />
+      <br />
+      <a href={link?.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "2em" }}>
+        Login link
+      </a>
+      <Button
+        secondary
+        onClick={() => navigator.clipboard.writeText(link?.url)}
+        style={{ float: "right" }}
+      >
+        Copy link
+      </Button>
     </Popup>
   );
 };

@@ -1,70 +1,68 @@
 import React, { useEffect, useRef, useState } from "react";
 import Backend, { passwordLogin } from "../classes/Backend";
 import { Header, Form, Button, Segment, Grid } from "semantic-ui-react";
-import { useCookies } from "react-cookie";
+import useLocalStorage from "lib/hooks/useLocalStorage";
 
 const useBackend = (urlHost, urlToken) => {
-  // Hook that tries to log in with the host and token from the cookies.
-  // If this doesn't work (or there are not cookies), the second return value
-  // is a login form component. If the form is submitted, this updates the cookies,
-  // thus triggering useBackend to try the new host + token.
-  const [badCookies, setCookies] = useCookies(["auth"]);
+  // Hook that tries to log in with the host and token from local storage
+  // If this doesn't work, the second return value is a login form component.
+  // If the form is submitted, this updates the local storage
+  // and triggers useBackend to try the new host + token.
+  const [silentAuth, setAuth] = useLocalStorage("auth", {});
   const [backend, setBackend] = useState(null);
 
-  // we want cookies to update, but not trigger the useEffect, so
+  // we want auth to update, but not trigger the useEffect, so
   // we'll pass it around as a ref
-  const cookieref = useRef();
-  cookieref.current = badCookies;
-
-  //const lastUrlToken = useRef(null);
+  const authref = useRef();
+  authref.current = silentAuth;
 
   useEffect(() => {
-    const cookies = cookieref.current;
-    let host = urlHost || cookies?.auth?.host || null;
-    let token = urlToken || cookies?.auth?.[host + "__token__"] || null;
+    const auth = authref.current;
+    let host = urlHost || auth?.host || null;
+    let token = urlToken || auth?.[host + "__token__"] || null;
 
     if (!host || !token) return;
-    logIn(host, token, cookies, setCookies, setBackend);
-  }, [urlHost, urlToken, cookieref, setCookies, setBackend]);
+    logIn(host, token, auth, setAuth, setBackend);
+  }, [urlHost, urlToken, authref, setAuth, setBackend]);
 
   return [
     backend,
     <LoginForm
       urlHost={urlHost}
       backend={backend}
-      cookies={cookieref.current}
-      setCookies={setCookies}
+      auth={authref.current}
+      setAuth={setAuth}
       setBackend={setBackend}
     />,
   ];
 };
 
-const logIn = async (host, token, cookies, setCookies, setBackend) => {
+const logIn = async (host, token, auth, setAuth, setBackend) => {
   const backend = new Backend(host, token);
 
   try {
     // maybe add check for specific user later. For now just check if can get token
     await backend.init();
+    setAuth({ ...auth, host, [host + "__token__"]: token }); // set host to last one logged in with
     setBackend(backend);
-    setCookies("auth", { ...cookies.auth, host, [host + "__token__"]: token }, { path: "/" }); // set host to last one logged in with
+    console.log("set auth");
   } catch (e) {
-    const newcookies = { ...cookies.auth, host, [host + "__token__"]: null };
+    setAuth({ ...auth, host, [host + "__token__"]: null }); // remove token if token failed
     setBackend((state) => (state === null ? state : null));
-    setCookies("auth", newcookies, { path: "/" }); // remove token if token failed
   }
 };
 
 export const LoginForm = ({ urlHost, backend, setBackend }) => {
-  const [cookies, setCookies] = useCookies([]);
-  const host = urlHost || cookies?.auth?.host || null;
+  const [auth, setAuth] = useLocalStorage("auth", {});
+  const host = urlHost || auth?.host || null;
 
   const setLogin = (host, token) => {
-    logIn(host, token, cookies, setCookies, setBackend);
+    logIn(host, token, auth, setAuth, setBackend);
   };
 
   const setLogout = () => {
     setBackend(null);
-    setCookies("auth", { ...cookies.auth, host, [host + "__token__"]: null }, { path: "/" });
+    setAuth({ ...auth, host, [host + "__token__"]: null });
   };
 
   if (backend) return <SignOut setLogout={setLogout} />;
@@ -112,7 +110,7 @@ const SignIn = ({ recHost, setLogin }) => {
   };
 
   useEffect(() => {
-    // The recommended host is either the host in the url query or the last one logged in to (from cookie)
+    // The recommended host is either the host in the url query or the last one logged in to
     if (recHost) setHost(recHost);
   }, [recHost]);
 

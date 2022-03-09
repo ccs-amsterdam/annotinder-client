@@ -1,10 +1,15 @@
 import Axios from "axios";
 
 export async function passwordLogin(host, email, password) {
-  const response = await Axios.get(`${host}/token`, {
+  const res = await Axios.get(`${host}/users/me/token`, {
     auth: { username: email, password: password },
   });
-  return response.data.token;
+  return res.data.token;
+}
+
+export async function redeemJobToken(token, user_id) {
+  const res = await this.api.get("/jobtoken", { params: { token, user_id } });
+  return res.data.token;
 }
 
 class Backend {
@@ -18,11 +23,17 @@ class Backend {
   }
 
   async init() {
-    const d = await this.getLogin();
+    const d = await this.getToken();
+    const jobs = await this.getCodingjobs();
+
     this.email = d.email;
     this.is_admin = d.is_admin;
-    this.jobs = d.jobs;
+    this.jobs = jobs.jobs;
   }
+
+  // user/me/token
+  // user/{user_id}/token
+  // user/me/codingjobs
 
   // GET
   async getLogin() {
@@ -30,7 +41,8 @@ class Backend {
     return res.data;
   }
   async getToken(user) {
-    const res = await this.api.get("/token", { params: { user } });
+    const path = `/users/${user || "me"}/token`;
+    const res = await this.api.get(path);
     return res.data.token;
   }
   async getUsers() {
@@ -53,6 +65,11 @@ class Backend {
   }
   async getCodingjob(job_id) {
     const res = await this.api.get(`/codingjob/${job_id}`);
+    return res.data;
+  }
+  async getCodingjobs(user) {
+    const path = `/users/${user || "me"}/codingjobs`;
+    const res = await this.api.get(path);
     return res.data;
   }
 

@@ -13,18 +13,13 @@ import {
 } from "semantic-ui-react";
 import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
-import { useCookies } from "react-cookie";
+import useLocalStorage from "lib/hooks/useLocalStorage";
 
 const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNode }) => {
   const [annotations, setAnnotations] = useAnnotations(unit);
   const [variableMap, setVariableMap] = useState(null);
-  const [cookies, setCookie] = useCookies(["annotateTaskSettings"]);
-  const [settings, setSettings] = useState(cookies.annotateTaskSettings || { textSize: 1 });
+  const [settings, setSettings] = useLocalStorage("annotateTaskSettings", { textSize: 1 });
   const [tokens, setTokens] = useState(null);
-
-  useEffect(() => {
-    setCookie("annotateTaskSettings", JSON.stringify(settings), { path: "/" });
-  }, [settings, setCookie]);
 
   if (!unit || codebook?.variables === null) return null;
 

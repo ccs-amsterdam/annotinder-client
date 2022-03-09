@@ -16,10 +16,10 @@ import { useSearchParams } from "react-router-dom";
 const AnnotatorAPIClient = () => {
   const [searchParams] = useSearchParams();
   let urlHost = searchParams.get("host");
+  if (urlHost) urlHost = urlHost.replace("%colon%", ":"); // for making colon in qr code work
   let urlToken = searchParams.get("token");
   let urlJobId = searchParams.get("job_id");
 
-  // if local=[port], this is a local job without authentication and a single job (id=0)
   const [backend, loginForm] = useBackend(urlHost, urlToken);
   const jobServer = useJobServerBackend(backend, urlJobId);
 
