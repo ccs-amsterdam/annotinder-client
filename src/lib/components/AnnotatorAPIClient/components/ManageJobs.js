@@ -12,9 +12,9 @@ import {
   Checkbox,
 } from "semantic-ui-react";
 
-import UsersTable from "./UsersTable";
+import JobsTable from "./JobsTable";
 
-export default function ManageUsers({ backend }) {
+export default function ManageJobs({ backend }) {
   const [text, setText] = useState("");
   const [users, setUsers] = useState([]);
   const [addUsers, setAddUsers] = useState([]);
@@ -58,7 +58,7 @@ export default function ManageUsers({ backend }) {
       </Grid.Column>
       <Grid.Column width="8">
         <Header>Users</Header>
-        <UsersTable backend={backend} users={users} setUsers={setUsers} />
+        <JobsTable backend={backend} users={users} setUsers={setUsers} />
       </Grid.Column>
     </Grid>
   );

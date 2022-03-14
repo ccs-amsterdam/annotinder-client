@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid, Header, Icon } from "semantic-ui-react";
 
-import JobsTable from "./JobsTable";
+import CoderJobsTable from "./CoderJobsTable";
 
 export default function HomeCoder({ backend, loginForm }) {
   return (
@@ -24,7 +24,7 @@ export default function HomeCoder({ backend, loginForm }) {
       <Grid.Row>
         <Grid.Column width="16" style={{ maxWidth: "500px" }}>
           <Header>Coding jobs</Header>
-          <JobsTable backend={backend} />
+          <CoderJobsTable backend={backend} />
         </Grid.Column>
       </Grid.Row>
     </Grid>

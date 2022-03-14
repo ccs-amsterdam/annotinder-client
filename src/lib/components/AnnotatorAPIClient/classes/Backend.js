@@ -24,24 +24,12 @@ class Backend {
 
   async init() {
     const d = await this.getToken();
-    const jobs = await this.getCodingjobs();
-
-    console.log(d);
-    console.log(jobs);
     this.email = d.email;
     this.is_admin = d.is_admin;
-    this.jobs = jobs.jobs;
   }
-
-  // user/me/token
-  // user/{user_id}/token
-  // user/me/codingjobs
 
   // GET
-  async getLogin() {
-    const res = await this.api.get("/login");
-    return res.data;
-  }
+
   async getToken(user) {
     const path = `/users/${user || "me"}/token`;
     const res = await this.api.get(path);

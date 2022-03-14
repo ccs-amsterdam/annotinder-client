@@ -8,61 +8,59 @@ const useBackend = (urlHost, urlToken) => {
   // If this doesn't work, the second return value is a login form component.
   // If the form is submitted, this updates the local storage
   // and triggers useBackend to try the new host + token.
-  const [silentAuth, setAuth] = useLocalStorage("auth", {});
+  const [auth, setAuth] = useLocalStorage("auth", {});
   const [backend, setBackend] = useState(null);
+  const [initializing, setInitializing] = useState(true);
 
   // we want auth to update, but not trigger the useEffect, so
   // we'll pass it around as a ref
   const authref = useRef();
-  authref.current = silentAuth;
+  authref.current = auth;
 
   useEffect(() => {
-    const auth = authref.current;
     let host = urlHost || auth?.host || null;
     let token = urlToken || auth?.[host + "__token__"] || null;
+    if (!host || !token) {
+      setBackend(null);
+      setInitializing(false);
+      return;
+    }
+    if (backend && host === backend.host && token === backend.token) return; // do nothing if already logged in
 
-    if (!host || !token) return;
-    logIn(host, token, auth, setAuth, setBackend);
-  }, [urlHost, urlToken, authref, setAuth, setBackend]);
+    const b = new Backend(host, token);
+    b.init()
+      .then(() => setBackend(b))
+      .catch((e) => {
+        setBackend(null);
+        console.log(e);
+      })
+      .finally(() => setInitializing(false));
+  }, [auth, backend, urlHost, urlToken, setInitializing]);
 
-  return [
-    backend,
-    <LoginForm
-      urlHost={urlHost}
-      backend={backend}
-      auth={authref.current}
-      setAuth={setAuth}
-      setBackend={setBackend}
-    />,
-  ];
+  if (initializing) return [null, null];
+  return [backend, <LoginForm urlHost={urlHost} backend={backend} auth={auth} setAuth={setAuth} />];
 };
 
-const logIn = async (host, token, auth, setAuth, setBackend) => {
+const logIn = async (host, token, auth, setAuth) => {
   const backend = new Backend(host, token);
 
   try {
-    // maybe add check for specific user later. For now just check if can get token
-    await backend.init();
-    setAuth({ ...auth, host, [host + "__token__"]: token }); // set host to last one logged in with
-    setBackend(backend);
-    console.log("set auth");
+    const refreshedToken = await backend.getToken();
+    setAuth({ ...auth, host, [host + "__token__"]: refreshedToken.token }); // set host to last one logged in with
   } catch (e) {
     setAuth({ ...auth, host, [host + "__token__"]: null }); // remove token if token failed
-    setBackend((state) => (state === null ? state : null));
   }
 };
 
-export const LoginForm = ({ urlHost, backend, setBackend }) => {
-  const [auth, setAuth] = useLocalStorage("auth", {});
+export const LoginForm = ({ urlHost, backend, auth, setAuth }) => {
   const host = urlHost || auth?.host || null;
 
   const setLogin = (host, token) => {
-    logIn(host, token, auth, setAuth, setBackend);
+    logIn(host, token, auth, setAuth);
   };
 
   const setLogout = () => {
     setAuth({ ...auth, host, [host + "__token__"]: null });
-    setBackend(null);
   };
 
   if (backend) return <SignOut setLogout={setLogout} />;

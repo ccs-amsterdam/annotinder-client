@@ -31,6 +31,7 @@ const Meta = ({ meta_fields }) => {
   return (
     <Table
       basic="very"
+      unstackable
       compact
       style={{
         lineHeight: "0.8",

@@ -43,22 +43,23 @@ const LoginLinkButton = ({ row, backend }) => {
   const [link, setLink] = useState(null);
   const [open, setOpen] = useState(false);
 
+  console.log(window.location.host);
   useEffect(() => {
     // to just load this if it's being requested
-    if (!open && !link) return;
+    if (!open) return;
     backend
       .getToken(row.email)
       .then((token) => {
         const qrhost = backend.host.replace(":", "%colon%");
         setLink({
-          url: `https://ccs-amsterdam.github.io/ccs-annotator-client/?host=${backend.host}&token=${token}`,
-          qrUrl: `https://ccs-amsterdam.github.io/ccs-annotator-client/?host=${qrhost}&token=${token}`,
+          url: `${window.location.origin}/ccs-annotator-client/?host=${backend.host}&token=${token.token}`,
+          qrUrl: `${window.location.origin}/ccs-annotator-client/?host=${qrhost}&token=${token.token}`,
         });
       })
       .catch((e) => {
         console.log(e);
       });
-  }, [open, link, backend, row]);
+  }, [open, backend, row]);
 
   return (
     <Popup
