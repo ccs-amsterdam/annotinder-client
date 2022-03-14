@@ -61,8 +61,8 @@ export const LoginForm = ({ urlHost, backend, setBackend }) => {
   };
 
   const setLogout = () => {
-    setBackend(null);
     setAuth({ ...auth, host, [host + "__token__"]: null });
+    setBackend(null);
   };
 
   if (backend) return <SignOut setLogout={setLogout} />;

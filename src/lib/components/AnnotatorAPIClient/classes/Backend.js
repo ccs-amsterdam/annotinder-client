@@ -26,6 +26,8 @@ class Backend {
     const d = await this.getToken();
     const jobs = await this.getCodingjobs();
 
+    console.log(d);
+    console.log(jobs);
     this.email = d.email;
     this.is_admin = d.is_admin;
     this.jobs = jobs.jobs;
@@ -43,7 +45,7 @@ class Backend {
   async getToken(user) {
     const path = `/users/${user || "me"}/token`;
     const res = await this.api.get(path);
-    return res.data.token;
+    return res.data;
   }
   async getUsers() {
     const res = await this.api.get("/users");
