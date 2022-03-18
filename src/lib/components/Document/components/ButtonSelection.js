@@ -58,7 +58,7 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
         event.stopPropagation();
 
         let value = allOptions[selected].value;
-        onSelect(value, event.ctrlKey);
+        onSelect(value, event.ctrlKey || event.metaKey);
       }
     },
     [selected, allOptions, onSelect]
@@ -99,7 +99,7 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
           compact
           size="mini"
           onMouseOver={() => setSelected(i)}
-          onClick={(e, d) => onSelect(d.value, e.ctrlKey)}
+          onClick={(e, d) => onSelect(d.value, e.ctrlKey || e.metaKey)}
         >
           {option.tag ? (
             <span

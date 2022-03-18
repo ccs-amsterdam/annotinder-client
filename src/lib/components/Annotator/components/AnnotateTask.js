@@ -154,7 +154,7 @@ const NextUnitButton = ({ unit, annotations, setUnitIndex }) => {
   };
 
   const onKeyDown = (e) => {
-    if (e.ctrlKey && e.keyCode === 13) {
+    if ((e.ctrlKey || e.metaKey) && e.keyCode === 13) {
       e.preventDefault();
       onNext();
     }

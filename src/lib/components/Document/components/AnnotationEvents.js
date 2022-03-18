@@ -331,8 +331,11 @@ const MouseEvents = ({
     // note that in case of a single click, the token has not been selected (this happens on move)
     // so this way a click can still be used to open
     if (event.which !== 1 && event.which !== 0) return null;
+
+    // can these be disabled? Does this solve the mac issue? (slider getting stuck on click)
     event.preventDefault();
     event.stopPropagation();
+
     const currentNode = storeMouseSelection(getToken(tokens, event));
     window.getSelection().empty();
     //setHoldMouseLeft(false);

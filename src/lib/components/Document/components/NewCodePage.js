@@ -224,7 +224,7 @@ export default function NewCodePage({
           }}
           selectOnBlur={false}
           onChange={(e, d) => {
-            onSelect(d.value, e.ctrlKey);
+            onSelect(d.value, e.ctrlKey || e.metaKey);
           }}
         />
       </Ref>
