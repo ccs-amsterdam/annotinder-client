@@ -1,19 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  Container,
-  Grid,
-  List,
-  ListItem,
-  Table,
-  Button,
-  Modal,
-  Popup,
-  Form,
-  Input,
-} from "semantic-ui-react";
+import { Grid, Button, Popup, Form, Input } from "semantic-ui-react";
 import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
 import useLocalStorage from "lib/hooks/useLocalStorage";
+import AnnotateTaskManual from "./AnnotateTaskManual";
 
 const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNode }) => {
   const [annotations, setAnnotations] = useAnnotations(unit);
@@ -38,7 +28,7 @@ const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
             setSettings={setSettings}
             fullScreenNode={fullScreenNode}
           />
-          <UserManual fullScreenNode={fullScreenNode} />
+          <AnnotateTaskManual fullScreenNode={fullScreenNode} />
           <NextUnitButton unit={unit} annotations={annotations} setUnitIndex={setUnitIndex} />
         </Button.Group>
         <div style={{ height: "calc(100% - 20px", fontSize: `${settings.textSize}em` }}>
@@ -177,145 +167,6 @@ const NextUnitButton = ({ unit, annotations, setUnitIndex }) => {
     >
       Next Unit
     </Button>
-  );
-};
-
-const UserManual = ({ fullScreenNode }) => {
-  const [open, setOpen] = useState(false);
-  return (
-    <Modal
-      mountNode={fullScreenNode || undefined}
-      flowing
-      open={open}
-      onClose={() => setOpen(false)}
-      position="bottom left"
-      trigger={
-        <Button secondary size="tiny" onClick={() => setOpen(!open)}>
-          Controls
-        </Button>
-      }
-    >
-      <Modal.Header>Controls</Modal.Header>
-      <Modal.Content>
-        <Container
-          style={{
-            overflow: "auto",
-            paddingTop: "2em",
-            width: "100%",
-            maxWidth: "700px",
-          }}
-        >
-          <Table structured compact basic="very" unstackable>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell width={3}></Table.HeaderCell>
-                <Table.HeaderCell>Keyboard</Table.HeaderCell>
-                <Table.HeaderCell>Mouse</Table.HeaderCell>
-                <Table.HeaderCell>Touchpad</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell>
-                  <strong>Navigate</strong>
-                </Table.Cell>
-                <Table.Cell>
-                  <i>Arrow keys</i>
-                </Table.Cell>
-                <Table.Cell></Table.Cell>
-                <Table.Cell></Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>
-                  <strong>Select words</strong>
-                </Table.Cell>
-                <Table.Cell>
-                  <i>spacebar</i>
-                  <br />
-                  Hold to select mutiple
-                </Table.Cell>
-                <Table.Cell>
-                  <i>Left-click</i>
-                  <br />
-                  Hold to select multiple
-                </Table.Cell>
-                <Table.Cell>
-                  <i>tab</i> twice to begin, then once to close
-                </Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>
-                  <strong>Edit/remove code</strong>
-                </Table.Cell>
-                <Table.Cell colSpan="3">
-                  Select annotated words to overwrite or delete the code
-                </Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>
-                  <strong>
-                    Select variable
-                    <br />
-                    (if multiple)
-                  </strong>
-                </Table.Cell>
-                <Table.Cell>
-                  Next with <i>tab</i>, previous with <i>shift+tab</i>
-                </Table.Cell>
-                <Table.Cell colSpan="2">Use the buttons</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>
-                  <strong>Next unit</strong>
-                </Table.Cell>
-                <Table.Cell>
-                  <i>ctrl+Enter</i>
-                </Table.Cell>
-                <Table.Cell colSpan="2">Use the next unit button</Table.Cell>
-              </Table.Row>
-              {/* <Table.Row>
-              <Table.Cell>
-                <strong>
-                  Browse units
-                  <br />
-                  (if allowed)
-                </strong>
-              </Table.Cell>
-              <Table.Cell>
-                Press or hold <i>ctrl+Enter</i> (forward) or <i>ctrl+backspace</i> (backward)
-              </Table.Cell>
-              <Table.Cell>back and next buttons (top-left)</Table.Cell>
-              <Table.Cell>back and next buttons (top-left)</Table.Cell>
-            </Table.Row> */}
-            </Table.Body>
-            <Table.Footer>
-              <Table.Row>
-                <Table.HeaderCell>
-                  <strong>Quick keys</strong> <br />
-                  in popup
-                </Table.HeaderCell>
-                <Table.HeaderCell colSpan="3">
-                  <List as="ul">
-                    <ListItem as="li">
-                      <i>text input</i> automatically opens dropdown{" "}
-                    </ListItem>
-                    <ListItem as="li">
-                      navigate buttons with <i>arrow keys</i>, select with <i>spacebar</i>
-                    </ListItem>
-                    <ListItem as="li">
-                      use <i>escape</i> to close popup and <i>delete</i> to remove code
-                    </ListItem>
-                  </List>
-                </Table.HeaderCell>
-              </Table.Row>
-            </Table.Footer>
-          </Table>
-        </Container>
-      </Modal.Content>
-      <Modal.Actions>
-        <Button content="Close" onClick={() => setOpen(false)} positive />
-      </Modal.Actions>
-    </Modal>
   );
 };
 

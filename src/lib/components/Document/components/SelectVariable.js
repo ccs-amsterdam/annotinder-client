@@ -60,9 +60,10 @@ const SelectVariable = ({ variables, variable, setVariable, minHeight, editAll }
     <div
       style={{
         background: "#1277c469",
-        borderBottomLeftRadius: "10px",
-        borderBottomRightRadius: "10px",
-        borderTop: "2px solid #2185d0",
+        //borderBottomLeftRadius: "10px",
+        //borderBottomRightRadius: "10px",
+        border: "2px solid black",
+        fontSize: "1.2em",
         textAlign: "center",
       }}
     >
@@ -95,7 +96,7 @@ const VariableButtons = ({ variable, setVariable, variables, variableNames, minH
           primary
           active={name === variable}
           style={{
-            padding: "0",
+            padding: "5px",
             border: "1px solid",
             color: name === variable ? "black" : "white",
           }}

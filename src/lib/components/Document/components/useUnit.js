@@ -6,6 +6,7 @@ const useUnit = (unit, safetyCheck, returnTokens, setCodeHistory) => {
   const [annotations, setAnnotations] = useState();
   const [importedCodes, setImportedCodes] = useState({});
 
+  console.log(unit);
   useEffect(() => {
     if (!unit?.text && !unit.text_fields && !unit.tokens) return null;
 

@@ -13,6 +13,7 @@ const Meta = ({ meta_fields }) => {
     return meta_fields.map((row) => {
       return (
         <Table.Row
+          key={row.label || row.name}
           style={{
             fontSize: `${row.size != null ? row.size : 1}em`,
           }}
@@ -42,7 +43,7 @@ const Meta = ({ meta_fields }) => {
         color: "black",
       }}
     >
-      {rows()}
+      <Table.Body>{rows()}</Table.Body>
     </Table>
   );
 };

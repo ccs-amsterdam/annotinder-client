@@ -116,7 +116,6 @@ export const AnnotationEvents = ({
         setHoldSpace={setHoldSpace}
         setHoldArrow={setHoldArrow}
         triggerCodePopup={triggerCodePopup}
-        editMode={editMode}
       />
       <MouseEvents
         tokenSelection={tokenSelection}
@@ -139,7 +138,6 @@ const KeyEvents = ({
   setHoldSpace,
   setHoldArrow,
   triggerCodePopup,
-  editMode,
 }) => {
   // This blocks event listeners when the eventsBlocked state (in redux) is true.
   // This lets us block the key activities in the text (selecting tokens) when
@@ -189,15 +187,6 @@ const KeyEvents = ({
       });
       setHoldArrow(event.key);
     }
-
-    // if (tokenSelection.length > 0) {
-    //   if (tokenSelection[0] === tokenSelection[1]) {
-    //     // enter key
-    //     if (event.keyCode === 13) {
-    //       triggerCodePopup(tokens[tokenSelection[0]].index, null, null);
-    //     }
-    //   }
-    // }
   };
 
   return <></>;
@@ -224,14 +213,12 @@ const MouseEvents = ({
     window.addEventListener("mouseup", onMouseUp);
     window.addEventListener("touchstart", onTouchDown);
     window.addEventListener("touchend", onTouchUp);
-    window.addEventListener("contextmenu", onContextMenu);
     return () => {
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
       window.removeEventListener("touchstart", onTouchDown);
       window.removeEventListener("touchend", onTouchUp);
-      window.removeEventListener("contextmenu", onContextMenu);
     };
   });
 
@@ -305,7 +292,7 @@ const MouseEvents = ({
 
     // When selection started (mousedown), select tokens hovered over
     if (!editMode && selectionStarted.current) {
-      event.preventDefault();
+      //event.preventDefault();
       if (event.which !== 1 && event.which !== 0) return null;
       window.getSelection().empty();
       storeMouseSelection(getToken(tokens, event));
@@ -333,8 +320,8 @@ const MouseEvents = ({
     if (event.which !== 1 && event.which !== 0) return null;
 
     // can these be disabled? Does this solve the mac issue? (slider getting stuck on click)
-    event.preventDefault();
-    event.stopPropagation();
+    //event.preventDefault();
+    //event.stopPropagation();
 
     const currentNode = storeMouseSelection(getToken(tokens, event));
     window.getSelection().empty();
@@ -354,12 +341,6 @@ const MouseEvents = ({
         annotationFromSelection(tokens, [currentNode, currentNode], triggerCodePopup);
       }
     }
-  };
-
-  const onContextMenu = (event) => {
-    if (event.button === 2) return null;
-    event.preventDefault();
-    event.stopPropagation();
   };
 
   const storeMouseSelection = (currentNode) => {
