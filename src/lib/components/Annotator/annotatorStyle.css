@@ -1,9 +1,8 @@
 input[type="range"] {
-  border: solid 1px black;
-  border-radius: 8px;
-  height: 10px;
+  border-radius: 2px;
+  height: 15px;
   background-color: #2185d0 !important;
-  margin-top: 8px;
+  margin-top: 5px;
   outline: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -12,12 +11,12 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 5px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   padding: 0;
-  background: #1b1c1d;
+  background: rgb(12, 78, 129);
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
 .fullscreen {

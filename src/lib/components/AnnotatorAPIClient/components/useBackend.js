@@ -32,7 +32,7 @@ const useBackend = (urlHost, urlToken) => {
       .then(() => setBackend(b))
       .catch((e) => {
         setBackend(null);
-        console.log(e);
+        console.error(e);
       })
       .finally(() => setInitializing(false));
   }, [auth, backend, urlHost, urlToken, setInitializing]);
@@ -103,7 +103,7 @@ const SignIn = ({ recHost, setLogin }) => {
       setLogin(host, token);
     } catch (e) {
       setInvalidPassword(true);
-      console.log(e);
+      console.error(e);
     }
   };
 

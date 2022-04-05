@@ -74,7 +74,6 @@ const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }) => {
       submitUsers.push({ email: user.email, admin: asAdmin, password: "test" });
       return submitUsers;
     }, []);
-    console.log(users);
     try {
       await backend.postUsers({ users });
       await backend

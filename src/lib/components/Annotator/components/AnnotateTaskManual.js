@@ -12,9 +12,13 @@ const AnnotateTaskManual = ({ fullScreenNode }) => {
       onClose={() => setOpen(false)}
       position="bottom left"
       trigger={
-        <Button secondary size="tiny" onClick={() => setOpen(!open)}>
-          Controls
-        </Button>
+        <Button
+          secondary
+          icon="question"
+          size="tiny"
+          onClick={() => setOpen(!open)}
+          style={{ maxWidth: "50px" }}
+        />
       }
     >
       <Modal.Header>Controls</Modal.Header>
@@ -88,10 +92,10 @@ const AnnotateTaskManual = ({ fullScreenNode }) => {
               </Table.Row>
               <Table.Row>
                 <Table.Cell>
-                  <strong>Next unit</strong>
+                  <strong>Finish unit</strong>
                 </Table.Cell>
                 <Table.Cell>
-                  <i>ctrl+Enter</i>
+                  <i>ctrl+Enter</i> or <i>alt+Enter</i>
                 </Table.Cell>
                 <Table.Cell colSpan="2">Use the next unit button</Table.Cell>
               </Table.Row>

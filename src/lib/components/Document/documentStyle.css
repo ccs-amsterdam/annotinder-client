@@ -61,8 +61,8 @@ span.token.selected.end > span.post {
 }
 
 span.token.tapped > span {
-  transition: color 0.3s ease;
-  color: blue !important;
+  transition: text-decoration 0.3s ease;
+  text-decoration: underline overline !important;
 }
 
 button.active {

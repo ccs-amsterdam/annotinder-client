@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Icon, Ref } from "semantic-ui-react";
+import { Button, Divider, Icon, Ref } from "semantic-ui-react";
 
 import { moveDown, moveUp } from "../../../functions/refNavigation";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
 const ButtonSelection = ({ id, active, options, onSelect }) => {
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(1);
   const [allOptions, setAllOptions] = useState([]);
   const deleted = useRef({});
 
@@ -20,7 +20,7 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
       textColor: "white",
     };
 
-    let allOptions = [...options, cancelOption];
+    let allOptions = [cancelOption, ...options];
     for (let option of allOptions) option.ref = React.createRef();
     setAllOptions(allOptions);
   }, [options, setAllOptions]);
@@ -58,7 +58,7 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
         event.stopPropagation();
 
         let value = allOptions[selected].value;
-        onSelect(value, event.ctrlKey || event.metaKey);
+        onSelect(value, event.ctrlKey || event.altKey);
       }
     },
     [selected, allOptions, onSelect]
@@ -86,8 +86,8 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
       <Ref key={option.label + "_" + i} innerRef={option.ref}>
         <Button
           style={{
-            flex: `1 1 auto`,
-            padding: "4px 2px",
+            flex: `0.2 1 auto`,
+            padding: "4px 4px",
             background: bgColor,
             color: textColor,
             border: "3px solid",
@@ -99,7 +99,7 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
           compact
           size="mini"
           onMouseOver={() => setSelected(i)}
-          onClick={(e, d) => onSelect(d.value, e.ctrlKey || e.metaKey)}
+          onClick={(e, d) => onSelect(d.value, e.ctrlKey || e.altKey)}
         >
           {option.tag ? (
             <span
@@ -129,7 +129,15 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
     for (let option of allOptions) {
       if (deleted.current[option.value]) continue;
 
-      if (option.value === "CANCEL") cancelButton = button(option, i);
+      if (option.value === "CANCEL")
+        cancelButton = (
+          <Ref key={option.label + "_" + i} innerRef={option.ref}>
+            <CloseButton
+              selected={i === selected}
+              onClick={(e, d) => onSelect("CANCEL", e.ctrlKey || e.altKey)}
+            />
+          </Ref>
+        );
       else if (option.value.delete) deleteButtons.push(button(option, i));
       else selectButtons.push(button(option, i));
 
@@ -137,26 +145,56 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
     }
 
     return (
-      <div key={id + "_buttons"}>
-        <div key={id + "_1"} style={{ display: "flex", flexWrap: "wrap", marginBottom: "10px" }}>
+      <div key={id + "_buttons"} style={{ textAlign: "center" }}>
+        <div
+          key={id + "_1"}
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            marginBottom: "10px",
+          }}
+        >
           {selectButtons}
         </div>
         {deleteButtons.length > 0 ? (
           <b>
+            <Divider style={{ margin: "5px" }} />
             <Icon name="trash alternate" /> Delete codes
           </b>
         ) : null}
-        <div key={id + "_2"} style={{ display: "flex", flexWrap: "wrap" }}>
+        <div
+          key={id + "_2"}
+          style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
+        >
           {deleteButtons}
         </div>
-        <div key={id + "_3"} style={{ display: "flex", flexWrap: "wrap" }}>
-          {cancelButton}
-        </div>
+
+        {cancelButton}
       </div>
     );
   };
 
   return <div key={id}>{mapButtons()}</div>;
+};
+
+const CloseButton = ({ selected, onClick, style }) => {
+  return (
+    <Button
+      icon="window close"
+      size="massive"
+      style={{
+        padding: "0px",
+        background: selected ? "grey" : "white",
+        color: selected ? "white" : "grey",
+        position: "absolute",
+        left: "calc(50% - 15px)",
+        top: "-20px",
+        ...style,
+      }}
+      onClick={onClick}
+    />
+  );
 };
 
 export default ButtonSelection;

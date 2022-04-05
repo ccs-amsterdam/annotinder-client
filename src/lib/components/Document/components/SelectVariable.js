@@ -117,6 +117,7 @@ const VariableButtons = ({ variable, setVariable, variables, variableNames, minH
     if (!variableNames.includes(variable)) setVariable(variableNames[0]);
   }, [variables, setVariable, variableNames, variable]);
 
+  if (variableNames?.length === 1) return null;
   return (
     <>
       <Button.Group attached="bottom" fluid style={{ minHeight: `${minHeight / 2}px` }}>
@@ -126,4 +127,4 @@ const VariableButtons = ({ variable, setVariable, variables, variableNames, minH
   );
 };
 
-export default SelectVariable;
+export default React.memo(SelectVariable);

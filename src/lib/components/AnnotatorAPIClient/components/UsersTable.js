@@ -43,7 +43,6 @@ const LoginLinkButton = ({ row, backend }) => {
   const [link, setLink] = useState(null);
   const [open, setOpen] = useState(false);
 
-  console.log(window.location.host);
   useEffect(() => {
     // to just load this if it's being requested
     if (!open) return;
@@ -57,7 +56,7 @@ const LoginLinkButton = ({ row, backend }) => {
         });
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
       });
   }, [open, backend, row]);
 

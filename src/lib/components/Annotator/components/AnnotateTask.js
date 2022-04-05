@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Grid, Button, Popup, Form, Input } from "semantic-ui-react";
+import { Grid, Button, Popup, Form, Input, Icon } from "semantic-ui-react";
 import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
 import useLocalStorage from "lib/hooks/useLocalStorage";
 import AnnotateTaskManual from "./AnnotateTaskManual";
 
-const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNode }) => {
+const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNode, nextDelay }) => {
   const [annotations, setAnnotations] = useAnnotations(unit);
   const [variableMap, setVariableMap] = useState(null);
   const [settings, setSettings] = useLocalStorage("annotateTaskSettings", { textSize: 1 });
@@ -29,7 +29,12 @@ const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
             fullScreenNode={fullScreenNode}
           />
           <AnnotateTaskManual fullScreenNode={fullScreenNode} />
-          <NextUnitButton unit={unit} annotations={annotations} setUnitIndex={setUnitIndex} />
+          <NextUnitButton
+            unit={unit}
+            annotations={annotations}
+            setUnitIndex={setUnitIndex}
+            nextDelay={nextDelay}
+          />
         </Button.Group>
         <div style={{ height: "calc(100% - 20px", fontSize: `${settings.textSize}em` }}>
           <Document
@@ -118,7 +123,7 @@ const getCleanAnnotations = (annotations) => {
   });
 };
 
-const NextUnitButton = ({ unit, annotations, setUnitIndex }) => {
+const NextUnitButton = ({ unit, annotations, setUnitIndex, nextDelay }) => {
   const [tempDisable, setTempDisable] = useState("ready");
 
   const onNext = () => {
@@ -135,16 +140,16 @@ const NextUnitButton = ({ unit, annotations, setUnitIndex }) => {
         setTempDisable("cooldown");
         setTimeout(() => {
           setTempDisable("ready");
-        }, 1000);
+        }, nextDelay || 1000);
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
         setTempDisable("ready");
       });
   };
 
   const onKeyDown = (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.keyCode === 13) {
+    if ((e.ctrlKey || e.altKey) && e.keyCode === 13) {
       e.preventDefault();
       onNext();
     }
@@ -165,7 +170,8 @@ const NextUnitButton = ({ unit, annotations, setUnitIndex }) => {
       size="tiny"
       onClick={onNext}
     >
-      Next Unit
+      <Icon name="play" />
+      Go to next unit
     </Button>
   );
 };

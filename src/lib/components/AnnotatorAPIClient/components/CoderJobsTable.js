@@ -20,7 +20,7 @@ export default function CoderJobsTable({ backend }) {
         setJobs(jobs.jobs || []);
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
         setJobs([]);
       });
   }, [backend]);

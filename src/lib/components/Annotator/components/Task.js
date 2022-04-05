@@ -2,7 +2,7 @@ import React from "react";
 import QuestionTask from "./QuestionTask";
 import AnnotateTask from "./AnnotateTask";
 
-const Task = ({ unit, setUnitIndex, fullScreenNode }) => {
+const Task = ({ unit, setUnitIndex, fullScreenNode, nextDelay }) => {
   const codebook = unit?.jobServer?.codebook;
 
   if (!codebook || !unit) return null;
@@ -16,6 +16,7 @@ const Task = ({ unit, setUnitIndex, fullScreenNode }) => {
             codebook={codebook}
             setUnitIndex={setUnitIndex}
             fullScreenNode={fullScreenNode}
+            nextDelay={nextDelay}
           />
         );
       case "annotate":
@@ -25,6 +26,7 @@ const Task = ({ unit, setUnitIndex, fullScreenNode }) => {
             codebook={codebook}
             setUnitIndex={setUnitIndex}
             fullScreenNode={fullScreenNode}
+            nextDelay={nextDelay}
           />
         );
       default:

@@ -56,7 +56,7 @@ const LoginLinkButton = ({ row, backend }) => {
         });
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
       });
   }, [open, backend, row]);
 

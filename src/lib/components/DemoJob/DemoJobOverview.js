@@ -33,7 +33,7 @@ const getJobServer = async (units_file, codebook_file, setJob) => {
     setJob(new JobServerDemo(codebook, units));
   } catch (e) {
     setJob(null);
-    console.log(e);
+    console.error(e);
   }
 };
 

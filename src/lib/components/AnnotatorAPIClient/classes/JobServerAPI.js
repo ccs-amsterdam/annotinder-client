@@ -11,7 +11,7 @@ class JobServerAPI {
       this.codebook = await this.backend.getCodebook(this.job_id);
       this.progress = await this.backend.getProgress(this.job_id);
     } catch (e) {
-      console.log(e);
+      console.error(e);
       this.success = false;
       return;
     }

@@ -6,7 +6,7 @@ import ButtonSelection from "./ButtonSelection";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
-export default function NewCodePage({
+const NewCodePage = ({
   tokens,
   variable,
   variableMap,
@@ -19,7 +19,7 @@ export default function NewCodePage({
   span,
   setOpen,
   setCodeHistory,
-}) {
+}) => {
   const textInputRef = useRef(null);
   const [focusOnButtons, setFocusOnButtons] = useState(true);
 
@@ -216,7 +216,6 @@ export default function NewCodePage({
           autoComplete={"on"}
           onClick={() => setFocusOnButtons(false)}
           onSearchChange={(e, d) => {
-            console.log(d.value);
             if (d.searchQuery === "") setFocusOnButtons(true);
           }}
           onClose={(e, d) => {
@@ -224,7 +223,7 @@ export default function NewCodePage({
           }}
           selectOnBlur={false}
           onChange={(e, d) => {
-            onSelect(d.value, e.ctrlKey || e.metaKey);
+            onSelect(d.value, e.ctrlKey || e.altKey);
           }}
         />
       </Ref>
@@ -244,7 +243,7 @@ export default function NewCodePage({
       {asButtonSelection(buttonOptions)}
     </>
   );
-}
+};
 
 const getTextSnippet = (tokens, span, maxlength = 8) => {
   let text = tokens.slice(span[0], span[1] + 1).map((t, i) => {
@@ -284,3 +283,5 @@ const updateAnnotations = (tokens, annotation, setAnnotations, setCodeHistory, e
     };
   });
 };
+
+export default React.memo(NewCodePage);

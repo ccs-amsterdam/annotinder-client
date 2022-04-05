@@ -29,9 +29,15 @@ const Annotator = ({ jobServer, askFullScreen }) => {
   const content = (fullScreenNode) => {
     if (unitIndex < 0) return null;
     if (unitIndex === null) return <Finished jobServer={jobServer} />;
-    return <Task unit={preparedUnit} setUnitIndex={setUnitIndex} fullScreenNode={fullScreenNode} />;
+    return (
+      <Task
+        unit={preparedUnit}
+        setUnitIndex={setUnitIndex}
+        fullScreenNode={fullScreenNode}
+        nextDelay={jobServer?.progress?.next_delay}
+      />
+    );
   };
-
   const [maxHeight, maxWidth] = getWindowSize(jobServer);
 
   return (
@@ -49,8 +55,22 @@ const Annotator = ({ jobServer, askFullScreen }) => {
             border: "1px solid white",
           }}
         >
-          <div style={{ height: "45px", padding: "0", position: "relative" }}>
-            <div style={{ width: "85%", paddingLeft: "7.5%" }}>
+          <div
+            style={{
+              height: "45px",
+              padding: "0",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <div
+              style={{
+                flex: "1 1 auto",
+                marginTop: "4px",
+                paddingLeft: "10px",
+                paddingRight: "10px",
+              }}
+            >
               <IndexController
                 n={jobServer?.progress.n_total}
                 index={unitIndex}
@@ -82,7 +102,7 @@ const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
   } catch (e) {
     if (e.response?.status === 404) setUnitIndex(null);
     setPreparedUnit(null);
-    console.log(e);
+    console.error(e);
   }
 };
 

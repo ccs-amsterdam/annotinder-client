@@ -3,7 +3,7 @@ import { Popup } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
 import ButtonSelection from "./ButtonSelection";
 
-export default function SelectAnnotationPage({
+const SelectAnnotationPage = ({
   tokens,
   variable,
   setVariable,
@@ -12,7 +12,7 @@ export default function SelectAnnotationPage({
   setSpan,
   setOpen,
   variableMap,
-}) {
+}) => {
   const [options, setOptions] = useState(null);
 
   const onButtonSelection = React.useCallback(
@@ -51,7 +51,7 @@ export default function SelectAnnotationPage({
       />
     </div>
   );
-}
+};
 
 const getTextSnippet = (tokens, span, maxlength = 8) => {
   let text = tokens.slice(span[0], span[1] + 1).map((t) => t.pre + t.text + t.post);
@@ -102,3 +102,5 @@ const getAnnotationOptions = (annotations, span, variableMap, tokens) => {
     return { ...variableSpans[key], color: getColorGradient(variableSpans[key].colors) };
   });
 };
+
+export default React.memo(SelectAnnotationPage);

@@ -31,6 +31,10 @@ const AnnotateNavigation = ({
   }, [tokens, tokenSelection]);
 
   useEffect(() => {
+    setTokenSelection([]);
+  }, [annotations]);
+
+  useEffect(() => {
     setCurrentToken({ i: null });
     setTokenSelection([]);
   }, [tokens]);
@@ -276,6 +280,7 @@ const AnnotationPopup = React.memo(
           margin: "0",
           padding: "0",
           border: "1px solid",
+          zIndex: 100,
         }}
       >
         {content}

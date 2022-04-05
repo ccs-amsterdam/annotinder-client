@@ -86,10 +86,7 @@ const AskFullScreenModal = ({ handle, askFullScreenSetting }) => {
 
 const FullScreenButton = ({ handle }) => {
   return (
-    <Icon.Group
-      size="big"
-      style={{ paddingRight: "10px", position: "absolute", top: "0px", right: 0 }}
-    >
+    <Icon.Group size="big">
       <Icon
         link
         name={handle.active ? "compress" : "expand"}

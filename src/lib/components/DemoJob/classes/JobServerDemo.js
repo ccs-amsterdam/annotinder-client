@@ -14,7 +14,7 @@ class JobServerDemo {
     try {
       this.success = true;
     } catch (e) {
-      console.log(e);
+      console.error(e);
       this.success = false;
       return;
     }
@@ -29,9 +29,8 @@ class JobServerDemo {
     try {
       this.units[unit_id].annotation = annotation;
       this.units[unit_id].status = status;
-      console.log(unit_id, annotation, status);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 }

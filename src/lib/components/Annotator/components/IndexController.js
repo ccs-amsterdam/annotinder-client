@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Loader, Pagination, Segment } from "semantic-ui-react";
+import { Icon, Label, Loader, Segment } from "semantic-ui-react";
+
+const sliderColor = "#d3dfe9";
+const progressColor = "#7fb9eb";
+const iconStyle = { cursor: "pointer" };
 
 const IndexController = ({ n, index, setIndex, canGoForward = true, canGoBack = true }) => {
   const reached = useRef(0); // if canGoBack but not canGoForward, can still go forward after going back
@@ -47,12 +51,14 @@ const IndexController = ({ n, index, setIndex, canGoForward = true, canGoBack = 
     const timer = setTimeout(() => {
       setActivePage(delayedActivePage);
       setLoading(false);
-    }, 500);
+    }, 1000);
     return () => clearTimeout(timer);
   }, [activePage, delayedActivePage, n, setLoading]);
 
   if (!n) return null;
   const progress = (100 * Math.max(0, reached.current - 1)) / n;
+  const digits = Math.floor(Math.log10(n)) + 1;
+  const labelwidth = `${3 + digits * 2}em`;
 
   return (
     <Segment
@@ -61,39 +67,61 @@ const IndexController = ({ n, index, setIndex, canGoForward = true, canGoBack = 
         border: "none",
         boxShadow: "none",
         padding: "0",
-        marginTop: "5px",
         leftMargin: "0px",
         width: "100%",
         maxHeight: "35px",
         borderRadius: "0",
+        fontSize: "1em",
       }}
     >
-      <Loader active={loading} content="" />
-      <Pagination
-        secondary
-        activePage={delayedActivePage}
-        pageItem={delayedActivePage <= n ? `${delayedActivePage} / ${n}` : `done / ${n}`}
-        size={"mini"}
-        firstItem={null}
-        lastItem={null}
-        prevItem={canGoBack ? "back" : "   "}
-        nextItem={canGoForward || activePage < reached.current ? "next" : "   "}
-        siblingRange={0}
-        boundaryRange={0}
-        ellipsisItem={null}
-        totalPages={n + 1}
-        onClick={(e, d) => e.stopPropagation()}
-        onPageChange={(e, d) => {
-          if ((canGoForward || activePage < reached.current) && Number(d.activePage) > activePage)
-            setActivePage(Number(d.activePage));
-          if (canGoBack && Number(d.activePage) < activePage) setActivePage(Number(d.activePage));
-        }}
-        style={{ fontSize: "9px", border: "none", boxShadow: "none", padding: 0, margin: 0 }}
-      />
+      <div style={{ marginRight: "3px" }}>
+        <Loader active={loading} size="small" content="" />
+        <Icon
+          name="fast backward"
+          onClick={() => setActivePage(1)}
+          style={iconStyle}
+          disabled={!canGoBack || activePage === 1}
+        />
+        <Icon
+          name="step backward"
+          onClick={() => setActivePage(Math.max(1, activePage - 1))}
+          disabled={!canGoBack || activePage === 1}
+          style={iconStyle}
+        />
+        <Label
+          color="blue"
+          style={{
+            height: "19px",
+            padding: "3px 0 3px 0",
+            margin: "0 5px 0px 5px",
+            width: labelwidth,
+            textAlign: "center",
+            fontWeight: "bold",
+            borderRadius: "2px",
+          }}
+        >
+          {delayedActivePage <= n ? `${delayedActivePage} / ${n}` : `done`}
+        </Label>
+        <Icon
+          name="step forward"
+          onClick={() => setActivePage(Math.min(reached.current, activePage + 1))}
+          disabled={!canGoForward && activePage >= reached.current}
+          style={iconStyle}
+        />
+        <Icon
+          name="fast forward"
+          onClick={() => setActivePage(reached.current)}
+          disabled={!canGoForward && activePage >= reached.current}
+          style={iconStyle}
+        />
+      </div>
+
       <input
         style={{
           flex: "1 1 auto",
-          background: `linear-gradient(to right, #7dd48d ${progress}%, #fff ${progress}% 100%, #fff 100%)`,
+          marginTop: "3px",
+          //maxWidth: "500px",
+          background: `linear-gradient(to right, ${progressColor} ${progress}%, ${sliderColor} ${progress}% 100%, ${sliderColor} 100%)`,
         }}
         min={1}
         max={n + 1}
