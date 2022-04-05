@@ -248,11 +248,6 @@ const CodeSelectorPopup = React.memo(
         <div style={{ margin: "5px", border: "0px", position: "relative" }}>{children}</div>
       </Popup>
     );
-  },
-  (p, n) => {
-    for (let key of Object.keys(p)) {
-      if (p[key] !== n[key]) console.log(key);
-    }
   }
 );
 

@@ -8,7 +8,8 @@ const DemoJobOverview = () => {
   //const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    getJobServer("sotu", "sentimentAnnotation", setJob);
+    //getJobServer("sotu", "sentimentAnnotation", setJob);
+    getJobServer("test", "test", setJob);
   }, []);
 
   if (job === null) return <div></div>;

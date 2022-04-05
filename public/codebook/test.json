@@ -1,0 +1,777 @@
+{
+  "type": "annotate",
+  "variables": [
+    {
+      "codes": [
+        {
+          "code": "Thierry Aartsen"
+        },
+        {
+          "code": "Achmed Aboutaleb"
+        },
+        {
+          "code": "Fleur Agema"
+        },
+        {
+          "code": "prinses Alexia"
+        },
+        {
+          "code": "Mahir Alkaya"
+        },
+        {
+          "code": "prinses Amalia"
+        },
+        {
+          "code": "prinses Ariane"
+        },
+        {
+          "code": "Khadija Arib"
+        },
+        {
+          "code": "Lodewijk Asscher"
+        },
+        {
+          "code": "Farid Azarkan"
+        },
+        {
+          "code": "Jan-Peter Balkenende"
+        },
+        {
+          "code": "Thierry Baudet"
+        },
+        {
+          "code": "prinses Beatrix"
+        },
+        {
+          "code": "Bente Becker"
+        },
+        {
+          "code": "Sandra Beckerman"
+        },
+        {
+          "code": "Harm Beertema"
+        },
+        {
+          "code": "Salima Belhaj"
+        },
+        {
+          "code": "Vera Bergkamp"
+        },
+        {
+          "code": "Ank Bijleveld"
+        },
+        {
+          "code": "Stef Blok"
+        },
+        {
+          "code": "Paul Blokhuis"
+        },
+        {
+          "code": "Martijn Bolkestein"
+        },
+        {
+          "code": "Wouter Bos"
+        },
+        {
+          "code": "Martin Bosma"
+        },
+        {
+          "code": "André Bosman"
+        },
+        {
+          "code": "Achraf Bouali"
+        },
+        {
+          "code": "Bruno Braakhuis"
+        },
+        {
+          "code": "Ankie Broekers-Knol"
+        },
+        {
+          "code": "Laura Bromet"
+        },
+        {
+          "code": "Jan-Anthonie Bruijn"
+        },
+        {
+          "code": "Eppo Bruins"
+        },
+        {
+          "code": "Bruno Bruins"
+        },
+        {
+          "code": "Hubert Bruls"
+        },
+        {
+          "code": "Kathalijne Buitenweg"
+        },
+        {
+          "code": "Job Cohen"
+        },
+        {
+          "code": "Laurens Dassen"
+        },
+        {
+          "code": "Thom de Graaf"
+        },
+        {
+          "code": "Machiel de Graaf"
+        },
+        {
+          "code": "Tjeerd de Groot"
+        },
+        {
+          "code": "Léon de Jong"
+        },
+        {
+          "code": "Hugo de Jonge"
+        },
+        {
+          "code": "Richard de Mos"
+        },
+        {
+          "code": "Raymond de Roon"
+        },
+        {
+          "code": "Henk de Vree"
+        },
+        {
+          "code": "Aukje de Vries"
+        },
+        {
+          "code": "Sander Dekker"
+        },
+        {
+          "code": "Liane den Haan"
+        },
+        {
+          "code": "Paul Depla"
+        },
+        {
+          "code": "Antje Diertens"
+        },
+        {
+          "code": "Klaas Dijkhoff"
+        },
+        {
+          "code": "Sharon Dijksma"
+        },
+        {
+          "code": "Pia Dijkstra"
+        },
+        {
+          "code": "Remco Dijkstra"
+        },
+        {
+          "code": "Carla Dik-Faber"
+        },
+        {
+          "code": "Joost Eerdmans"
+        },
+        {
+          "code": "Nourdin el Ouali"
+        },
+        {
+          "code": "Zohair El Yassini"
+        },
+        {
+          "code": "Corinne Ellemeet"
+        },
+        {
+          "code": "Bas Filippini"
+        },
+        {
+          "code": "Sietse Fritsma"
+        },
+        {
+          "code": "Frank Futselaar"
+        },
+        {
+          "code": "Quinsy Gario"
+        },
+        {
+          "code": "Ferdinand Grapperhaus"
+        },
+        {
+          "code": "Dion Graus"
+        },
+        {
+          "code": "Maarten Groothuizen"
+        },
+        {
+          "code": "Femke Halsema"
+        },
+        {
+          "code": "Mark Harbers"
+        },
+        {
+          "code": "Rudmer Heerema"
+        },
+        {
+          "code": "Niels Heeze"
+        },
+        {
+          "code": "Lilian Helder"
+        },
+        {
+          "code": "Sophie Hermans"
+        },
+        {
+          "code": "Theo Hiddema"
+        },
+        {
+          "code": "Maarten Hijink"
+        },
+        {
+          "code": "Wopke Hoekstra"
+        },
+        {
+          "code": "Chris Jansen"
+        },
+        {
+          "code": "Rob Jetten"
+        },
+        {
+          "code": "John Jorritsma"
+        },
+        {
+          "code": "Sigrid Kaag"
+        },
+        {
+          "code": "Sadet Karabulut"
+        },
+        {
+          "code": "Piri Kati"
+        },
+        {
+          "code": "Mona Keijzer"
+        },
+        {
+          "code": "John Kerstens"
+        },
+        {
+          "code": "Jesse Klaver"
+        },
+        {
+          "code": "Raymond Knops"
+        },
+        {
+          "code": "Daniël Koerhuis"
+        },
+        {
+          "code": "Wouter Koolmees"
+        },
+        {
+          "code": "Sven Koopmans"
+        },
+        {
+          "code": "Alexander Kops"
+        },
+        {
+          "code": "Suzanne Kröger"
+        },
+        {
+          "code": "Henk Krol"
+        },
+        {
+          "code": "Attje Kuiken"
+        },
+        {
+          "code": "Tunahan Kuzu"
+        },
+        {
+          "code": "Peter Kwint"
+        },
+        {
+          "code": "Antoinette Laan-Geselschap"
+        },
+        {
+          "code": "Cem Laçin"
+        },
+        {
+          "code": "Renske Leijten"
+        },
+        {
+          "code": "Helma Lodders"
+        },
+        {
+          "code": "Barry Madlener"
+        },
+        {
+          "code": "Ahmed Marcouch"
+        },
+        {
+          "code": "Lilian Marijnissen"
+        },
+        {
+          "code": "Jan Marijnissen"
+        },
+        {
+          "code": "Gidi Markuszower"
+        },
+        {
+          "code": "koningin Maxima"
+        },
+        {
+          "code": "Jan Middendorp"
+        },
+        {
+          "code": "William Moorlag"
+        },
+        {
+          "code": "Edgar Mulder"
+        },
+        {
+          "code": "Annabel Nanninga"
+        },
+        {
+          "code": "Henk Nijboer"
+        },
+        {
+          "code": "Chantal Nijkerken-de Haan"
+        },
+        {
+          "code": "Kajsa Ollongren"
+        },
+        {
+          "code": "Pieter Omtzigt"
+        },
+        {
+          "code": "Henk Otten"
+        },
+        {
+          "code": "Esther Ouwehand"
+        },
+        {
+          "code": "Selçuk Öztürk"
+        },
+        {
+          "code": "Nevin Özütok"
+        },
+        {
+          "code": "Jan Paternotte"
+        },
+        {
+          "code": "Alexander Pechtold"
+        },
+        {
+          "code": "Peter Plasman"
+        },
+        {
+          "code": "Lilianne Ploumen"
+        },
+        {
+          "code": "Matthijs Pontier"
+        },
+        {
+          "code": "Rens Raemakers"
+        },
+        {
+          "code": "Kelly Regterschot"
+        },
+        {
+          "code": "Wim-Jan Renkema"
+        },
+        {
+          "code": "Emiel Roemer"
+        },
+        {
+          "code": "Michael Ruperti"
+        },
+        {
+          "code": "Mark Rutte"
+        },
+        {
+          "code": "Leonie Saszias"
+        },
+        {
+          "code": "Carola Schouten"
+        },
+        {
+          "code": "Gert-Jan Segers"
+        },
+        {
+          "code": "Matthijs Sienot"
+        },
+        {
+          "code": "Sylvana Simons"
+        },
+        {
+          "code": "Sjoerd Wiemer Sjoerdsma"
+        },
+        {
+          "code": "Arie Slob"
+        },
+        {
+          "code": "Bart Smals"
+        },
+        {
+          "code": "Paul Smeulders"
+        },
+        {
+          "code": "Menno Snel"
+        },
+        {
+          "code": "Joost Sneller"
+        },
+        {
+          "code": "Bart Snels"
+        },
+        {
+          "code": "Mark Snoeren"
+        },
+        {
+          "code": "Chris Stoffer"
+        },
+        {
+          "code": "Ockje Tellegen"
+        },
+        {
+          "code": "Otto ter Haar"
+        },
+        {
+          "code": "Marianne Thieme"
+        },
+        {
+          "code": "Jaron Tichelaar"
+        },
+        {
+          "code": "Judith Tielen"
+        },
+        {
+          "code": "Frans Timmermans"
+        },
+        {
+          "code": "Regillio Vaarnold"
+        },
+        {
+          "code": "Robert Valentine"
+        },
+        {
+          "code": "Roy van Aalst"
+        },
+        {
+          "code": "Dries van Agt"
+        },
+        {
+          "code": "Tamara van Ark"
+        },
+        {
+          "code": "Marijke van Beukering-Huijbregts"
+        },
+        {
+          "code": "Corrie van Brenk"
+        },
+        {
+          "code": "Niels van den Berge"
+        },
+        {
+          "code": "Albert van den Bosch"
+        },
+        {
+          "code": "Kirsten van den Hul"
+        },
+        {
+          "code": "Tom van den Nieuwenhuijzen"
+        },
+        {
+          "code": "Sander van den Raadt"
+        },
+        {
+          "code": "Stieneke van der Graaf"
+        },
+        {
+          "code": "Tom van der Lee"
+        },
+        {
+          "code": "Roald van der Linde"
+        },
+        {
+          "code": "Caroline van der Plas"
+        },
+        {
+          "code": "Florens van der Spek"
+        },
+        {
+          "code": "Kees der Staaij"
+        },
+        {
+          "code": "Teun van Dijck"
+        },
+        {
+          "code": "Gijs van Dijk"
+        },
+        {
+          "code": "Emiel van Dijk"
+        },
+        {
+          "code": "Jasper van Dijk"
+        },
+        {
+          "code": "Arnoud van Doorn"
+        },
+        {
+          "code": "Jessica van Eijs"
+        },
+        {
+          "code": "Ingrid van Engelshoven"
+        },
+        {
+          "code": "Eva van Esch"
+        },
+        {
+          "code": "Esther van Fenema"
+        },
+        {
+          "code": "Tobias van Gent"
+        },
+        {
+          "code": "Henk van Gerven"
+        },
+        {
+          "code": "Wybren van Haga"
+        },
+        {
+          "code": "Alexandra van Huffelen"
+        },
+        {
+          "code": "Bart van Kent"
+        },
+        {
+          "code": "Femke Merel van Kooten"
+        },
+        {
+          "code": "Femke Merel van Kooten-Arissen"
+        },
+        {
+          "code": "Paul van Meenen"
+        },
+        {
+          "code": "Cora van Nieuwenhuizen"
+        },
+        {
+          "code": "Michiel van Nispen"
+        },
+        {
+          "code": "Bram van Ojik"
+        },
+        {
+          "code": "Gerrit-Jan van Otterloo"
+        },
+        {
+          "code": "Ronald van Raak"
+        },
+        {
+          "code": "Lammert van Raan"
+        },
+        {
+          "code": "Martin van Rijn"
+        },
+        {
+          "code": "Bas van 't Wout"
+        },
+        {
+          "code": "Stientje van Veldhoven"
+        },
+        {
+          "code": "Danai van Weerdenburg"
+        },
+        {
+          "code": "Steven van Weyenberg"
+        },
+        {
+          "code": "Jeroen van Wijngaarden"
+        },
+        {
+          "code": "Jan van Zanen"
+        },
+        {
+          "code": "Reinier van Zutphen"
+        },
+        {
+          "code": "Hayke Veldman"
+        },
+        {
+          "code": "Kees Verhoeven"
+        },
+        {
+          "code": "Erwin Versteeg"
+        },
+        {
+          "code": "Hans Vijlbrief"
+        },
+        {
+          "code": "Barbara Visser"
+        },
+        {
+          "code": "Johan Vlemmix"
+        },
+        {
+          "code": "Joel Voordewind"
+        },
+        {
+          "code": "Frank Wassenberg"
+        },
+        {
+          "code": "Lisa Westerveld"
+        },
+        {
+          "code": "Arne Weverling"
+        },
+        {
+          "code": "Eric Wiebes"
+        },
+        {
+          "code": "Hans Wiegel"
+        },
+        {
+          "code": "Dennis Wiersma"
+        },
+        {
+          "code": "Geert Wilders"
+        },
+        {
+          "code": "koning Willem-Alexander"
+        },
+        {
+          "code": "Martin Wörsdörfer"
+        },
+        {
+          "code": "Dilan Yesilgöz"
+        },
+        {
+          "code": "Gerrit Zalm"
+        },
+        {
+          "code": "Anna Zevel"
+        },
+        {
+          "code": "Erik Ziengs"
+        },
+        {
+          "code": "Halbe Zijlstra"
+        },
+        {
+          "code": "50Plus"
+        },
+        {
+          "code": "BBB"
+        },
+        {
+          "code": "BIJ1"
+        },
+        {
+          "code": "Blank6"
+        },
+        {
+          "code": "CDA"
+        },
+        {
+          "code": "CodeOranje"
+        },
+        {
+          "code": "CU"
+        },
+        {
+          "code": "D66"
+        },
+        {
+          "code": "De Groenen"
+        },
+        {
+          "code": "Denk"
+        },
+        {
+          "code": "Feestpartij"
+        },
+        {
+          "code": "FvD"
+        },
+        {
+          "code": "GroenLinks"
+        },
+        {
+          "code": "Ja22"
+        },
+        {
+          "code": "Jezus Leeft"
+        },
+        {
+          "code": "JONG"
+        },
+        {
+          "code": "LibertaireP"
+        },
+        {
+          "code": "LijstKrol"
+        },
+        {
+          "code": "ModernNL"
+        },
+        {
+          "code": "NIDA"
+        },
+        {
+          "code": "NL Beter"
+        },
+        {
+          "code": "Oprecht"
+        },
+        {
+          "code": "PartijEenheid"
+        },
+        {
+          "code": "partijRepubliek"
+        },
+        {
+          "code": "Piratenpartij"
+        },
+        {
+          "code": "PvdA"
+        },
+        {
+          "code": "PvdD"
+        },
+        {
+          "code": "PVV"
+        },
+        {
+          "code": "SGP"
+        },
+        {
+          "code": "SP"
+        },
+        {
+          "code": "Splinter"
+        },
+        {
+          "code": "TrotsOpNL"
+        },
+        {
+          "code": "Ubuntu"
+        },
+        {
+          "code": "Volt"
+        },
+        {
+          "code": "VrijSoc"
+        },
+        {
+          "code": "VVD"
+        },
+        {
+          "code": "WijzijnNL"
+        }
+      ],
+      "name": "actor",
+      "instruction": "Add labels (referent) to grey candidate items",
+      "searchBox": false,
+      "buttonMode": "all",
+      "only_edit": true,
+      "only_imported": true,
+      "multiple": false,
+      "editMode": true,
+      "onlyImported": true
+    }
+  ]
+}
