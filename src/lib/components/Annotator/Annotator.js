@@ -22,10 +22,9 @@ const Annotator = ({ jobServer, askFullScreen }) => {
 
   useEffect(() => {
     // When unitIndex changes, get the unit
-    if (preparedUnit?.unitIndex === unitIndex) return;
     if (!jobServer || unitIndex === null) return;
     getUnit(jobServer, unitIndex, setPreparedUnit, setUnitIndex);
-  }, [unitIndex, jobServer, preparedUnit, setUnitIndex, setPreparedUnit]);
+  }, [unitIndex, jobServer, setUnitIndex, setPreparedUnit]);
 
   const content = (fullScreenNode) => {
     if (unitIndex < 0) return null;
@@ -53,13 +52,15 @@ const Annotator = ({ jobServer, askFullScreen }) => {
             margin: "0 auto",
             padding: "0",
             height: "100%",
+            width: "100%",
             border: "1px solid white",
           }}
         >
           <div
             style={{
               height: "45px",
-              padding: "0",
+              width: "100%",
+              padding: "5px 14px 5px 14px",
               display: "flex",
               justifyContent: "space-between",
             }}
@@ -67,13 +68,13 @@ const Annotator = ({ jobServer, askFullScreen }) => {
             <div
               style={{
                 flex: "1 1 auto",
-                marginTop: "4px",
-                paddingLeft: "10px",
-                paddingRight: "10px",
+                paddingTop: "3px",
+                paddingRight: "16px",
               }}
             >
               <IndexController
-                n={jobServer?.progress.n_total}
+                n={jobServer?.progress?.n_total}
+                nCoded={jobServer?.progress?.n_coded || 0}
                 index={unitIndex}
                 setIndex={setUnitIndex}
                 canGoBack={jobServer?.progress.seek_backwards}
@@ -93,6 +94,12 @@ const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
   if (unitIndex < 0) return;
   try {
     const unit = await jobServer.getUnit(unitIndex);
+
+    // if backend gives the unit index, ensure that connection to unitIndex is fully controlled
+    // (in case the frontend accidentally asks for a unitIndex it doesn't yet have access to)
+    // NOTE THAT THIS RELIES ON REACT 18 FOR BATCHING STATE UPDATES
+    if (unit.index && unitIndex !== unit.index) setUnitIndex(unit.index);
+
     setPreparedUnit({
       jobServer,
       unitIndex: unit.index || unitIndex, // unit can (should?) return an index to keep it fully controlled

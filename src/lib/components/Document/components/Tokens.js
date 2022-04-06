@@ -33,7 +33,7 @@ const Tokens = ({ tokens, text_fields, meta_fields, setReady, maxHeight }) => {
       <div
         key="tokens"
         style={{
-          flex: "1",
+          flex: "1 1 auto",
           display: "flex",
           alignItems: null,
           overflow: "auto",

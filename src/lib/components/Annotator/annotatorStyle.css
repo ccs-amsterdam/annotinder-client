@@ -28,3 +28,10 @@ input[type="range"]::-webkit-slider-thumb {
   height: 100%;
   width: 100%;
 }
+
+@media only screen and (max-width: 767px) {
+  .ui.grid {
+    margin-left: 0rem !important;
+    margin-right: 0rem !important;
+  }
+}

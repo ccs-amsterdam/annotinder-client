@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useEffect } from "react/cjs/react.development";
 import FullDataTable from "./FullDataTable";
 
 const columns = [

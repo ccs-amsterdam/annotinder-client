@@ -17,7 +17,7 @@ const AnnotateTaskManual = ({ fullScreenNode }) => {
           icon="question"
           size="tiny"
           onClick={() => setOpen(!open)}
-          style={{ maxWidth: "50px" }}
+          style={{ padding: "5px", maxWidth: "50px" }}
         />
       }
     >

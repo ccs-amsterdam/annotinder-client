@@ -1,15 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Icon, Label, Loader, Segment } from "semantic-ui-react";
+import React, { useEffect, useState } from "react";
+import { Icon, Label, Segment } from "semantic-ui-react";
 
 const sliderColor = "#d3dfe9";
 const progressColor = "#7fb9eb";
 const iconStyle = { cursor: "pointer" };
 
-const IndexController = ({ n, index, setIndex, canGoForward = true, canGoBack = true }) => {
-  const reached = useRef(0); // if canGoBack but not canGoForward, can still go forward after going back
-  const canMove = useRef(false);
-
-  const [loading, setLoading] = useState(false);
+const IndexController = ({ n, nCoded, index, setIndex, canGoForward = true, canGoBack = true }) => {
   const [activePage, setActivePage] = useState(1);
   const [delayedActivePage, setDelayedActivePage] = useState(1);
 
@@ -20,19 +16,7 @@ const IndexController = ({ n, index, setIndex, canGoForward = true, canGoBack = 
   }, [index, n, setActivePage]);
 
   useEffect(() => {
-    reached.current = 0;
-    canMove.current = false;
-  }, [n]);
-
-  useEffect(() => {
     if (!n) return null;
-    setActivePage(1);
-    canMove.current = true;
-  }, [n, setActivePage]);
-
-  useEffect(() => {
-    if (!n) return null;
-    reached.current = Math.max(activePage, reached.current);
     if (activePage - 1 === n) {
       setIndex(null);
     } else {
@@ -41,22 +25,8 @@ const IndexController = ({ n, index, setIndex, canGoForward = true, canGoBack = 
     setDelayedActivePage(activePage);
   }, [n, setIndex, activePage]);
 
-  useEffect(() => {
-    if (!n) return null;
-    if (activePage === delayedActivePage) {
-      setLoading(false);
-      return null;
-    }
-    setLoading(true);
-    const timer = setTimeout(() => {
-      setActivePage(delayedActivePage);
-      setLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [activePage, delayedActivePage, n, setLoading]);
-
   if (!n) return null;
-  const progress = (100 * Math.max(0, reached.current - 1)) / n;
+  const progress = (100 * Math.max(0, nCoded)) / n;
   const digits = Math.floor(Math.log10(n)) + 1;
   const labelwidth = `${3 + digits * 2}em`;
 
@@ -69,13 +39,12 @@ const IndexController = ({ n, index, setIndex, canGoForward = true, canGoBack = 
         padding: "0",
         leftMargin: "0px",
         width: "100%",
-        maxHeight: "35px",
+        height: "35px",
         borderRadius: "0",
         fontSize: "1em",
       }}
     >
       <div style={{ marginRight: "3px" }}>
-        <Loader active={loading} size="small" content="" />
         <Icon
           name="fast backward"
           onClick={() => setActivePage(1)}
@@ -91,8 +60,8 @@ const IndexController = ({ n, index, setIndex, canGoForward = true, canGoBack = 
         <Label
           color="blue"
           style={{
-            height: "19px",
-            padding: "3px 0 3px 0",
+            height: "24px",
+            padding: "6px 0 2px 0",
             margin: "0 5px 0px 5px",
             width: labelwidth,
             textAlign: "center",
@@ -104,18 +73,17 @@ const IndexController = ({ n, index, setIndex, canGoForward = true, canGoBack = 
         </Label>
         <Icon
           name="step forward"
-          onClick={() => setActivePage(Math.min(reached.current, activePage + 1))}
-          disabled={!canGoForward && activePage >= reached.current}
+          onClick={() => setActivePage(Math.min(nCoded + 1, activePage + 1))}
+          disabled={!canGoForward && activePage >= nCoded}
           style={iconStyle}
         />
         <Icon
           name="fast forward"
-          onClick={() => setActivePage(reached.current)}
-          disabled={!canGoForward && activePage >= reached.current}
+          onClick={() => setActivePage(nCoded + 1)}
+          disabled={!canGoForward && activePage >= nCoded + 1}
           style={iconStyle}
         />
       </div>
-
       <input
         style={{
           flex: "1 1 auto",
@@ -126,15 +94,20 @@ const IndexController = ({ n, index, setIndex, canGoForward = true, canGoBack = 
         min={1}
         max={n + 1}
         onChange={(e) => {
+          // Changing the range slider directly only updates delayedActivePage, which shows the value on the slider.
+          // Below, the onMouseUp event then process the change
           if (Number(e.target.value) > delayedActivePage) {
             if (canGoForward) {
               setDelayedActivePage(Number(e.target.value));
             } else {
-              setDelayedActivePage(Math.min(reached.current, Number(e.target.value)));
+              setDelayedActivePage(Math.min(nCoded + 1, Number(e.target.value)));
             }
           }
           if (canGoBack && Number(e.target.value) < delayedActivePage)
             setDelayedActivePage(Number(e.target.value));
+        }}
+        onMouseUp={(e) => {
+          setActivePage(delayedActivePage);
         }}
         type="range"
         value={delayedActivePage}

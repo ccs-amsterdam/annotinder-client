@@ -17,12 +17,14 @@ const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
     <Grid
       centered
       stackable
-      style={{ height: "100%", width: "100%", paddingTop: "0" }}
-      verticalAlign={"top"}
+      style={{ height: "100%", width: "100%", paddingTop: "0", margin: "0" }}
       columns={2}
     >
-      <Grid.Column width={10} style={{ paddingRight: "0em", paddingTop: "0", height: "100%" }}>
-        <Button.Group fluid style={{ padding: "0", height: "40px" }}>
+      <Grid.Column
+        width={10}
+        style={{ paddingRight: "0em", paddingTop: "0", paddingBottom: "0", height: "100%" }}
+      >
+        <Button.Group fluid style={{ padding: "0", height: "30px" }}>
           <SettingsPopup
             settings={settings}
             setSettings={setSettings}
@@ -36,7 +38,7 @@ const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
             nextDelay={nextDelay}
           />
         </Button.Group>
-        <div style={{ height: "calc(100% - 20px", fontSize: `${settings.textSize}em` }}>
+        <div style={{ height: "calc(100% - 30px)", fontSize: `${settings.textSize}em` }}>
           <Document
             unit={unit}
             settings={codebook?.settings}
@@ -52,7 +54,6 @@ const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
       <Grid.Column
         width={6}
         style={{
-          paddingRight: "0em",
           padding: "0",
           height: "100%",
           paddingLeft: "10px",
@@ -168,6 +169,7 @@ const NextUnitButton = ({ unit, annotations, setUnitIndex, nextDelay }) => {
       loading={tempDisable === "loading"}
       primary
       size="tiny"
+      style={{ padding: "5px" }}
       onClick={onNext}
     >
       <Icon name="play" />
@@ -185,9 +187,9 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }) => {
         <Button
           secondary
           width={1}
-          size="large"
           icon="setting"
           style={{
+            padding: "7px",
             color: "white",
             maxWidth: "50px",
           }}

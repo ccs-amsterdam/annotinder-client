@@ -90,6 +90,7 @@ const FullScreenButton = ({ handle }) => {
       <Icon
         link
         name={handle.active ? "compress" : "expand"}
+        style={{ margin: "0" }}
         onClick={() => {
           handle.active ? handle.exit() : handle.enter();
         }}

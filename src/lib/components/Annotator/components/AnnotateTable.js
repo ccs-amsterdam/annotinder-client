@@ -18,21 +18,23 @@ const AnnotateTable = ({ tokens, variableMap, annotations }) => {
       compact="very"
       size="small"
     >
-      <Table.Header className="annotations-thead" style={{ height: "40px" }}>
+      <Table.Header className="annotations-thead" style={{ height: "30px" }}>
         <Table.Row>
-          <Table.HeaderCell title="Variable" width={COLWIDTHS[0]}>
+          <Table.HeaderCell title="Variable" width={COLWIDTHS[0]} style={{ padding: "5px" }}>
             Variable
           </Table.HeaderCell>
-          <Table.HeaderCell title="Vale" width={COLWIDTHS[1]}>
+          <Table.HeaderCell title="Vale" width={COLWIDTHS[1]} style={{ padding: "5px" }}>
             Value
           </Table.HeaderCell>
-          <Table.HeaderCell title="Field" width={COLWIDTHS[2]}>
+          <Table.HeaderCell title="Field" width={COLWIDTHS[2]} style={{ padding: "5px" }}>
             Field
           </Table.HeaderCell>
-          <Table.HeaderCell title="Position" width={COLWIDTHS[3]}>
+          <Table.HeaderCell title="Position" width={COLWIDTHS[3]} style={{ padding: "5px" }}>
             Position
           </Table.HeaderCell>
-          <Table.HeaderCell title="Text">Text</Table.HeaderCell>
+          <Table.HeaderCell title="Text" style={{ padding: "5px" }}>
+            Text
+          </Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body
