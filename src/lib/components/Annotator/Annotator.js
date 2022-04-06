@@ -22,9 +22,10 @@ const Annotator = ({ jobServer, askFullScreen }) => {
 
   useEffect(() => {
     // When unitIndex changes, get the unit
+    if (preparedUnit?.unitIndex === unitIndex) return;
     if (!jobServer || unitIndex === null) return;
     getUnit(jobServer, unitIndex, setPreparedUnit, setUnitIndex);
-  }, [unitIndex, jobServer, setUnitIndex, setPreparedUnit]);
+  }, [unitIndex, jobServer, preparedUnit, setUnitIndex, setPreparedUnit]);
 
   const content = (fullScreenNode) => {
     if (unitIndex < 0) return null;
@@ -94,15 +95,19 @@ const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
     const unit = await jobServer.getUnit(unitIndex);
     setPreparedUnit({
       jobServer,
+      unitIndex: unit.index || unitIndex, // unit can (should?) return an index to keep it fully controlled
       unitId: unit.id,
-      ...unit.unit,
       annotations: unit.annotation,
       status: unit.status,
+      ...unit.unit,
     });
   } catch (e) {
-    if (e.response?.status === 404) setUnitIndex(null);
+    if (e.response?.status === 404) {
+      setUnitIndex(null);
+    } else {
+      console.error(e);
+    }
     setPreparedUnit(null);
-    console.error(e);
   }
 };
 
@@ -123,7 +128,7 @@ const Finished = ({ jobServer }) => {
   if (!jobServer.getAllAnnotations) {
     return (
       <Grid container centered verticalAlign="middle" style={{ margin: "0", padding: "0" }}>
-        <Grid.Row style={{ marginTop: "40%" }}>
+        <Grid.Row style={{ marginTop: "40%", width: "100%", height: "100%" }}>
           <div>
             <Icon name="flag checkered" size="huge" style={{ transform: "scale(5)" }} />
           </div>
@@ -133,13 +138,13 @@ const Finished = ({ jobServer }) => {
   } else {
     return (
       <Grid container centered verticalAlign="middle" style={{ margin: "0", padding: "0" }}>
-        <Grid.Row style={{ marginTop: "40%" }}>
+        <Grid.Row style={{ marginTop: "40%", width: "100%", height: "100%" }}>
           <Grid.Column width={4}>
-            <Icon name="flag checkered" size="huge" style={{ transform: "scale(1)" }} />
+            <Icon name="flag checkered" size="huge" />
           </Grid.Column>
           <Grid.Column width={8}>
             <Header>You finished the codingjob!</Header>
-            <p>Please download your results and send them to whoever gave you this job. </p>
+            <p>Please download your results (and send them to whoever gave you this job). </p>
             <DownloadAnnotations jobServer={jobServer} />
           </Grid.Column>
         </Grid.Row>

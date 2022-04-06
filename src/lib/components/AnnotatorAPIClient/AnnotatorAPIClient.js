@@ -3,8 +3,7 @@ import Annotator from "../Annotator/Annotator";
 import { Grid } from "semantic-ui-react";
 import useBackend from "./components/useBackend";
 import JobServerAPI from "./classes/JobServerAPI";
-import HomeAdmin from "./components/HomeAdmin";
-import HomeCoder from "./components/HomeCoder";
+import Home from "./components/Home";
 
 import { useSearchParams } from "react-router-dom";
 
@@ -14,49 +13,43 @@ import { useSearchParams } from "react-router-dom";
 // Codingjobs can then specify whether stay anonymous is allowed, and whether registration is required.
 
 const AnnotatorAPIClient = () => {
-  const [searchParams] = useSearchParams();
-  let urlHost = searchParams.get("host");
-  if (urlHost) urlHost = urlHost.replace("%colon%", ":"); // for making colon in qr code work
-  let urlToken = searchParams.get("token");
-  let urlJobId = searchParams.get("job_id");
-
-  const [backend, loginForm] = useBackend(urlHost, urlToken);
-  const jobServer = useJobServerBackend(backend, urlJobId);
+  const [backend, authForm] = useBackend();
+  const jobServer = useJobServer(backend);
 
   if (!backend) {
     // If backend isn't connected
     return (
       <Grid inverted textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
-        <Grid.Column style={{ maxWidth: "500px" }}>{loginForm}</Grid.Column>
+        <Grid.Column style={{ maxWidth: "500px" }}>{authForm}</Grid.Column>
       </Grid>
     );
   }
 
   if (!jobServer) {
-    if (!backend) return;
     // if backend is connected, but there is no jobServer (because no job_id was passed in the url)
     // show a screen with some relevant info for the user on this host. Like current / new jobs
-    if (backend.is_admin) return <HomeAdmin backend={backend} loginForm={loginForm} />;
-    return <HomeCoder backend={backend} loginForm={loginForm} />;
+    return <Home backend={backend} authForm={authForm} />;
   }
 
-  if (urlJobId && jobServer.job_id !== urlJobId) return null;
-  if (urlHost && backend.host !== urlHost) return null;
+  //if (urlJobId && jobServer.job_id !== urlJobId) return null;
+  //if (urlHost && backend.host !== urlHost) return null;
   return <Annotator jobServer={jobServer} />;
 };
 
-const useJobServerBackend = (backend, jobId) => {
+const useJobServer = (backend) => {
   const [jobServer, setJobServer] = useState(null);
+  const [searchParams] = useSearchParams();
+  let urlJobId = searchParams.get("job_id");
 
   useEffect(() => {
-    if (!backend || jobId == null || jobId === null) {
+    if (!backend || urlJobId == null || urlJobId === null) {
       setJobServer(null);
       return;
     }
     setJobServer(null);
-    const js = new JobServerAPI(backend, jobId, setJobServer);
+    const js = new JobServerAPI(backend, urlJobId, setJobServer);
     js.init().then(() => setJobServer(js)); // add a check for if job_id is invalid
-  }, [backend, jobId]);
+  }, [backend, urlJobId]);
 
   return jobServer;
 };
