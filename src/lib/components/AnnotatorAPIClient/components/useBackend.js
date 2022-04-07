@@ -14,6 +14,8 @@ const useBackend = () => {
   const [backend, setBackend] = useState(null);
   const [initializing, setInitializing] = useState(true);
 
+  console.log(auth);
+  console.log(backend);
   useEffect(() => {
     // manage url parameters
     // if url parameters are changed, update auth if needed
@@ -23,10 +25,12 @@ const useBackend = () => {
     let host = urlHost || auth?.host || null;
     let token = urlToken || auth?.[host + "__token__"] || null;
 
+    // console.log(host);
     if (urlToken || host !== urlHost) {
       // token must always be removed after usage so people don't accidentally share it
       // host should always be in the url parameters, because a user can work across hosts
       searchParams.set("host", host);
+      //searchParams.delete("host");
       searchParams.delete("token");
       setSearchParams(searchParams);
     }
@@ -80,7 +84,6 @@ export const AuthForm = ({ backend, auth, setAuth }) => {
   const host = auth?.host || null;
 
   const setLogin = (host, token) => {
-    console.log(host);
     logIn(host, token, auth, setAuth);
   };
 

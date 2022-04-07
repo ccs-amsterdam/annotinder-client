@@ -9,6 +9,7 @@ const IndexController = ({ n, nCoded, index, setIndex, canGoForward = true, canG
   const [activePage, setActivePage] = useState(1);
   const [delayedActivePage, setDelayedActivePage] = useState(1);
 
+  console.log(index);
   useEffect(() => {
     if (index < 0) return;
     if (index !== null) setActivePage(Math.min(index + 1, n + 1));
@@ -74,7 +75,7 @@ const IndexController = ({ n, nCoded, index, setIndex, canGoForward = true, canG
         <Icon
           name="step forward"
           onClick={() => setActivePage(Math.min(nCoded + 1, activePage + 1))}
-          disabled={!canGoForward && activePage >= nCoded}
+          disabled={!canGoForward && activePage >= nCoded + 1}
           style={iconStyle}
         />
         <Icon

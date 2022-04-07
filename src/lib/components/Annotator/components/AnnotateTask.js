@@ -92,7 +92,7 @@ const useAnnotations = (unit) => {
       const cleanAnnotations = getCleanAnnotations(newAnnotations);
       if (!annotationsHaveChanged(unit.annotations, cleanAnnotations)) return;
       const newStatus = unit?.status === "DONE" ? "DONE" : "IN_PROGRESS";
-      unit.jobServer.postAnnotations(unit.unitId, cleanAnnotations, newStatus);
+      unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, newStatus);
     },
     [unit]
   );
@@ -133,7 +133,7 @@ const NextUnitButton = ({ unit, annotations, setUnitIndex, nextDelay }) => {
     // write DONE status
     setTempDisable("loading");
     unit.jobServer
-      .postAnnotations(unit.unitId, getCleanAnnotations(annotations), "DONE")
+      .postAnnotations(unit.unitId, unit.unitIndex, getCleanAnnotations(annotations), "DONE")
       .then((res) => {
         // wait until post succeeds before moving to next unit, because backend
         // needs to know this unit is done.

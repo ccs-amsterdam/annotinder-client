@@ -52,7 +52,7 @@ const QuestionForm = ({
     }
 
     const status = newQuestionIndex === null ? "DONE" : "IN_PROGRESS";
-    unit.jobServer.postAnnotations(unit.unitId, unit.annotations, status);
+    unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, unit.annotations, status);
 
     setAnswerTransition(answer); // show given answer
     setTimeout(() => {
