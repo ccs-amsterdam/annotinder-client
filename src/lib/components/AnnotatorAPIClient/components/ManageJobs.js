@@ -128,13 +128,7 @@ const JobDetails = ({ backend, job, jobId, setJobs }) => {
     });
   };
 
-  // const onClickProgress = () => {
-  //   getAnnotations();
-  // };
-
-  // const onClickDownload = async () => {
-  //   const ann = annotations?.data || (await getAnnotations());
-  // };
+  console.log(annotations);
 
   if (!job) return null;
 
@@ -184,8 +178,11 @@ const JobDetails = ({ backend, job, jobId, setJobs }) => {
           <Button
             fluid
             loading={!annotations?.data}
+            disabled={annotations?.data.length === 0}
             primary
-            content="Download annotations"
+            content={
+              annotations?.data.length > 0 ? "Download annotations" : "There are no annotations :("
+            }
             icon="download"
             labelPosition="left"
           />
@@ -208,7 +205,7 @@ const AnnotationProgress = ({ job, annotations }) => {
     <div style={{ marginTop: "20px", height: "100%" }}>
       <LabeledProgress
         key={"total"}
-        label={"Total units coded"}
+        label={"Total units finished"}
         value={annotations.totalProgress}
         total={job.n_total}
       />
