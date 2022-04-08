@@ -30,6 +30,7 @@ export default function UsersTable({ backend, users, setUsers }) {
   return (
     <FullDataTable
       fullData={users}
+      setFullData={setUsers}
       columns={columns}
       buttons={[LoginLinkButton]}
       backend={backend}

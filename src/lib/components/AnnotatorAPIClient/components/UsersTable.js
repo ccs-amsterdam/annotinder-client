@@ -16,24 +16,8 @@ export default function UsersTable({ backend, users, setUsers }) {
       .catch((e) => setUsers([]));
   }, [backend, setUsers]);
 
-  // const rowOptions = (row) => {
-  //   const style = { padding: "5px" };
-  //   return (
-  //     <ButtonGroup>
-  //       <Button icon="linkify" style={style} />
-  //     </ButtonGroup>
-  //   );
-  // };
-
-  // const columnsWithButton = [{ name: "", width: 2, f: rowOptions }, ...columns];
-
   return (
-    <FullDataTable
-      fullData={users}
-      columns={columns}
-      buttons={[LoginLinkButton]}
-      backend={backend}
-    />
+    <FullDataTable fullData={users} columns={columns} buttons={LoginLinkButton} backend={backend} />
   );
 }
 

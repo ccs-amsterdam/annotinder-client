@@ -6,13 +6,21 @@ const PAGESIZE = 10;
 /**
  * PaginationTable wrapper for if the full data is already in memory
  * @param {array} fullData array with objects
+ * @param {function} setFullData if table needs to update fulldata state
  * @param {array} columns  array with objects specifying what data to show in the columns
  * @param {function} onClick Optional. If given, clicking row calls the function with the row object as argument
- * @param {array}   buttons  Optional, Array with components that render a button. Will be put in a buttongroup in first column.
- *                           The component will be given the props "row" (the row object) and "backend" (see backend property)
+ * @param {array}   buttons  Optional, Component or Array with Components that render buttons. Will be put in a buttongroup in first column.
+ *                           The component will be given the props "row" (the row object), "backend" (see backend property), and "setData" (for setFullData).
  * @param {class}  backend   If buttons is used, backend can be passed along, so that it can be given to the button rendering component
  */
-export default function FullDataTable({ fullData, columns, onClick, buttons, backend }) {
+export default function FullDataTable({
+  fullData,
+  setFullData,
+  columns,
+  onClick,
+  buttons,
+  backend,
+}) {
   const [data, setData] = useState([]);
   const [pages, setPages] = useState(1);
 
@@ -39,6 +47,7 @@ export default function FullDataTable({ fullData, columns, onClick, buttons, bac
   return (
     <PaginationTable
       data={data}
+      setFullData={setFullData}
       pages={pages}
       columns={columns}
       pageChange={pageChange}
@@ -57,7 +66,16 @@ export default function FullDataTable({ fullData, columns, onClick, buttons, bac
  * @param {function} pageChange the function to perform on pagechange. Gets pageindex as an argument, and should update data
  * @returns
  */
-const PaginationTable = ({ data, columns, pages, pageChange, onClick, buttons, backend }) => {
+const PaginationTable = ({
+  data,
+  setFullData,
+  columns,
+  pages,
+  pageChange,
+  onClick,
+  buttons,
+  backend,
+}) => {
   const createHeaderRow = (data, columns) => {
     return columns.map((col, i) => {
       return (
@@ -87,13 +105,25 @@ const PaginationTable = ({ data, columns, pages, pageChange, onClick, buttons, b
       if (column.hide) return null;
       columns.ref = React.createRef();
 
+      if (column.component) {
+        const Component = column.component;
+        return (
+          <Table.Cell ref={column.ref} key={i}>
+            <Component backend={backend} rowObj={rowObj} />
+          </Table.Cell>
+        );
+      }
+
       let content;
       if (column.f) {
         content = column.f(rowObj);
       } else {
         content = rowObj ? rowObj[column.name] : null;
       }
-      if (content instanceof Date) content = content.toISOString().slice(0, 19).replace(/T/g, " ");
+      if (column.date && content !== "NEW") {
+        content = new Date(content);
+        content = content.toISOString().slice(0, 19).replace(/T/g, " ");
+      }
       return (
         <Table.Cell ref={column.ref} key={i}>
           <span title={column.title ? content : null}>{content}</span>
@@ -101,11 +131,17 @@ const PaginationTable = ({ data, columns, pages, pageChange, onClick, buttons, b
       );
     });
     if (buttons) {
+      const buttonsArray = Array.isArray(buttons) ? buttons : [buttons];
       cells = [
-        <Table.Cell>
+        <Table.Cell key={"button." + rowObj.id}>
           <Button.Group>
-            {buttons.map((ButtonComponent) => (
-              <ButtonComponent row={rowObj} backend={backend} />
+            {buttonsArray.map((ButtonComponent, i) => (
+              <ButtonComponent
+                key={rowObj.id + "." + i}
+                row={rowObj}
+                backend={backend}
+                setData={setFullData}
+              />
             ))}
           </Button.Group>
         </Table.Cell>,

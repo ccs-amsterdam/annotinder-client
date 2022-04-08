@@ -26,6 +26,7 @@ class Backend {
     const d = await this.getToken();
     this.email = d.email;
     this.is_admin = d.is_admin;
+    this.token = d.token; //getToken should give a refreshed token, which is set to localstorage in useBackend
   }
 
   // GET
@@ -57,9 +58,25 @@ class Backend {
     const res = await this.api.get(`/codingjob/${job_id}`);
     return res.data;
   }
-  async getCodingjobs(user) {
+  async getCodingjobDetails(job_id) {
+    const res = await this.api.get(`/codingjob/${job_id}/details`);
+    return res.data;
+  }
+  async getCodingjobAnnotations(job_id) {
+    const res = await this.api.get(`/codingjob/${job_id}/annotations`);
+    return res.data;
+  }
+  async getAllJobs() {
+    const res = await this.api.get("/codingjobs");
+    return res.data;
+  }
+  async getUserJobs(user) {
     const path = `/users/${user || "me"}/codingjobs`;
     const res = await this.api.get(path);
+    return res.data;
+  }
+  async toggleJobArchived(job_id) {
+    const res = await this.api.get(`/codingjob/${job_id}/archived`);
     return res.data;
   }
 

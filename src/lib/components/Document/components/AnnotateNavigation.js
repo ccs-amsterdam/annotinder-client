@@ -27,8 +27,8 @@ const AnnotateNavigation = ({
   }, [tokens, annotations, variableMap, editMode]);
 
   useEffect(() => {
-    showSelection(tokens, tokenSelection);
-  }, [tokens, tokenSelection]);
+    showSelection(tokens, tokenSelection, editMode);
+  }, [tokens, tokenSelection, editMode]);
 
   useEffect(() => {
     setTokenSelection([]);
@@ -68,15 +68,22 @@ const AnnotateNavigation = ({
 };
 
 const showAnnotations = (tokens, annotations, variableMap, editMode) => {
+  // loop over tokens. Do some styling. Then get the (allowed) annotations for this token,
+  // and apply styling to annotated tokens
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
     if (!token.ref?.current) continue;
+
+    if (editMode) {
+      if (token.ref.current.style.cursor !== "default") token.ref.current.style.cursor = "default";
+    } else {
+      if (token.ref.current.style.cursor !== "text") token.ref.current.style.cursor = "text";
+    }
 
     let tokenAnnotations = allowedAnnotations(annotations?.[token.index], variableMap);
     if (!tokenAnnotations || Object.keys(tokenAnnotations).length === 0) {
       if (token.ref.current.classList.contains("annotated")) {
         token.ref.current.classList.remove("annotated");
-        token.ref.current.style.cursor = "default";
         setTokenColor(token, null, null, null);
       }
       continue;
@@ -108,6 +115,8 @@ const showAnnotations = (tokens, annotations, variableMap, editMode) => {
 // };
 
 const allowedAnnotations = (annotations, variableMap) => {
+  // get all annotations that are currently 'allowed', meaning that the variable is selected
+  // and the codes are valid and active codes in the codebook
   if (!annotations) return null;
 
   if (annotations && variableMap) {
@@ -181,7 +190,7 @@ const setTokenColor = (token, pre, text, post) => {
   children[2].style.background = post;
 };
 
-const showSelection = (tokens, selection) => {
+const showSelection = (tokens, selection, editMode) => {
   for (let token of tokens) {
     if (!token.ref?.current) continue;
     token.ref.current.classList.remove("tapped");

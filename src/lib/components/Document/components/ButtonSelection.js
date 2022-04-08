@@ -182,7 +182,7 @@ const CloseButton = ({ selected, onClick, style }) => {
   return (
     <Button
       icon="window close"
-      size="massive"
+      size="huge"
       style={{
         padding: "0px",
         background: selected ? "grey" : "white",

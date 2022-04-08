@@ -42,6 +42,10 @@ export default function ManageUsers({ backend }) {
         setAddUsers={setAddUsers}
         setUsers={setUsers}
       />
+      <Grid.Column width="8">
+        <Header>Users</Header>
+        <UsersTable backend={backend} users={users} setUsers={setUsers} />
+      </Grid.Column>
       <Grid.Column width="4">
         <Header>Create new users</Header>
 
@@ -55,10 +59,6 @@ export default function ManageUsers({ backend }) {
         <Button fluid primary onClick={() => onCreate()}>
           Create users
         </Button>
-      </Grid.Column>
-      <Grid.Column width="8">
-        <Header>Users</Header>
-        <UsersTable backend={backend} users={users} setUsers={setUsers} />
       </Grid.Column>
     </Grid>
   );

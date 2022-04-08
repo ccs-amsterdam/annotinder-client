@@ -15,7 +15,18 @@ const useBackend = () => {
   const [initializing, setInitializing] = useState(true);
 
   console.log(auth);
-  console.log(backend);
+  // useEffect(() => {
+  //   // when log in successfull, add host to url param
+  //   if (!backend) return null;
+  //   let urlHost = searchParams.get("host")?.replace("%colon%", ":");
+
+  //   if (backend.host !== urlHost) {
+  //     console.log("wtf");
+  //     searchParams.set("host", backend.host);
+  //     setSearchParams(searchParams);
+  //   }
+  // }, [backend, searchParams, setSearchParams]);
+
   useEffect(() => {
     // manage url parameters
     // if url parameters are changed, update auth if needed
@@ -25,12 +36,18 @@ const useBackend = () => {
     let host = urlHost || auth?.host || null;
     let token = urlToken || auth?.[host + "__token__"] || null;
 
-    // console.log(host);
-    if (urlToken || host !== urlHost) {
-      // token must always be removed after usage so people don't accidentally share it
-      // host should always be in the url parameters, because a user can work across hosts
-      searchParams.set("host", host);
-      //searchParams.delete("host");
+    if (backend) {
+      if (urlHost !== backend.host) {
+        // if logged in, set host to url parameter
+        searchParams.set("host", host);
+        setSearchParams(searchParams);
+      }
+      return; // critical! (don't continue if logged in)
+    }
+
+    // if not logged in, remove the url parameters
+    if (urlToken || urlHost) {
+      searchParams.delete("host");
       searchParams.delete("token");
       setSearchParams(searchParams);
     }
@@ -39,7 +56,7 @@ const useBackend = () => {
     if (!host) return; // a token without a host is like
     if (host === auth.host && token === auth?.[host + "__token__"]) return;
     setAuth({ ...auth, host, [host + "__token__"]: token });
-  }, [auth, setAuth, searchParams, setSearchParams]);
+  }, [backend, auth, setAuth, searchParams, setSearchParams]);
 
   useEffect(() => {
     // this tries to 'initialize' login with current settings, When done, initialize is set to
@@ -58,33 +75,23 @@ const useBackend = () => {
     b.init()
       .then(() => {
         setBackend(b);
+        setAuth({ ...auth, host: b.host, [b.host + "__token__"]: b.token }); // set host to last one logged in with
       })
       .catch((e) => {
         setBackend(null);
       })
       .finally(() => setInitializing(false));
-  }, [auth, backend, setInitializing]);
+  }, [auth, setAuth, backend, setInitializing]);
 
   if (initializing) return [null, null];
   return [backend, <AuthForm backend={backend} auth={auth} setAuth={setAuth} />];
-};
-
-const logIn = async (host, token, auth, setAuth) => {
-  const backend = new Backend(host, token);
-
-  try {
-    const refreshedToken = await backend.getToken();
-    setAuth({ ...auth, host, [host + "__token__"]: refreshedToken.token }); // set host to last one logged in with
-  } catch (e) {
-    setAuth({ ...auth, host, [host + "__token__"]: null }); // remove token if token failed
-  }
 };
 
 export const AuthForm = ({ backend, auth, setAuth }) => {
   const host = auth?.host || null;
 
   const setLogin = (host, token) => {
-    logIn(host, token, auth, setAuth);
+    setAuth({ ...auth, host, [host + "__token__"]: token });
   };
 
   const setLogout = () => {
@@ -130,6 +137,7 @@ const SignIn = ({ recHost, setLogin }) => {
       const token = await passwordLogin(host, email, password);
       setLogin(host, token);
     } catch (e) {
+      setLogin(null, null);
       setInvalidPassword(true);
       console.error(e);
     }

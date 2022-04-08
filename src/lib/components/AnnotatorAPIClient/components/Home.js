@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Grid, Header, Icon, List, Menu, Popup, Segment } from "semantic-ui-react";
-import CoderJobsTable from "./CoderJobsTable";
+import { Icon, List, Menu, Popup, Segment } from "semantic-ui-react";
+import CoderView from "./CoderView";
 import ManageJobs from "./ManageJobs";
 import ManageUsers from "./ManageUsers";
 
@@ -82,18 +82,5 @@ const MenuBar = ({ backend, authForm, menuItem, setMenuItem }) => {
         </Popup.Content>
       </Popup>
     </Menu>
-  );
-};
-
-const CoderView = ({ backend }) => {
-  return (
-    <Grid centered stackable>
-      <Grid.Row>
-        <Grid.Column width="8">
-          <Header>Coding jobs</Header>
-          <CoderJobsTable backend={backend} />
-        </Grid.Column>
-      </Grid.Row>
-    </Grid>
   );
 };

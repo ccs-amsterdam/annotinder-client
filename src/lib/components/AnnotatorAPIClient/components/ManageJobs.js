@@ -1,156 +1,236 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Grid,
-  Header,
-  Icon,
-  List,
-  Modal,
-  TextArea,
-  Dimmer,
-  Loader,
-  Checkbox,
-} from "semantic-ui-react";
+import React, { useState, useEffect } from "react";
+import FullDataTable from "./FullDataTable";
+import { Grid, Header, Button, Icon, Checkbox, Table, Progress } from "semantic-ui-react";
+import { useCSVDownloader } from "react-papaparse";
 
-import JobsTable from "./JobsTable";
+const columns = [
+  { name: "id", title: true, width: 2 },
+  { name: "title", title: true, width: 9 },
+  { name: "created", title: true, date: true, width: 3 },
+];
 
 export default function ManageJobs({ backend }) {
-  const [text, setText] = useState("");
-  const [users, setUsers] = useState([]);
-  const [addUsers, setAddUsers] = useState([]);
+  const [jobs, setJobs] = useState([]);
+  const [jobId, setJobId] = useState(null);
+  const [job, setJob] = useState(null);
 
-  const onCreate = () => {
-    const newUsers = text.split(/[\s,;\n]/).reduce((newUsers, email) => {
-      email = email.trim();
-      if (email === "") return newUsers;
-      const validEmail = email.match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-      const exists = !!users.find((u) => u.email === email);
-      newUsers.push({ email, validEmail, exists });
+  useEffect(() => {
+    getAllJobs(backend, setJobs);
+  }, [backend]);
 
-      return newUsers;
-    }, []);
-    setAddUsers(newUsers);
+  useEffect(() => {
+    if (!jobId) {
+      setJob(null);
+      if (jobs && jobs.length > 0) setJobId(jobs[0].id);
+      return;
+    }
+    backend
+      .getCodingjobDetails(jobId)
+      .then(setJob)
+      .catch((e) => {
+        console.error(e);
+        setJob(null);
+      });
+  }, [jobs, jobId, backend, setJob]);
+
+  const onClick = async (job) => {
+    setJobId(job.id);
   };
 
   return (
     <Grid textAlign="center" style={{ height: "100%" }}>
-      <CreateUserModal
-        backend={backend}
-        addUsers={addUsers}
-        setAddUsers={setAddUsers}
-        setUsers={setUsers}
-      />
-      <Grid.Column width="4">
-        <Header>Create new users</Header>
-
-        <TextArea
-          placeholder="List email addresses, separated by newline, space, comma or semicolon"
-          value={text}
-          rows="10"
-          style={{ width: "100%" }}
-          onChange={(e, d) => setText(d.value)}
-        ></TextArea>
-        <Button fluid primary onClick={() => onCreate()}>
-          Create users
-        </Button>
-      </Grid.Column>
       <Grid.Column width="8">
-        <Header>Users</Header>
-        <JobsTable backend={backend} users={users} setUsers={setUsers} />
+        <Header>Jobs</Header>
+        <FullDataTable
+          fullData={jobs}
+          setFullData={setJobs}
+          buttons={ArchiveButton}
+          columns={columns}
+          onClick={onClick}
+          backend={backend}
+        />
+      </Grid.Column>
+      <Grid.Column width="4">
+        <JobDetails backend={backend} job={job} jobId={jobId} setJobs={setJobs} />
       </Grid.Column>
     </Grid>
   );
 }
 
-const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }) => {
-  const [status, setStatus] = useState("idle");
-  const [asAdmin, setAsAdmin] = useState(false);
+const toggleJobArchived = async (id, backend, setData) => {
+  const newvalue = await backend.toggleJobArchived(id);
+  setData((jobs) => {
+    const i = jobs.findIndex((j) => j.id === Number(id));
+    if (i >= 0) jobs[i].archived = newvalue.archived;
+    return [...jobs];
+  });
+};
 
-  const onSubmit = async (event) => {
-    const users = addUsers.reduce((submitUsers, user) => {
-      if (!user.validEmail || user.exists) return submitUsers;
-      submitUsers.push({ email: user.email, admin: asAdmin, password: "test" });
-      return submitUsers;
-    }, []);
-    try {
-      await backend.postUsers({ users });
-      await backend
-        .getUsers()
-        .then(setUsers)
-        .catch((e) => setUsers([]));
-      setAddUsers([]);
-    } catch (e) {
-      setStatus("error");
-    }
-  };
-
-  const listUsers = () => {
-    const ul = addUsers.map((user) => {
-      let cannotAdd = "";
-      if (!user.validEmail) cannotAdd = "Invalid email address: ";
-      if (user.exists) cannotAdd = "User already exists: ";
-      return (
-        <List.Item key={user.email}>
-          <List.Icon
-            name={cannotAdd ? "exclamation" : "check"}
-            style={{ color: cannotAdd ? "red" : "green" }}
-          />
-          <List.Content>
-            <span style={{ color: "red" }}>{cannotAdd}</span>
-            {user.email}
-          </List.Content>
-        </List.Item>
-      );
-    });
-    return ul;
-  };
+const ArchiveButton = ({ row, backend, setData }) => {
+  if (!backend) return null;
 
   return (
-    <Modal
-      closeIcon
-      open={addUsers.length > 0}
-      onClose={() => {
-        setAddUsers([]);
+    <Button
+      icon={row.archived ? "eye slash" : "eye"}
+      onClick={(e, d) => {
+        toggleJobArchived(row.id, backend, setData);
       }}
-      onOpen={() => setStatus("idle")}
-    >
-      <Header icon="users" content={`Create users`} />
-      <Modal.Content>
-        <p>Do you want to add the following users?</p>
-        <List>{listUsers()}</List>
-        <Checkbox
-          toggle
-          label="Add users as admin"
-          checked={asAdmin}
-          onClick={() => setAsAdmin(!asAdmin)}
-        />
-      </Modal.Content>
-      <Modal.Actions>
-        {status === "error" ? (
-          <div>Could not add users (for a reason not yet covered in the error handling...)</div>
-        ) : null}
-        {status === "pending" ? (
-          <Dimmer active inverted>
-            <Loader content="Creating Users" />
-          </Dimmer>
-        ) : (
-          <>
-            <Button
-              color="red"
-              onClick={() => {
-                setAddUsers([]);
-              }}
-            >
-              <Icon name="remove" /> No
-            </Button>
-            <Button color="green" onClick={onSubmit}>
-              <Icon name="checkmark" /> Yes
-            </Button>
-          </>
-        )}
-      </Modal.Actions>
-    </Modal>
+      style={{ padding: "5px", background: row.archived ? "#f76969" : "" }}
+    />
+  );
+};
+
+const getAllJobs = (backend, setJobs) => {
+  backend
+    .getAllJobs()
+    .then((jobs) => {
+      setJobs(jobs.jobs || []);
+    })
+    .catch((e) => {
+      console.error(e);
+      setJobs([]);
+    });
+};
+
+const JobDetails = ({ backend, job, jobId, setJobs }) => {
+  const { CSVDownloader, Type } = useCSVDownloader();
+  const [annotations, setAnnotations] = useState(null);
+
+  useEffect(() => {
+    setAnnotations(null);
+  }, [jobId]);
+
+  const getAnnotations = async () => {
+    const units = await backend.getCodingjobAnnotations(job.id);
+    const uniqueUnits = {};
+    const progress = {};
+    const data = [];
+    console.log(units);
+    for (let unit of units) {
+      if (!progress[unit.coder]) progress[unit.coder] = 0;
+      if (unit.status === "DONE") progress[unit.coder]++;
+      uniqueUnits[unit.id] = true;
+
+      for (let ann of unit.annotation) {
+        data.push({
+          coder: unit.coder,
+          unit_id: unit.unit_id,
+          unit_status: unit.status,
+          ...ann,
+        });
+      }
+    }
+
+    setAnnotations({
+      data,
+      progress,
+      totalProgress: Object.keys(uniqueUnits).length,
+    });
+  };
+
+  // const onClickProgress = () => {
+  //   getAnnotations();
+  // };
+
+  // const onClickDownload = async () => {
+  //   const ann = annotations?.data || (await getAnnotations());
+  // };
+
+  if (!job) return null;
+
+  return (
+    <div style={{ marginTop: "30px", height: "100%", textAlign: "left" }}>
+      <Header textAlign="center">{job.title}</Header>
+
+      <Table basic="very" compact>
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell>ID</Table.Cell>
+            <Table.Cell>{job?.id}</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>Units</Table.Cell>
+            <Table.Cell>{job?.n_total}</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>Task type</Table.Cell>
+            <Table.Cell>{job?.codebook?.type}</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>Rule set</Table.Cell>
+            <Table.Cell>{job?.rules?.ruleset}</Table.Cell>
+          </Table.Row>
+
+          <Table.Row>
+            <Table.Cell>Archived</Table.Cell>
+            <Table.Cell>
+              <Checkbox
+                toggle
+                checked={job.archived}
+                onChange={() => toggleJobArchived(job.id, backend, setJobs)}
+              />
+            </Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
+
+      {annotations?.data ? (
+        <CSVDownloader
+          type={Type.Button}
+          filename={`annotations_${job?.id}_${job?.title}.csv`}
+          data={annotations?.data}
+          style={{ cursor: "pointer", border: "0", padding: "0", width: "100%" }}
+        >
+          <Button
+            fluid
+            loading={!annotations?.data}
+            primary
+            content="Download annotations"
+            icon="download"
+            labelPosition="left"
+          />
+        </CSVDownloader>
+      ) : (
+        <Button fluid onClick={getAnnotations} disabled={annotations !== null}>
+          <Icon name="list" />
+          Get annotations
+        </Button>
+      )}
+      <AnnotationProgress job={job} annotations={annotations} />
+    </div>
+  );
+};
+
+const AnnotationProgress = ({ job, annotations }) => {
+  if (!annotations?.progress) return null;
+  console.log(annotations);
+  return (
+    <div style={{ marginTop: "20px", height: "100%" }}>
+      <LabeledProgress
+        key={"total"}
+        label={"Total units coded"}
+        value={annotations.totalProgress}
+        total={job.n_total}
+      />
+      {Object.entries(annotations.progress).map(([key, value]) => {
+        return (
+          <LabeledProgress key={key} size="small" label={key} value={value} total={job.n_total} />
+        );
+      })}
+    </div>
+  );
+};
+
+const LabeledProgress = ({ label, value, total, size }) => {
+  return (
+    <Progress
+      size={size}
+      label={label}
+      key="total"
+      autoSuccess
+      value={value}
+      total={total}
+      progress="ratio"
+    />
   );
 };
