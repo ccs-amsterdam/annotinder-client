@@ -79,6 +79,10 @@ class Backend {
     const res = await this.api.get(`/codingjob/${job_id}/archived`);
     return res.data;
   }
+  async toggleJobRestricted(job_id) {
+    const res = await this.api.get(`/codingjob/${job_id}/restricted`);
+    return res.data;
+  }
 
   // POST
   postCodingjob(codingjobPackage, title) {

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import FullDataTable from "./FullDataTable";
-import { Grid, Header, Button, Icon, Checkbox, Table, Progress } from "semantic-ui-react";
+import { Grid, Header, Button, Icon, Checkbox, Table, Progress, Dropdown } from "semantic-ui-react";
 import { useCSVDownloader } from "react-papaparse";
 
 const columns = [
   { name: "id", title: true, width: 2 },
-  { name: "title", title: true, width: 9 },
-  { name: "created", title: true, date: true, width: 3 },
+  { name: "title", title: true, width: 6 },
+  { name: "created", title: true, date: true, width: 6 },
 ];
 
 export default function ManageJobs({ backend }) {
@@ -39,7 +39,7 @@ export default function ManageJobs({ backend }) {
 
   return (
     <Grid textAlign="center" style={{ height: "100%" }}>
-      <Grid.Column width="8">
+      <Grid.Column width="6">
         <Header>Jobs</Header>
         <FullDataTable
           fullData={jobs}
@@ -50,7 +50,7 @@ export default function ManageJobs({ backend }) {
           backend={backend}
         />
       </Grid.Column>
-      <Grid.Column width="4">
+      <Grid.Column width="6">
         <JobDetails backend={backend} job={job} jobId={jobId} setJobs={setJobs} />
       </Grid.Column>
     </Grid>
@@ -62,6 +62,15 @@ const toggleJobArchived = async (id, backend, setData) => {
   setData((jobs) => {
     const i = jobs.findIndex((j) => j.id === Number(id));
     if (i >= 0) jobs[i].archived = newvalue.archived;
+    return [...jobs];
+  });
+};
+
+const toggleJobRestricted = async (id, backend, setData) => {
+  const newvalue = await backend.toggleJobRestricted(id);
+  setData((jobs) => {
+    const i = jobs.findIndex((j) => j.id === Number(id));
+    if (i >= 0) jobs[i].restricted = newvalue.restricted;
     return [...jobs];
   });
 };
@@ -128,18 +137,16 @@ const JobDetails = ({ backend, job, jobId, setJobs }) => {
     });
   };
 
-  console.log(annotations);
-
   if (!job) return null;
 
   return (
-    <div style={{ marginTop: "30px", height: "100%", textAlign: "left" }}>
+    <div style={{ height: "100%", textAlign: "left" }}>
       <Header textAlign="center">{job.title}</Header>
 
-      <Table basic="very" compact>
+      <Table basic="very" structured compact>
         <Table.Body>
           <Table.Row>
-            <Table.Cell>ID</Table.Cell>
+            <Table.Cell width="8">ID</Table.Cell>
             <Table.Cell>{job?.id}</Table.Cell>
           </Table.Row>
           <Table.Row>
@@ -165,6 +172,17 @@ const JobDetails = ({ backend, job, jobId, setJobs }) => {
               />
             </Table.Cell>
           </Table.Row>
+          <Table.Row>
+            <Table.Cell>Restricted Access</Table.Cell>
+            <Table.Cell>
+              <Checkbox
+                toggle
+                checked={job.restricted}
+                onChange={() => toggleJobRestricted(job.id, backend, setJobs)}
+              />
+            </Table.Cell>
+          </Table.Row>
+          <JobUsers backend={backend} job={job} />
         </Table.Body>
       </Table>
 
@@ -193,8 +211,24 @@ const JobDetails = ({ backend, job, jobId, setJobs }) => {
           Get annotations
         </Button>
       )}
+
       <AnnotationProgress job={job} annotations={annotations} />
     </div>
+  );
+};
+
+const JobUsers = ({ backend, job }) => {
+  if (!job?.restricted) return null;
+  // const [allUsers, setAllUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
+
+  return (
+    <Table.Row>
+      <Table.Cell colSpan="2" style={{ border: "none" }}>
+        <b>Users with access</b>
+        <Dropdown selection multiple style={{ width: "100%" }} />
+      </Table.Cell>
+    </Table.Row>
   );
 };
 
