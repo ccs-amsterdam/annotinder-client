@@ -19,11 +19,9 @@ class JobServerAPI {
   }
 
   async getUnit(i) {
-    console.log(i, this.progress);
     const getNext = i >= this.progress.n_coded && !this.progress.seek_forwards;
     const unit = await this.backend.getUnit(this.job_id, getNext ? null : i);
     //this.progress.n_coded = Math.max(unit?.index ?? i, this.progress.n_coded);
-    console.log(this.progress);
     return unit;
   }
 
