@@ -4,19 +4,6 @@
   color: rgba(0, 0, 0, 0.87) !important;
 }
 
-.annotations-tbody {
-  display: block;
-  overflow: auto;
-  height: 100%;
-}
-
-.annotations-thead,
-.annotations-tbody .annotations-tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
 .codes-table {
   border-collapse: collapse;
 }

@@ -36,3 +36,17 @@ input[type="range"]::-webkit-slider-thumb {
     margin-right: 0rem !important;
   }
 }
+
+.annotations-tbody {
+  display: block;
+  overflow: auto;
+  height: 100%;
+}
+
+.annotations-thead,
+.annotations-tbody .annotations-tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  border: 0px !important;
+}

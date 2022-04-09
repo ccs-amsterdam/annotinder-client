@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AnnotatorAPIClient from "lib/components/AnnotatorAPIClient/AnnotatorAPIClient";
 import DemoJobOverview from "lib/components/DemoJob/DemoJobOverview";
+import "./appStyle.css";
 
 // just for quick testing
 //import AnnotatorRClient from "lib/components/AnnotatorAPIClient/AnnotatorRClient";

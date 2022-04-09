@@ -21,9 +21,7 @@ export default function UsersTable({ backend, users, setUsers }) {
   );
 }
 
-const buttonstyle = { padding: "5px" };
-
-const LoginLinkButton = ({ row, backend }) => {
+const LoginLinkButton = ({ row, backend, style }) => {
   const [link, setLink] = useState(null);
   const [open, setOpen] = useState(false);
 
@@ -49,7 +47,7 @@ const LoginLinkButton = ({ row, backend }) => {
       on="click"
       onOpen={() => setOpen(true)}
       hoverable
-      trigger={<Button icon="linkify" style={buttonstyle} />}
+      trigger={<Button icon="linkify" style={{ padding: "5px", ...style }} />}
     >
       <Header style={{ fontSize: "1.5em" }}>Login link for {row.email}</Header>
       <QRCode value={encodeURI(link?.qrUrl)} size={256} />

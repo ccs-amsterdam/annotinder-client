@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Icon, List, Menu, Popup, Segment } from "semantic-ui-react";
+import { Icon, List, Menu, Popup } from "semantic-ui-react";
 import CoderView from "./CoderView";
 import ManageJobs from "./ManageJobs";
 import ManageUsers from "./ManageUsers";
@@ -22,29 +22,30 @@ export default function Home({ backend, authForm }) {
   };
 
   return (
-    <div style={{ height: "100vh", width: "100vw" }}>
+    <div style={{ height: "100%", width: "100%" }}>
       <MenuBar
         backend={backend}
         authForm={authForm}
         menuItem={menuItem}
         setMenuItem={setMenuItem}
       />
-      <Segment attached="bottom" style={{ height: "calc(100% - 50px)", overflow: "auto" }}>
+      <div style={{ height: "5%" }}></div>
+      <div attached="bottom" style={{ height: "calc(95% - 50px)", overflow: "auto" }}>
         {renderItem()}
-      </Segment>
+      </div>
     </div>
   );
 }
 
 const menuItems = [
-  { label: "Coder view", value: "coderView", onlyAdmin: false },
+  { label: "Coder view", value: "coderView", onlyAdmin: true },
   { label: "Manage jobs", value: "manageJobs", onlyAdmin: true },
   { label: "Manage users", value: "manageUsers", onlyAdmin: true },
 ];
 
 const MenuBar = ({ backend, authForm, menuItem, setMenuItem }) => {
   return (
-    <Menu inverted tabular style={{ height: "40px", marginBottom: "10px" }}>
+    <Menu pointing secondary style={{ marginBottom: "10px" }}>
       {menuItems.map((item) => {
         if (item.onlyAdmin && !backend?.is_admin) return null;
         return (

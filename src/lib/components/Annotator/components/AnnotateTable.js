@@ -12,7 +12,7 @@ const AnnotateTable = ({ tokens, variableMap, annotations }) => {
       style={{ fontSize: "10px", maxHeight: "100%", borderRadius: "0px" }}
       fixed
       role="grid"
-      arioa-labelledby="header"
+      aria-labelledby="header"
       unstackable
       singleLine
       compact="very"
@@ -92,7 +92,7 @@ const AnnotationRow = ({ variable, variableMap, annotation, onClick, text }) => 
     <Table.Row
       className="annotations-tr"
       onClick={() => onClick(annotation.token_span)}
-      style={{ cursor: "pointer" }}
+      style={{ cursor: "pointer", border: "0px !important" }}
     >
       <Table.Cell width={COLWIDTHS[0]}>
         <span title={variable}>{variable}</span>

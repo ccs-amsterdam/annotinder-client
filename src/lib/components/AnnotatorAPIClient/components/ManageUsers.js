@@ -35,7 +35,7 @@ export default function ManageUsers({ backend }) {
   };
 
   return (
-    <Grid textAlign="center" style={{ height: "100%" }}>
+    <Grid stackable textAlign="center" style={{ height: "100%" }}>
       <CreateUserModal
         backend={backend}
         addUsers={addUsers}

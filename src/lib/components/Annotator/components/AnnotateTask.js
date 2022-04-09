@@ -13,6 +13,24 @@ const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
 
   if (!unit || codebook?.variables === null) return null;
 
+  const renderAnnotateTable = () => {
+    if (codebook?.no_table) return null;
+    return (
+      <Grid.Column
+        width={6}
+        style={{
+          padding: "0",
+          height: "100%",
+          paddingLeft: "10px",
+        }}
+      >
+        <div style={{ borderBottom: "1px solid", height: "calc(100%)", overflow: "auto" }}>
+          <AnnotateTable tokens={tokens} variableMap={variableMap} annotations={annotations} />
+        </div>
+      </Grid.Column>
+    );
+  };
+
   return (
     <Grid
       centered
@@ -51,18 +69,7 @@ const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
           />
         </div>
       </Grid.Column>
-      <Grid.Column
-        width={6}
-        style={{
-          padding: "0",
-          height: "100%",
-          paddingLeft: "10px",
-        }}
-      >
-        <div style={{ borderBottom: "1px solid", height: "calc(100%)", overflow: "auto" }}>
-          <AnnotateTable tokens={tokens} variableMap={variableMap} annotations={annotations} />
-        </div>
-      </Grid.Column>
+      {renderAnnotateTable()}
     </Grid>
   );
 };

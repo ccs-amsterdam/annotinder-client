@@ -75,13 +75,13 @@ class Backend {
     const res = await this.api.get(path);
     return res.data;
   }
-  async toggleJobArchived(job_id) {
-    const res = await this.api.get(`/codingjob/${job_id}/archived`);
-    return res.data;
+  async setJobSettings(job_id, settingsObj) {
+    return await this.api.post(`/codingjob/${job_id}/settings`, settingsObj);
   }
-  async toggleJobRestricted(job_id) {
-    const res = await this.api.get(`/codingjob/${job_id}/restricted`);
-    return res.data;
+  async setJobUsers(job_id, users, only_add) {
+    const body = { users };
+    if (only_add) body.only_add = true;
+    return await this.api.post(`/codingjob/${job_id}/users`, body);
   }
 
   // POST

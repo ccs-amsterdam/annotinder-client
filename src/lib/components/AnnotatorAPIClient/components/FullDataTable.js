@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Pagination, Table, Icon, Button } from "semantic-ui-react";
+import { Container, Pagination, Table, Icon, Button, Search } from "semantic-ui-react";
 
 const PAGESIZE = 10;
 
@@ -23,26 +23,44 @@ export default function FullDataTable({
 }) {
   const [data, setData] = useState([]);
   const [pages, setPages] = useState(1);
+  const [filteredData, setFilteredData] = useState([]);
+  const [search, setSearch] = useState("");
 
   const pageChange = (activePage) => {
     const offset = (activePage - 1) * PAGESIZE;
-    const newdata = fullData.slice(offset, offset + PAGESIZE);
+    const newdata = filteredData.slice(offset, offset + PAGESIZE);
     setData(newdata);
   };
 
   useEffect(() => {
-    if (!fullData) {
+    if (!search === "") {
+      setFilteredData(fullData);
+      return;
+    }
+    const lsearch = search.toLowerCase();
+    const fdata = fullData.filter((row) => {
+      for (let value of Object.values(row)) {
+        if (typeof value === "object") continue;
+        if (String(value).toLowerCase().includes(lsearch)) return true;
+      }
+      return false;
+    });
+    setFilteredData(fdata);
+  }, [fullData, search]);
+
+  useEffect(() => {
+    if (!filteredData) {
       setData([]);
       return null;
     }
-    const n = fullData.length;
+    const n = filteredData.length;
     setPages(Math.ceil(n / PAGESIZE));
     let newdata = [];
-    if (n > 0) newdata = fullData.slice(0, PAGESIZE);
+    if (n > 0) newdata = filteredData.slice(0, PAGESIZE);
     setData(newdata);
-  }, [fullData]);
+  }, [filteredData]);
 
-  if (!data) return;
+  //if (!data) return;
 
   return (
     <PaginationTable
@@ -54,9 +72,46 @@ export default function FullDataTable({
       onClick={onClick}
       buttons={buttons}
       backend={backend}
+      setSearch={setSearch}
     />
   );
 }
+
+const headerStyle = {
+  color: "white",
+  background: "#2185d0",
+  borderBottom: "1px solid black",
+  borderTop: "1px solid black",
+  borderRadius: "0px",
+  paddingTop: "5px",
+  paddingBottom: "5px",
+};
+const headerStyleLeft = {
+  ...headerStyle,
+  borderTopLeftRadius: "5px",
+  borderBottomLeftRadius: "5px",
+  borderLeft: "1px solid black",
+};
+const headerStyleRight = {
+  ...headerStyle,
+  borderTopRightRadius: "5px",
+  borderBottomRightRadius: "5px",
+  borderRight: "1px solid black",
+};
+const rowStyle = {
+  border: "none",
+  borderBottom: "none",
+  height: "30px",
+};
+const footerStyle = {
+  color: "black",
+  background: "transparent",
+  //borderTop: "2px solid black",
+  borderTop: "0px",
+  borderRadius: "0px",
+  padding: "10px 0px 5px 0px",
+  textAlign: "center",
+};
 
 /**
  * A nice table with pagination
@@ -75,11 +130,15 @@ const PaginationTable = ({
   onClick,
   buttons,
   backend,
+  setSearch,
 }) => {
   const createHeaderRow = (data, columns) => {
     return columns.map((col, i) => {
+      let style = headerStyle;
+      if (i === 0 && !buttons) style = headerStyleLeft;
+      if (i === columns.length - 1) style = headerStyleRight;
       return (
-        <Table.HeaderCell key={i} width={col.width || null}>
+        <Table.HeaderCell key={i} width={col.width || null} style={style}>
           <span>{col.name}</span>
         </Table.HeaderCell>
       );
@@ -108,7 +167,7 @@ const PaginationTable = ({
       if (column.component) {
         const Component = column.component;
         return (
-          <Table.Cell ref={column.ref} key={i}>
+          <Table.Cell ref={column.ref} key={i} style={rowStyle}>
             <Component backend={backend} rowObj={rowObj} />
           </Table.Cell>
         );
@@ -125,7 +184,7 @@ const PaginationTable = ({
         content = content.toISOString().slice(0, 19).replace(/T/g, " ");
       }
       return (
-        <Table.Cell ref={column.ref} key={i}>
+        <Table.Cell ref={column.ref} key={i} style={rowStyle}>
           <span title={column.title ? content : null}>{content}</span>
         </Table.Cell>
       );
@@ -133,7 +192,7 @@ const PaginationTable = ({
     if (buttons) {
       const buttonsArray = Array.isArray(buttons) ? buttons : [buttons];
       cells = [
-        <Table.Cell key={"button." + rowObj.id}>
+        <Table.Cell key={"button." + rowObj.id} style={{ rowStyle, padding: "0px !important" }}>
           <Button.Group>
             {buttonsArray.map((ButtonComponent, i) => (
               <ButtonComponent
@@ -141,6 +200,7 @@ const PaginationTable = ({
                 row={rowObj}
                 backend={backend}
                 setData={setFullData}
+                style={{ padding: "2px" }}
               />
             ))}
           </Button.Group>
@@ -150,63 +210,93 @@ const PaginationTable = ({
     }
     return cells;
   };
-  if (data.length < 1) return null;
+  //if (data.length < 1) return null;
 
   return (
     <Container>
       <Table
+        color="transparent"
         unstackable
         selectable
         fixed
-        compact
+        compact="very"
         singleLine
         size="small"
-        style={{ fontSize: "10px" }}
+        style={{ border: "none" }}
       >
         <Table.Header>
           <Table.Row>
-            {buttons ? <Table.HeaderCell key="buttons" /> : null}
+            {buttons ? <Table.HeaderCell key="buttons" style={headerStyleLeft} /> : null}
             {createHeaderRow(data, columns)}
           </Table.Row>
         </Table.Header>
         <Table.Body>{createBodyRows(data)}</Table.Body>
         <Table.Footer>
           <Table.Row>
-            <Table.HeaderCell colSpan={buttons ? columns.length + 1 : columns.length}>
-              {pages > 1 ? (
-                <Pagination
-                  size="mini"
-                  floated="right"
-                  boundaryRange={1}
-                  siblingRange={1}
-                  ellipsisItem={{
-                    content: <Icon name="ellipsis horizontal" />,
-                    icon: true,
-                  }}
-                  firstItem={{
-                    content: <Icon name="angle double left" />,
-                    icon: true,
-                  }}
-                  lastItem={{
-                    content: <Icon name="angle double right" />,
-                    icon: true,
-                  }}
-                  prevItem={{ content: <Icon name="angle left" />, icon: true }}
-                  nextItem={{
-                    content: <Icon name="angle right" />,
-                    icon: true,
-                  }}
-                  pointing
-                  secondary
-                  defaultActivePage={1}
-                  totalPages={pages}
-                  onPageChange={(e, d) => pageChange(d.activePage)}
-                ></Pagination>
-              ) : null}
+            <Table.HeaderCell
+              colSpan={buttons ? columns.length + 1 : columns.length}
+              style={footerStyle}
+            >
+              <FooterContent pages={pages} pageChange={pageChange} setSearch={setSearch} />
             </Table.HeaderCell>
           </Table.Row>
         </Table.Footer>
       </Table>
     </Container>
+  );
+};
+
+const FooterContent = ({ pages, pageChange, setSearch }) => {
+  const [loading, setLoading] = useState(false);
+  const [delayedSearch, setDelayedSearch] = useState("");
+
+  useEffect(() => {
+    if (delayedSearch !== "") setLoading(true);
+    const timer = setTimeout(() => {
+      setSearch(delayedSearch);
+      setLoading(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [delayedSearch, setSearch]);
+
+  return (
+    <div style={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
+      <Search
+        showNoResults={false}
+        size="small"
+        icon="search"
+        loading={loading}
+        style={{ display: "inline-flex", borderRadius: "10px" }}
+        onSearchChange={(e, d) => setDelayedSearch(d.value)}
+      />
+      <Pagination
+        size="mini"
+        boundaryRange={1}
+        siblingRange={1}
+        ellipsisItem={{
+          content: <Icon name="ellipsis horizontal" />,
+          icon: true,
+        }}
+        firstItem={{
+          content: <Icon name="angle double left" />,
+          icon: true,
+        }}
+        lastItem={{
+          content: <Icon name="angle double right" />,
+          icon: true,
+        }}
+        prevItem={{ content: <Icon name="angle left" />, icon: true }}
+        nextItem={{
+          content: <Icon name="angle right" />,
+          icon: true,
+        }}
+        pointing
+        secondary
+        defaultActivePage={1}
+        totalPages={pages}
+        onPageChange={(e, d) => pageChange(d.activePage)}
+        style={{ padding: "0", fontSize: "0.9em" }}
+      ></Pagination>
+    </div>
   );
 };

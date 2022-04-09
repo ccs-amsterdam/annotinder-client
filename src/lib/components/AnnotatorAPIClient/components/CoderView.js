@@ -14,7 +14,7 @@ export default function CoderView({ backend }) {
   return (
     <Grid centered stackable>
       <Grid.Row>
-        <Grid.Column width="8">
+        <Grid.Column textAlign="center" width="8">
           <Header>Coding jobs</Header>
           <CoderJobsTable backend={backend} />
         </Grid.Column>
