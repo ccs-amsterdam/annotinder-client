@@ -54,4 +54,4 @@ const useJobServer = (backend) => {
   return jobServer;
 };
 
-export default AnnotatorAPIClient;
+export default React.memo(AnnotatorAPIClient);

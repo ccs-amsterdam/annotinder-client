@@ -1,0 +1,1497 @@
+[
+  {
+    "id": "41680981",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "text",
+          "value": "### Column\n\nDe regering van nieuw elan heeft het regeerakkoord af. Er is hard gewerkt, en razendsnel bovendien, met een groot verantwoordelijkheidsgevoel in een transparant en vertrouwenwekkend proces waarin partijbelang te allen tijde ondergeschikt is gemaakt aan landsbelang. Het knappe is dat de regering van nieuw elan er in dit opmerkelijk korte tijdsbestek in is geslaagd een compleet nieuw regeerprogramma samen te stellen waarin alles anders wordt. Beter vooral.  \n  \nZo zal de regering van nieuw elan nooit meer taalspelletjes met ons spelen. Ze zal nooit meer in tijden van een nieuwe crisis eerst wekenlang zeggen dat het sluiten van scholen 'de laatste' crisismaatregel is die overwogen wordt, 'de allerlaatste' zelfs, 'helemaal onder op de stapel' en vervolgens de chocolaterie ('essentiële winkel') en de kantoortuin ongemoeid laten, terwijl kinderen wekenlang opgehokt thuiszitten.  \n  \nDe regering van nieuw elan zal vervolgens nooit meer doen alsof ze stomverbaasd is wanneer uit allerlei onderzoeken blijkt dat kinderen hierdoor blijvende schade hebben opgelopen, en achterstanden die ze niet meer zo snel zullen inhalen. De regering van nieuw elan zal daarop nooit vol pathetiek 'dit nooit meer' zweren.  \n  \nEn wanneer de crisis zich in een nieuwe variant opdringt, zal de regering van nieuw elan nooit meer zeggen dat 'onze inzet is en blijft dat scholen openblijven' (Arie Slob vorige week), om een week later te suggereren dat ze misschien toch dicht moeten en daarbij te jokken dat 'we al een paar weken zeggen dat we hieraan denken' (Hugo de Jonge deze week). Bovendien zal de regering van nieuw elan nooit overwegen de scholen te sluiten terwijl overdag winkels, cafés, restaurants, speeltuinen openblijven en allerhande entertainment mogelijk blijft.  \n  \nDe regering van nieuw elan zal nooit geringschattend spreken van 'dat weekje voor de kerstvakantie waarin ze toch niets doen op school', omdat de regering van nieuw elan weet dat er in die week gewoon wordt lesgegeven. Dat kinderen veel leren in die week. Over hoe je samen ritueel een jaar afsluit bijvoorbeeld.  \n  \nDe regering van nieuw elan zal zoiets nooit toestaan, terwijl tegelijkertijd volwassenen ongehinderd samenklonteren in elkaars ademcirkel om naar een autorace te kijken. Want de regering van nieuw elan zal nooit de belangen van mensen die oud genoeg zijn om te stemmen laten prevaleren boven die van mensen die dat nog niet zijn.  \n  \nEr komt zelfs een minister van Onderwijs! Dat is nieuw en gewaagd voor een terrein dat zo lang geen vertegenwoordiging in het kabinet kende. Er komt ook eentje voor Cultuur, nog zo'n trouvaille. Ze worden belast met zaken die niemand nog deed: strijden voor het belang van kinderen of voor het belang van de kunst, ze krijgen een prominente plek aan tafel, ze zullen zich niet laten reduceren tot de krullenjongens van het kabinet. Het zijn gewaagde initiatieven van de regering van nieuw elan.  \n  \nDe regering van nieuw elan zal het altijd ruiterlijk erkennen wanneer ze iets niet voortvarend heeft aangepakt. Ze zal nooit smoesjes aandragen en nooit zeggen dat ze 'een aanvullende versnelling' invoert boven op een 'eerder ingezette versnelling' wanneer ze gewoon bedoelt dat ze amechtig achteraan holt en zich daar een beetje voor schaamt.  \n  \nSowieso: liegen over dingen die niet naar wens zijn gegaan, of liegen om het eigen hachje te redden, of liegen om het partijbelang veilig te stellen, of überhaupt liegen. Zoiets zal de regering van nieuw elan nooit doen."
+        }
+      ],
+      "meta_fields": [],
+      "variables": [],
+      "importedAnnotations": [
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 209,
+          "length": 12
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 225,
+          "length": 5
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 438,
+          "length": 5
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 541,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 553,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 686,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 951,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 967,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1100,
+          "length": 6
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1200,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1250,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1324,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1341,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Arie Slob",
+          "offset": 1391,
+          "length": 9
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1451,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1508,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1540,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Hugo de Jonge",
+          "offset": 1560,
+          "length": 13
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1890,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1898,
+          "length": 5
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2049,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2133,
+          "length": 6
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2337,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2394,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2409,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Arie Slob",
+          "offset": 2455,
+          "length": 8
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2479,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2520,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2563,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2632,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2659,
+          "length": 11
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2752,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2794,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2804,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2860,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2869,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2968,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3007,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3049,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3101,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3194,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3216,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3246,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3314,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3404,
+          "length": 12
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3457,
+          "length": 6
+        }
+      ]
+    }
+  },
+  {
+    "id": "41680986",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "text",
+          "value": "'We zijn heel blij dat we eruit zijn, het had iets van een tangverlossing', zei CDA-leider Wopke Hoekstra maandagavond over de moeizame geboorte van het coalitieakkoord. ChristenUnie-leider Gert-Jan Segers vond de onderhandelingen bij vlagen 'pijnlijk' en voelt nu vooral 'verantwoordelijkheid om aan de slag te gaan'. VVD-leider Mark Rutte vindt het een 'goed akkoord', maar wil er pas 'later deze week' over praten. D66-leider Sigrid Klaag klonk nog het meest optimistisch: zij legt het resultaat met 'plezier en hoop' voor aan haar fractiegenoten.  \n  \nVeel reden voor een juichstemming is er niet. De partijleiders zijn vooral opgelucht over het naderende einde van de langste kabinetsformatie ooit in de Nederlandse geschiedenis. Vandaag is het 272 dagen na de Tweede Kamerverkiezingen. Voordat het nieuwe kabinet op het bordes staat, tikt de teller misschien wel de 300 dagen aan.  \n  \nDe weg naar het bordes is nog ietwat hobbelig. Het coalitieakkoord kan in de loop van vandaag nog licht bijgesteld worden indien eventuele bezwaren van de fracties onoverkomelijk zijn. De partijleiders Rutte, Kaag, Hoekstra en Segers komen dan weer bijeen om te praten over mogelijke aanpassingen. Grote wijzigingen worden echter niet verwacht. \n\nWoensdag presentatie\n\nAls de fracties niet te veel dwars liggen, presenteren de vier partijleiders woensdag de nieuwe regeerplannen, waarna de Tweede Kamer er naar verwachting donderdag over debatteert. De winnaar van de verkiezingen, VVD-leider Mark Rutte, kan op zijn vroegst vrijdag als formateur gesprekken beginnen met potentiële bewindslieden. Hij zal daar deels in het kerstreces mee doorgaan. Het nieuwe kabinet-Rutte IV zou dan in de tweede week van januari aan de slag gaan.   \n  \nDe planning is uitermate strak en houdt geen rekening met eventuele onverwachte gebeurtenissen. De rest van deze week zit sowieso al erg vol, met onder meer een persconferentie, een debat over corona (vandaag en woensdag), en een Europese top (donderdag en een deel van vrijdag). Veel ruimte om het nog over de formatie te hebben is er niet.\n\nMiljarden voor klimaat, woningen\n\nOver de inhoud van de nieuwe regeerplannen is formeel nog niets bekendgemaakt. De vier partijleiders zwegen daar maandagavond wederom over. Door eerder gelekte documenten is het wel zo goed als zeker dat het nieuwe kabinet miljarden wil gaan uitgeven aan klimaat- en stikstofplannen, bestrijden van het woningtekort, aan onderwijs en kinderopvang.   \n  \nZeker voor D66-leider Kaag wordt het spannend of haar fractie en achterban de nieuwe regeerplannen progressief genoeg vindt. Zij verzette zich lang tegen een doorstart van het oude kabinet, omdat zij niet door wilde op de oude voet. Op zijn beurt verzette Rutte zich tegen Kaags voorkeursvariant om samen te werken met een 'linkse wolk' van PvdA en GroenLinks.   \n  \nEind september doorbrak Kaag de impasse en besloot zij toch met haar oude coalitiegenoten VVD, CDA en CU te onderhandelen. Zij beloofde haar fractie en achterban een progressievere koers. Vandaag en woensdag zal moeten blijken of dat is gelukt."
+        }
+      ],
+      "meta_fields": [],
+      "variables": [],
+      "importedAnnotations": [
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 24,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 39,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 47,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "CDA",
+          "offset": 81,
+          "length": 10
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Wopke Hoekstra",
+          "offset": 92,
+          "length": 14
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "CU",
+          "offset": 171,
+          "length": 19
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Gert-Jan Segers",
+          "offset": 191,
+          "length": 15
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "VVD",
+          "offset": 320,
+          "length": 10
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Mark Rutte",
+          "offset": 331,
+          "length": 10
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 348,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "D66",
+          "offset": 419,
+          "length": 10
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Sigrid Kaag",
+          "offset": 430,
+          "length": 6
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 457,
+          "length": 5
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 477,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 531,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 606,
+          "length": 13
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 682,
+          "length": 16
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 747,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 812,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1081,
+          "length": 13
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Mark Rutte",
+          "offset": 1095,
+          "length": 5
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Sigrid Kaag",
+          "offset": 1102,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Wopke Hoekstra",
+          "offset": 1108,
+          "length": 8
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Gert-Jan Segers",
+          "offset": 1120,
+          "length": 6
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1325,
+          "length": 13
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "VVD",
+          "offset": 1475,
+          "length": 10
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Mark Rutte",
+          "offset": 1486,
+          "length": 10
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1505,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1590,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Mark Rutte",
+          "offset": 1652,
+          "length": 13
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1883,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2166,
+          "length": 5
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2195,
+          "length": 13
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2282,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2323,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "D66",
+          "offset": 2473,
+          "length": 10
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Sigrid Kaag",
+          "offset": 2484,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2511,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2587,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2600,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2643,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2658,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2698,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Mark Rutte",
+          "offset": 2718,
+          "length": 5
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2724,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "PvdA",
+          "offset": 2803,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "GroenLinks",
+          "offset": 2811,
+          "length": 10
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Sigrid Kaag",
+          "offset": 2853,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2880,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2893,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "VVD",
+          "offset": 2919,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "CDA",
+          "offset": 2924,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "CU",
+          "offset": 2931,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2952,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2965,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3059,
+          "length": 3
+        }
+      ]
+    }
+  },
+  {
+    "id": "41681006",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "text",
+          "value": "### column\n\nWie wordt de nieuwe minister van Onderwijs? De naam van Hugo de Jonge is al gevallen, en nee, dat is niet mijn gedroomde kandidaat. Maar die zit, eerlijk gezegd, ook niet bij de andere coalitiepartijen. Bij wat is uitgelekt van de plannen in het nieuwe regeerakkoord zit veel moois: de studiefinanciering terug, goedkopere kinderopvang, extra geld voor 'structurele investeringen' en hogere salarissen in het basisonderwijs. Allemaal cadeaus waarmee je het morrende volk tevreden kunt stemmen. Geld is toch bijna gratis.  \n  \nDe kolossale en pijnlijke problemen in het onderwijs los je er niet mee op: dat kinderen al twintig jaar steeds minder leren, dat een kwart van de jongeren amper kan lezen en de onuitroeibare kansenongelijkheid. Voeg daar maar aan toe: de kloof tussen beroepsonderwijs en theoretisch onderwijs, de aanhoudende plaag van opgelegde, onbewezen effectieve vernieuwingen, het groeiende lerarentekort en de geslonken aantrekkingskracht van het beroep. Dat alles is niet met een triomfantelijke zak geld op te lossen.  \n  \nGeen van de regeringspartijen pakt in haar verkiezingsprogramma de houtrot bij de wortel aan: de autonome school (in de praktijk enorme scholenkoepels), gefinancierd met een lumpsum. Het is een falend systeem, waarbij de verantwoordelijkheid voor goed onderwijs is overgeheveld naar besturen die beleidsmatig en financieel de vrije hand hebben en de overheid toekijkt.   \n  \nSchoolbesturen kunnen al ruim twintig jaar vrijuit onzinnige vernieuwingen opleggen, met gulle hand diploma's uitdelen en leraren hun autonomie ontnemen. Het gaat niet om personen, het is het systeem dat niet leidt tot kwaliteitsverbetering en werkplezier. In precies die twintig jaar kelderden de leerprestaties in de basisvakken én het opleidingsniveau én de status van de leraar. Tegelijk raakten steeds meer mensen hoogopgeleid. Geen toeval.  \n  \nDe autonome school is een historische vergissing. Het zal pas beter gaan als die wordt rechtgezet en het ministerie van Onderwijs weer de verantwoordelijkheid neemt voor de kwaliteit van onderwijs, de aanstellingen en de salarissen. Geen van de coalitiepartijen durft dat aan. Ook D66 niet, dat een goed onderwijsprogramma schreef.  \n  \nDe afgelopen vijftien jaar was dit een exotisch standpunt. Slechts een enkeling, zoals leraar en columnist Ton van Haperen en ik, droeg het hardnekkig uit. In discussies kreeg je steevast het verwijt de 'Haagse regelzucht' terug te willen, of zelfs 'staatsonderwijs'. Christelijke partijen waren uiteraard blij met de autonomie, liberalen geloofden heilig in semi-marktwerking. Linkse partijen hadden lang de illusie dat scholen zo meer zeggenschap zouden hebben. Een misvatting: 'scholen' zijn de leraren niet. Ik denk dat Haagse regie en het wegsnijden van een bestuurlijke kleilaag leraren en schoolleiders juist meer vrijheid geeft.  \n  \nDe laatste tijd dringt het besef breder door dat het om een systeemfout gaat. Ook Merel van Vroonhoven schreef, tot mijn vreugde, dat 'het gedecentraliseerde onderwijsstelsel', het 'doorgeslagen marktdenken', de oorzaak is van slecht onderwijs, waardoor ouders uitwijken naar de bijlesindustrie. Naar het alternatief dat zij, behalve leerkracht ook toezichthouder in het onderwijs, heeft ben ik benieuwd.  \n  \nIk denk dat het onderwijs nooit een 'markt' is geworden. De publieke ondernemer loopt immers geen enkel risico; het gemeenschapsgeld stroomt vanzelf binnen, en de 'klant', de leerling, ook. De macht in het onderwijs is in handen van niet-democratisch gekozen, regenteske onderwijsraden, waarin alleen bestuurders - de werkgevers - zitten.  \n  \nAls we willen dat de miljarden overheidsgeld besteed aan onderwijs nu eens wél goed terechtkomen, is een rigoureuze systeemwijziging nodig. Lijkt me iets voor volgende verkiezingen.\n\nAleid Truijens schrijft over onderwijs, opvoeden en opgroeien. Reageren? opinie@volkskrant.nl"
+        }
+      ],
+      "meta_fields": [],
+      "variables": [],
+      "importedAnnotations": [
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 13,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Hugo de Jonge",
+          "offset": 33,
+          "length": 8
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Hugo de Jonge",
+          "offset": 69,
+          "length": 13
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 107,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 119,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 150,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 198,
+          "length": 16
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 220,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 463,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 596,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 870,
+          "length": 9
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 989,
+          "length": 5
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1055,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1067,
+          "length": 17
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1093,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1238,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1347,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1560,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1584,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1611,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1630,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1698,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1931,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1958,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1986,
+          "length": 10
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2114,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2126,
+          "length": 16
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "D66",
+          "offset": 2162,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2249,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2344,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2354,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2394,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2499,
+          "length": 8
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2603,
+          "length": 8
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2730,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Denk",
+          "offset": 2733,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2909,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2976,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2990,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3181,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3252,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3270,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Denk",
+          "offset": 3273,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3618,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3760,
+          "length": 7
+        }
+      ]
+    }
+  },
+  {
+    "id": "41681330",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "text",
+          "value": "Eindelijk, daar was dan gisteravond de verlossende mededeling. De vier partijen hebben een onderhandelaarsakkoord bereikt. \"Ik leg dit met plezier en hoop voor aan de fractie\", aldus D66-leider Sigrid Kaag. CDA-leider Wopke Hoekstra vergeleek het met 'een tangverlossing' negen maanden na de verkiezingen, maar is 'tevreden'. ChristenUnieleider Gert-Jan Segers voelt vooral 'een grote verantwoordelijkheid' om nu aan de slag te gaan. Volgens hem was het 'geven en nemen'. VVD-leider MarkRutte wilde niets inhoudelijks zeggen anders dan dat het akkoord nu eerst naar de fracties gaat.  \n  \nDaarmee gloort het einde van de langste formatie die Nederland ooit heeft gehad. Gisteren stond de teller op 271 dagen. De Tweede Kamer zal later deze week waarschijnlijk Mark Rutte aanwijzen als formateur die zijn vierde kabinet in elkaar mag zetten. Hij maakt daarmee kans de langstzittende premier te worden, een record dat nu nog in handen is van Ruud Lubbers.  \n  \nVoor de inhoud en details van het regeerakkoord is het dus nog even geduld oefenen. Gisteren zetten de onderhandelaars van VVD, D66, CDA en ChristenUnie de laatste puntjes op de i. Misschien bespraken ze tijdens hun laatste uurtjes in het Haagse Logement hoe ze het verhaal morgen naar buiten gaan brengen. Een passende titel schijnt al gevonden te zijn voor het regeerakkoord, waarover Rutte, Kaag, Hoekstra en Segers en hun secondanten vanaf oktober bijna dagelijks hebben onderhandeld.  \n  \nHet vorige akkoord van dezelfde vier partijen in 2017 heette Vertrouwen in de toekomst. Een titel die achteraf - met de toeslagenaffaire en de kabinetsval - een zwarte rand kreeg. Het derde kabinet-Rutte kwam goed uit de startblokken, maar belandde vanaf de tweede helft van het jaar 2019 in zwaarder weer. De stikstofcrisis, protesten op het Malieveld van boeren, docenten, studenten en klimaatactivisten en verzuurde onderlinge verhoudingen zetten de coalitie en de relatie met de oppositie onder druk.  \n  \nEn toen moest de pandemie nog uitbreken. Het kabinet hield vol, maar trad met de finish in zicht nog af vanwege het ongekend onrecht dat de toeslagenouders is aangedaan. Nu heeft een nieuw, vierde, kabinet onder leiding van dezelfde premier de opdracht te werken aan herstel van vertrouwen, in een samenleving die gehavend is door de coronacrisis. De afgelopen week druppelde alvast het zoet uit de nieuwe plannen naar buiten. Er zijn vele tientallen miljarden beschikbaar om de levensgrote problemen in samenleving en bestuur op te lossen. De beloftes zijn groot: grotendeels gratis kinderopvang, miljarden voor klimaat, onderwijs en wonen, gelijktrekken van salarissen in het onderwijs, een ander leenstelsel.\n\nVliegveld Lelystad\n\nTegen dat extra geld zal niemand bezwaar hebben. Maar nog niet bekend is hoe de pijn van de noodzakelijke compromissen is verdeeld. Vooral op het gebied van klimaat en migratie lopen de opvattingen van de partijen sterk uiteen en zullen ze harde keuzes hebben moeten maken. Over vliegveld Lelystad, rekeningrijden, de toekomst van kernenergie of de intensieve landbouw, het toelaten van meer vluchtelingen, de eisen voor integratie: de ene of de andere partij zal het zwaar krijgen bij de verdediging van de afspraken tegenover de achterban.  \n  \nDe grootste klus voor de toekomst is daarentegen de uitvoering van beleid, zo bleek zeker uit de afgelopen regeerperiode. Neem de vastgelopen hersteloperatie voor gedupeerde toeslagenouders of de afhandeling van de aardbevingsschade in Groningen. Een speciale commissie analyseerde de problemen bij instanties als het UWV, de Belastingdienst, het CBR en het IND, maar ook de conclusies daarvan wachten nog op uitvoering.  \n  \nHet vierde kabinet zal dus vooral hiermee aan de slag moeten. Hoe krijgt het de menselijke maat terug in het bestuur, hoe zet het plannen daadwerkelijk om in praktijk en hoe heelt het de scheuren in het vertrouwen van de burgers. Kortom, de nieuwe bestuurscultuur wordt de grootste opgave.  \n  \nMaar eerst wacht de beoogde coalitie nog een debat in de Tweede Kamer over het regeerakkoord, naar alle waarschijnlijkheid vrijdag. De vier partijen zijn al druk bezig om geschikte ministers te zoeken. In januari staat de nieuwe ploeg dan op het bordes van Paleis Huis ten Bosch.  \n  \nIn het kort  \n  \nNa 271 dagen lijkt Rutte als formateur zijn nieuwe kabinet nu in elkaar te mogen zetten  \n  \nUitdagingen vormen vliegveld Lelystad, rekeningrijden, vluchtelingen en landbouw  \n  \nOok moet de menselijke maat terug in het bestuur"
+        }
+      ],
+      "meta_fields": [],
+      "variables": [],
+      "importedAnnotations": [
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 72,
+          "length": 8
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 125,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 132,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "D66",
+          "offset": 184,
+          "length": 10
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Sigrid Kaag",
+          "offset": 195,
+          "length": 11
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "CDA",
+          "offset": 208,
+          "length": 10
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Wopke Hoekstra",
+          "offset": 219,
+          "length": 14
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 244,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Gert-Jan Segers",
+          "offset": 346,
+          "length": 15
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 443,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 451,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "VVD",
+          "offset": 473,
+          "length": 10
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 500,
+          "length": 5
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 639,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Mark Rutte",
+          "offset": 761,
+          "length": 10
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 796,
+          "length": 8
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 812,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 823,
+          "length": 6
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 842,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Mark Rutte",
+          "offset": 883,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 913,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1011,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "VVD",
+          "offset": 1083,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "D66",
+          "offset": 1088,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "CDA",
+          "offset": 1093,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "CU",
+          "offset": 1100,
+          "length": 12
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1161,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1172,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1219,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Mark Rutte",
+          "offset": 1347,
+          "length": 5
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Sigrid Kaag",
+          "offset": 1354,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Wopke Hoekstra",
+          "offset": 1360,
+          "length": 8
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Gert-Jan Segers",
+          "offset": 1372,
+          "length": 6
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1382,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1491,
+          "length": 8
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1552,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 1597,
+          "length": 11
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Mark Rutte",
+          "offset": 1644,
+          "length": 13
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2009,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2162,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Mark Rutte",
+          "offset": 2197,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2274,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2722,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2902,
+          "length": 8
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 2934,
+          "length": 2
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3133,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3150,
+          "length": 6
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3161,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3681,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3743,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 3850,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 4105,
+          "length": 8
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 4146,
+          "length": 9
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Mark Rutte",
+          "offset": 4286,
+          "length": 5
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 4306,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 4318,
+          "length": 7
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 4332,
+          "length": 6
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "type": "questions",
+  "questions": [
+    {
+      "name": "sentiment",
+      "question": "What is the sentiment of this text?",
+      "codes": [
+        { "code": "Negative", "color": "red" },
+        { "code": "Neutral", "color": "grey" },
+        { "code": "Positive", "color": "green" }
+      ],
+      "type": "select code",
+      "branching": { "only_if": [], "not_if": [] }
+    }
+  ]
+}

@@ -15,7 +15,8 @@ const Meta = ({ meta_fields }) => {
         <Table.Row
           key={row.label || row.name}
           style={{
-            fontSize: `${row.size != null ? row.size : 1}em`,
+            lineHeight: "1.2",
+            fontSize: `${(row.size != null ? row.size : 1) + 0.3}em`,
           }}
         >
           <Table.Cell width={1} style={{ borderTop: "none" }}>

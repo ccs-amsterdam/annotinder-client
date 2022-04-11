@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-//import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import JobServerDemo from "./classes/JobServerDemo";
 import Annotator from "../Annotator/Annotator";
 
 const DemoJobOverview = () => {
   const [job, setJob] = useState(null);
-  //const [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    //getJobServer("sotu", "sentimentAnnotation", setJob);
-    getJobServer("test", "test", setJob);
-  }, []);
+    let codebook = searchParams.get("codebook") || "sentimentAnnotation";
+    let units = searchParams.get("units") || "sotu";
+    getJobServer(units, codebook, setJob);
+  }, [searchParams]);
 
   if (job === null) return <div></div>;
   return <Annotator jobServer={job} />;
@@ -23,11 +24,11 @@ const headers = {
 
 const getJobServer = async (units_file, codebook_file, setJob) => {
   try {
-    const units_res = await fetch(`units/${units_file}.json`, { headers });
+    const units_res = await fetch(getFileName(units_file, "units"), { headers });
     let units = await units_res.json();
     if (typeof units !== "object") units = JSON.parse(units);
 
-    const codebook_res = await fetch(`codebook/${codebook_file}.json`, { headers });
+    const codebook_res = await fetch(getFileName(codebook_file, "codebook"), { headers });
     let codebook = await codebook_res.json();
     if (typeof codebook !== "object") codebook = JSON.parse(codebook);
 
@@ -38,4 +39,12 @@ const getJobServer = async (units_file, codebook_file, setJob) => {
   }
 };
 
-export default DemoJobOverview;
+const getFileName = (filename, what) => {
+  if (filename.toLowerCase().includes(".json")) {
+    // if .json in name, assume its a full path
+    return filename;
+  }
+  return `${what}/${filename}.json`;
+};
+
+export default React.memo(DemoJobOverview);

@@ -58,22 +58,25 @@ export default function ManageJobs({ backend }) {
           columns={columns}
           onClick={onClick}
           backend={backend}
+          isActive={(row) => row.id === jobId}
         />
       </Grid.Column>
       <Grid.Column width="4">
-        <JobDetails backend={backend} job={job} jobId={jobId} setJobs={setJobs} />
+        <JobDetails backend={backend} job={job} setJob={setJob} jobId={jobId} setJobs={setJobs} />
       </Grid.Column>
     </Grid>
   );
 }
 
-const setJobSettings = async (id, backend, settingsObj, setData) => {
-  const newSettings = await backend.setJobSettings(id, settingsObj);
-  setData((jobs) => {
+const setJobSettings = async (id, backend, settingsObj, setJobs, setJob) => {
+  backend.setJobSettings(id, settingsObj);
+  setJobs((jobs) => {
     const i = jobs.findIndex((j) => j.id === Number(id));
-    if (i >= 0) jobs[i] = { ...jobs[i], ...newSettings.data };
+    if (i >= 0) jobs[i] = { ...jobs[i], ...settingsObj };
     return [...jobs];
   });
+  // setJob is optional because it doesn't work if set via the button in FullDataTable
+  if (setJob) setJob((job) => ({ ...job, ...settingsObj }));
 };
 
 const ArchiveButton = ({ row, backend, setData, style }) => {
@@ -84,7 +87,7 @@ const ArchiveButton = ({ row, backend, setData, style }) => {
       icon={row.archived ? "eye slash" : "eye"}
       onClick={(e, d) => {
         //toggleJobArchived(row.id, backend, setData);
-        setJobSettings(row.id, backend, { archived: !row.archived }, setData);
+        setJobSettings(row.id, backend, { archived: !row.archived }, setData, null);
       }}
       style={{ padding: "5px", background: row.archived ? "#f76969" : "", ...style }}
     />
@@ -103,9 +106,9 @@ const getAllJobs = (backend, setJobs) => {
     });
 };
 
-const leftColStyle = { fontWeight: "bold" };
+const leftColStyle = { fontWeight: "bold", textAlign: "right", paddingRight: "15px" };
 
-const JobDetails = ({ backend, job, jobId, setJobs }) => {
+const JobDetails = ({ backend, job, setJob, jobId, setJobs }) => {
   const { CSVDownloader, Type } = useCSVDownloader();
   const [annotations, setAnnotations] = useState(null);
 
@@ -153,14 +156,14 @@ const JobDetails = ({ backend, job, jobId, setJobs }) => {
         basic="very"
         structured
         compact="very"
-        style={{ paddingLeft: "" }}
+        style={{ paddingLeft: "", textAlign: "left" }}
       >
         <Table.Body>
           <Table.Row>
             <Table.Cell width="8" style={leftColStyle}>
               ID
             </Table.Cell>
-            <Table.Cell>{job?.id}</Table.Cell>
+            <Table.Cell width="8">{job?.id}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell style={leftColStyle}>Units</Table.Cell>
@@ -182,19 +185,19 @@ const JobDetails = ({ backend, job, jobId, setJobs }) => {
                 toggle
                 checked={job.archived}
                 onChange={() =>
-                  setJobSettings(job.id, backend, { archived: !job.archived }, setJobs)
+                  setJobSettings(job.id, backend, { archived: !job.archived }, setJobs, setJob)
                 }
               />
             </Table.Cell>
           </Table.Row>
           <Table.Row>
-            <Table.Cell style={leftColStyle}>Restricted Access</Table.Cell>
+            <Table.Cell style={leftColStyle}>Restricted</Table.Cell>
             <Table.Cell>
               <Checkbox
                 toggle
                 checked={job.restricted}
                 onChange={() =>
-                  setJobSettings(job.id, backend, { restricted: !job.restricted }, setJobs)
+                  setJobSettings(job.id, backend, { restricted: !job.restricted }, setJobs, setJob)
                 }
               />
             </Table.Cell>

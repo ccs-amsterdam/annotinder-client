@@ -12,6 +12,7 @@ const PAGESIZE = 10;
  * @param {array}   buttons  Optional, Component or Array with Components that render buttons. Will be put in a buttongroup in first column.
  *                           The component will be given the props "row" (the row object), "backend" (see backend property), and "setData" (for setFullData).
  * @param {class}  backend   If buttons is used, backend can be passed along, so that it can be given to the button rendering component
+ * @param {function} isActive A function that takes a row as input, and returns a boolean for whether the row is displayed as active
  */
 export default function FullDataTable({
   fullData,
@@ -20,6 +21,7 @@ export default function FullDataTable({
   onClick,
   buttons,
   backend,
+  isActive,
 }) {
   const [data, setData] = useState([]);
   const [pages, setPages] = useState(1);
@@ -72,6 +74,7 @@ export default function FullDataTable({
       onClick={onClick}
       buttons={buttons}
       backend={backend}
+      isActive={isActive}
       setSearch={setSearch}
     />
   );
@@ -131,6 +134,7 @@ const PaginationTable = ({
   buttons,
   backend,
   setSearch,
+  isActive,
 }) => {
   const createHeaderRow = (data, columns) => {
     return columns.map((col, i) => {
@@ -150,6 +154,7 @@ const PaginationTable = ({
       return (
         <Table.Row
           key={i}
+          active={isActive ? isActive(rowObj) : false}
           style={{ cursor: onClick ? "pointer" : "default" }}
           onClick={() => (onClick ? onClick(rowObj) : null)}
         >

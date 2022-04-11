@@ -1,7 +1,7 @@
 class JobServerDemo {
   constructor(codebook, units) {
     this.codebook = codebook;
-    this.units = units.map((u, i) => ({ ...u, id: i })); // use index as id
+    this.units = units.map((u, i) => ({ ...u, index: i }));
     this.progress = {
       n_total: units.length,
       n_coded: 0,
@@ -25,10 +25,10 @@ class JobServerDemo {
     return this.units[i];
   }
 
-  async postAnnotations(unit_id, annotation, status) {
+  async postAnnotations(unit_id, unit_index, annotation, status) {
     try {
-      this.units[unit_id].annotation = annotation;
-      this.units[unit_id].status = status;
+      this.units[unit_index].annotation = annotation;
+      this.units[unit_index].status = status;
     } catch (e) {
       console.error(e);
     }

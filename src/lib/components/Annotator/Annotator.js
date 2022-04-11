@@ -20,8 +20,6 @@ const Annotator = ({ jobServer, askFullScreen }) => {
     setUnitIndex(jobServer.progress.n_coded);
   }, [jobServer, setUnitIndex]);
 
-  console.log(unitIndex);
-
   useEffect(() => {
     // When unitIndex changes, get the unit
     if (!jobServer || unitIndex === null) return;
@@ -95,8 +93,8 @@ const Annotator = ({ jobServer, askFullScreen }) => {
 const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
   if (unitIndex < 0) return;
   try {
-    console.log(unitIndex);
     const unit = await jobServer.getUnit(unitIndex);
+    console.log(unit);
 
     // if backend gives the unit index, ensure that connection to unitIndex is fully controlled
     // (in case the frontend accidentally asks for a unitIndex it doesn't yet have access to)
