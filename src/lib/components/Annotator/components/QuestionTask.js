@@ -272,7 +272,7 @@ const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 
       // text div we only allow swiping up if scrolled all the way to bottom
 
       // get the tokensContainer
-      const el = document.getElementById("TokensContainer");
+      const el = refs.text.current.getElementsByClassName("TokensContainer")[0];
       if (d.first) scrolloffset = el.scrollHeight - el.scrollTop - el.clientHeight;
       deltaY += scrolloffset;
     }

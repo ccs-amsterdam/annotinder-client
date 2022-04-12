@@ -5,11 +5,8 @@
  * @param {*} tokens           tokens array where each token has a .ref
  * @returns
  */
-const getVisibleTokens = (tokens) => {
-  const containerEl = docuent.getElementById("TokensContainer");
-  if (!containerEl) return null;
-
-  const container = containerEl.getBoundingClientRect();
+const getVisibleTokens = (tokenContainer, tokens) => {
+  const container = tokenContainer.getBoundingClientRect();
   const visibleTokens = [];
   for (let token of tokens) {
     const el = token?.ref?.current?.getBoundingClientRect();

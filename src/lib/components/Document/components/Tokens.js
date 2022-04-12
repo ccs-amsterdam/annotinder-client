@@ -3,7 +3,7 @@ import { Ref } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
 import Meta from "./Meta";
 
-const Tokens = ({ tokens, text_fields, meta_fields, setReady, maxHeight, positionTracker }) => {
+const Tokens = ({ tokens, text_fields, meta_fields, setReady, maxHeight }) => {
   const [text, setText] = useState({});
   const containerRef = useRef(null);
 
@@ -33,7 +33,7 @@ const Tokens = ({ tokens, text_fields, meta_fields, setReady, maxHeight, positio
       <Ref innerRef={containerRef}>
         <div
           key="tokens"
-          id="TokensContainer"
+          class="TokensContainer"
           style={{
             flex: "1 1 auto",
             display: "flex",
