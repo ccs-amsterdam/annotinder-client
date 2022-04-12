@@ -23,6 +23,9 @@ import useVariableMap from "./components/useVariableMap";
  *                           text is ready (which is usefull if the parent wants to transition
  *                           to new texts nicely)
  * @param {*} blockEvents    boolean. If true, disable event listeners
+ * @param {*} positionTracker Used for tracking the position of the token container.
+ *                            should be a ref of which ref.current is an object (so it doesn't trigger any state, just passes on the position when requested)
+ *                            Current things to track are 'visibleTokens' (an array of all tokens visible in container) and 'containerRect' (bounding rect of container)
  * @param {*} fullScreenNode In fullscreenmode, popups can require a mountNode.
  * @returns
  */
@@ -35,6 +38,7 @@ const Document = ({
   returnVariableMap,
   setReady,
   blockEvents,
+  positionTracker,
   fullScreenNode,
 }) => {
   const safetyCheck = useRef(null); // ensures only new annotations for the current unit are passed to onChangeAnnotations
@@ -85,8 +89,9 @@ const Document = ({
         text_fields={preparedUnit.text_fields}
         meta_fields={preparedUnit.meta_fields}
         setReady={setTokensReady}
-        maxHeight={variables && variables.length > 1 ? "calc(100% - 60px)" : "calc(100% - 30px)"}
+        //maxHeight={variables && variables.length > 1 ? "calc(100% - 60px)" : "calc(100% - 30px)"}
         editMode={editMode}
+        positionTracker={positionTracker}
       />
 
       <SelectVariable
@@ -94,7 +99,7 @@ const Document = ({
         variable={variable}
         setVariable={setVariable}
         editAll={settings?.editAll}
-        minHeight={variables && variables.length > 1 ? 60 : 30} //'px'
+        //minHeight={variables && variables.length > 1 ? 60 : 30} //'px'
       />
 
       <AnnotateNavigation

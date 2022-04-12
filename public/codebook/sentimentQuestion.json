@@ -5,11 +5,11 @@
       "name": "sentiment",
       "question": "What is the sentiment of this text?",
       "codes": [
-        { "code": "Negative", "color": "red" },
-        { "code": "Neutral", "color": "grey" },
-        { "code": "Positive", "color": "green" }
+        { "code": "Negative", "color": "red", "swipe": "left" },
+        { "code": "Neutral", "color": "grey", "swipe": "up" },
+        { "code": "Positive", "color": "green", "swipe": "right" }
       ],
-      "type": "select code",
+      "type": "annotinder",
       "branching": { "only_if": [], "not_if": [] }
     }
   ]

@@ -3,7 +3,7 @@ import { Ref } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
 import Meta from "./Meta";
 
-const Tokens = ({ tokens, text_fields, meta_fields, setReady, maxHeight }) => {
+const Tokens = ({ tokens, text_fields, meta_fields, setReady, maxHeight, positionTracker }) => {
   const [text, setText] = useState({});
   const containerRef = useRef(null);
 
@@ -29,41 +29,43 @@ const Tokens = ({ tokens, text_fields, meta_fields, setReady, maxHeight }) => {
   if (tokens === null) return null;
 
   return (
-    <Ref innerRef={containerRef}>
-      <div
-        key="tokens"
-        style={{
-          flex: "1 1 auto",
-          display: "flex",
-          alignItems: null,
-          overflow: "auto",
-          maxHeight: maxHeight,
-        }}
-      >
+    <>
+      <Ref innerRef={containerRef}>
         <div
-          className="TokensContainer"
+          key="tokens"
+          id="TokensContainer"
           style={{
-            flex: "1 97%",
-            width: "100%",
+            flex: "1 1 auto",
+            display: "flex",
+            alignItems: null,
+            overflow: "auto",
+            maxHeight: maxHeight,
           }}
         >
           <div
-            key="meta"
             style={{
+              flex: "1 97%",
               width: "100%",
-              textAlign: "right",
-              padding: "10px 30px",
             }}
           >
-            <Meta meta_fields={meta_fields} />
+            <div
+              key="meta"
+              style={{
+                width: "100%",
+                textAlign: "right",
+                padding: "10px 30px",
+              }}
+            >
+              <Meta meta_fields={meta_fields} />
+            </div>
+            <div key="text" style={{ padding: "20px" }}>
+              {text["text"]}
+            </div>
+            <div key="empty_space" style={{ height: "25px" }} />
           </div>
-          <div key="text" style={{ padding: "20px" }}>
-            {text["text"]}
-          </div>
-          <div key="empty_space" style={{ height: "25px" }} />
         </div>
-      </div>
-    </Ref>
+      </Ref>
+    </>
   );
 };
 

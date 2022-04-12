@@ -123,7 +123,7 @@ const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
 const getWindowSize = (jobServer) => {
   switch (jobServer?.codebook?.type) {
     case "questions":
-      return ["800px", "1000px"];
+      return ["1200px", "1000px"];
     case "annotate":
       return ["2000px", "2000px"];
     default:

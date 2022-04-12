@@ -90,8 +90,8 @@ const QuestionForm = ({
           maxHeight: "100%",
           padding: "10px",
           color: "white",
-          borderBottomLeftRadius: "30px",
-          borderBottomRightRadius: "30px",
+          //borderBottomLeftRadius: "5px",
+          //borderBottomRightRadius: "5px",
           backgroundColor: "#1B1C1D",
         }}
       >

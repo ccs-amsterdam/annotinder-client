@@ -109,6 +109,9 @@ const IndexController = ({ n, nCoded, index, setIndex, canGoForward = true, canG
         onMouseUp={(e) => {
           setActivePage(delayedActivePage);
         }}
+        onTouchEnd={(e) => {
+          setActivePage(delayedActivePage);
+        }}
         type="range"
         value={delayedActivePage}
       />
