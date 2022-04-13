@@ -1,0 +1,15 @@
+{
+  "type": "questions",
+  "questions": [
+    {
+      "name": "political",
+      "question": "Is this a political image?",
+      "codes": [
+        { "code": "No", "color": "crimson", "swipe": "left" },
+        { "code": "Yes", "color": "lightgreen", "swipe": "right" }
+      ],
+      "type": "annotinder",
+      "branching": { "only_if": [], "not_if": [] }
+    }
+  ]
+}

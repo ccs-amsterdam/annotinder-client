@@ -1,76 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Ref } from "semantic-ui-react";
-import { scrollToMiddle } from "../../../functions/scroll";
-import Meta from "./Meta";
+import React from "react";
 
-const Tokens = ({ tokens, text_fields, meta_fields, setReady, maxHeight }) => {
-  const [text, setText] = useState({});
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    // immitates componentdidupdate to scroll to the textUnit after rendering tokens
-    const firstTextUnitToken = tokens.find((token) => token.codingUnit);
-    const hasContext = tokens.some((token) => !token.codingUnit);
-    if (!hasContext) {
-      containerRef.current.scrollTop = 0;
-      return;
-    }
-    if (firstTextUnitToken?.ref?.current && containerRef.current) {
-      scrollToMiddle(containerRef.current, firstTextUnitToken.ref.current, 1 / 3);
-    }
-  });
-
-  useEffect(() => {
-    if (!tokens) return null;
-    setText(renderText(tokens, text_fields, containerRef));
-    if (setReady) setReady((current) => current + 1); // setReady is an optional property used to let parents know the text is ready.
-  }, [tokens, text_fields, setReady]);
-
-  if (tokens === null) return null;
-
-  return (
-    <>
-      <Ref innerRef={containerRef}>
-        <div
-          key="tokens"
-          class="TokensContainer"
-          style={{
-            flex: "1 1 auto",
-            display: "flex",
-            alignItems: null,
-            overflow: "auto",
-            maxHeight: maxHeight,
-          }}
-        >
-          <div
-            style={{
-              flex: "1 97%",
-              width: "100%",
-            }}
-          >
-            <div
-              key="meta"
-              style={{
-                width: "100%",
-                textAlign: "right",
-                padding: "10px 30px",
-              }}
-            >
-              <Meta meta_fields={meta_fields} />
-            </div>
-            <div key="text" style={{ padding: "20px" }}>
-              {text["text"]}
-            </div>
-            <div key="empty_space" style={{ height: "25px" }} />
-          </div>
-        </div>
-      </Ref>
-    </>
-  );
-};
-
-const renderText = (tokens, text_fields, containerRef) => {
-  const text = { text: [] }; // yes, it would make sense to just make text an array, but for some reason React doesn't accept it
+export default function renderText(tokens, text_fields, containerRef) {
+  const text = text_fields.reduce((obj, tf) => {
+    obj[tf.name] = [];
+    return obj;
+  }, {});
+  //const text = { text: [] }; // yes, it would make sense to just make text an array, but for some reason React doesn't accept it
   if (tokens.length === 0) return text;
 
   let field = [];
@@ -107,7 +42,7 @@ const renderText = (tokens, text_fields, containerRef) => {
 
     if (tokens[i].field !== field_name) {
       if (field.length > 0)
-        text["text"].push(
+        text[field_name].push(
           renderField(getLayout(field_name), i + "_" + field_name, field, field_name)
         );
       field = [];
@@ -129,9 +64,9 @@ const renderText = (tokens, text_fields, containerRef) => {
   if (sentence.length > 0) paragraph.push(renderSentence("last", sentence_nr, sentence));
   if (paragraph.length > 0) field.push(renderParagraph(layout, paragraph_nr, paragraph, false));
   if (field.length > 0)
-    text["text"].push(renderField(layout, "last_" + field_name, field, field_name));
+    text[field_name].push(renderField(layout, "last_" + field_name, field, field_name));
   return text;
-};
+}
 
 const renderField = (layout, paragraph_nr, paragraphs, field) => {
   const fontstyle = (paragraphs) => {
@@ -186,7 +121,10 @@ const renderParagraph = (layout, paragraph_nr, sentences, end) => {
 
   return (
     // uses span behaving like p, because p is not allowed due to nested div (for Label)
-    <div key={"pardiv" + paragraph_nr} style={{ display: "flex" }}>
+    <div
+      key={"pardiv" + paragraph_nr}
+      style={{ display: "flex", paddingRight: "20px", paddingLeft: "20px" }}
+    >
       <span
         key={"par" + paragraph_nr}
         className="paragraph"
@@ -231,5 +169,3 @@ const renderToken = (token, codingUnit) => {
     </span>
   );
 };
-
-export default React.memo(Tokens);

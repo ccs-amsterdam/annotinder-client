@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import AnnotateNavigation from "./components/AnnotateNavigation";
-import Tokens from "./components/Tokens";
+import Body from "./components/Body";
 import useCodeSelector from "./components/useCodeSelector";
 import { exportSpanAnnotations } from "../../functions/annotations";
 import useUnit from "./components/useUnit";
@@ -77,13 +77,15 @@ const Document = ({
     setAnnotations((state) => ({ ...state })); //trigger DOM update after token refs have been prepared
   }, [tokensReady, setAnnotations, setReady]);
 
-  if (!preparedUnit.tokens) return null;
+  if (!preparedUnit.tokens && !preparedUnit.image_fields) return null;
+
   return (
     <div style={{ display: "flex", height: "100%", maxHeight: "100%", flexDirection: "column" }}>
-      <Tokens
+      <Body
         tokens={preparedUnit.tokens}
         text_fields={preparedUnit.text_fields}
         meta_fields={preparedUnit.meta_fields}
+        image_fields={preparedUnit.image_fields}
         setReady={setTokensReady}
         //maxHeight={variables && variables.length > 1 ? "calc(100% - 60px)" : "calc(100% - 30px)"}
         editMode={editMode}

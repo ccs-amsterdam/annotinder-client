@@ -31,9 +31,11 @@ const useUnit = (unit, safetyCheck, returnTokens, setCodeHistory) => {
       //annotations: hash(document.annotations),
     };
     setPreparedUnit({
-      tokens: document.tokens,
-      text_fields: document.text_fields,
-      meta_fields: document.meta_fields,
+      tokens: document.tokens || [],
+      images: document.images || [],
+      text_fields: document.text_fields || [],
+      meta_fields: document.meta_fields || [],
+      image_fields: document.image_fields || [],
     });
 
     setAnnotations(document.annotations);

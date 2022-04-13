@@ -94,7 +94,6 @@ const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
   if (unitIndex < 0) return;
   try {
     const unit = await jobServer.getUnit(unitIndex);
-    console.log(unit);
 
     // if backend gives the unit index, ensure that connection to unitIndex is fully controlled
     // (in case the frontend accidentally asks for a unitIndex it doesn't yet have access to)

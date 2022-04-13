@@ -62,7 +62,6 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
         {...textSwipe}
         style={{
           position: "relative",
-          borderTop: "1px solid",
           height: `${settings.splitHeight}%`,
         }}
       >
@@ -73,6 +72,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
             width: "100%",
             overflow: "hidden",
             position: "absolute",
+            border: "0.5px solid",
           }}
         >
           {/* This div moves around behind the div containing the document to show the swipe code  */}
@@ -90,6 +90,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
               backgroundColor: "white",
               overflow: "hidden",
               fontSize: `${settings.textSize}em`,
+              border: "0.5px solid",
             }}
           >
             <Document
@@ -270,13 +271,11 @@ const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 
     if (!alwaysDoVertical) {
       // the bottom menu always allows vertical upward swipe, but for the
       // text div we only allow swiping up if scrolled all the way to bottom
-
-      // get the tokensContainer
       const el = refs.text.current.getElementsByClassName("TokensContainer")[0];
       if (d.first) scrolloffset = el.scrollHeight - el.scrollTop - el.clientHeight;
       deltaY += scrolloffset;
     }
-    return [deltaX, deltaY];
+    return [deltaX, Math.min(0, deltaY)];
   };
 
   return {
@@ -285,7 +284,7 @@ const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 
       if (deltaX > 0 && !question.swipeOptions.right) return;
       if (deltaX < 0 && !question.swipeOptions.left) return;
       if (deltaY < 0 && !question.swipeOptions.up) return;
-      if (deltaY !== 0 && deltaY > 0) return;
+      //if (deltaY !== 0 && deltaY > 0) return;
 
       refs.text.current.style.transition = ``;
       refs.text.current.style.transform = `translateX(${deltaX}px) translateY(${deltaY}px)`;
@@ -314,7 +313,7 @@ const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 
       if (deltaX > 0 && !question.swipeOptions.right) return;
       if (deltaX < 0 && !question.swipeOptions.left) return;
       if (deltaY < 0 && !question.swipeOptions.up) return;
-      if (deltaY !== 0 && deltaY > 0) return;
+      //if (deltaY !== 0 && deltaY > 0) return;
 
       refs.text.current.style.transition = `transform ${transitionTime}ms ease-out, opacity ${transitionTime}ms ease-out`;
 

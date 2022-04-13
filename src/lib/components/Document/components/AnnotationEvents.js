@@ -3,6 +3,9 @@ import { keepInView } from "../../../functions/scroll";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
 
 // This component generates no content, but manages navigation for span level annotations
+// The main reason for using components is that it's just convenient for updating the event listener functions
+// and disabling key/mouse events by unmounting. It works sufficiently fast and stable, but at some point
+// look into perhaps more proper ways of doing this.
 
 const arrowkeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 

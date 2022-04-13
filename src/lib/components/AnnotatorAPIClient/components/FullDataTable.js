@@ -220,7 +220,6 @@ const PaginationTable = ({
   return (
     <Container>
       <Table
-        color="transparent"
         unstackable
         selectable
         fixed

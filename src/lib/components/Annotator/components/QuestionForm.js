@@ -52,7 +52,13 @@ const QuestionForm = ({
     }
 
     const status = newQuestionIndex === null ? "DONE" : "IN_PROGRESS";
-    unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, unit.annotations, status);
+    const cleanAnnotations = unit.annotations.map((u) => {
+      const cleanAnnotation = { ...u };
+      delete cleanAnnotation.makes_irrelevant;
+      return cleanAnnotation;
+    });
+    //delete cleanAnnotations.makes_irrelevant;
+    unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status);
 
     setAnswerTransition(answer); // show given answer
     setTimeout(() => {
@@ -71,21 +77,25 @@ const QuestionForm = ({
     }, 250);
   };
 
+  const showQuestionButtons = questions && questions.length > 1;
+
   return (
     <div style={{ height: "100%", width: "100%" }}>
-      <QuestionIndexStep
-        questions={questions}
-        questionIndex={questionIndex}
-        annotations={annotations}
-        setQuestionIndex={setQuestionIndex}
-      />
+      {showQuestionButtons ? (
+        <QuestionIndexStep
+          questions={questions}
+          questionIndex={questionIndex}
+          annotations={annotations}
+          setQuestionIndex={setQuestionIndex}
+        />
+      ) : null}
 
       <div
         style={{
           display: "flex",
           position: "relative",
           flexFlow: "column",
-          height: "calc(100% - 30px)",
+          height: showQuestionButtons ? "calc(100% - 30px)" : "100%",
           width: "100%",
           maxHeight: "100%",
           padding: "10px",
@@ -96,7 +106,7 @@ const QuestionForm = ({
         }}
       >
         <div style={{ width: "100%", flex: "1 1 auto", paddingBottom: "10px" }}>
-          <Header as="h3" style={{ color: "white" }}>
+          <Header as="h3" textAlign="centered" style={{ color: "white" }}>
             {question}
           </Header>
         </div>
@@ -146,7 +156,6 @@ const processIrrelevantBranching = (unit, questions, annotations, questionIndex)
 
 const prepareAnnotations = (unit, tokens, questions, setAnnotations) => {
   // create a list with annotations for each question, and see if they have been answered yet
-  if (tokens.length === 0) return null;
   const annotations = [];
   if (!unit.annotations) unit.annotations = [];
   for (let i = 0; i < questions.length; i++) {
@@ -198,6 +207,7 @@ const QuestionIndexStep = ({ questions, questionIndex, annotations, setQuestionI
           const [color, background] = setColor(i);
           return (
             <Button
+              key={i}
               active={i === questionIndex}
               style={{
                 padding: "0em 0.2em 0.2em 0.2em",
@@ -268,8 +278,8 @@ const AnswerSegment = ({
           overflowY: "auto",
           height: "100%",
           width: "100%",
-          borderBottomLeftRadius: "10px",
-          borderBottomRightRadius: "10px",
+          //borderBottomLeftRadius: "5px",
+          //borderBottomRightRadius: "5px",
           margin: "0",
         }}
       >
@@ -305,46 +315,50 @@ const createAnnotationObject = (tokens, question, questionIndex) => {
   // creates an object with all information about the annotation except for the
   // value. This lets us check whether the annotations already exists, and add
   // or change the value.
-  if (tokens.length === 0) return null;
 
-  const fields = {};
-  const lastToken = tokens[tokens.length - 1];
+  let annObj = { variable: question.name, value: null };
 
-  const charspan = [0, lastToken.offset + lastToken.length];
-  const indexspan = [0, tokens.length - 1];
-  let [unitStarted, unitEnded] = [false, false];
+  if (tokens.length > 0) {
+    const fields = {};
+    const lastToken = tokens[tokens.length - 1];
 
-  let i = 0;
-  for (let token of tokens) {
-    if (token.codingUnit && !fields[token.field]) fields[token.field] = 1;
-    if (!unitStarted && token.codingUnit) {
-      unitStarted = true;
-      charspan[0] = token.offset;
-      indexspan[0] = i;
+    const charspan = [0, lastToken.offset + lastToken.length];
+    const indexspan = [0, tokens.length - 1];
+    let [unitStarted, unitEnded] = [false, false];
+
+    let i = 0;
+    for (let token of tokens) {
+      if (token.codingUnit && !fields[token.field]) fields[token.field] = 1;
+      if (!unitStarted && token.codingUnit) {
+        unitStarted = true;
+        charspan[0] = token.offset;
+        indexspan[0] = i;
+      }
+      if (!unitEnded && !token.codingUnit && unitStarted) {
+        unitEnded = true;
+        charspan[1] = tokens[i - 1].offset + tokens[i - 1].length;
+        indexspan[1] = i - 1;
+      }
+      i++;
     }
-    if (!unitEnded && !token.codingUnit && unitStarted) {
-      unitEnded = true;
-      charspan[1] = tokens[i - 1].offset + tokens[i - 1].length;
-      indexspan[1] = i - 1;
-    }
-    i++;
+
+    // make these optional? Because they're not tokenizer agnostic
+    const meta = {
+      length_tokens: 1 + indexspan[1] - indexspan[0],
+      length_paragraphs: 1 + tokens[indexspan[1]].paragraph - tokens[indexspan[0]].paragraph,
+      length_sentences: 1 + tokens[indexspan[1]].sentence - tokens[indexspan[0]].sentence,
+    };
+
+    annObj = {
+      ...annObj,
+      field: Object.keys(fields).join(" + "),
+      offset: charspan[0],
+      length: charspan[1] - charspan[0],
+      meta,
+    };
   }
 
-  // make these optional? Because they're not tokenizer agnostic
-  const meta = {
-    length_tokens: 1 + indexspan[1] - indexspan[0],
-    length_paragraphs: 1 + tokens[indexspan[1]].paragraph - tokens[indexspan[0]].paragraph,
-    length_sentences: 1 + tokens[indexspan[1]].sentence - tokens[indexspan[0]].sentence,
-  };
-
-  return {
-    variable: `Q${questionIndex + 1}_${question.name.replace(" ", "_")}`,
-    value: null,
-    field: Object.keys(fields).join(" + "),
-    offset: charspan[0],
-    length: charspan[1] - charspan[0],
-    meta,
-  };
+  return annObj;
 };
 
 const sameQuestion = (x, y) => {

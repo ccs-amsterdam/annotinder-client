@@ -24,11 +24,13 @@ const unit_files = [
   { label: "State of the union speeches", filename: "sotu" },
   { label: "State of the union paragraphs", filename: "sotu_par" },
   { label: "Units with actor annotations", filename: "actor_annotation" },
+  { label: "Political images", filename: "images" },
 ];
 const codebook_files = [
   { label: "Annotate sentiment", filename: "sentimentAnnotation" },
   { label: "sentiment questions", filename: "sentimentQuestion" },
   { label: "Edit actor annotations", filename: "actor_annotation" },
+  { label: "Political Image swiping", filename: "politicalImageSwipe" },
 ];
 const columns = [{ name: "label" }, { name: "filename" }];
 
