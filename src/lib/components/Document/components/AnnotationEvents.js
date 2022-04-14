@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { keepInView } from "../../../functions/scroll";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
+import getToken from "../functions/getToken";
 
 // This component generates no content, but manages navigation for span level annotations
 // The main reason for using components is that it's just convenient for updating the event listener functions
@@ -103,7 +104,7 @@ export const AnnotationEvents = ({
     setTokenSelection,
   ]);
 
-  if (!tokens || tokens.length === 0) return null;
+  //if (!tokens || tokens.length === 0) return null;
 
   // this prevents rendering the components that manage the key and mouse events
   if (eventsBlocked) return null;
@@ -120,7 +121,7 @@ export const AnnotationEvents = ({
         setHoldArrow={setHoldArrow}
         triggerCodePopup={triggerCodePopup}
       />
-      <MouseEvents
+      <TokenMouseEvents
         tokenSelection={tokenSelection}
         tokens={tokens}
         setCurrentToken={setCurrentToken}
@@ -195,7 +196,7 @@ const KeyEvents = ({
   return <></>;
 };
 
-const MouseEvents = ({
+const TokenMouseEvents = ({
   tokenSelection,
   tokens,
   setCurrentToken,
@@ -210,7 +211,7 @@ const MouseEvents = ({
     "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0
   ); // hack to notice if device uses touch (because single touch somehow triggers mouseup)
 
-  const storeMouseSelection = useCallback(
+  const storeMouseTokenSelection = useCallback(
     (currentNode) => {
       // select tokens that the mouse/touch is currently pointing at
       setCurrentToken((state) => {
@@ -255,7 +256,7 @@ const MouseEvents = ({
       // first check if there is a tokenselection (after double tab). If so, this completes the selection
       if (tokenSelection.length > 0 && tokenSelection[0] === tapped.current) {
         // if a single token, and an annotation already exists, open create/edit mode
-        const currentNode = storeMouseSelection(token);
+        const currentNode = storeMouseTokenSelection(token);
         setTokenSelection((state) => updateSelection(state, tokens, currentNode, true));
 
         if (token?.annotated && currentNode === tokenSelection[0]) {
@@ -286,7 +287,7 @@ const MouseEvents = ({
       editMode,
       setCurrentToken,
       setTokenSelection,
-      storeMouseSelection,
+      storeMouseTokenSelection,
       tokenSelection,
       tokens,
       triggerCodePopup,
@@ -314,7 +315,7 @@ const MouseEvents = ({
         //event.preventDefault();
         if (event.which !== 1 && event.which !== 0) return null;
         window.getSelection().empty();
-        storeMouseSelection(getToken(tokens, event));
+        storeMouseTokenSelection(getToken(tokens, event));
       } else {
         let currentNode = getToken(tokens, event);
         if (currentNode.index !== null) {
@@ -330,7 +331,7 @@ const MouseEvents = ({
           });
       }
     },
-    [editMode, setCurrentToken, setTokenSelection, storeMouseSelection, tokens]
+    [editMode, setCurrentToken, setTokenSelection, storeMouseTokenSelection, tokens]
   );
 
   const onMouseUp = useCallback(
@@ -345,7 +346,7 @@ const MouseEvents = ({
       //event.preventDefault();
       //event.stopPropagation();
 
-      const currentNode = storeMouseSelection(getToken(tokens, event));
+      const currentNode = storeMouseTokenSelection(getToken(tokens, event));
       window.getSelection().empty();
       //setHoldMouseLeft(false);
       selectionStarted.current = false;
@@ -353,7 +354,7 @@ const MouseEvents = ({
       // this worked before, but is not possible due to touchend not registering position
       //if (currentNode === null) return null;
 
-      // storeMouseSelection does save position to tokenSelection state, but this isn't
+      // storeMouseTokenSelection does save position to tokenSelection state, but this isn't
       // yet updated within this scope. This results in single clicks (without mousemove)
       // not registering. So if there is no current selection, directly use currentNode as position.
       if (tokenSelection.length > 0 && tokenSelection[0] !== null && tokenSelection[1] !== null) {
@@ -364,7 +365,7 @@ const MouseEvents = ({
         }
       }
     },
-    [storeMouseSelection, tokenSelection, tokens, triggerCodePopup]
+    [storeMouseTokenSelection, tokenSelection, tokens, triggerCodePopup]
   );
 
   useEffect(() => {
@@ -520,12 +521,6 @@ const moveSentence = (tokens, mover, direction = "up") => {
   }
 };
 
-const getToken = (tokens, e) => {
-  const [n, annotated] = getNode(e);
-  if (n === null) return { index: null, annotated: false };
-  return { index: getTokenAttributes(tokens, n), annotated };
-};
-
 const addTapped = (tokens, i) => {
   const ref = tokens?.[i]?.ref;
   if (ref?.current) ref.current.classList.add("tapped");
@@ -534,43 +529,6 @@ const addTapped = (tokens, i) => {
 const rmTapped = (tokens, i) => {
   const ref = tokens?.[i]?.ref;
   if (ref?.current) ref.current.classList.remove("tapped");
-};
-
-const getNode = (e) => {
-  try {
-    // sometimes e is Restricted, and I have no clue why,
-    // nor how to check this in a condition. hence the try clause
-    let n;
-    if (e.type === "mousemove" || e.type === "mouseup") {
-      let path = e?.path || e.composedPath(); // path is not supported in Safari. composedPath should be standard, but just check for path first
-      n = e.originalTarget || path[0];
-    }
-    if (e.type === "touchmove" || e.type === "touchstart") {
-      // stupid hack since someone decided touchmove target is always the starting target (weirdly inconsistent with mousemove)
-      // also, this still doesn't work for touchend, which is just arrrggg
-      let position = e.touches[0];
-      n = document.elementFromPoint(position.clientX, position.clientY);
-    }
-    if (n?.parentNode?.className === "item") {
-      return [null, false];
-    }
-
-    if (n) {
-      if (n.className.includes("token")) {
-        return [n, false];
-      }
-      if (n.parentNode) {
-        if (n.parentNode.className.includes("token")) return [n.parentNode, true];
-      }
-    }
-    return [null, false];
-  } catch (e) {
-    return [null, false];
-  }
-};
-
-const getTokenAttributes = (tokens, tokenNode) => {
-  return parseInt(tokenNode.getAttribute("tokenindex"));
 };
 
 const returnSelectionIfChanged = (selection, newSelection) => {

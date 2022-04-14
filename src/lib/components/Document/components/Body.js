@@ -41,27 +41,32 @@ const Body = ({ tokens, text_fields, meta_fields, image_fields, setReady, maxHei
           style={{
             flex: "1 1 auto",
             display: "flex",
-            alignItems: null,
+            flexDirection: "column",
+            alignItems: "center",
             overflow: "auto",
             maxHeight: maxHeight,
           }}
         >
           <div
+            key="meta"
+            style={{
+              width: "100%",
+              textAlign: "right",
+              padding: "10px 30px",
+            }}
+          >
+            <Meta meta_fields={meta_fields} />
+          </div>
+          <div
             style={{
               flex: "1 97%",
               width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              //alignItems: "center",
             }}
           >
-            <div
-              key="meta"
-              style={{
-                width: "100%",
-                textAlign: "right",
-                padding: "10px 30px",
-              }}
-            >
-              <Meta meta_fields={meta_fields} />
-            </div>
             <div key="content" style={{ paddingTop: "20px", paddingBottom: "20px" }}>
               {text_fields.map((tf) => text[tf.name])}
               {image_fields.map((imf) => images[imf.name])}

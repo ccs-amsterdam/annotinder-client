@@ -199,24 +199,39 @@ export const Annotinder = React.memo(({ swipeOptions, callback, swipe, blockEven
   }, [onKeydown, blockEvents]);
 
   return (
-    <div
+    <Button.Group
+      fluid
       style={{
         display: "flex",
         flexWrap: "wrap",
         alignContent: "stretch",
-
         height: "100%",
+        minHeight: "30px",
       }}
     >
+      <Button
+        disabled={swipeOptions.left == null}
+        onClick={(e, d) => callback(swipeOptions.left)}
+        style={{
+          margin: "0",
+          padding: "0",
+          borderRadius: "0",
+          border: "1px solid",
+          background: swipeOptions.left?.color || "white",
+        }}
+      >
+        <div style={{ color: "black", fontWeight: "bold", fontSize: "1em" }}>
+          <Icon name={swipeOptions.left?.code ? "arrow left" : null} />
+          <span>{swipeOptions.left?.code || ""}</span>
+        </div>
+      </Button>
       {swipeOptions.up == null ? null : (
         <Button
-          fluid
           disabled={swipeOptions.up == null}
           onClick={(e, d) => callback(swipeOptions.up)}
           style={{
             margin: "0",
             padding: "0",
-            flex: "1 1 auto",
             borderRadius: "0",
             border: "1px solid",
             background: swipeOptions.up?.color || "white",
@@ -228,55 +243,22 @@ export const Annotinder = React.memo(({ swipeOptions, callback, swipe, blockEven
           </div>
         </Button>
       )}
-      <div style={{ flex: "1 1 auto" }}>
-        <div
-          style={{
-            padding: "0",
-            margin: "0",
-            display: "flex",
-            height: "100%",
-            flexWrap: "wrap",
-            alignContent: "stretch",
-          }}
-        >
-          <Button
-            disabled={swipeOptions.left == null}
-            onClick={(e, d) => callback(swipeOptions.left)}
-            style={{
-              margin: "0",
-              padding: "0",
-              flex: "1 1 auto",
-              width: "45%",
-              borderRadius: "0",
-              border: "1px solid",
-              background: swipeOptions.left?.color || "white",
-            }}
-          >
-            <div style={{ color: "black", fontWeight: "bold", fontSize: "1em" }}>
-              <Icon name={swipeOptions.left?.code ? "arrow left" : null} />
-              <span>{swipeOptions.left?.code || ""}</span>
-            </div>
-          </Button>
-          <Button
-            disabled={swipeOptions.right == null}
-            onClick={(e, d) => callback(swipeOptions.right)}
-            style={{
-              padding: "0",
-              margin: "0",
-              flex: "1 1 auto",
-              width: "45%",
-              borderRadius: "0",
-              border: "1px solid",
-              background: swipeOptions.right?.color || "white",
-            }}
-          >
-            <div style={{ color: "black", fontWeight: "bold", fontSize: "1em" }}>
-              <span>{swipeOptions.right?.code || ""}</span>
-              <Icon name={swipeOptions.right?.code ? "arrow right" : null} />
-            </div>
-          </Button>
+      <Button
+        disabled={swipeOptions.right == null}
+        onClick={(e, d) => callback(swipeOptions.right)}
+        style={{
+          padding: "0",
+          margin: "0",
+          borderRadius: "0",
+          border: "1px solid",
+          background: swipeOptions.right?.color || "white",
+        }}
+      >
+        <div style={{ color: "black", fontWeight: "bold", fontSize: "1em" }}>
+          <span>{swipeOptions.right?.code || ""}</span>
+          <Icon name={swipeOptions.right?.code ? "arrow right" : null} />
         </div>
-      </div>
-    </div>
+      </Button>
+    </Button.Group>
   );
 });

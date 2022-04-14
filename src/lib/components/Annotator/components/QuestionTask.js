@@ -56,11 +56,16 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
 
   if (!unit) return null;
 
+  // if there are only annotinder questions, use minified mode
+  let minified = true;
+  for (let question of questions || []) if (question.type !== "annotinder") minified = false;
+
   return (
-    <div ref={divref} style={{ height: "100%" }}>
+    <div ref={divref} style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div
         {...textSwipe}
         style={{
+          flex: "1 1 auto",
           position: "relative",
           height: `${settings.splitHeight}%`,
         }}
@@ -72,7 +77,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
             width: "100%",
             overflow: "hidden",
             position: "absolute",
-            border: "0.5px solid",
+            //border: "0.5px solid",
           }}
         >
           {/* This div moves around behind the div containing the document to show the swipe code  */}
@@ -90,7 +95,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
               backgroundColor: "white",
               overflow: "hidden",
               fontSize: `${settings.textSize}em`,
-              border: "0.5px solid",
+              //border: "0.5px solid",
             }}
           >
             <Document
@@ -107,9 +112,10 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
           settings={settings}
           setSettings={setSettings}
           fullScreenNode={fullScreenNode}
+          minified={minified}
         />
       </div>
-      <div {...menuSwipe} style={{ height: `${100 - settings.splitHeight}%` }}>
+      <div {...menuSwipe} style={{ minHeight: minified ? null : `${100 - settings.splitHeight}%` }}>
         <QuestionForm
           unit={unit}
           tokens={tokens}
@@ -125,7 +131,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
   );
 };
 
-const SettingsPopup = ({ settings, setSettings, fullScreenNode }) => {
+const SettingsPopup = ({ settings, setSettings, fullScreenNode, minified }) => {
   return (
     <Popup
       on="click"
@@ -139,7 +145,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }) => {
 
             cursor: "pointer",
             top: "1px",
-            left: "-1px",
+            left: "2px",
             color: "#1b1c1d",
             padding: "5px 0px",
             height: "30px",
@@ -149,20 +155,22 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }) => {
     >
       <Form>
         <Form.Group grouped>
-          <Form.Field>
-            <label>
-              text window size <font style={{ color: "blue" }}>{`${settings.splitHeight}%`}</font>
-            </label>
-            <Input
-              size="mini"
-              step={2}
-              min={20}
-              max={80}
-              type="range"
-              value={settings.splitHeight}
-              onChange={(e, d) => setSettings((state) => ({ ...state, splitHeight: d.value }))}
-            />
-          </Form.Field>
+          {minified ? null : (
+            <Form.Field>
+              <label>
+                text window size <font style={{ color: "blue" }}>{`${settings.splitHeight}%`}</font>
+              </label>
+              <Input
+                size="mini"
+                step={2}
+                min={20}
+                max={80}
+                type="range"
+                value={settings.splitHeight}
+                onChange={(e, d) => setSettings((state) => ({ ...state, splitHeight: d.value }))}
+              />
+            </Form.Field>
+          )}
           <Form.Field>
             <label>
               text size scaling <font style={{ color: "blue" }}>{`${settings.textSize}`}</font>

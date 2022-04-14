@@ -80,7 +80,14 @@ const QuestionForm = ({
   const showQuestionButtons = questions && questions.length > 1;
 
   return (
-    <div style={{ height: "100%", width: "100%" }}>
+    <div
+      style={{
+        height: "100%",
+        width: "100%",
+        backgroundColor: "#1B1C1D",
+        borderTop: "3px double white",
+      }}
+    >
       {showQuestionButtons ? (
         <QuestionIndexStep
           questions={questions}
@@ -102,15 +109,15 @@ const QuestionForm = ({
           color: "white",
           //borderBottomLeftRadius: "5px",
           //borderBottomRightRadius: "5px",
-          backgroundColor: "#1B1C1D",
         }}
       >
         <div style={{ width: "100%", flex: "1 1 auto", paddingBottom: "10px" }}>
-          <Header as="h3" textAlign="centered" style={{ color: "white" }}>
+          <Header as="h3" textAlign="center" style={{ color: "white" }}>
             {question}
           </Header>
         </div>
-        <AnswerSegment
+
+        <AnswerField
           answerTransition={answerTransition}
           currentAnswer={annotations?.[questionIndex]?.value}
           questions={questions}
@@ -201,6 +208,7 @@ const QuestionIndexStep = ({ questions, questionIndex, annotations, setQuestionI
         style={{
           border: "1px solid",
           height: "30px",
+          padding: "1px",
         }}
       >
         {questions.map((q, i) => {
@@ -238,7 +246,7 @@ const QuestionIndexStep = ({ questions, questionIndex, annotations, setQuestionI
   );
 };
 
-const AnswerSegment = ({
+const AnswerField = ({
   answerTransition,
   currentAnswer,
   questions,
@@ -405,7 +413,7 @@ const showCurrent = (currentAnswer) => {
         }}
       >
         <div style={{ marginTop: "0.3em" }}>
-          you answered:{"  "}
+          Current answer:{"  "}
           <b style={{ fontSize: "1.5em" }}>{`${currentAnswer}`}</b>
         </div>
       </Segment>

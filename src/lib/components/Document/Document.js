@@ -80,7 +80,15 @@ const Document = ({
   if (!preparedUnit.tokens && !preparedUnit.image_fields) return null;
 
   return (
-    <div style={{ display: "flex", height: "100%", maxHeight: "100%", flexDirection: "column" }}>
+    <div
+      style={{
+        display: "flex",
+        height: "100%",
+        maxHeight: "100%",
+        flexDirection: "column",
+        //background: "grey",
+      }}
+    >
       <Body
         tokens={preparedUnit.tokens}
         text_fields={preparedUnit.text_fields}

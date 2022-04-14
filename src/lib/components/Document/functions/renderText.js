@@ -71,6 +71,9 @@ export default function renderText(tokens, text_fields, containerRef) {
 const renderField = (layout, paragraph_nr, paragraphs, field) => {
   const fontstyle = (paragraphs) => {
     if (layout) {
+      let textAlign = "left";
+      if (layout.justify) textAlign = "justify";
+      if (layout.center) textAlign = "center";
       return (
         <>
           {layout.label ? (
@@ -92,7 +95,7 @@ const renderField = (layout, paragraph_nr, paragraphs, field) => {
               fontSize: `${layout.size != null ? layout.size : 1}em`,
               fontWeight: layout.bold ? "bold" : "normal",
               fontStyle: layout.italic ? "italic" : "normal",
-              textAlign: layout.justify == null || layout.justify ? "justify" : "left",
+              textAlign,
             }}
           >
             {paragraphs}
