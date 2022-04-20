@@ -24,8 +24,31 @@
       "only_edit": false,
       "only_imported": false,
       "multiple": false,
-      "editMode": false,
-      "onlyImported": false
+      "editMode": false
+    },
+    {
+      "codes": [
+        {
+          "code": "Negative",
+          "color": "red"
+        },
+        {
+          "code": "Neutral",
+          "color": "grey"
+        },
+        {
+          "code": "Positive",
+          "color": "green"
+        }
+      ],
+      "name": "sentiment2",
+      "instruction": "assign sentiment to words",
+      "searchBox": false,
+      "buttonMode": "all",
+      "only_edit": false,
+      "only_imported": false,
+      "multiple": false,
+      "editMode": false
     }
   ]
 }
