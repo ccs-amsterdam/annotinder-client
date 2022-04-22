@@ -23,7 +23,8 @@ const QuestionForm = ({
     if (!questions) return;
     prepareAnnotations(unit, tokens, questions, setAnnotations);
     answered.current = false;
-  }, [unit, tokens, setAnnotations, questions]);
+    setAnswerTransition(null);
+  }, [unit, tokens, setAnnotations, setAnswerTransition, questions]);
 
   if (!questions || !unit || !annotations) return null;
   if (!questions?.[questionIndex]) {
@@ -63,7 +64,6 @@ const QuestionForm = ({
     setAnswerTransition(answer); // show given answer
     setTimeout(() => {
       // wait a little bit, so coder can see their answer and breathe
-      setAnswerTransition(null);
 
       // if none remain, go to next unit
       if (newQuestionIndex === null) {

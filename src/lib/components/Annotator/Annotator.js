@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Icon, Grid, Header } from "semantic-ui-react";
+import { Icon, Grid, Header, Dimmer, Loader, Segment } from "semantic-ui-react";
 import DownloadAnnotations from "./components/DownloadAnnotations";
 import IndexController from "./components/IndexController";
 import Task from "./components/Task";
@@ -14,6 +14,7 @@ import "./annotatorStyle.css";
 const Annotator = ({ jobServer, askFullScreen }) => {
   const [unitIndex, setUnitIndex] = useState(-1);
   const [preparedUnit, setPreparedUnit] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // on start (or jobserver changes), unitIndex based on progress
@@ -23,8 +24,9 @@ const Annotator = ({ jobServer, askFullScreen }) => {
   useEffect(() => {
     // When unitIndex changes, get the unit
     if (!jobServer || unitIndex === null) return;
-    getUnit(jobServer, unitIndex, setPreparedUnit, setUnitIndex);
-  }, [unitIndex, jobServer, setUnitIndex, setPreparedUnit]);
+    setLoading(true);
+    getUnit(jobServer, unitIndex, setPreparedUnit, setUnitIndex).then(() => setLoading(false));
+  }, [unitIndex, jobServer, setUnitIndex, setPreparedUnit, setLoading]);
 
   const content = (fullScreenNode) => {
     if (unitIndex < 0) return null;
@@ -83,7 +85,12 @@ const Annotator = ({ jobServer, askFullScreen }) => {
             </div>
             <div>{fullScreenButton}</div>
           </div>
-          <div style={{ height: "calc(100% - 45px)", padding: "0" }}>{content(fullScreenNode)}</div>
+          <Segment basic style={{ height: "calc(100% - 45px)", padding: "0", margin: "0" }}>
+            <Dimmer inverted active={loading}>
+              <Loader />
+            </Dimmer>
+            {content(fullScreenNode)}
+          </Segment>
         </div>
       )}
     </FullScreenWindow>
@@ -110,7 +117,6 @@ const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
     });
   } catch (e) {
     if (e.response?.status === 404) {
-      console.log("what");
       setUnitIndex(null);
     } else {
       console.error(e);

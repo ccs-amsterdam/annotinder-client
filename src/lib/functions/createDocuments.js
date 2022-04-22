@@ -27,7 +27,6 @@ export const prepareDocument = (document, codes = {}) => {
     doc.n_paragraphs = 0;
     doc.n_sentences = 0;
   }
-
   // ImportSpanAnnotations transforms the array format annotations to an object format.
   // More importantly, it matches the annotations to token indices (based on the char offset)
   if (doc.annotations) {
