@@ -308,7 +308,6 @@ const AnswerField = ({
         {questions[questionIndex].type === "annotinder" ? (
           <Annotinder
             swipeOptions={questions[questionIndex].swipeOptions}
-            currentAnswer={currentAnswer}
             callback={onSelect}
             swipe={swipe}
             blockEvents={blockEvents}
