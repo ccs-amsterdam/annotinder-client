@@ -16,7 +16,7 @@ const App = () => {
   });
 
   useEffect(() => {
-    // use windonw.innerHeight for height, because vh on mobile is weird (can include the address bar)
+    // use window.innerHeight for height, because vh on mobile is weird (can include the address bar)
     // use document.documentElement.clientwidth for width, to exclude the scrollbar
     const onResize = () => {
       setSize({
