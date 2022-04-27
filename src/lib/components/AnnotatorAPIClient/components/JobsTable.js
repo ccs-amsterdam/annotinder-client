@@ -1,87 +1,84 @@
-import React, { useState, useEffect } from "react";
-import { Button, Popup, Header } from "semantic-ui-react";
+import React, { useEffect } from "react";
 import FullDataTable from "./FullDataTable";
-import QRCode from "react-qr-code";
+import { Button } from "semantic-ui-react";
 
 const columns = [
-  { name: "role", width: 2, f: (row) => (row.is_admin ? "admin" : "coder") },
-  { name: "email", width: 11, title: true },
+  { name: "id", title: true, width: 2 },
+  { name: "title", title: true, width: 6 },
+  { name: "created", title: true, date: true, width: 6 },
 ];
 
-export default function UsersTable({ backend, users, setUsers }) {
+export default function JobsTable({ backend, setJob, jobs, setJobs, jobId, setJobId }) {
   useEffect(() => {
+    getAllJobs(backend, setJobs);
+  }, [backend, setJobs]);
+
+  useEffect(() => {
+    if (!jobId) {
+      setJob(null);
+      if (jobs && jobs.length > 0) setJobId(jobs[0].id);
+      return;
+    }
     backend
-      .getUsers()
-      .then(setUsers)
-      .catch((e) => setUsers([]));
-  }, [backend, setUsers]);
+      .getCodingjobDetails(jobId)
+      .then(setJob)
+      .catch((e) => {
+        console.error(e);
+        setJob(null);
+      });
+  }, [jobs, jobId, backend, setJob, setJobId]);
 
-  // const rowOptions = (row) => {
-  //   const style = { padding: "5px" };
-  //   return (
-  //     <ButtonGroup>
-  //       <Button icon="linkify" style={style} />
-  //     </ButtonGroup>
-  //   );
-  // };
-
-  // const columnsWithButton = [{ name: "", width: 2, f: rowOptions }, ...columns];
+  const onClick = async (job) => {
+    setJobId(job.id);
+  };
 
   return (
     <FullDataTable
-      fullData={users}
-      setFullData={setUsers}
+      fullData={jobs}
+      setFullData={setJobs}
+      buttons={ArchiveButton}
       columns={columns}
-      buttons={[LoginLinkButton]}
+      onClick={onClick}
       backend={backend}
+      isActive={(row) => row.id === jobId}
     />
   );
 }
 
-const buttonstyle = { padding: "5px" };
+const setJobSettings = async (id, backend, settingsObj, setJobs, setJob) => {
+  backend.setJobSettings(id, settingsObj);
+  setJobs((jobs) => {
+    const i = jobs.findIndex((j) => j.id === Number(id));
+    if (i >= 0) jobs[i] = { ...jobs[i], ...settingsObj };
+    return [...jobs];
+  });
+  // setJob is optional because it doesn't work if set via the button in FullDataTable
+  if (setJob) setJob((job) => ({ ...job, ...settingsObj }));
+};
 
-const LoginLinkButton = ({ row, backend }) => {
-  const [link, setLink] = useState(null);
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    // to just load this if it's being requested
-    if (!open) return;
-    backend
-      .getToken(row.email)
-      .then((token) => {
-        const qrhost = backend.host.replace(":", "%colon%");
-        setLink({
-          url: `https://ccs-amsterdam.github.io/ccs-annotator-client/?host=${backend.host}&token=${token}`,
-          qrUrl: `https://ccs-amsterdam.github.io/ccs-annotator-client/?host=${qrhost}&token=${token}`,
-        });
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  }, [open, backend, row]);
+const ArchiveButton = ({ row, backend, setData, style }) => {
+  if (!backend) return null;
 
   return (
-    <Popup
-      on="click"
-      onOpen={() => setOpen(true)}
-      hoverable
-      trigger={<Button icon="linkify" style={buttonstyle} />}
-    >
-      <Header style={{ fontSize: "1.5em" }}>Login link for {row.email}</Header>
-      <QRCode value={encodeURI(link?.qrUrl)} size={256} />
-      <br />
-      <br />
-      <a href={link?.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "2em" }}>
-        Login link
-      </a>
-      <Button
-        secondary
-        onClick={() => navigator.clipboard.writeText(link?.url)}
-        style={{ float: "right" }}
-      >
-        Copy link
-      </Button>
-    </Popup>
+    <Button
+      icon={row.archived ? "eye slash" : "eye"}
+      onClick={(e, d) => {
+        //toggleJobArchived(row.id, backend, setData);
+        setJobSettings(row.id, backend, { archived: !row.archived }, setData, null);
+      }}
+      style={{ padding: "5px", background: row.archived ? "#f76969" : "", ...style }}
+    />
   );
+};
+
+const getAllJobs = (backend, setJobs) => {
+  backend
+    .getAllJobs()
+    .then((jobs) => {
+      setJobs(jobs.jobs || []);
+    })
+    .catch((e) => {
+      console.error(e);
+      setJobs([]);
+    });
 };

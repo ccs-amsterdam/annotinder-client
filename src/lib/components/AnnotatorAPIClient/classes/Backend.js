@@ -36,6 +36,10 @@ class Backend {
     const res = await this.api.get(path);
     return res.data;
   }
+  async getJobToken(job_id) {
+    const res = await this.api.get(`/codingjob/${job_id}/token`);
+    return res.data;
+  }
   async getUsers() {
     const res = await this.api.get("/users");
     return res.data.users;

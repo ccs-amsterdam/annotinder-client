@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import FullDataTable from "./FullDataTable";
 import {
   Grid,
   Header,
@@ -10,55 +9,28 @@ import {
   Progress,
   Dropdown,
   Container,
+  Popup,
 } from "semantic-ui-react";
 import { useCSVDownloader } from "react-papaparse";
-
-const columns = [
-  { name: "id", title: true, width: 2 },
-  { name: "title", title: true, width: 6 },
-  { name: "created", title: true, date: true, width: 6 },
-];
+import JobsTable from "./JobsTable";
+import QRCode from "react-qr-code";
 
 export default function ManageJobs({ backend }) {
   const [jobs, setJobs] = useState([]);
   const [jobId, setJobId] = useState(null);
   const [job, setJob] = useState(null);
 
-  useEffect(() => {
-    getAllJobs(backend, setJobs);
-  }, [backend]);
-
-  useEffect(() => {
-    if (!jobId) {
-      setJob(null);
-      if (jobs && jobs.length > 0) setJobId(jobs[0].id);
-      return;
-    }
-    backend
-      .getCodingjobDetails(jobId)
-      .then(setJob)
-      .catch((e) => {
-        console.error(e);
-        setJob(null);
-      });
-  }, [jobs, jobId, backend, setJob]);
-
-  const onClick = async (job) => {
-    setJobId(job.id);
-  };
-
   return (
     <Grid stackable textAlign="center" style={{ height: "100%" }}>
       <Grid.Column width="6">
         <Header>Jobs</Header>
-        <FullDataTable
-          fullData={jobs}
-          setFullData={setJobs}
-          buttons={ArchiveButton}
-          columns={columns}
-          onClick={onClick}
+        <JobsTable
           backend={backend}
-          isActive={(row) => row.id === jobId}
+          setJob={setJob}
+          jobs={jobs}
+          setJobs={setJobs}
+          jobId={jobId}
+          setJobId={setJobId}
         />
       </Grid.Column>
       <Grid.Column width="4">
@@ -77,33 +49,6 @@ const setJobSettings = async (id, backend, settingsObj, setJobs, setJob) => {
   });
   // setJob is optional because it doesn't work if set via the button in FullDataTable
   if (setJob) setJob((job) => ({ ...job, ...settingsObj }));
-};
-
-const ArchiveButton = ({ row, backend, setData, style }) => {
-  if (!backend) return null;
-
-  return (
-    <Button
-      icon={row.archived ? "eye slash" : "eye"}
-      onClick={(e, d) => {
-        //toggleJobArchived(row.id, backend, setData);
-        setJobSettings(row.id, backend, { archived: !row.archived }, setData, null);
-      }}
-      style={{ padding: "5px", background: row.archived ? "#f76969" : "", ...style }}
-    />
-  );
-};
-
-const getAllJobs = (backend, setJobs) => {
-  backend
-    .getAllJobs()
-    .then((jobs) => {
-      setJobs(jobs.jobs || []);
-    })
-    .catch((e) => {
-      console.error(e);
-      setJobs([]);
-    });
 };
 
 const leftColStyle = { fontWeight: "bold", textAlign: "right", paddingRight: "15px" };
@@ -202,7 +147,15 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }) => {
               />
             </Table.Cell>
           </Table.Row>
-          <JobUsers backend={backend} job={job} />
+          <Table.Row>
+            <JobUsers backend={backend} job={job} />
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell style={leftColStyle}>Unregistered coder</Table.Cell>
+            <Table.Cell>
+              <JobTokenButton jobId={jobId} backend={backend} />
+            </Table.Cell>
+          </Table.Row>
         </Table.Body>
       </Table>
 
@@ -267,30 +220,28 @@ const JobUsers = ({ backend, job }) => {
   // const [users, setUsers] = useState([]);
 
   return (
-    <Table.Row>
-      <Table.Cell colSpan="2" style={{ border: "none" }}>
-        <b>Users with access</b>
-        <div style={{ display: "flex" }}>
-          <Dropdown
-            selection
-            multiple
-            value={selection}
-            onChange={(e, d) => {
-              setChanged(true);
-              setSelection(d.value);
-            }}
-            options={options}
-            style={{ width: "100%" }}
-          />
-          <Button icon="save" disabled={!changed} primary onClick={onSave} />
-        </div>
-        {changed ? (
-          <span style={{ float: "right", color: "orange" }}>
-            <i>Don't forget to save changes!</i>
-          </span>
-        ) : null}
-      </Table.Cell>
-    </Table.Row>
+    <Table.Cell colSpan="2" style={{ border: "none" }}>
+      <b>Users with access</b>
+      <div style={{ display: "flex" }}>
+        <Dropdown
+          selection
+          multiple
+          value={selection}
+          onChange={(e, d) => {
+            setChanged(true);
+            setSelection(d.value);
+          }}
+          options={options}
+          style={{ width: "100%" }}
+        />
+        <Button icon="save" disabled={!changed} primary onClick={onSave} />
+      </div>
+      {changed ? (
+        <span style={{ float: "right", color: "orange" }}>
+          <i>Don't forget to save changes!</i>
+        </span>
+      ) : null}
+    </Table.Cell>
   );
 };
 
@@ -325,5 +276,51 @@ const LabeledProgress = ({ label, value, total, size }) => {
       total={total}
       progress="ratio"
     />
+  );
+};
+
+const JobTokenButton = ({ jobId, backend, style }) => {
+  const [link, setLink] = useState(null);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    // to just load this if it's being requested
+    if (!open) return;
+    backend
+      .getJobToken(jobId)
+      .then((token) => {
+        const qrhost = backend.host.replace(":", "%colon%");
+        setLink({
+          url: `${window.location.origin}/ccs-annotator-client/redeem/?host=${backend.host}&jobtoken=${token.token}`,
+          qrUrl: `${window.location.origin}/ccs-annotator-client/redeem/?host=${qrhost}&jobtoken=${token.token}`,
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }, [open, backend, jobId]);
+
+  return (
+    <Popup
+      on="click"
+      onOpen={() => setOpen(true)}
+      hoverable
+      trigger={<Button style={{ padding: "5px", ...style }}>Get Job Token</Button>}
+    >
+      <Header style={{ fontSize: "1.5em" }}>Unregistered user link</Header>
+      <QRCode value={encodeURI(link?.qrUrl)} size={256} />
+      <br />
+      <br />
+      <a href={link?.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "2em" }}>
+        Login link
+      </a>
+      <Button
+        secondary
+        onClick={() => navigator.clipboard.writeText(link?.url)}
+        style={{ float: "right" }}
+      >
+        Copy link
+      </Button>
+    </Popup>
   );
 };

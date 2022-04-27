@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AnnotatorAPIClient from "lib/components/AnnotatorAPIClient/AnnotatorAPIClient";
 import DemoJobOverview from "lib/components/DemoJob/DemoJobOverview";
+import RedeemToken from "lib/components/RedeemToken/RedeemToken";
+
 import "./appStyle.css";
 
 // just for quick testing
@@ -38,6 +40,7 @@ const App = () => {
         <Routes>
           <Route path="/" exact element={<AnnotatorAPIClient />} />
           <Route path="/demo" exact element={<DemoJobOverview />} />
+          <Route path="/redeem" exact element={<RedeemToken />} />
         </Routes>
       </div>
     </Router>

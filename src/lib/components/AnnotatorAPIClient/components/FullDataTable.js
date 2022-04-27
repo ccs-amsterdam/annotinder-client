@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Pagination, Table, Icon, Button, Search } from "semantic-ui-react";
+import { Container, Pagination, Table, Icon, Search } from "semantic-ui-react";
 
 const PAGESIZE = 10;
 
@@ -198,17 +198,15 @@ const PaginationTable = ({
       const buttonsArray = Array.isArray(buttons) ? buttons : [buttons];
       cells = [
         <Table.Cell key={"button." + rowObj.id} style={{ rowStyle, padding: "0px !important" }}>
-          <Button.Group>
-            {buttonsArray.map((ButtonComponent, i) => (
-              <ButtonComponent
-                key={rowObj.id + "." + i}
-                row={rowObj}
-                backend={backend}
-                setData={setFullData}
-                style={{ padding: "2px" }}
-              />
-            ))}
-          </Button.Group>
+          {buttonsArray.map((ButtonComponent, i) => (
+            <ButtonComponent
+              key={rowObj.id + "." + i}
+              row={rowObj}
+              backend={backend}
+              setData={setFullData}
+              style={{ padding: "2px" }}
+            />
+          ))}
         </Table.Cell>,
         ...cells,
       ];
@@ -219,18 +217,12 @@ const PaginationTable = ({
 
   return (
     <Container>
-      <Table
-        unstackable
-        selectable
-        fixed
-        compact="very"
-        singleLine
-        size="small"
-        style={{ border: "none" }}
-      >
+      <Table unstackable selectable fixed compact="very" size="small" style={{ border: "none" }}>
         <Table.Header>
           <Table.Row>
-            {buttons ? <Table.HeaderCell key="buttons" style={headerStyleLeft} /> : null}
+            {buttons ? (
+              <Table.HeaderCell key="buttons" width={buttons.length * 2} style={headerStyleLeft} />
+            ) : null}
             {createHeaderRow(data, columns)}
           </Table.Row>
         </Table.Header>
