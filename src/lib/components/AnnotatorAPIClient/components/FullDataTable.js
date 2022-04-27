@@ -143,7 +143,7 @@ const PaginationTable = ({
       if (i === columns.length - 1) style = headerStyleRight;
       return (
         <Table.HeaderCell key={i} width={col.width || null} style={style}>
-          <span>{col.name}</span>
+          <span>{col.label || col.name}</span>
         </Table.HeaderCell>
       );
     });

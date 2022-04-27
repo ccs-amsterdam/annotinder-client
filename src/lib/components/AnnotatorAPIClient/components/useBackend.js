@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Backend, { passwordLogin } from "../classes/Backend";
 import { Header, Form, Button, Segment, Grid } from "semantic-ui-react";
 import useLocalStorage from "lib/hooks/useLocalStorage";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const useBackend = () => {
   // Hook that tries to log in with the host and token from local storage
@@ -122,6 +122,7 @@ const SignIn = ({ recHost, setLogin }) => {
   const [password, setPassword] = useState("");
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [invalidPassword, setInvalidPassword] = useState(false);
+  const navigate = useNavigate();
 
   const tryPasswordLogin = async () => {
     const notEmail = !email.match(
@@ -149,9 +150,18 @@ const SignIn = ({ recHost, setLogin }) => {
 
   return (
     <>
-      <Header icon="user" content="Register or sign in" />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Header icon="user" content="Sign in" />
+        <Button
+          basic
+          style={{ padding: "0px 10px", marginBottom: "5px" }}
+          onClick={() => navigate("demo")}
+        >
+          View demo
+        </Button>
+      </div>
 
-      <Segment placeholder attached="bottom">
+      <Segment placeholder attached="bottom" style={{ borderRadius: "10px", position: "relative" }}>
         <Grid stackable textAlign="center">
           <Grid.Row>
             <Grid.Column>

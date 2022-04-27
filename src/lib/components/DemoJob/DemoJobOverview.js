@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import JobServerDemo from "./classes/JobServerDemo";
 import Annotator from "../Annotator/Annotator";
-import { Button, Grid, Header } from "semantic-ui-react";
+import { Button, Grid, Header, Menu, Icon } from "semantic-ui-react";
 import FullDataTable from "../AnnotatorAPIClient/components/FullDataTable";
 
 const DemoJobOverview = () => {
@@ -29,60 +29,72 @@ const unit_files = [
 const codebook_files = [
   { label: "Annotate sentiment", filename: "sentimentAnnotation" },
   { label: "sentiment questions", filename: "sentimentQuestion" },
-  { label: "Edit actor annotations", filename: "actor_annotation" },
+  {
+    label: "Edit actor annotations (requires units with actor annotations)",
+    filename: "actor_annotation",
+  },
   { label: "Political Image swiping", filename: "politicalImageSwipe" },
 ];
-const columns = [{ name: "label" }, { name: "filename" }];
+const unitColumns = [{ name: "label", label: "Select unit set" }];
+const codebookColumns = [{ name: "label", label: "Select codebook" }];
 
 const DemoSelector = () => {
   const [, setSearchParams] = useSearchParams();
   const [units, setUnits] = useState(unit_files[0].filename);
   const [codebook, setCodebook] = useState(codebook_files[0].filename);
+  const navigate = useNavigate();
 
   const onClick = () => {
     setSearchParams({ units, codebook });
   };
 
   return (
-    <Grid centered container style={{ marginTop: "30px" }}>
-      <Grid.Row>
-        <Grid.Column textAlign="center" width="6">
-          <Header as="h2">Select a demo job</Header>
-          <p>
-            Pick a unit set and codebook, and click start to fire up a demo job. Note that your
-            annotations will not be stored, and will be lost when closing or refreshing the
-            application.
-          </p>
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row>
-        <Grid.Column width="6">
-          <Header textAlign="center">Units</Header>
-          <FullDataTable
-            fullData={unit_files}
-            columns={columns}
-            onClick={(row) => setUnits(row.filename)}
-            isActive={(row) => row.filename === units}
-          />
-        </Grid.Column>
-        <Grid.Column width="6">
-          <Header textAlign="center">Codebook</Header>
-          <FullDataTable
-            fullData={codebook_files}
-            columns={columns}
-            onClick={(row) => setCodebook(row.filename)}
-            isActive={(row) => row.filename === codebook}
-          />{" "}
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row>
-        <Grid.Column width="12">
-          <Button primary fluid disabled={!units || !codebook} onClick={onClick}>
-            Start Demo Job
-          </Button>
-        </Grid.Column>
-      </Grid.Row>
-    </Grid>
+    <div>
+      <Menu pointing secondary style={{ marginBottom: "10px" }}>
+        <Menu.Item position="right" onClick={() => navigate("/")}>
+          <Icon name="user" style={{ cursor: "pointer" }} />
+        </Menu.Item>
+      </Menu>
+      <Grid centered container style={{ marginTop: "30px" }}>
+        <Grid.Row>
+          <Grid.Column textAlign="center" width="6">
+            <Header as="h2">Select a demo job</Header>
+            <p>
+              Pick a unit set and codebook, and click start to fire up a demo job. Note that your
+              annotations will not be stored, and will be lost when closing or refreshing the
+              application.
+            </p>
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column width="6">
+            <Header textAlign="center">Units</Header>
+            <FullDataTable
+              fullData={unit_files}
+              columns={unitColumns}
+              onClick={(row) => setUnits(row.filename)}
+              isActive={(row) => row.filename === units}
+            />
+          </Grid.Column>
+          <Grid.Column width="6">
+            <Header textAlign="center">Codebook</Header>
+            <FullDataTable
+              fullData={codebook_files}
+              columns={codebookColumns}
+              onClick={(row) => setCodebook(row.filename)}
+              isActive={(row) => row.filename === codebook}
+            />{" "}
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column width="12">
+            <Button primary fluid disabled={!units || !codebook} onClick={onClick}>
+              Start Demo Job
+            </Button>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    </div>
   );
 };
 
