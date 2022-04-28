@@ -12,7 +12,7 @@ import { useSearchParams } from "react-router-dom";
 // Then when coders first check in, they need to either give their email-adress OR say "stay anonymous"
 // Codingjobs can then specify whether stay anonymous is allowed, and whether registration is required.
 
-const AnnotatorAPIClient = () => {
+const AnnotatorAmcatClient = () => {
   const [backend, authForm] = useBackend();
   const jobServer = useJobServer(backend);
 
@@ -54,4 +54,4 @@ const useJobServer = (backend) => {
   return jobServer;
 };
 
-export default React.memo(AnnotatorAPIClient);
+export default React.memo(AnnotatorAmcatClient);

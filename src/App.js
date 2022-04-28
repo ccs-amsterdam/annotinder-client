@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 
 // Main pages. Use below in items to include in header menu
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AnnotatorAPIClient from "lib/components/AnnotatorAPIClient/AnnotatorAPIClient";
+import AnnotatorAmcatClient from "lib/components/AnnotatorClient/AnnotatorAmcatClient";
 import DemoJobOverview from "lib/components/DemoJob/DemoJobOverview";
-import RedeemToken from "lib/components/RedeemToken/RedeemToken";
+import GuestCoder from "lib/components/GuestCoder/GuestCoder";
 
 import "./appStyle.css";
 
 // just for quick testing
-//import AnnotatorRClient from "lib/components/AnnotatorAPIClient/AnnotatorRClient";
+//import AnnotatorRClient from "lib/components/AnnotatorAmcatClient/AnnotatorRClient";
 
 const App = () => {
   const [size, setSize] = useState({
@@ -38,9 +38,9 @@ const App = () => {
     <Router basename={process.env.PUBLIC_URL}>
       <div style={{ height: `${size.height}px`, width: `${size.width}px` }}>
         <Routes>
-          <Route path="/" exact element={<AnnotatorAPIClient />} />
+          <Route path="/" exact element={<AnnotatorAmcatClient />} />
           <Route path="/demo" exact element={<DemoJobOverview />} />
-          <Route path="/redeem" exact element={<RedeemToken />} />
+          <Route path="/redeem" exact element={<GuestCoder />} />
         </Routes>
       </div>
     </Router>

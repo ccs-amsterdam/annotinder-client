@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import JobServerDemo from "./classes/JobServerDemo";
 import Annotator from "../Annotator/Annotator";
 import { Button, Grid, Header, Menu, Icon } from "semantic-ui-react";
-import FullDataTable from "../AnnotatorAPIClient/components/FullDataTable";
+import FullDataTable from "../AnnotatorClient/components/FullDataTable";
 
 const DemoJobOverview = () => {
   const [job, setJob] = useState(null);

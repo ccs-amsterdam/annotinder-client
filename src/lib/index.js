@@ -1,9 +1,7 @@
 import Annotator from "./components/Annotator/Annotator";
-import QuestionTask from "./components/Annotator/components/QuestionTask";
-import AnnotateTask from "./components/Annotator/components/AnnotateTask";
-import IndexController from "./components/Annotator/components/IndexController";
-import Document from "./components/Document/Document";
-import AnnotatorAPIClient from "./components/AnnotatorAPIClient/AnnotatorAPIClient";
+import JobServerAPI from "./components/AnnotatorClient/classes/JobServerAPI";
+import JobServerDemo from "./components/DemoJob/classes/JobServerDemo";
+import AnnotatorRClient from "./components/AnnotatorClient/AnnotatorRClient";
 
 import { prepareDocument } from "./functions/createDocuments";
 import {
@@ -14,18 +12,12 @@ import {
 } from "./functions/codebook";
 import { exportSpanAnnotations } from "./functions/annotations";
 
-import Backend from "./components/AnnotatorAPIClient/classes/Backend";
-import JobServerAPI from "./components/AnnotatorAPIClient/classes/JobServerAPI";
-
 export {
   Annotator as default,
-  Backend,
   JobServerAPI,
-  AnnotatorAPIClient,
-  QuestionTask,
-  AnnotateTask,
-  IndexController,
-  Document,
+  JobServerDemo,
+  AnnotatorRClient,
+  AnnotatorAmcatClient,
   prepareDocument,
   standardizeCodes,
   getCodebook,

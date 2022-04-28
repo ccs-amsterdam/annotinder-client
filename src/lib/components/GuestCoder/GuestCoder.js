@@ -11,7 +11,7 @@ import { useSearchParams } from "react-router-dom";
 
 // Have users provide a username / email when redeeming guest token
 
-const RedeemToken = () => {
+const GuestCoder = () => {
   const [searchParams] = useSearchParams();
   const host = searchParams.get("host");
   const jobtoken = searchParams.get("jobtoken");
@@ -19,4 +19,4 @@ const RedeemToken = () => {
   return <div></div>;
 };
 
-export default React.memo(RedeemToken);
+export default React.memo(GuestCoder);
