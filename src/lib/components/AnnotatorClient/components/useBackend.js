@@ -14,7 +14,6 @@ const useBackend = () => {
   const [backend, setBackend] = useState(null);
   const [initializing, setInitializing] = useState(true);
 
-  console.log(auth);
   // useEffect(() => {
   //   // when log in successfull, add host to url param
   //   if (!backend) return null;
@@ -53,7 +52,7 @@ const useBackend = () => {
     }
 
     if (!urlHost && !urlToken) return;
-    if (!host) return; // a token without a host is like
+    if (!host) return;
     if (host === auth.host && token === auth?.[host + "__token__"]) return;
     setAuth({ ...auth, host, [host + "__token__"]: token });
   }, [backend, auth, setAuth, searchParams, setSearchParams]);
@@ -75,7 +74,7 @@ const useBackend = () => {
     b.init()
       .then(() => {
         setBackend(b);
-        setAuth({ ...auth, host: b.host, [b.host + "__token__"]: b.token }); // set host to last one logged in with
+        //setAuth({ ...auth, host: b.host, [b.host + "__token__"]: b.token }); // set host to last one logged in with
       })
       .catch((e) => {
         setBackend(null);

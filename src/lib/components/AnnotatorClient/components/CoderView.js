@@ -8,13 +8,14 @@ const columns = [
   { name: "progress", f: (row) => `${row.n_coded || 0} / ${row.n_total}` },
   { name: "modified", title: true, date: true },
   { name: "created", title: true, date: true },
+  { name: "creator", title: true },
 ];
 
 export default function CoderView({ backend }) {
   return (
     <Grid centered stackable>
       <Grid.Row>
-        <Grid.Column textAlign="center" width="8">
+        <Grid.Column textAlign="center" width="10">
           <Header>Coding jobs</Header>
           <CoderJobsTable backend={backend} />
         </Grid.Column>

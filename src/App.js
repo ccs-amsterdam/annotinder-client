@@ -40,7 +40,7 @@ const App = () => {
         <Routes>
           <Route path="/" exact element={<AnnotatorAmcatClient />} />
           <Route path="/demo" exact element={<DemoJobOverview />} />
-          <Route path="/redeem" exact element={<GuestCoder />} />
+          <Route path="/guest" exact element={<GuestCoder />} />
         </Routes>
       </div>
     </Router>

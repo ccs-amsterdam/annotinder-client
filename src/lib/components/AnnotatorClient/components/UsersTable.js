@@ -47,6 +47,7 @@ const LoginLinkButton = ({ row, backend, style }) => {
       on="click"
       onOpen={() => setOpen(true)}
       hoverable
+      mouseLeaveDelay={9999999}
       trigger={<Button icon="linkify" style={{ padding: "5px", ...style }} />}
     >
       <Header style={{ fontSize: "1.5em" }}>Login link for {row.email}</Header>

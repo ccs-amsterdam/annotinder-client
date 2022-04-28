@@ -10,15 +10,7 @@ class JobServerDemo {
     };
   }
 
-  async init() {
-    try {
-      this.success = true;
-    } catch (e) {
-      console.error(e);
-      this.success = false;
-      return;
-    }
-  }
+  async init() {}
 
   async getUnit(i) {
     this.progress.n_coded = Math.max(i, this.progress.n_coded);

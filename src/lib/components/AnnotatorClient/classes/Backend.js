@@ -7,9 +7,11 @@ export async function passwordLogin(host, email, password) {
   return res.data.token;
 }
 
-export async function redeemJobToken(token, user_id) {
-  const res = await this.api.get("/jobtoken", { params: { token, user_id } });
-  return res.data.token;
+export async function redeemJobToken(host, token, user_id) {
+  const params = { token };
+  if (user_id) params.user_id = user_id;
+  const res = await Axios.get(`${host}/jobtoken`, { params });
+  return res.data;
 }
 
 class Backend {
@@ -23,10 +25,12 @@ class Backend {
   }
 
   async init() {
+    console.log(this.token);
     const d = await this.getToken();
     this.email = d.email;
     this.is_admin = d.is_admin;
     this.token = d.token; //getToken should give a refreshed token, which is set to localstorage in useBackend
+    this.restricted_job = d.restricted_job;
   }
 
   // GET

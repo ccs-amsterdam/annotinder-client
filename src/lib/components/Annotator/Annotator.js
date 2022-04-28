@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Icon, Grid, Header, Dimmer, Loader, Segment } from "semantic-ui-react";
+import { Icon, Grid, Header, Dimmer, Loader, Segment, Popup, Button } from "semantic-ui-react";
 import DownloadAnnotations from "./components/DownloadAnnotations";
 import IndexController from "./components/IndexController";
 import Task from "./components/Task";
 import FullScreenWindow from "./components/FullScreenWindow";
 import "./annotatorStyle.css";
+import useLocalStorage from "lib/hooks/useLocalStorage";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Render an annotator for the provided jobServer class
@@ -18,7 +20,7 @@ const Annotator = ({ jobServer, askFullScreen }) => {
 
   useEffect(() => {
     // on start (or jobserver changes), unitIndex based on progress
-    setUnitIndex(jobServer.progress.n_coded);
+    setUnitIndex(jobServer?.progress?.n_coded);
   }, [jobServer, setUnitIndex]);
 
   useEffect(() => {
@@ -79,11 +81,17 @@ const Annotator = ({ jobServer, askFullScreen }) => {
                 nCoded={jobServer?.progress?.n_coded || 0}
                 index={unitIndex}
                 setIndex={setUnitIndex}
-                canGoBack={jobServer?.progress.seek_backwards}
-                canGoForward={jobServer?.progress.seek_forwards}
+                canGoBack={jobServer?.progress?.seek_backwards}
+                canGoForward={jobServer?.progress?.seek_forwards}
               />
             </div>
-            <div>{fullScreenButton}</div>
+            <div>
+              <div>
+                {fullScreenButton}
+
+                <UserButton jobServer={jobServer} />
+              </div>
+            </div>
           </div>
           <Segment basic style={{ height: "calc(100% - 45px)", padding: "0", margin: "0" }}>
             <Dimmer inverted active={loading}>
@@ -165,6 +173,40 @@ const Finished = ({ jobServer }) => {
       </Grid>
     );
   }
+};
+
+const UserButton = ({ jobServer }) => {
+  const [auth, setAuth] = useLocalStorage("auth", {});
+  const navigate = useNavigate();
+
+  return (
+    <Popup
+      wide
+      position="bottom right"
+      on="click"
+      trigger={<Icon name="cancel" size="big" style={{ cursor: "pointer" }} />}
+    >
+      <Popup.Content>
+        <Button.Group vertical fluid>
+          {jobServer?.hasHome ? (
+            <Button primary icon="home" content="Back to overview" onClick={() => navigate("/")} />
+          ) : null}
+          <Button
+            secondary
+            icon="user"
+            content="Log out"
+            style={{ marginTop: "0" }}
+            onClick={() => {
+              console.log("test");
+              console.log(auth.host, auth[auth.host + "__token__"]);
+              setAuth({ ...auth, [auth.host + "__token__"]: null });
+              window.location.reload("/");
+            }}
+          />
+        </Button.Group>
+      </Popup.Content>
+    </Popup>
+  );
 };
 
 export default Annotator;

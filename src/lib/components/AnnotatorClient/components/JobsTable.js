@@ -6,6 +6,7 @@ const columns = [
   { name: "id", title: true, width: 2 },
   { name: "title", title: true, width: 6 },
   { name: "created", title: true, date: true, width: 6 },
+  { name: "creator", title: true, width: 6 },
 ];
 
 export default function JobsTable({ backend, setJob, jobs, setJobs, jobId, setJobId }) {
@@ -13,6 +14,7 @@ export default function JobsTable({ backend, setJob, jobs, setJobs, jobId, setJo
     getAllJobs(backend, setJobs);
   }, [backend, setJobs]);
 
+  console.log(jobs);
   useEffect(() => {
     if (!jobId) {
       setJob(null);

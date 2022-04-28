@@ -22,7 +22,7 @@ export default function ManageJobs({ backend }) {
 
   return (
     <Grid stackable textAlign="center" style={{ height: "100%" }}>
-      <Grid.Column width="6">
+      <Grid.Column width="8">
         <Header>Jobs</Header>
         <JobsTable
           backend={backend}
@@ -291,8 +291,8 @@ const JobTokenButton = ({ jobId, backend, style }) => {
       .then((token) => {
         const qrhost = backend.host.replace(":", "%colon%");
         setLink({
-          url: `${window.location.origin}/ccs-annotator-client/redeem/?host=${backend.host}&jobtoken=${token.token}`,
-          qrUrl: `${window.location.origin}/ccs-annotator-client/redeem/?host=${qrhost}&jobtoken=${token.token}`,
+          url: `${window.location.origin}/ccs-annotator-client/guest/?host=${backend.host}&jobtoken=${token.token}`,
+          qrUrl: `${window.location.origin}/ccs-annotator-client/guest/?host=${qrhost}&jobtoken=${token.token}`,
         });
       })
       .catch((e) => {
@@ -305,6 +305,7 @@ const JobTokenButton = ({ jobId, backend, style }) => {
       on="click"
       onOpen={() => setOpen(true)}
       hoverable
+      mouseLeaveDelay={9999999}
       trigger={<Button style={{ padding: "5px", ...style }}>Get Job Token</Button>}
     >
       <Header style={{ fontSize: "1.5em" }}>Unregistered user link</Header>

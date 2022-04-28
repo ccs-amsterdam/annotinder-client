@@ -25,31 +25,36 @@ const AnnotatorAmcatClient = () => {
     );
   }
 
+  console.log(jobServer);
   if (!jobServer) {
     // if backend is connected, but there is no jobServer (because no job_id was passed in the url)
     // show a screen with some relevant info for the user on this host. Like current / new jobs
     return <Home backend={backend} authForm={authForm} />;
   }
 
-  //if (urlJobId && jobServer.job_id !== urlJobId) return null;
-  //if (urlHost && backend.host !== urlHost) return null;
   return <Annotator jobServer={jobServer} />;
 };
 
 const useJobServer = (backend) => {
   const [jobServer, setJobServer] = useState(null);
-  const [searchParams] = useSearchParams();
-  let urlJobId = searchParams.get("job_id");
+  const [searchParams, setSearchParams] = useSearchParams();
+  let jobId = backend?.restricted_job || searchParams.get("job_id");
 
   useEffect(() => {
-    if (!backend || urlJobId == null || urlJobId === null) {
+    if (!backend || jobId == null || jobId === null) {
       setJobServer(null);
       return;
     }
     setJobServer(null);
-    const js = new JobServerAPI(backend, urlJobId, setJobServer);
-    js.init().then(() => setJobServer(js)); // add a check for if job_id is invalid
-  }, [backend, urlJobId]);
+    const hasHome = backend?.restricted_job ? false : true;
+    const js = new JobServerAPI(backend, jobId, setJobServer, hasHome);
+    js.init()
+      .then(() => setJobServer(js))
+      .catch(() => {
+        searchParams.delete("job_id");
+        setSearchParams(searchParams);
+      }); // add a check for if job_id is invalid
+  }, [backend, jobId, searchParams, setSearchParams]);
 
   return jobServer;
 };

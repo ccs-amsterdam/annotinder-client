@@ -86,16 +86,15 @@ const AskFullScreenModal = ({ handle, askFullScreenSetting }) => {
 
 const FullScreenButton = ({ handle }) => {
   return (
-    <Icon.Group size="big">
-      <Icon
-        link
-        name={handle.active ? "compress" : "expand"}
-        style={{ margin: "0" }}
-        onClick={() => {
-          handle.active ? handle.exit() : handle.enter();
-        }}
-      />
-    </Icon.Group>
+    <Icon
+      link
+      size="big"
+      name={handle.active ? "compress" : "expand"}
+      style={{ margin: "0" }}
+      onClick={() => {
+        handle.active ? handle.exit() : handle.enter();
+      }}
+    />
   );
 };
 

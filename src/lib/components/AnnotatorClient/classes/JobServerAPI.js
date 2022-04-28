@@ -1,21 +1,15 @@
 class JobServerAPI {
-  constructor(backend, job_id, setJobServer) {
+  constructor(backend, job_id, setJobServer, hasHome) {
     this.backend = backend;
     this.job_id = job_id;
     this.where = "remote";
+    this.hasHome = hasHome;
     this.setJobServer = setJobServer;
   }
 
   async init() {
-    try {
-      this.codebook = await this.backend.getCodebook(this.job_id);
-      this.progress = await this.backend.getProgress(this.job_id);
-    } catch (e) {
-      console.error(e);
-      this.success = false;
-      return;
-    }
-    this.success = true;
+    this.codebook = await this.backend.getCodebook(this.job_id);
+    this.progress = await this.backend.getProgress(this.job_id);
   }
 
   async getUnit(i) {
