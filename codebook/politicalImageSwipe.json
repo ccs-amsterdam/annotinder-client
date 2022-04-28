@@ -7,10 +7,9 @@
       "codes": [
         { "code": "No", "color": "crimson", "swipe": "left" },
         { "code": "Yes", "color": "lightgreen", "swipe": "right" },
-        { "code": "Dunno", "color": "yellow", "swipe": "up" }
+        { "code": "Don't know", "color": "yellow", "swipe": "up" }
       ],
-      "type": "annotinder",
-      "branching": { "only_if": [], "not_if": [] }
+      "type": "annotinder"
     }
   ]
 }
