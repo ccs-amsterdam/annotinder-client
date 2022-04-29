@@ -4,6 +4,7 @@ import { Icon, Label, Segment } from "semantic-ui-react";
 const sliderColor = "#d3dfe9";
 const progressColor = "#7fb9eb";
 const iconStyle = { cursor: "pointer" };
+const iconStyleHidden = { color: "white" };
 
 const IndexController = ({ n, nCoded, index, setIndex, canGoForward = true, canGoBack = true }) => {
   const [activePage, setActivePage] = useState(1);
@@ -26,7 +27,9 @@ const IndexController = ({ n, nCoded, index, setIndex, canGoForward = true, canG
   }, [n, setIndex, activePage]);
 
   if (!n) return null;
-  const progress = (100 * Math.max(0, nCoded)) / n;
+  let progress = (100 * Math.max(0, nCoded)) / n;
+  if (canGoForward) progress = 0; // linear progress is useless in this case.
+
   const digits = Math.floor(Math.log10(n)) + 1;
   const labelwidth = `${3 + digits * 2}em`;
 
@@ -45,18 +48,22 @@ const IndexController = ({ n, nCoded, index, setIndex, canGoForward = true, canG
       }}
     >
       <div style={{ marginRight: "3px" }}>
-        <Icon
-          name="fast backward"
-          onClick={() => setActivePage(1)}
-          style={iconStyle}
-          disabled={!canGoBack || activePage === 1}
-        />
-        <Icon
-          name="step backward"
-          onClick={() => setActivePage(Math.max(1, activePage - 1))}
-          disabled={!canGoBack || activePage === 1}
-          style={iconStyle}
-        />
+        {canGoBack || canGoForward ? (
+          <>
+            <Icon
+              name="fast backward"
+              onClick={() => setActivePage(1)}
+              style={iconStyle}
+              disabled={!canGoBack || activePage === 1}
+            />
+            <Icon
+              name="step backward"
+              onClick={() => setActivePage(Math.max(1, activePage - 1))}
+              disabled={!canGoBack || activePage === 1}
+              style={iconStyle}
+            />
+          </>
+        ) : null}
         <Label
           color="blue"
           style={{
@@ -71,18 +78,34 @@ const IndexController = ({ n, nCoded, index, setIndex, canGoForward = true, canG
         >
           {delayedActivePage <= n ? `${delayedActivePage} / ${n}` : `done`}
         </Label>
-        <Icon
-          name="step forward"
-          onClick={() => setActivePage(Math.min(nCoded + 1, activePage + 1))}
-          disabled={!canGoForward && activePage >= nCoded + 1}
-          style={iconStyle}
-        />
-        <Icon
-          name="fast forward"
-          onClick={() => setActivePage(nCoded + 1)}
-          disabled={!canGoForward && activePage >= nCoded + 1}
-          style={iconStyle}
-        />
+        {canGoForward || canGoBack ? (
+          <>
+            <Icon
+              name="step forward"
+              onClick={() => {
+                if (canGoForward) {
+                  setActivePage(activePage + 1);
+                } else {
+                  setActivePage(Math.min(nCoded + 1, activePage + 1));
+                }
+              }}
+              disabled={!canGoForward && activePage >= nCoded + 1}
+              style={iconStyle}
+            />
+            <Icon
+              name="fast forward"
+              onClick={() => {
+                if (canGoForward) {
+                  setActivePage(Math.max(nCoded + 1, activePage + 1));
+                } else {
+                  setActivePage(nCoded + 1);
+                }
+              }}
+              disabled={!canGoForward && activePage >= nCoded + 1}
+              style={canGoForward ? iconStyleHidden : iconStyle}
+            />
+          </>
+        ) : null}
       </div>
       <input
         style={{

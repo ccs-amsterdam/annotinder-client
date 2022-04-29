@@ -308,18 +308,13 @@ const JobTokenButton = ({ jobId, backend, style }) => {
       mouseLeaveDelay={9999999}
       trigger={<Button style={{ padding: "5px", ...style }}>Get Job Token</Button>}
     >
-      <Header style={{ fontSize: "1.5em" }}>Unregistered user link</Header>
+      <Header textAlign="center" style={{ fontSize: "1.5em" }}>
+        Create job coder
+      </Header>
       <QRCode value={encodeURI(link?.qrUrl)} size={256} />
       <br />
-      <br />
-      <a href={link?.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "2em" }}>
-        Login link
-      </a>
-      <Button
-        secondary
-        onClick={() => navigator.clipboard.writeText(link?.url)}
-        style={{ float: "right" }}
-      >
+
+      <Button fluid secondary onClick={() => navigator.clipboard.writeText(link?.url)}>
         Copy link
       </Button>
     </Popup>
