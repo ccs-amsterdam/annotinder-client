@@ -177,7 +177,6 @@ const Finished = ({ jobServer }) => {
 
 const UserButton = ({ jobServer }) => {
   const [auth, setAuth] = useLocalStorage("auth", {});
-  const navigate = useNavigate();
 
   return (
     <Popup
@@ -188,9 +187,7 @@ const UserButton = ({ jobServer }) => {
     >
       <Popup.Content>
         <Button.Group vertical fluid>
-          {jobServer?.hasHome ? (
-            <Button primary icon="home" content="Back to overview" onClick={() => navigate("/")} />
-          ) : null}
+          {jobServer?.hasHome ? <BackToOverview /> : null}
           <Button
             secondary
             icon="user"
@@ -207,6 +204,11 @@ const UserButton = ({ jobServer }) => {
       </Popup.Content>
     </Popup>
   );
+};
+
+const BackToOverview = () => {
+  const navigate = useNavigate();
+  return <Button primary icon="home" content="Back to overview" onClick={() => navigate("/")} />;
 };
 
 export default Annotator;
