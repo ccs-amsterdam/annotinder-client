@@ -4,7 +4,7 @@ import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
 import { codeBookEdgesToMap, getCodeTreeArray } from "../../../functions/codebook";
 import { Form, Icon, Input, Popup } from "semantic-ui-react";
-import useLocalStorage from "lib/hooks/useLocalStorage";
+import useLocalStorage from "../../../hooks/useLocalStorage";
 
 const documentSettings = {
   centerVertical: true,

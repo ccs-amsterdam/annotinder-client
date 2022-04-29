@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 
 // Main pages. Use below in items to include in header menu
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AnnotatorAmcatClient from "lib/components/AnnotatorClient/AnnotatorAmcatClient";
-import DemoJobOverview from "lib/components/DemoJob/DemoJobOverview";
-import GuestCoder from "lib/components/GuestCoder/GuestCoder";
+import AnnotatorAmcatClient from "./lib/components/AnnotatorClient/AnnotatorAmcatClient";
+import DemoJobOverview from "./lib/components/DemoJob/DemoJobOverview";
+import GuestCoder from "./lib/components/GuestCoder/GuestCoder";
 
 import "./appStyle.css";
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import useLocalStorage from "lib/hooks/useLocalStorage";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { redeemJobToken } from "../AnnotatorClient/classes/Backend";

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Backend, { passwordLogin } from "../classes/Backend";
 import { Header, Form, Button, Segment, Grid } from "semantic-ui-react";
-import useLocalStorage from "lib/hooks/useLocalStorage";
+import useLocalStorage from "../../../hooks/useLocalStorage";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 const useBackend = () => {

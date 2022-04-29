@@ -5,7 +5,7 @@ import IndexController from "./components/IndexController";
 import Task from "./components/Task";
 import FullScreenWindow from "./components/FullScreenWindow";
 import "./annotatorStyle.css";
-import useLocalStorage from "lib/hooks/useLocalStorage";
+import useLocalStorage from "../../hooks/useLocalStorage";
 import { useNavigate } from "react-router-dom";
 
 /**

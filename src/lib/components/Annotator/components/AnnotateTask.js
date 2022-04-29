@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Grid, Button, Popup, Form, Input, Icon } from "semantic-ui-react";
 import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
-import useLocalStorage from "lib/hooks/useLocalStorage";
+import useLocalStorage from "../../../hooks/useLocalStorage";
 import AnnotateTaskManual from "./AnnotateTaskManual";
 
 const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNode, nextDelay }) => {
