@@ -29,6 +29,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
 
   useEffect(() => {
     if (!codebook?.questions) return;
+    console.log(codebook);
     setQuestions(prepareQuestions(codebook));
   }, [codebook]);
 
@@ -56,9 +57,14 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
 
   if (!unit) return null;
 
-  // if there are only annotinder questions, use minified mode
-  let minified = true;
-  for (let question of questions || []) if (question.type !== "annotinder") minified = false;
+  // if the unit content is empty, use entire div for answer form
+  const empty_unit = !unit.text_fields && !unit.meta_fields && !unit.image_fields;
+  const splitHeight = empty_unit ? 70 : settings.splitHeight;
+
+  // if there are only annotinder questions, minify the answer form
+  let minifiedAnswerForm = true;
+  for (let question of questions || [])
+    if (question.type !== "annotinder") minifiedAnswerForm = false;
 
   return (
     <div ref={divref} style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -67,7 +73,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
         style={{
           flex: "1 1 auto",
           position: "relative",
-          height: `${settings.splitHeight}%`,
+          height: `${splitHeight}%`,
         }}
       >
         <div
@@ -112,10 +118,13 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
           settings={settings}
           setSettings={setSettings}
           fullScreenNode={fullScreenNode}
-          minified={minified}
+          minifiedAnswerForm={minifiedAnswerForm}
         />
       </div>
-      <div {...menuSwipe} style={{ minHeight: minified ? null : `${100 - settings.splitHeight}%` }}>
+      <div
+        {...menuSwipe}
+        style={{ minHeight: minifiedAnswerForm ? null : `${100 - splitHeight}%` }}
+      >
         <QuestionForm
           unit={unit}
           tokens={tokens}
@@ -131,7 +140,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
   );
 };
 
-const SettingsPopup = ({ settings, setSettings, fullScreenNode, minified }) => {
+const SettingsPopup = ({ settings, setSettings, fullScreenNode, minifiedAnswerForm }) => {
   return (
     <Popup
       on="click"
@@ -155,7 +164,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, minified }) => {
     >
       <Form>
         <Form.Group grouped>
-          {minified ? null : (
+          {minifiedAnswerForm ? null : (
             <Form.Field>
               <label>
                 text window size <font style={{ color: "blue" }}>{`${settings.splitHeight}%`}</font>
@@ -242,6 +251,7 @@ const getOptions = (cta) => {
       tree: tree,
       makes_irrelevant: code.makes_irrelevant,
       color: code.color,
+      ref: React.createRef(), // used for keyboard navigation of buttons
     };
     if (code.swipe) swipeOptions[code.swipe] = option;
     options.push(option);

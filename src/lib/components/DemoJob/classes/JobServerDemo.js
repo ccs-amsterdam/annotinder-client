@@ -8,6 +8,7 @@ class JobServerDemo {
       seek_backwards: true,
       seek_forwards: false,
     };
+    this.return_link = "/demo";
   }
 
   async init() {}

@@ -88,7 +88,6 @@ const Annotator = ({ jobServer, askFullScreen }) => {
             <div>
               <div>
                 {fullScreenButton}
-
                 <UserButton jobServer={jobServer} />
               </div>
             </div>
@@ -177,6 +176,7 @@ const Finished = ({ jobServer }) => {
 
 const UserButton = ({ jobServer }) => {
   const [auth, setAuth] = useLocalStorage("auth", {});
+  const loggedIn = auth?.host && auth?.[auth?.host + "__token__"];
 
   return (
     <Popup
@@ -187,26 +187,37 @@ const UserButton = ({ jobServer }) => {
     >
       <Popup.Content>
         <Button.Group vertical fluid>
-          {jobServer?.hasHome ? <BackToOverview /> : null}
-          <Button
-            secondary
-            icon="user"
-            content="Log out"
-            style={{ marginTop: "0" }}
-            onClick={() => {
-              setAuth({ ...auth, [auth.host + "__token__"]: null });
-              window.location.reload("/");
-            }}
-          />
+          <BackToOverview jobServer={jobServer} />
+          {loggedIn ? (
+            <Button
+              secondary
+              icon="user"
+              content="Log out"
+              style={{ marginTop: "0" }}
+              onClick={() => {
+                setAuth({ ...auth, [auth.host + "__token__"]: null });
+                window.location.reload("/");
+              }}
+            />
+          ) : null}
         </Button.Group>
       </Popup.Content>
     </Popup>
   );
 };
 
-const BackToOverview = () => {
+const BackToOverview = ({ jobServer }) => {
+  console.log(jobServer);
   const navigate = useNavigate();
-  return <Button primary icon="home" content="Back to overview" onClick={() => navigate("/")} />;
+  if (!jobServer?.return_link) return null;
+  return (
+    <Button
+      primary
+      icon="home"
+      content="Close job"
+      onClick={() => navigate(jobServer.return_link)}
+    />
+  );
 };
 
 export default Annotator;

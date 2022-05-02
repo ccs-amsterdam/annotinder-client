@@ -3,7 +3,10 @@ import QuestionTask from "./QuestionTask";
 import AnnotateTask from "./AnnotateTask";
 
 const Task = ({ unit, setUnitIndex, fullScreenNode, nextDelay }) => {
-  const codebook = unit?.jobServer?.codebook;
+  // Both the unit and the jobServer can have a codebook
+  // unit.jobServer.codebook is the default codebook applied to all units
+  // unit.codebook is a unit specific codebook that overrides the default
+  const codebook = unit?.codebook || unit?.jobServer?.codebook;
 
   if (!codebook || !unit) return null;
 

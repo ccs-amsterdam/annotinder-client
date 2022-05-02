@@ -1,9 +1,9 @@
 class JobServerAPI {
-  constructor(backend, job_id, setJobServer, hasHome) {
+  constructor(backend, job_id, setJobServer, return_link) {
     this.backend = backend;
     this.job_id = job_id;
     this.where = "remote";
-    this.hasHome = hasHome;
+    this.return_link = return_link;
     this.setJobServer = setJobServer;
   }
 

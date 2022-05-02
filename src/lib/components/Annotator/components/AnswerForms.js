@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Dropdown, Ref, Icon } from "semantic-ui-react";
+import buttonGridPositions from "../../../functions/buttonGridPositions";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
@@ -49,6 +50,7 @@ export const ButtonSelection = React.memo(({ options, callback, blockEvents }) =
   // On selection perform callback function with the button label as input
   // if canDelete is TRUE, also contains a delete button, which passes null to callback
   const [selected, setSelected] = useState(0);
+  const [gridSettings, setGridSettings] = useState(null);
 
   const onKeydown = React.useCallback(
     (event) => {
@@ -109,53 +111,59 @@ export const ButtonSelection = React.memo(({ options, callback, blockEvents }) =
     };
   }, [onKeydown, blockEvents]);
 
-  const mapButtons = () => {
+  useEffect(() => {
+    const gridsettings = buttonGridPositions(options.length, 5);
+    setGridSettings(gridsettings);
+  }, [options.length, setGridSettings]);
+
+  const mapButtons = (boxStyleArray) => {
     return options.map((option, i) => {
       return (
-        <>
-          <Ref innerRef={option.ref}>
-            <Button
-              style={{
-                backgroundColor: option.color,
-                padding: "1em",
-                margin: "0.2em",
-                flex: "0.5 1 0",
-                flexBasis: "0",
-                fontWeight: "bold",
-                fontSize: "1em",
-                border: i === selected ? "3px solid black" : "3px solid #ece9e9",
-              }}
-              key={option.code}
-              value={option}
-              compact
-              onMouseOver={() => setSelected(i)}
-              onClick={(e, d) => {
-                callback(d.value);
-                setSelected(0);
-              }}
-            >
-              {option.code}
-            </Button>
-          </Ref>
-        </>
+        <Ref key={option.code} innerRef={option.ref}>
+          <Button
+            fluid
+            style={{
+              ...boxStyleArray[i],
+              backgroundColor: option.color,
+              padding: "1em",
+              margin: "0.2em",
+              height: "100%",
+              fontWeight: "bold",
+              fontSize: "1em",
+              color: "black",
+              borderRadius: "10px",
+              border: i === selected ? "3px solid black" : "3px solid #ece9e9",
+            }}
+            key={option.code}
+            value={option}
+            compact
+            onMouseOver={() => setSelected(i)}
+            onClick={(e, d) => {
+              callback(d.value);
+              setSelected(0);
+            }}
+          >
+            {option.code}
+          </Button>
+        </Ref>
       );
     });
   };
 
+  if (!gridSettings) return null;
   return (
     <div
       style={{
-        display: "flex",
+        ...gridSettings.containerStyle,
+        display: "grid",
         flexDirection: "row",
-        //alignItems: "stretch",
-        alignItems: "space-eventy",
+        alignItems: "center",
+        justifyItems: "center",
         maxWidth: "100%",
         height: "100%",
-        flexWrap: "wrap",
-        justifyContent: "space-around",
       }}
     >
-      {mapButtons()}
+      {mapButtons(gridSettings.boxStyleArray)}
     </div>
   );
 });

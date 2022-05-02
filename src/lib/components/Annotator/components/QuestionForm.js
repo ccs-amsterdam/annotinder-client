@@ -100,7 +100,6 @@ const QuestionForm = ({
       <div
         style={{
           display: "flex",
-          position: "relative",
           flexFlow: "column",
           height: showQuestionButtons ? "calc(100% - 30px)" : "100%",
           width: "100%",
@@ -260,7 +259,7 @@ const AnswerField = ({
       <Segment
         style={{
           display: "flex",
-          flex: "1 1 auto",
+          flex: "0.5 1 auto",
           padding: "0",
           overflowY: "auto",
           height: "100%",
@@ -281,7 +280,7 @@ const AnswerField = ({
       {showCurrent(currentAnswer || answerTransition)}
       <Segment
         style={{
-          flex: "1 1 auto",
+          flex: "0.5 1 auto",
           padding: "0",
           overflowY: "auto",
           height: "100%",
@@ -422,7 +421,7 @@ const showCurrent = (currentAnswer) => {
 
 const prepareQuestion = (unit, question) => {
   let preparedQuestion = question.question;
-  if (!unit.variables) return;
+  if (!unit.variables) return markedString(preparedQuestion);
 
   for (let variable of Object.keys(unit.variables)) {
     if (preparedQuestion.search(`\\[${variable}\\]`) >= 0) {

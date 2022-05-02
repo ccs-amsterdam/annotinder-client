@@ -45,8 +45,8 @@ const useJobServer = (backend) => {
       return;
     }
     setJobServer(null);
-    const hasHome = backend?.restricted_job ? false : true;
-    const js = new JobServerAPI(backend, jobId, setJobServer, hasHome);
+    const returnLink = backend?.restricted_job ? null : "/";
+    const js = new JobServerAPI(backend, jobId, setJobServer, returnLink);
     js.init()
       .then(() => setJobServer(js))
       .catch(() => {

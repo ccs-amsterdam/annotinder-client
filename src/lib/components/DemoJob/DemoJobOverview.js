@@ -25,10 +25,13 @@ const unit_files = [
   { label: "State of the union paragraphs", filename: "sotu_par" },
   { label: "Units with actor annotations", filename: "actor_annotation" },
   { label: "Political images", filename: "images" },
+  { label: "State of the union paragraphs with pre-survey", filename: "sotu_par_pre_survey" },
 ];
 const codebook_files = [
   { label: "Annotate sentiment", filename: "sentimentAnnotation" },
   { label: "sentiment questions", filename: "sentimentQuestion" },
+  { label: "actor dropdown", filename: "actorQuestion" },
+
   {
     label: "Edit actor annotations (requires units with actor annotations)",
     filename: "actor_annotation",
