@@ -17,15 +17,13 @@ const GuestCoder = () => {
   const [guestAuth, setGuestAuth] = useLocalStorage("guest_auth", {});
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const host = searchParams.get("host");
+  const host = searchParams.get("host")?.replace("%colon%", ":");
   const userId = searchParams.get("user_id");
   const jobtoken = searchParams.get("jobtoken");
 
-  console.log(guestAuth);
   useEffect(() => {
     const key = `host:${host};user_id:${userId};jobtoken:${jobtoken}`;
     if (!guestAuth[key]) {
-      console.log("redeem");
       redeemJobToken(host, jobtoken, userId)
         .then((data) => {
           setGuestAuth({ ...guestAuth, [key]: data });

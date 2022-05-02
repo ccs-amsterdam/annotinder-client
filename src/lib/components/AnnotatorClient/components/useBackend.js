@@ -20,7 +20,6 @@ const useBackend = () => {
   //   let urlHost = searchParams.get("host")?.replace("%colon%", ":");
 
   //   if (backend.host !== urlHost) {
-  //     console.log("wtf");
   //     searchParams.set("host", backend.host);
   //     setSearchParams(searchParams);
   //   }

@@ -194,8 +194,6 @@ const UserButton = ({ jobServer }) => {
             content="Log out"
             style={{ marginTop: "0" }}
             onClick={() => {
-              console.log("test");
-              console.log(auth.host, auth[auth.host + "__token__"]);
               setAuth({ ...auth, [auth.host + "__token__"]: null });
               window.location.reload("/");
             }}

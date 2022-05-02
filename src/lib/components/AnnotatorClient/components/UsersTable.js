@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Popup, Header } from "semantic-ui-react";
 import FullDataTable from "./FullDataTable";
-import QRCode from "react-qr-code";
+import QRCodeCanvas from "qrcode.react";
 
 const columns = [
   { name: "role", width: 2, f: (row) => (row.is_admin ? "admin" : "coder") },
@@ -51,7 +51,7 @@ const LoginLinkButton = ({ row, backend, style }) => {
       trigger={<Button icon="linkify" style={{ padding: "5px", ...style }} />}
     >
       <Header style={{ fontSize: "1.5em" }}>Login link for {row.email}</Header>
-      <QRCode value={encodeURI(link?.qrUrl)} size={256} />
+      <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
       <br />
       <br />
       <a href={link?.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "2em" }}>

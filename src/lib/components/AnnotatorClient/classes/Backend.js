@@ -1,10 +1,11 @@
 import Axios from "axios";
 
 export async function passwordLogin(host, email, password) {
-  const res = await Axios.get(`${host}/users/me/token`, {
-    auth: { username: email, password: password },
-  });
-  return res.data.token;
+  const d = new FormData();
+  d.append("username", email);
+  d.append("password", password);
+  const response = await Axios.post(`${host}/users/me/token`, d);
+  return response.data.token;
 }
 
 export async function redeemJobToken(host, token, user_id) {
@@ -25,7 +26,6 @@ class Backend {
   }
 
   async init() {
-    console.log(this.token);
     const d = await this.getToken();
     this.email = d.email;
     this.is_admin = d.is_admin;
@@ -83,14 +83,6 @@ class Backend {
     const res = await this.api.get(path);
     return res.data;
   }
-  async setJobSettings(job_id, settingsObj) {
-    return await this.api.post(`/codingjob/${job_id}/settings`, settingsObj);
-  }
-  async setJobUsers(job_id, users, only_add) {
-    const body = { users };
-    if (only_add) body.only_add = true;
-    return await this.api.post(`/codingjob/${job_id}/users`, body);
-  }
 
   // POST
   postCodingjob(codingjobPackage, title) {
@@ -110,11 +102,21 @@ class Backend {
     return this.api.post(`/password`, body);
   }
   postUsers(users) {
-    return this.api.post("/users", users);
+    return this.api.post("/users", {
+      users: users.users,
+    });
   }
   postAnnotation(job_id, unit_id, annotation, status) {
     const data = { annotation, status };
     return this.api.post(`/codingjob/${job_id}/unit/${unit_id}/annotation`, data);
+  }
+  async setJobSettings(job_id, settingsObj) {
+    return await this.api.post(`/codingjob/${job_id}/settings`, settingsObj);
+  }
+  async setJobUsers(job_id, users, only_add) {
+    const body = { users };
+    if (only_add) body.only_add = true;
+    return await this.api.post(`/codingjob/${job_id}/users`, body);
   }
 }
 

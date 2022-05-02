@@ -40,7 +40,6 @@ test("importing annotations", () => {
 test("toggling annotations", () => {
   const doc = prepareDocument(unit);
   const annotations = importSpanAnnotations(spanAnnotations, doc.tokens);
-  console.log(annotations);
 
   const addAnnotation = {
     index: 0,

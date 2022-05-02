@@ -14,7 +14,6 @@ export default function JobsTable({ backend, setJob, jobs, setJobs, jobId, setJo
     getAllJobs(backend, setJobs);
   }, [backend, setJobs]);
 
-  console.log(jobs);
   useEffect(() => {
     if (!jobId) {
       setJob(null);

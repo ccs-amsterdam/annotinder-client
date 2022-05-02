@@ -13,7 +13,7 @@ import {
 } from "semantic-ui-react";
 import { useCSVDownloader } from "react-papaparse";
 import JobsTable from "./JobsTable";
-import QRCode from "react-qr-code";
+import QRCodeCanvas from "qrcode.react";
 
 export default function ManageJobs({ backend }) {
   const [jobs, setJobs] = useState([]);
@@ -90,6 +90,7 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }) => {
 
   if (!job) return null;
 
+  console.log(job);
   return (
     <Container style={{ height: "100%", textAlign: "left" }}>
       <Header textAlign="center">{job.title}</Header>
@@ -206,7 +207,6 @@ const JobUsers = ({ backend, job }) => {
   }, [backend, setOptions]);
 
   useEffect(() => {
-    console.log(job);
     setSelection(job?.users || []);
   }, [job, setSelection]);
 
@@ -247,7 +247,6 @@ const JobUsers = ({ backend, job }) => {
 
 const AnnotationProgress = ({ job, annotations }) => {
   if (!annotations?.progress) return null;
-  console.log(annotations);
   return (
     <div style={{ marginTop: "20px", height: "100%" }}>
       <LabeledProgress
@@ -311,7 +310,7 @@ const JobTokenButton = ({ jobId, backend, style }) => {
       <Header textAlign="center" style={{ fontSize: "1.5em" }}>
         Create job coder
       </Header>
-      <QRCode value={encodeURI(link?.qrUrl)} size={256} />
+      <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
       <br />
 
       <Button fluid secondary onClick={() => navigator.clipboard.writeText(link?.url)}>

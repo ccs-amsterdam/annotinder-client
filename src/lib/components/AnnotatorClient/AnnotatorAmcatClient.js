@@ -25,7 +25,6 @@ const AnnotatorAmcatClient = () => {
     );
   }
 
-  console.log(jobServer);
   if (!jobServer) {
     // if backend is connected, but there is no jobServer (because no job_id was passed in the url)
     // show a screen with some relevant info for the user on this host. Like current / new jobs

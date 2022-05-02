@@ -21,7 +21,6 @@ class JobServerDemo {
     try {
       this.units[unit_index].annotation = annotation;
       this.units[unit_index].status = status;
-      console.log(annotation);
     } catch (e) {
       console.error(e);
     }
