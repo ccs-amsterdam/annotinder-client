@@ -2,14 +2,92 @@
   {
     "unit": {
       "unit_id": "email",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Welcome to this codingjob!",
+          "bold": true,
 
+          "size": 1.2,
+
+          "center": true
+        },
+        {
+          "name": "text",
+          "value": "This right here is just an example of how we can use a unit and codebook more flexibly to include information pages in a codingjob.",
+          "bold": false,
+          "italic": false,
+          "size": 1,
+          "justify": true,
+          "paragraphs": true
+        }
+      ],
       "codebook": {
         "type": "questions",
         "questions": [
           {
-            "name": "email",
+            "name": "welcome",
+            "question": "Click here to continue",
+            "type": "confirm"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "email",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Barack Obama",
+          "bold": true,
+          "italic": false,
+          "size": 1.2,
+          "justify": true,
+          "center": true,
+          "paragraphs": true
+        },
+        {
+          "name": "text",
+          "value": "All these investments, in innovation, education, and infrastructure, will make America a better place to do business and create jobs. But to help our companies compete, we also have to knock down barriers that stand in the way of their success.",
+          "bold": false,
+          "italic": false,
+          "size": 1,
+          "justify": true,
+          "paragraphs": true
+        }
+      ],
+      "codebook": {
+        "type": "survey",
+        "questions": [
+          {
+            "name": "trust_government",
             "type": "select code",
-            "question": "What is your email address",
+            "codes_per_row": 7,
+            "question": "",
+            "codes": [
+              { "code": "Negative", "color": "red" },
+              { "code": "Neutral", "color": "grey" },
+              { "code": "Positive", "color": "green" },
+              { "code": "a", "color": "red" },
+              { "code": "b", "color": "grey" },
+              { "code": "f", "color": "grey" },
+              { "code": "g", "color": "grey" },
+              { "code": "h", "color": "grey" },
+              { "code": "d", "color": "grey" },
+              { "code": "e", "color": "grey" },
+              {
+                "code": "typing jus to see what happens if answers get reaaaaaaly long",
+                "color": "green"
+              }
+            ]
+          },
+          {
+            "name": "trust_journalists",
+            "type": "select code",
+            "codes_per_row": 7,
+            "question": "",
             "codes": [
               { "code": "Negative", "color": "red" },
               { "code": "Neutral", "color": "grey" },

@@ -8,19 +8,28 @@
  * @param {*} perRow approximate nubmer of items per row
  * @returns An object with positions, cols and rows settings, used to set the style of the grid container and boxes
  */
-const buttonGridPositions = (n, perRow) => {
+const buttonGridPositions = (n, perRow, divideEqually) => {
   let cols, width, rows, rowsizes, maxrowsize, colsize;
-  for (let i = 20; i < 36; i++) {
+  for (let i = 20; i <= 36; i++) {
+    // calculate the number of items per row for different grid sizes (in terms of the number of columns).
+    // try different size settings until the size perfectly divides by the max nr of items on a row.
+    // (or otherwise 35 is plenty fine grained that it's fine)
     cols = i;
     width = Math.floor(cols / perRow);
     rows = Math.ceil(n / (cols / width));
     rowsizes = Array(rows).fill(0);
+
     for (let i = 0; i < n; i++) {
-      rowsizes[i % rows]++;
+      if (divideEqually) {
+        rowsizes[i % rows]++;
+      } else {
+        rowsizes[Math.floor(i / perRow)]++;
+      }
     }
     maxrowsize = Math.max(...rowsizes);
-    colsize = Math.floor(cols / maxrowsize);
-    if (colsize % width === 0) break;
+    const realcolsize = cols / maxrowsize;
+    colsize = Math.floor(realcolsize);
+    if (colsize === realcolsize && colsize % width === 0) break;
   }
 
   const positions = [];
@@ -42,6 +51,7 @@ const buttonGridPositions = (n, perRow) => {
     gridTemplateColumns: `repeat(${cols}, 1fr)`,
     gridTemplateRows: `repeat(${rows}, 1fr)`,
   };
+  console.log(positions);
 
   return { boxStyleArray: positions, containerStyle };
 };

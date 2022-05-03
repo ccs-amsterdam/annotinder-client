@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Header, Button, Segment } from "semantic-ui-react";
-import { SearchBoxDropdown, ButtonSelection, Annotinder } from "./AnswerForms";
+import { SearchBoxDropdown, ButtonSelection, Annotinder, Confirm } from "./AnswerForms";
 
 const DONE_COLOR = "lightgreen";
 const IRRELEVANT_COLOR = "red";
@@ -275,6 +275,7 @@ const AnswerField = ({
         <Header as="h1">{answerTransition.code}</Header>
       </Segment>
     );
+
   return (
     <>
       {showCurrent(currentAnswer || answerTransition)}
@@ -300,12 +301,21 @@ const AnswerField = ({
         {questions[questionIndex].type === "select code" ? (
           <ButtonSelection
             options={questions[questionIndex].options}
+            codesPerRow={questions[questionIndex].codes_per_row}
             callback={onSelect}
             blockEvents={blockEvents}
           />
         ) : null}
         {questions[questionIndex].type === "annotinder" ? (
           <Annotinder
+            swipeOptions={questions[questionIndex].swipeOptions}
+            callback={onSelect}
+            swipe={swipe}
+            blockEvents={blockEvents}
+          />
+        ) : null}
+        {questions[questionIndex].type === "confirm" ? (
+          <Confirm
             swipeOptions={questions[questionIndex].swipeOptions}
             callback={onSelect}
             swipe={swipe}

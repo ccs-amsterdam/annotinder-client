@@ -2,6 +2,7 @@
   {
     "id": 1,
     "unit": {
+      "text_fields": [{ "name": "text", "value": "lalalala" }],
       "image_fields": [
         {
           "name": "image",

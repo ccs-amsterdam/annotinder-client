@@ -29,7 +29,6 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
 
   useEffect(() => {
     if (!codebook?.questions) return;
-    console.log(codebook);
     setQuestions(prepareQuestions(codebook));
   }, [codebook]);
 
@@ -48,18 +47,16 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
     refs.box.current.style.opacity = 1;
   }, [textReady, refs.text, refs.box, questionIndex]);
 
-  // swipe controlls need to be up here due to working on the div wrapping the while question screen
-  // use separate swipe for text (document) and menu rows, to disable swiping up
-  // in text (which conflicts with scrolling)
+  // swipe controlls need to be up in the QuestionTask component due to working on the div containing the question screen
+  // use separate swipe for text (document) and menu rows, because swiping up in the text is only possible if scrolled all the way down
   const [swipe, setSwipe] = useState(null);
   const textSwipe = useSwipeable(swipeControl(questions?.[questionIndex], refs, setSwipe, false));
   const menuSwipe = useSwipeable(swipeControl(questions?.[questionIndex], refs, setSwipe, true));
 
   if (!unit) return null;
 
-  // if the unit content is empty, use entire div for answer form
-  const empty_unit = !unit.text_fields && !unit.meta_fields && !unit.image_fields;
-  const splitHeight = empty_unit ? 70 : settings.splitHeight;
+  // The size of the text div, in pct compared to the answer div
+  const splitHeight = settings.splitHeight;
 
   // if there are only annotinder questions, minify the answer form
   let minifiedAnswerForm = true;
@@ -121,10 +118,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
           minifiedAnswerForm={minifiedAnswerForm}
         />
       </div>
-      <div
-        {...menuSwipe}
-        style={{ minHeight: minifiedAnswerForm ? null : `${100 - splitHeight}%` }}
-      >
+      <div {...menuSwipe} style={{ height: minifiedAnswerForm ? null : `${100 - splitHeight}%` }}>
         <QuestionForm
           unit={unit}
           tokens={tokens}

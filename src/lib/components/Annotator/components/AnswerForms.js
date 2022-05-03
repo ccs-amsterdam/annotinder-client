@@ -5,6 +5,10 @@ import { moveUp, moveDown } from "../../../functions/refNavigation";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
+export const Confirm = ({ callback, blockEvents }) => {
+  return <Button>test</Button>;
+};
+
 export const SearchBoxDropdown = React.memo(({ options, callback, blockEvents }) => {
   const ref = useRef();
 
@@ -45,7 +49,7 @@ export const SearchBoxDropdown = React.memo(({ options, callback, blockEvents })
   );
 });
 
-export const ButtonSelection = React.memo(({ options, callback, blockEvents }) => {
+export const ButtonSelection = React.memo(({ options, codesPerRow, callback, blockEvents }) => {
   // render buttons for options (an array of objects with keys 'label' and 'color')
   // On selection perform callback function with the button label as input
   // if canDelete is TRUE, also contains a delete button, which passes null to callback
@@ -112,9 +116,11 @@ export const ButtonSelection = React.memo(({ options, callback, blockEvents }) =
   }, [onKeydown, blockEvents]);
 
   useEffect(() => {
-    const gridsettings = buttonGridPositions(options.length, 5);
+    const divideEqually = !codesPerRow; // if codesPerRow is specified, assume user wants this exact amount
+    const perRow = codesPerRow ?? 5; // default per row is 5 (approximately, since divideEqually is then true)
+    const gridsettings = buttonGridPositions(options.length, perRow, divideEqually);
     setGridSettings(gridsettings);
-  }, [options.length, setGridSettings]);
+  }, [options.length, codesPerRow, setGridSettings]);
 
   const mapButtons = (boxStyleArray) => {
     return options.map((option, i) => {
