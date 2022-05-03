@@ -106,10 +106,8 @@ const renderField = (layout, paragraph_nr, paragraphs, field) => {
     return paragraphs;
   };
 
-  // that height: 1px is utter weird, but it seems harmless due to flexbox setting size,
-  // and is necessary for the RStudio viewer
   return (
-    <span className="field" key={"field" + field} style={{ height: "1px" }}>
+    <span className="field" key={"field" + field}>
       {fontstyle(paragraphs)}
     </span>
   );

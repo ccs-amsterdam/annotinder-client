@@ -132,7 +132,7 @@ export const ButtonSelection = React.memo(({ options, codesPerRow, callback, blo
               ...boxStyleArray[i],
               backgroundColor: option.color,
               padding: "1em",
-              margin: "0.2em",
+              //margin: "0.2em",
               height: "100%",
               fontWeight: "bold",
               fontSize: "1em",

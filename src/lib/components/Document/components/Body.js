@@ -61,13 +61,9 @@ const Body = ({ tokens, text_fields, meta_fields, image_fields, setReady, maxHei
             style={{
               flex: "1 97%",
               width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              //alignItems: "center",
             }}
           >
-            <div key="content" style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+            <div key="content" style={{ paddingTop: "20px", paddingBottom: "20px", width: "100%" }}>
               {text_fields.map((tf) => text[tf.name])}
               {image_fields.map((imf) => images[imf.name])}
             </div>
