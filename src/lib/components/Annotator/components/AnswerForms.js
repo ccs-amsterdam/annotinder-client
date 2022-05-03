@@ -6,7 +6,39 @@ import { moveUp, moveDown } from "../../../functions/refNavigation";
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
 export const Confirm = ({ callback, blockEvents }) => {
-  return <Button>test</Button>;
+  const onKeydown = React.useCallback(
+    (event) => {
+      if (event.keyCode === 32 || event.keyCode === 13) {
+        event.preventDefault();
+        event.stopPropagation();
+        callback({ code: "continue", color: "blue" });
+      }
+    },
+    [callback]
+  );
+
+  useEffect(() => {
+    if (!blockEvents) {
+      window.addEventListener("keydown", onKeydown);
+    } else window.removeEventListener("keydown", onKeydown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeydown);
+    };
+  }, [onKeydown, blockEvents]);
+
+  return (
+    <div style={{ flex: "1 1 auto", width: "100%", padding: "0% 30%" }}>
+      <Button
+        primary
+        fluid
+        icon="play"
+        content="Continue"
+        size="huge"
+        onClick={() => callback({ code: "continue", color: "blue" })}
+      />
+    </div>
+  );
 };
 
 export const SearchBoxDropdown = React.memo(({ options, callback, blockEvents }) => {
@@ -98,12 +130,20 @@ export const ButtonSelection = React.memo(({ options, codesPerRow, callback, blo
           callback(null); // this means delete button was selected
         } else {
           callback(options[selected]);
+          // simulate active pseudoclass for transition effect
+          const el = options[selected].ref.current;
+          el.classList.add("active");
+          setTimeout(() => el.classList.remove("active"), 5);
         }
-        setSelected(0);
+        //setSelected(0);
       }
     },
     [selected, callback, options]
   );
+
+  useEffect(() => {
+    setSelected(0);
+  }, [callback, setSelected]);
 
   useEffect(() => {
     if (!blockEvents) {
@@ -128,6 +168,7 @@ export const ButtonSelection = React.memo(({ options, codesPerRow, callback, blo
         <Ref key={option.code} innerRef={option.ref}>
           <Button
             fluid
+            className="ripplebutton"
             style={{
               ...boxStyleArray[i],
               backgroundColor: option.color,
@@ -145,8 +186,9 @@ export const ButtonSelection = React.memo(({ options, codesPerRow, callback, blo
             compact
             onMouseOver={() => setSelected(i)}
             onClick={(e, d) => {
+              console.log("click");
               callback(d.value);
-              setSelected(0);
+              //setSelected(0);
             }}
           >
             {option.code}
@@ -161,10 +203,11 @@ export const ButtonSelection = React.memo(({ options, codesPerRow, callback, blo
     <div
       style={{
         ...gridSettings.containerStyle,
+
         display: "grid",
         flexDirection: "row",
-        alignItems: "center",
-        justifyItems: "center",
+        //alignItems: "center",
+        //justifyItems: "center",
         maxWidth: "100%",
         height: "100%",
       }}

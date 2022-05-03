@@ -2,8 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { Header, Button, Segment } from "semantic-ui-react";
 import { SearchBoxDropdown, ButtonSelection, Annotinder, Confirm } from "./AnswerForms";
 
-const DONE_COLOR = "lightgreen";
+const DONE_COLOR = "#70cd70e6";
 const IRRELEVANT_COLOR = "red";
+const ANSWERFIELD_BACKGROUND = "#1B1C1D";
+const ANSWERFIELD_COLOR = "white";
+//const ANSWERFIELD_BACKGROUND = "white";
+//const ANSWERFIELD_COLOR = "black";
 
 const QuestionForm = ({
   unit,
@@ -15,7 +19,6 @@ const QuestionForm = ({
   swipe,
   blockEvents,
 }) => {
-  const [answerTransition, setAnswerTransition] = useState();
   const answered = useRef(false); // to prevent answering double (e.g. with swipe events)
   const [annotations, setAnnotations] = useState(null);
 
@@ -23,8 +26,7 @@ const QuestionForm = ({
     if (!questions) return;
     prepareAnnotations(unit, tokens, questions, setAnnotations);
     answered.current = false;
-    setAnswerTransition(null);
-  }, [unit, tokens, setAnnotations, setAnswerTransition, questions]);
+  }, [unit, tokens, setAnnotations, questions]);
 
   if (!questions || !unit || !annotations) return null;
   if (!questions?.[questionIndex]) {
@@ -61,7 +63,6 @@ const QuestionForm = ({
     //delete cleanAnnotations.makes_irrelevant;
     unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status);
 
-    setAnswerTransition(answer); // show given answer
     setTimeout(() => {
       // wait a little bit, so coder can see their answer and breathe
 
@@ -84,8 +85,10 @@ const QuestionForm = ({
       style={{
         height: "100%",
         width: "100%",
-        backgroundColor: "#1B1C1D",
-        borderTop: "3px double white",
+        backgroundColor: ANSWERFIELD_BACKGROUND,
+        borderTop: `3px double ${ANSWERFIELD_COLOR}`,
+        boxShadow: "5px 5px 5px 1px grey",
+        zIndex: 9000,
       }}
     >
       {showQuestionButtons ? (
@@ -105,19 +108,19 @@ const QuestionForm = ({
           width: "100%",
           maxHeight: "100%",
           padding: "10px",
-          color: "white",
+          color: ANSWERFIELD_COLOR,
+
           //borderBottomLeftRadius: "5px",
           //borderBottomRightRadius: "5px",
         }}
       >
         <div style={{ width: "100%", flex: "1 1 auto", paddingBottom: "10px" }}>
-          <Header as="h3" textAlign="center" style={{ color: "white" }}>
+          <Header as="h3" textAlign="center" style={{ color: ANSWERFIELD_COLOR }}>
             {question}
           </Header>
         </div>
 
         <AnswerField
-          answerTransition={answerTransition}
           currentAnswer={annotations?.[questionIndex]?.value}
           questions={questions}
           questionIndex={questionIndex}
@@ -245,40 +248,50 @@ const QuestionIndexStep = ({ questions, questionIndex, annotations, setQuestionI
   );
 };
 
-const AnswerField = ({
-  answerTransition,
-  currentAnswer,
-  questions,
-  questionIndex,
-  onSelect,
-  swipe,
-  blockEvents,
-}) => {
-  if (answerTransition)
-    return (
-      <Segment
-        style={{
-          display: "flex",
-          flex: "0.5 1 auto",
-          padding: "0",
-          overflowY: "auto",
-          height: "100%",
-          width: "100%",
-          margin: "0",
+const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe, blockEvents }) => {
+  const question = questions[questionIndex];
 
-          background: answerTransition.color,
+  const renderAnswerField = () => {
+    if (question.type === "search code")
+      return (
+        <SearchBoxDropdown
+          options={questions[questionIndex].options}
+          callback={onSelect}
+          blockEvents={blockEvents}
+        />
+      );
+    if (question.type === "select code")
+      return (
+        <ButtonSelection
+          options={questions[questionIndex].options}
+          codesPerRow={questions[questionIndex].codes_per_row}
+          callback={onSelect}
+          blockEvents={blockEvents}
+        />
+      );
+    if (question.type === "annotinder")
+      return (
+        <Annotinder
+          swipeOptions={questions[questionIndex].swipeOptions}
+          callback={onSelect}
+          swipe={swipe}
+          blockEvents={blockEvents}
+        />
+      );
+    if (question.type === "confirm") {
+      return <Confirm callback={onSelect} />;
+    }
 
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Header as="h1">{answerTransition.code}</Header>
-      </Segment>
-    );
+    return null;
+  };
+
+  if (question.type === "confirm") {
+    return <Confirm callback={onSelect} />;
+  }
 
   return (
     <>
-      {showCurrent(currentAnswer || answerTransition)}
+      {showCurrent(currentAnswer, question.type)}
       <Segment
         style={{
           flex: "0.5 1 auto",
@@ -291,37 +304,7 @@ const AnswerField = ({
           margin: "0",
         }}
       >
-        {questions[questionIndex].type === "search code" ? (
-          <SearchBoxDropdown
-            options={questions[questionIndex].options}
-            callback={onSelect}
-            blockEvents={blockEvents}
-          />
-        ) : null}
-        {questions[questionIndex].type === "select code" ? (
-          <ButtonSelection
-            options={questions[questionIndex].options}
-            codesPerRow={questions[questionIndex].codes_per_row}
-            callback={onSelect}
-            blockEvents={blockEvents}
-          />
-        ) : null}
-        {questions[questionIndex].type === "annotinder" ? (
-          <Annotinder
-            swipeOptions={questions[questionIndex].swipeOptions}
-            callback={onSelect}
-            swipe={swipe}
-            blockEvents={blockEvents}
-          />
-        ) : null}
-        {questions[questionIndex].type === "confirm" ? (
-          <Confirm
-            swipeOptions={questions[questionIndex].swipeOptions}
-            callback={onSelect}
-            swipe={swipe}
-            blockEvents={blockEvents}
-          />
-        ) : null}
+        {renderAnswerField()}
       </Segment>
     </>
   );
@@ -406,16 +389,18 @@ const updateAnnotations = (newAnnotation, annotations) => {
   return annotations;
 };
 
-const showCurrent = (currentAnswer) => {
+const showCurrent = (currentAnswer, type) => {
+  if (type === "confirm") return null;
   if (currentAnswer == null) return null;
   return (
-    <div style={{ backgroundColor: "white", color: "black" }}>
+    <div>
       <Segment
+        basic
         style={{
           padding: "0 0 0.5em 0",
           margin: "0",
           borderRadius: "0",
-          background: "#1B1C1D",
+          background: ANSWERFIELD_BACKGROUND,
           color: DONE_COLOR,
           textAlign: "center",
         }}
@@ -430,6 +415,7 @@ const showCurrent = (currentAnswer) => {
 };
 
 const prepareQuestion = (unit, question) => {
+  if (!question?.question) return "";
   let preparedQuestion = question.question;
   if (!unit.variables) return markedString(preparedQuestion);
 

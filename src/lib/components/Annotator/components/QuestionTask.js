@@ -56,7 +56,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
   if (!unit) return null;
 
   // The size of the text div, in pct compared to the answer div
-  const splitHeight = settings.splitHeight;
+  const splitHeight = unit?.text_window_size ?? settings.splitHeight;
 
   // if there are only annotinder questions, minify the answer form
   let minifiedAnswerForm = true;
@@ -64,7 +64,14 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
     if (question.type !== "annotinder") minifiedAnswerForm = false;
 
   return (
-    <div ref={divref} style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <div
+      ref={divref}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+      }}
+    >
       <div
         {...textSwipe}
         style={{
@@ -115,7 +122,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
           settings={settings}
           setSettings={setSettings}
           fullScreenNode={fullScreenNode}
-          minifiedAnswerForm={minifiedAnswerForm}
+          canChangeSplitHeight={minifiedAnswerForm || unit?.text_window_size != null}
         />
       </div>
       <div {...menuSwipe} style={{ height: minifiedAnswerForm ? null : `${100 - splitHeight}%` }}>

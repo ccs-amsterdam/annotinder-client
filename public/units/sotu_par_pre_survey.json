@@ -7,19 +7,12 @@
           "name": "title",
           "value": "Welcome to this codingjob!",
           "bold": true,
-
           "size": 1.2,
-
           "center": true
         },
         {
           "name": "text",
-          "value": "This right here is just an example of how we can use a unit and codebook more flexibly to include information pages in a codingjob.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "This right here is just an example of how we can use a unit and codebook more flexibly to include information pages in a codingjob."
         }
       ],
       "codebook": {
@@ -27,7 +20,6 @@
         "questions": [
           {
             "name": "welcome",
-            "question": "Click here to continue",
             "type": "confirm"
           }
         ]
@@ -59,7 +51,7 @@
         }
       ],
       "codebook": {
-        "type": "survey",
+        "type": "questions",
         "questions": [
           {
             "name": "trust_government",
