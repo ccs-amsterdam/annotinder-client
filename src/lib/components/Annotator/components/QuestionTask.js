@@ -4,6 +4,8 @@ import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
 import { codeBookEdgesToMap, getCodeTreeArray } from "../../../functions/codebook";
 import { Form, Icon, Input, Popup } from "semantic-ui-react";
+import standardizeColor from "../../../functions/standardizeColor";
+import swipeControl from "../functions/swipeControl";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 
 const documentSettings = {
@@ -58,10 +60,11 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
   // The size of the text div, in pct compared to the answer div
   const splitHeight = unit?.text_window_size ?? settings.splitHeight;
 
-  // if there are only annotinder questions, minify the answer form
+  // if there are only annotinder or confirm questions, minify the answer form
   let minifiedAnswerForm = true;
+  const minifiable = ["annotinder", "confirm"];
   for (let question of questions || [])
-    if (question.type !== "annotinder") minifiedAnswerForm = false;
+    if (!minifiable.includes(question.type)) minifiedAnswerForm = false;
 
   return (
     <div
@@ -77,7 +80,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
         style={{
           flex: "1 1 auto",
           position: "relative",
-          height: `${splitHeight}%`,
+          //height: `${splitHeight}%`,
         }}
       >
         <div
@@ -86,7 +89,10 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
             height: "100%",
             width: "100%",
             overflow: "hidden",
+            outline: "1px solid black",
+            outlineOffset: "-1px",
             position: "absolute",
+
             //border: "0.5px solid",
           }}
         >
@@ -103,8 +109,10 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
               position: "absolute",
               top: "0",
               backgroundColor: "white",
-              overflow: "hidden",
+              //overflow: "hidden",
               fontSize: `${settings.textSize}em`,
+              boxShadow: "5px 5px 20px 5px",
+
               //border: "0.5px solid",
             }}
           >
@@ -204,9 +212,11 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, minifiedAnswerFo
 const prepareQuestions = (codebook) => {
   const questions = codebook.questions;
   return questions.map((question) => {
-    const codeMap = codeBookEdgesToMap(question.codes);
+    const fillMissingColor = !["scale"].includes(question.type);
+    const codeMap = codeBookEdgesToMap(question.codes, fillMissingColor);
     let cta = getCodeTreeArray(codeMap);
     cta = addRequiredFor([...cta]);
+    console.log(cta);
     const [options, swipeOptions] = getOptions(cta);
     return { ...question, options, swipeOptions }; // it's important that this deep copies question
   });
@@ -251,12 +261,13 @@ const getOptions = (cta) => {
       code: code.code,
       tree: tree,
       makes_irrelevant: code.makes_irrelevant,
-      color: code.color,
+      color: standardizeColor(code.color, "88"),
       ref: React.createRef(), // used for keyboard navigation of buttons
     };
     if (code.swipe) swipeOptions[code.swipe] = option;
     options.push(option);
   }
+  console.log(swipeOptions);
   // if swipe options for left and right are not specified, use order.
   if (!swipeOptions.left && !swipeOptions.right) {
     swipeOptions.left = options?.[0];
@@ -264,97 +275,6 @@ const getOptions = (cta) => {
     swipeOptions.up = options?.[2];
   }
   return [options, swipeOptions];
-};
-
-const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 150) => {
-  if (!question) return {};
-  if (question.type !== "annotinder") return {};
-  const transitionTime = 200;
-  const container = refs.text.current.getElementsByClassName("TokensContainer")[0];
-  let scrolloffset = 0;
-  // const blockSwipe = useRef()
-
-  const swipeConfig = {
-    delta: 10, // min distance(px) before a swipe starts. *See Notes*
-    preventDefaultTouchmoveEvent: false, // call e.preventDefault *See Details*
-    trackTouch: true, // track touch input
-    trackMouse: false, // track mouse input
-    rotationAngle: 0, // set a rotation angle
-  };
-
-  const getDeltas = (d) => {
-    let deltaX = d.deltaX;
-    let deltaY = d.deltaY;
-    if (Math.abs(deltaX) > Math.abs(deltaY) + 10) deltaY = 0;
-    if (Math.abs(deltaX) < Math.abs(deltaY) + 10) deltaX = 0;
-    if (!alwaysDoVertical) {
-      // the bottom menu always allows vertical upward swipe, but for the
-      // text div we only allow swiping up if scrolled all the way to bottom
-
-      if (d.first)
-        scrolloffset = container.scrollHeight - container.scrollTop - container.clientHeight;
-      deltaY += scrolloffset;
-    }
-    return [deltaX, Math.min(0, deltaY)];
-  };
-
-  return {
-    onSwiping: (d) => {
-      const [deltaX, deltaY] = getDeltas(d);
-      if (deltaX > 0 && !question.swipeOptions.right) return;
-      if (deltaX < 0 && !question.swipeOptions.left) return;
-      if (deltaY < 0 && !question.swipeOptions.up) return;
-      //if (deltaY !== 0 && deltaY > 0) return;
-
-      refs.text.current.style.transition = ``;
-      refs.text.current.style.transform = `translateX(${deltaX}px) translateY(${deltaY}px)`;
-
-      let bgc = question.swipeOptions.up?.color;
-      let code = question.swipeOptions.up?.code;
-      let [bottom, talign] = ["0%", "center"];
-      if (deltaX > 0) {
-        bgc = question.swipeOptions.right?.color;
-        code = question.swipeOptions.right?.code;
-        [bottom, talign] = ["40%", "left"];
-      }
-      if (deltaX < 0) {
-        bgc = question.swipeOptions.left?.color;
-        code = question.swipeOptions.left?.code;
-        [bottom, talign] = ["40%", "right"];
-      }
-
-      refs.box.current.style.backgroundColor = bgc;
-      refs.code.current.innerText = code;
-      refs.code.current.style.bottom = bottom;
-      refs.code.current.style.textAlign = talign;
-    },
-    onSwiped: (d) => {
-      const [deltaX, deltaY] = getDeltas(d);
-      if (deltaX > 0 && !question.swipeOptions.right) return;
-      if (deltaX < 0 && !question.swipeOptions.left) return;
-      if (deltaY < 0 && !question.swipeOptions.up) return;
-      //if (deltaY !== 0 && deltaY > 0) return;
-
-      refs.text.current.style.transition = `transform ${transitionTime}ms ease-out, opacity ${transitionTime}ms ease-out`;
-
-      if (Math.abs(deltaX) < triggerdist && Math.abs(deltaY) < triggerdist) {
-        refs.text.current.style.transform = `translateX(0%) translateY(0%)`;
-        //refs.box.current.style.backgroundColor = "white";
-      } else {
-        refs.text.current.style.transform = `translateX(${
-          deltaX > 0 ? 100 : deltaX < 0 ? -100 : 0
-        }%) translateY(${deltaY > 0 ? 100 : -100}%)`;
-        refs.box.current.style.transition = `opacity ${transitionTime}ms ease-out`;
-        refs.box.current.style.opacity = 0;
-
-        let dir = "up";
-        dir = deltaX > 0 ? "right" : "left";
-        setSwipe(dir);
-        setSwipe(null);
-      }
-    },
-    ...swipeConfig,
-  };
 };
 
 export default React.memo(QuestionTask);

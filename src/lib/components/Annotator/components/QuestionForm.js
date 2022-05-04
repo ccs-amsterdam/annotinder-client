@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Header, Button, Segment } from "semantic-ui-react";
-import { SearchBoxDropdown, ButtonSelection, Annotinder, Confirm } from "./AnswerForms";
+import { Header, Button } from "semantic-ui-react";
+import AnswerField from "./AnswerField";
 
 const DONE_COLOR = "#70cd70e6";
 const IRRELEVANT_COLOR = "red";
@@ -248,68 +248,6 @@ const QuestionIndexStep = ({ questions, questionIndex, annotations, setQuestionI
   );
 };
 
-const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe, blockEvents }) => {
-  const question = questions[questionIndex];
-
-  const renderAnswerField = () => {
-    if (question.type === "search code")
-      return (
-        <SearchBoxDropdown
-          options={questions[questionIndex].options}
-          callback={onSelect}
-          blockEvents={blockEvents}
-        />
-      );
-    if (question.type === "select code")
-      return (
-        <ButtonSelection
-          options={questions[questionIndex].options}
-          codesPerRow={questions[questionIndex].codes_per_row}
-          callback={onSelect}
-          blockEvents={blockEvents}
-        />
-      );
-    if (question.type === "annotinder")
-      return (
-        <Annotinder
-          swipeOptions={questions[questionIndex].swipeOptions}
-          callback={onSelect}
-          swipe={swipe}
-          blockEvents={blockEvents}
-        />
-      );
-    if (question.type === "confirm") {
-      return <Confirm callback={onSelect} />;
-    }
-
-    return null;
-  };
-
-  if (question.type === "confirm") {
-    return <Confirm callback={onSelect} />;
-  }
-
-  return (
-    <>
-      {showCurrent(currentAnswer, question.type)}
-      <Segment
-        style={{
-          flex: "0.5 1 auto",
-          padding: "0",
-          overflowY: "auto",
-          height: "100%",
-          width: "100%",
-          //borderBottomLeftRadius: "5px",
-          //borderBottomRightRadius: "5px",
-          margin: "0",
-        }}
-      >
-        {renderAnswerField()}
-      </Segment>
-    </>
-  );
-};
-
 const createAnnotationObject = (tokens, question, questionIndex) => {
   // creates an object with all information about the annotation except for the
   // value. This lets us check whether the annotations already exists, and add
@@ -389,30 +327,30 @@ const updateAnnotations = (newAnnotation, annotations) => {
   return annotations;
 };
 
-const showCurrent = (currentAnswer, type) => {
-  if (type === "confirm") return null;
-  if (currentAnswer == null) return null;
-  return (
-    <div>
-      <Segment
-        basic
-        style={{
-          padding: "0 0 0.5em 0",
-          margin: "0",
-          borderRadius: "0",
-          background: ANSWERFIELD_BACKGROUND,
-          color: DONE_COLOR,
-          textAlign: "center",
-        }}
-      >
-        <div style={{ marginTop: "0.3em" }}>
-          Current answer:{"  "}
-          <b style={{ fontSize: "1.5em" }}>{`${currentAnswer}`}</b>
-        </div>
-      </Segment>
-    </div>
-  );
-};
+// const showCurrent = (currentAnswer, type) => {
+//   if (type === "confirm") return null;
+//   if (currentAnswer == null) return null;
+//   return (
+//     <div>
+//       <Segment
+//         basic
+//         style={{
+//           padding: "0 0 0.5em 0",
+//           margin: "0",
+//           borderRadius: "0",
+//           background: ANSWERFIELD_BACKGROUND,
+//           color: DONE_COLOR,
+//           textAlign: "center",
+//         }}
+//       >
+//         <div style={{ marginTop: "0.3em" }}>
+//           Current answer:{"  "}
+//           <b style={{ fontSize: "1.5em" }}>{`${currentAnswer}`}</b>
+//         </div>
+//       </Segment>
+//     </div>
+//   );
+// };
 
 const prepareQuestion = (unit, question) => {
   if (!question?.question) return "";

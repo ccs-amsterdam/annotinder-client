@@ -1,6 +1,6 @@
 import randomColor from "randomcolor";
 
-export const standardizeCodes = (codes) => {
+export const standardizeCodes = (codes, fillMissingColor) => {
   if (!codes) return [];
   return codes.map((code, i) => {
     if (typeof code !== "object") code = { code };
@@ -13,13 +13,16 @@ export const standardizeCodes = (codes) => {
     if (code.required_for == null) code.required_for = [];
     if (typeof code.required_for !== "object") code.required_for = [code.required_for];
 
-    if (code.color == null) code.color = randomColor({ seed: code.code, luminosity: "light" });
+    if (code.color == null) {
+      code.color = null;
+      if (fillMissingColor) code.color = randomColor({ seed: code.code, luminosity: "light" });
+    }
     return code;
   });
 };
 
-export const codeBookEdgesToMap = (codes) => {
-  const standardizedCodes = standardizeCodes(codes);
+export const codeBookEdgesToMap = (codes, fillMissingColor = true) => {
+  const standardizedCodes = standardizeCodes(codes, fillMissingColor);
   // the payload is an array of objects, but for efficients operations
   // in the annotator we convert it to an object with the codes as keys
   const codeMap = standardizedCodes.reduce((result, code) => {
@@ -85,9 +88,7 @@ const fillCodeTreeArray = (codeMap, parents, codeTreeArray, codeTrail, showColor
       code: code,
       codeTrail: codeTrail,
       level: codeTrail.length,
-      color: codeMap[code].color
-        ? codeMap[code].color
-        : randomColor({ seed: code, luminosity: "light" }),
+      color: codeMap[code].color,
     });
 
     if (codeMap[code].children) {
