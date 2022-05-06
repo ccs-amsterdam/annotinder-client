@@ -238,7 +238,7 @@ const JobUsers = ({ backend, job }) => {
       </div>
       {changed ? (
         <span style={{ float: "right", color: "orange" }}>
-          <i>Don't forget to save changes!</i>
+          <i>Click save icon to confirm changes</i>
         </span>
       ) : null}
     </Table.Cell>
@@ -266,15 +266,7 @@ const AnnotationProgress = ({ job, annotations }) => {
 
 const LabeledProgress = ({ label, value, total, size }) => {
   return (
-    <Progress
-      size={size}
-      label={label}
-      key="total"
-      autoSuccess
-      value={value}
-      total={total}
-      progress="ratio"
-    />
+    <Progress size={size} label={label} autoSuccess value={value} total={total} progress="ratio" />
   );
 };
 

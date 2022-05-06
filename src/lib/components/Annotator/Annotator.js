@@ -126,7 +126,9 @@ const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
     if (e.response?.status === 404) {
       setUnitIndex(null);
     } else {
-      console.error(e);
+      // currently 404 indicates that job is done (no more units left)
+      // should probably changes this because it 404 just feels bad
+      // console.error(e);
     }
     setPreparedUnit(null);
   }

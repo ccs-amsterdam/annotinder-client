@@ -58,7 +58,7 @@ const DemoSelector = () => {
           <Icon name="user" style={{ cursor: "pointer" }} />
         </Menu.Item>
       </Menu>
-      <Grid centered container style={{ marginTop: "30px" }}>
+      <Grid stackable centered container style={{ marginTop: "30px" }}>
         <Grid.Row>
           <Grid.Column textAlign="center" width="6">
             <Header as="h2">Select a demo job</Header>
@@ -70,7 +70,7 @@ const DemoSelector = () => {
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
-          <Grid.Column width="6">
+          <Grid.Column width="8">
             <Header textAlign="center">Units</Header>
             <FullDataTable
               fullData={unit_files}
@@ -79,7 +79,7 @@ const DemoSelector = () => {
               isActive={(row) => row.filename === units}
             />
           </Grid.Column>
-          <Grid.Column width="6">
+          <Grid.Column width="8">
             <Header textAlign="center">Codebook</Header>
             <FullDataTable
               fullData={codebook_files}

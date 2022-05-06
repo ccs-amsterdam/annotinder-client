@@ -24,11 +24,18 @@ const App = () => {
         width: document.documentElement.clientWidth,
       });
     };
+
+    // Listen for changes to screen size and orientation
+    // (this would have been so much easier if Safari would support window.screen.orientation)
     window.addEventListener("resize", onResize);
-    window.screen.orientation.addEventListener("change", onResize);
+    if (window?.screen?.orientation) {
+      window.screen.orientation?.addEventListener("change", onResize);
+    } else if (window?.orientation) window.orientation.addEventListener("change", onResize);
     return () => {
       window.removeEventListener("resize", onResize);
-      window.screen.orientation.removeEventListener("change", onResize);
+      if (window?.screen?.orientation) {
+        window.screen.orientation.removeEventListener("change", onResize);
+      } else if (window?.orientation) window.orientation.removeEventListener("change", onResize);
     };
   });
 
