@@ -6,7 +6,6 @@ import {
   Icon,
   Checkbox,
   Table,
-  Progress,
   Dropdown,
   Container,
   Popup,
@@ -254,19 +253,40 @@ const AnnotationProgress = ({ job, annotations }) => {
         label={"Total units finished"}
         value={annotations.totalProgress}
         total={job.n_total}
+        bold
       />
+      <br />
       {Object.entries(annotations.progress).map(([key, value]) => {
-        return (
-          <LabeledProgress key={key} size="small" label={key} value={value} total={job.n_total} />
-        );
+        return <LabeledProgress key={key} label={key} value={value} total={job.n_total} />;
       })}
     </div>
   );
 };
 
-const LabeledProgress = ({ label, value, total, size }) => {
+const LabeledProgress = ({ label, value, total, bold }) => {
   return (
-    <Progress size={size} label={label} autoSuccess value={value} total={total} progress="ratio" />
+    <div style={{ display: "flex", fontWeight: bold ? "bold" : "normal" }}>
+      <span
+        title={label}
+        style={{
+          width: "40%",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+        }}
+      >
+        {label}
+      </span>{" "}
+      <div style={{ width: "40%" }}>
+        <progress value={value} max={total} style={{ width: "100%" }}>
+          {" "}
+          32%{" "}
+        </progress>
+      </div>
+      <span style={{ textAlign: "right", width: "20%", fontSize: "0.8em" }}>
+        <sup>{value}</sup>/<sub>{total}</sub>
+      </span>
+    </div>
   );
 };
 
