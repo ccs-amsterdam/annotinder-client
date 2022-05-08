@@ -31,21 +31,30 @@ const Meta = ({ meta_fields }) => {
   if (meta_fields.length === 0) return null;
 
   return (
-    <Table
-      basic="very"
-      unstackable
-      compact
+    <div
+      key="meta"
       style={{
-        lineHeight: "0.8",
-        padding: "10px",
-        paddingLeft: "10px",
-
-        background: "#ffffff",
-        color: "black",
+        width: "100%",
+        textAlign: "right",
+        padding: "10px 30px",
       }}
     >
-      <Table.Body>{rows()}</Table.Body>
-    </Table>
+      <Table
+        basic="very"
+        unstackable
+        compact
+        style={{
+          lineHeight: "0.8",
+          padding: "10px",
+          paddingLeft: "10px",
+
+          background: "#ffffff",
+          color: "black",
+        }}
+      >
+        <Table.Body>{rows()}</Table.Body>
+      </Table>
+    </div>
   );
 };
 

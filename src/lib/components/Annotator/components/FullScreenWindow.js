@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { Icon, Modal, Button } from "semantic-ui-react";
+import { Modal, Button } from "semantic-ui-react";
 
 export const FullScreenWindow = ({ children, askFullScreen }) => {
   const fsHandle = useFullScreenHandle();
@@ -86,11 +86,11 @@ const AskFullScreenModal = ({ handle, askFullScreenSetting }) => {
 
 const FullScreenButton = ({ handle }) => {
   return (
-    <Icon
-      link
-      size="big"
-      name={handle.active ? "compress" : "expand"}
-      style={{ margin: "0" }}
+    <Button
+      basic
+      size="massive"
+      icon={handle.active ? "compress" : "expand"}
+      style={{ margin: "0", padding: "4px 1px" }}
       onClick={() => {
         handle.active ? handle.exit() : handle.enter();
       }}

@@ -26,7 +26,7 @@ const Body = ({ tokens, text_fields, meta_fields, image_fields, setReady, maxHei
   useEffect(() => {
     if (!tokens) return null;
     setText(renderText(tokens, text_fields, containerRef));
-    setImages(renderImages(image_fields));
+    setImages(renderImages(image_fields, containerRef));
     if (setReady) setReady((current) => current + 1); // setReady is an optional property used to let parents know the text is ready.
   }, [tokens, text_fields, image_fields, setReady]);
 
@@ -47,23 +47,15 @@ const Body = ({ tokens, text_fields, meta_fields, image_fields, setReady, maxHei
             maxHeight: maxHeight,
           }}
         >
-          <div
-            key="meta"
-            style={{
-              width: "100%",
-              textAlign: "right",
-              padding: "10px 30px",
-            }}
-          >
-            <Meta meta_fields={meta_fields} />
-          </div>
+          <Meta meta_fields={meta_fields} />
+
           <div
             style={{
               flex: "1 97%",
               width: "100%",
             }}
           >
-            <div key="content" style={{ paddingTop: "20px", paddingBottom: "20px", width: "100%" }}>
+            <div key="content" style={{ paddingTop: "0px", paddingBottom: "20px", width: "100%" }}>
               {text_fields.map((tf) => text[tf.name])}
               {image_fields.map((imf) => images[imf.name])}
             </div>

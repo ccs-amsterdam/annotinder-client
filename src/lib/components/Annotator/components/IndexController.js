@@ -41,7 +41,8 @@ const IndexController = ({ n, nCoded, index, setIndex, canGoForward = true, canG
         boxShadow: "none",
         padding: "0",
         leftMargin: "0px",
-        width: "100%",
+        //width: "100%",
+        //flex: "1 1 0px",
         height: "35px",
         borderRadius: "0",
         fontSize: "1em",
@@ -109,8 +110,9 @@ const IndexController = ({ n, nCoded, index, setIndex, canGoForward = true, canG
       </div>
       <input
         style={{
-          flex: "1 1 auto",
+          flex: "1 1 0px",
           marginTop: "3px",
+          minWidth: "1px",
           //maxWidth: "500px",
           background: `linear-gradient(to right, ${progressColor} ${progress}%, ${sliderColor} ${progress}% 100%, ${sliderColor} 100%)`,
         }}

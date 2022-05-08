@@ -130,7 +130,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
           settings={settings}
           setSettings={setSettings}
           fullScreenNode={fullScreenNode}
-          canChangeSplitHeight={minifiedAnswerForm || unit?.text_window_size != null}
+          cantChangeSplitHeight={minifiedAnswerForm || unit?.text_window_size != null}
         />
       </div>
       <div {...menuSwipe} style={{ height: minifiedAnswerForm ? null : `${100 - splitHeight}%` }}>
@@ -149,7 +149,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
   );
 };
 
-const SettingsPopup = ({ settings, setSettings, fullScreenNode, minifiedAnswerForm }) => {
+const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitHeight }) => {
   return (
     <Popup
       on="click"
@@ -173,7 +173,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, minifiedAnswerFo
     >
       <Form>
         <Form.Group grouped>
-          {minifiedAnswerForm ? null : (
+          {cantChangeSplitHeight ? null : (
             <Form.Field>
               <label>
                 text window size <font style={{ color: "blue" }}>{`${settings.splitHeight}%`}</font>
@@ -211,6 +211,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, minifiedAnswerFo
 
 const prepareQuestions = (codebook) => {
   const questions = codebook.questions;
+  console.log(questions);
   return questions.map((question) => {
     const fillMissingColor = !["scale"].includes(question.type);
     const codeMap = codeBookEdgesToMap(question.codes, fillMissingColor);

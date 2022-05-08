@@ -114,10 +114,17 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }) => {
             <Table.Cell style={leftColStyle}>Units</Table.Cell>
             <Table.Cell>{job?.n_total}</Table.Cell>
           </Table.Row>
-          <Table.Row>
-            <Table.Cell style={leftColStyle}>Task type</Table.Cell>
-            <Table.Cell>{job?.codebook?.type}</Table.Cell>
-          </Table.Row>
+
+          {job?.jobset_details?.map((js, i) => {
+            return (
+              <Table.Row>
+                <Table.Cell style={leftColStyle}>{i === 0 ? "Job sets" : ""}</Table.Cell>
+                <Table.Cell>
+                  {js.name} <i>({js.n_units} units</i>)
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
           <Table.Row>
             <Table.Cell style={leftColStyle}>Rule set</Table.Cell>
             <Table.Cell>{job?.rules?.ruleset}</Table.Cell>
@@ -278,10 +285,7 @@ const LabeledProgress = ({ label, value, total, bold }) => {
         {label}
       </span>{" "}
       <div style={{ width: "40%" }}>
-        <progress value={value} max={total} style={{ width: "100%" }}>
-          {" "}
-          32%{" "}
-        </progress>
+        <progress value={value} max={total} style={{ width: "100%" }} />
       </div>
       <span style={{ textAlign: "right", width: "20%", fontSize: "0.8em" }}>
         <sup>{value}</sup>/<sub>{total}</sub>

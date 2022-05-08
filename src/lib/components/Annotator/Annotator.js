@@ -36,6 +36,7 @@ const Annotator = ({ jobServer, askFullScreen }) => {
     return (
       <Task
         unit={preparedUnit}
+        jobServer={jobServer}
         setUnitIndex={setUnitIndex}
         fullScreenNode={fullScreenNode}
         nextDelay={jobServer?.progress?.next_delay}
@@ -87,8 +88,10 @@ const Annotator = ({ jobServer, askFullScreen }) => {
             </div>
             <div>
               <div>
-                {fullScreenButton}
-                <UserButton jobServer={jobServer} />
+                <Button.Group>
+                  {fullScreenButton}
+                  <UserButton jobServer={jobServer} />
+                </Button.Group>
               </div>
             </div>
           </div>
@@ -185,7 +188,14 @@ const UserButton = ({ jobServer }) => {
       wide
       position="bottom right"
       on="click"
-      trigger={<Icon name="cancel" size="big" style={{ cursor: "pointer" }} />}
+      trigger={
+        <Button
+          basic
+          icon="cancel"
+          size="massive"
+          style={{ cursor: "pointer", padding: "4px 1px" }}
+        />
+      }
     >
       <Popup.Content>
         <Button.Group vertical fluid>
@@ -222,4 +232,4 @@ const BackToOverview = ({ jobServer }) => {
   );
 };
 
-export default Annotator;
+export default React.memo(Annotator);

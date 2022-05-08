@@ -88,6 +88,7 @@ const QuestionForm = ({
         backgroundColor: ANSWERFIELD_BACKGROUND,
         borderTop: `3px double ${ANSWERFIELD_COLOR}`,
         boxShadow: "5px 5px 5px 1px grey",
+        overflow: "auto",
         zIndex: 9000,
       }}
     >
