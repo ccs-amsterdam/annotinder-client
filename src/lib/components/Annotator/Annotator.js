@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Icon, Grid, Header, Dimmer, Loader, Segment, Popup, Button } from "semantic-ui-react";
-import DownloadAnnotations from "./components/DownloadAnnotations";
-import IndexController from "./components/IndexController";
-import Task from "./components/Task";
+import { Dimmer, Loader, Segment } from "semantic-ui-react";
+import Unit from "./components/Unit";
 import FullScreenWindow from "./components/FullScreenWindow";
 import "./annotatorStyle.css";
-import useLocalStorage from "../../hooks/useLocalStorage";
-import { useNavigate } from "react-router-dom";
+import HeaderBar from "./components/HeaderBar";
 
 /**
  * Render an annotator for the provided jobServer class
@@ -30,19 +27,6 @@ const Annotator = ({ jobServer, askFullScreen }) => {
     getUnit(jobServer, unitIndex, setPreparedUnit, setUnitIndex).then(() => setLoading(false));
   }, [unitIndex, jobServer, setUnitIndex, setPreparedUnit, setLoading]);
 
-  const content = (fullScreenNode) => {
-    if (unitIndex < 0) return null;
-    if (unitIndex === null) return <Finished jobServer={jobServer} />;
-    return (
-      <Task
-        unit={preparedUnit}
-        jobServer={jobServer}
-        setUnitIndex={setUnitIndex}
-        fullScreenNode={fullScreenNode}
-        nextDelay={jobServer?.progress?.next_delay}
-      />
-    );
-  };
   const [maxHeight, maxWidth] = getWindowSize(jobServer);
 
   return (
@@ -61,45 +45,27 @@ const Annotator = ({ jobServer, askFullScreen }) => {
             border: "1px solid white",
           }}
         >
-          <div
-            style={{
-              height: "45px",
-              width: "100%",
-              padding: "5px 14px 5px 14px",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <div
-              style={{
-                flex: "1 1 auto",
-                paddingTop: "3px",
-                paddingRight: "16px",
-              }}
-            >
-              <IndexController
-                n={jobServer?.progress?.n_total}
-                nCoded={jobServer?.progress?.n_coded || 0}
-                index={unitIndex}
-                setIndex={setUnitIndex}
-                canGoBack={jobServer?.progress?.seek_backwards}
-                canGoForward={jobServer?.progress?.seek_forwards}
-              />
-            </div>
-            <div>
-              <div>
-                <Button.Group>
-                  {fullScreenButton}
-                  <UserButton jobServer={jobServer} />
-                </Button.Group>
-              </div>
-            </div>
-          </div>
+          <HeaderBar
+            jobServer={jobServer}
+            unitIndex={unitIndex}
+            setUnitIndex={setUnitIndex}
+            fullScreenButton={fullScreenButton}
+            fullScreenNode={fullScreenNode}
+            height={"45px"}
+          />
           <Segment basic style={{ height: "calc(100% - 45px)", padding: "0", margin: "0" }}>
             <Dimmer inverted active={loading}>
               <Loader />
             </Dimmer>
-            {content(fullScreenNode)}
+            <Unit
+              unit={preparedUnit}
+              jobServer={jobServer}
+              unitIndex={unitIndex}
+              setUnitIndex={setUnitIndex}
+              fullScreenButton={fullScreenButton}
+              fullScreenNode={fullScreenNode}
+              nextDelay={jobServer?.progress?.next_delay}
+            />
           </Segment>
         </div>
       )}
@@ -146,90 +112,6 @@ const getWindowSize = (jobServer) => {
     default:
       return ["100%", "100%"];
   }
-};
-
-const Finished = ({ jobServer }) => {
-  if (!jobServer) return null;
-
-  if (!jobServer.getAllAnnotations) {
-    return (
-      <Grid container centered verticalAlign="middle" style={{ margin: "0", padding: "0" }}>
-        <Grid.Row style={{ marginTop: "40%", width: "100%", height: "100%" }}>
-          <div>
-            <Icon name="flag checkered" size="huge" style={{ transform: "scale(5)" }} />
-          </div>
-        </Grid.Row>
-      </Grid>
-    );
-  } else {
-    return (
-      <Grid container centered verticalAlign="middle" style={{ margin: "0", padding: "0" }}>
-        <Grid.Row style={{ marginTop: "40%", width: "100%", height: "100%" }}>
-          <Grid.Column width={4}>
-            <Icon name="flag checkered" size="huge" />
-          </Grid.Column>
-          <Grid.Column width={8}>
-            <Header>You finished the codingjob!</Header>
-            <p>Please download your results (and send them to whoever gave you this job). </p>
-            <DownloadAnnotations jobServer={jobServer} />
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    );
-  }
-};
-
-const UserButton = ({ jobServer }) => {
-  const [auth, setAuth] = useLocalStorage("auth", {});
-  const loggedIn = auth?.host && auth?.[auth?.host + "__token__"];
-
-  return (
-    <Popup
-      wide
-      position="bottom right"
-      on="click"
-      trigger={
-        <Button
-          basic
-          icon="cancel"
-          size="massive"
-          style={{ cursor: "pointer", padding: "4px 1px" }}
-        />
-      }
-    >
-      <Popup.Content>
-        <Button.Group vertical fluid>
-          <BackToOverview jobServer={jobServer} />
-          {loggedIn ? (
-            <Button
-              secondary
-              icon="user"
-              content="Log out"
-              style={{ marginTop: "0" }}
-              onClick={() => {
-                setAuth({ ...auth, [auth.host + "__token__"]: null });
-                window.location.reload("/");
-              }}
-            />
-          ) : null}
-        </Button.Group>
-      </Popup.Content>
-    </Popup>
-  );
-};
-
-const BackToOverview = ({ jobServer }) => {
-  console.log(jobServer);
-  const navigate = useNavigate();
-  if (!jobServer?.return_link) return null;
-  return (
-    <Button
-      primary
-      icon="home"
-      content="Close job"
-      onClick={() => navigate(jobServer.return_link)}
-    />
-  );
 };
 
 export default React.memo(Annotator);

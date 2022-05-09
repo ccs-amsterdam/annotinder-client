@@ -25,7 +25,6 @@ const Annotinder = React.memo(({ swipeOptions, callback, swipe, blockEvents }) =
         if (event.key === "ArrowRight") option = swipeOptions.right;
         if (event.key === "ArrowUp") option = swipeOptions.up;
         if (event.key === "ArrowLeft") option = swipeOptions.left;
-        console.log(option);
         callback(option);
         const el = option.ref.current;
         el.classList.add("active");

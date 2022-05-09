@@ -36,8 +36,9 @@ const QuestionForm = ({
 
   const question = prepareQuestion(unit, questions[questionIndex]);
 
-  const onSelect = (answer) => {
+  const onSelect = (answer, onlySave = false) => {
     // write result to IDB/server and skip to next question or next unit
+    // if onlySave is true, only write to db without going to next question
     if (answered.current) return null;
     answered.current = true;
 
@@ -62,6 +63,11 @@ const QuestionForm = ({
     });
     //delete cleanAnnotations.makes_irrelevant;
     unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status);
+
+    if (onlySave) {
+      answered.current = false;
+      return;
+    }
 
     setTimeout(() => {
       // wait a little bit, so coder can see their answer and breathe

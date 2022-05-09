@@ -89,7 +89,6 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }) => {
 
   if (!job) return null;
 
-  console.log(job);
   return (
     <Container style={{ height: "100%", textAlign: "left" }}>
       <Header textAlign="center">{job.title}</Header>

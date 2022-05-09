@@ -22,6 +22,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
     if (question.type === "scale")
       return (
         <Scale
+          items={question.items || [""]}
           options={question.options}
           currentAnswer={currentAnswer}
           callback={onSelect}

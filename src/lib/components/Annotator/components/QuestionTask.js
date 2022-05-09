@@ -3,7 +3,7 @@ import QuestionForm from "./QuestionForm";
 import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
 import { codeBookEdgesToMap, getCodeTreeArray } from "../../../functions/codebook";
-import { Form, Icon, Input, Popup } from "semantic-ui-react";
+import { Button, Form, Input, Popup } from "semantic-ui-react";
 import standardizeColor from "../../../functions/standardizeColor";
 import swipeControl from "../functions/swipeControl";
 import useLocalStorage from "../../../hooks/useLocalStorage";
@@ -83,6 +83,12 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
           //height: `${splitHeight}%`,
         }}
       >
+        <SettingsPopup
+          settings={settings}
+          setSettings={setSettings}
+          fullScreenNode={fullScreenNode}
+          cantChangeSplitHeight={minifiedAnswerForm || unit?.text_window_size != null}
+        />
         <div
           ref={refs.box}
           style={{
@@ -126,12 +132,6 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
             />
           </div>
         </div>
-        <SettingsPopup
-          settings={settings}
-          setSettings={setSettings}
-          fullScreenNode={fullScreenNode}
-          cantChangeSplitHeight={minifiedAnswerForm || unit?.text_window_size != null}
-        />
       </div>
       <div {...menuSwipe} style={{ height: minifiedAnswerForm ? null : `${100 - splitHeight}%` }}>
         <QuestionForm
@@ -155,18 +155,18 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitH
       on="click"
       mountNode={fullScreenNode || undefined}
       trigger={
-        <Icon
-          size="large"
-          name="setting"
+        <Button
+          size="huge"
+          icon="setting"
           style={{
             position: "absolute",
-
+            background: "transparent",
             cursor: "pointer",
-            top: "1px",
-            left: "2px",
-            color: "#1b1c1d",
+            top: "-10px",
+            left: "1px",
             padding: "5px 0px",
             height: "30px",
+            zIndex: 9000,
           }}
         />
       }
@@ -211,13 +211,11 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitH
 
 const prepareQuestions = (codebook) => {
   const questions = codebook.questions;
-  console.log(questions);
   return questions.map((question) => {
     const fillMissingColor = !["scale"].includes(question.type);
     const codeMap = codeBookEdgesToMap(question.codes, fillMissingColor);
     let cta = getCodeTreeArray(codeMap);
     cta = addRequiredFor([...cta]);
-    console.log(cta);
     const [options, swipeOptions] = getOptions(cta);
     return { ...question, options, swipeOptions }; // it's important that this deep copies question
   });
@@ -268,7 +266,6 @@ const getOptions = (cta) => {
     if (code.swipe) swipeOptions[code.swipe] = option;
     options.push(option);
   }
-  console.log(swipeOptions);
   // if swipe options for left and right are not specified, use order.
   if (!swipeOptions.left && !swipeOptions.right) {
     swipeOptions.left = options?.[0];

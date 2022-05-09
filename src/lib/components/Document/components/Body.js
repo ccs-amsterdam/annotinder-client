@@ -55,12 +55,10 @@ const Body = ({ tokens, text_fields, meta_fields, image_fields, setReady, maxHei
               width: "100%",
             }}
           >
-            <div key="content" style={{ paddingTop: "0px", paddingBottom: "20px", width: "100%" }}>
+            <div key="content" style={{ paddingTop: "0px", paddingBottom: "0px", width: "100%" }}>
               {text_fields.map((tf) => text[tf.name])}
               {image_fields.map((imf) => images[imf.name])}
             </div>
-
-            <div key="empty_space" style={{ height: "25px" }} />
           </div>
         </div>
       </Ref>

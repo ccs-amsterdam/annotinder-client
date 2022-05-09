@@ -40,10 +40,8 @@ export const moveUp = (arr, selected, xposition = null) => {
  */
 export const moveDown = (arr, selected, xposition = null) => {
   // like moveUp, but down
-  console.log(arr);
-  console.log(arr[selected]);
+
   const currentPos = getPosition(arr[selected].ref, arr?.[xposition]?.ref);
-  console.log(currentPos);
   let correctRow = null;
   let prevColOverlap = 0;
   for (let i = selected + 1; i < arr.length; i++) {

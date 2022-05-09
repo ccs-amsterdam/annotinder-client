@@ -51,7 +51,6 @@ const buttonGridPositions = (n, perRow, divideEqually) => {
     gridTemplateColumns: `repeat(${cols}, 1fr)`,
     //gridTemplateRows: `repeat(${rows}, 1fr)`,
   };
-  console.log(positions);
 
   return { boxStyleArray: positions, containerStyle };
 };
