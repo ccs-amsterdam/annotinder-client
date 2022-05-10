@@ -55,22 +55,16 @@
         "type": "questions",
         "questions": [
           {
-            "name": "trust_government",
+            "name": "branching",
             "type": "select code",
-            "question": "",
-            "items": ["Journalism", "Government", "Police"],
+            "question": "Do you want so skip to the third question?",
             "codes": [
-              { "code": "Negative", "color": "red" },
-              { "code": "Neutral", "color": "grey" },
-              {
-                "code": "And yet another very looooooooong label what I'm i to do",
-                "color": "red"
-              },
-              { "code": "Positive", "color": "green" }
+              { "code": "No", "color": "red" },
+              { "code": "Yes", "color": "green", "makes_irrelevant": "trust" }
             ]
           },
           {
-            "name": "trust_journalists",
+            "name": "trust",
             "type": "scale",
             "single_row": true,
             "same_size": true,
@@ -85,6 +79,15 @@
               { "code": "Somewhat agree" },
               { "code": "Agree" },
               { "code": "Strongly agree" }
+            ]
+          },
+          {
+            "name": "why_trust",
+            "type": "select code",
+            "question": "What makes you such a thrusting person?",
+            "codes": [
+              { "code": "Wine", "color": "red" },
+              { "code": "Beer", "color": "yellow" }
             ]
           }
         ]

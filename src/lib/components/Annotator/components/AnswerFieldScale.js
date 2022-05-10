@@ -32,9 +32,11 @@ const Scale = React.memo(({ items, options, currentAnswer, callback, blockEvents
         }
         if (event.key === "ArrowUp") {
           if (selectedItem > 0) setSelectedItem(selectedItem - 1);
+          if (selectedItem === 0) setSelectedItem(-1);
         }
         if (event.key === "ArrowDown") {
           if (selectedItem < nitems - 1) setSelectedItem(selectedItem + 1);
+          if (selectedItem === nitems - 1) setSelectedItem(-1);
         }
         return;
       }
@@ -43,25 +45,30 @@ const Scale = React.memo(({ items, options, currentAnswer, callback, blockEvents
       if (event.keyCode === 32 || event.keyCode === 13) {
         event.preventDefault();
         event.stopPropagation();
-        setAnswers((answers) => {
-          const newanswers = [...answers];
-          newanswers[selectedItem] = selectedButton + 1;
-          return newanswers;
-        });
+        if (selectedItem === -1) {
+          if (!answers.some((a) => a.value === null)) callback({ code: answers });
+        } else {
+          setAnswers((answers) => {
+            const newanswers = [...answers];
+            newanswers[selectedItem].value = options[selectedButton].code;
+            return newanswers;
+          });
+        }
       }
     },
-    [selectedButton, selectedItem, setAnswers, options, items]
+    [selectedButton, selectedItem, answers, setAnswers, callback, options, items]
   );
 
   useEffect(() => {
     setSelectedButton(null);
     setSelectedItem(0);
-    if (currentAnswer && Array.isArray(currentAnswer) && currentAnswer.length === items.length) {
+    if (currentAnswer) {
+      console.log(currentAnswer);
       setAnswers(currentAnswer);
     } else {
-      setAnswers(new Array(items.length).fill(null));
+      const answers = items.map((item) => ({ item: item?.name || item, value: null }));
+      setAnswers(answers);
     }
-    //setConfirmMsg(false);
   }, [currentAnswer, items, callback, setSelectedButton, setSelectedItem]);
 
   useEffect(() => {
@@ -81,7 +88,7 @@ const Scale = React.memo(({ items, options, currentAnswer, callback, blockEvents
   const left = options[0];
   const right = options[options.length - 1];
   if (answers === null) return null;
-  const nAnswered = answers.filter((a) => a !== null).length;
+  const nAnswered = answers.filter((a) => a.value !== null).length;
   const done = nAnswered === answers.length;
 
   return (
@@ -117,6 +124,7 @@ const Scale = React.memo(({ items, options, currentAnswer, callback, blockEvents
             color: done ? null : "black",
             margin: "0",
             background: done ? null : "white",
+            border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
           }}
           onClick={() => {
             // this is a bit of an odd one out. We didn't anticipate having multiple answers,
@@ -175,7 +183,7 @@ const Items = ({
                 <b>{item}</b>
               </div>
               <div style={{ color: "black", width: "100%", textAlign: "center" }}>
-                <i>{answers[itemIndex] ? options[answers[itemIndex] - 1].code : "..."}</i>
+                <i>{answers?.[itemIndex]?.value ? answers[itemIndex].value : "..."}</i>
               </div>
             </div>
             <div
@@ -217,9 +225,10 @@ const Item = ({
   const colorstep = 200 / options.length;
   return options.map((option, buttonIndex) => {
     let bordercolor = "#ece9e9";
-    const isCurrent = buttonIndex + 1 === answers[itemIndex];
+    const isCurrent = options[buttonIndex].code === answers[itemIndex].value;
     const isSelected = buttonIndex === selectedButton && itemIndex === selectedItem;
-    if (isCurrent || isSelected) bordercolor = "#1B1C1D";
+    if (isCurrent) bordercolor = "#2185d0";
+    if (isSelected) bordercolor = "#1B1C1D";
 
     const colorint = 255 - buttonIndex * colorstep;
     const bgcolor = `rgb(${colorint},${colorint},${colorint})`;
@@ -229,28 +238,28 @@ const Item = ({
       <Ref key={option.code} innerRef={option.ref}>
         <Button
           fluid
-          circle
+          primary
           className="ripplebutton"
           style={{
             flex: "1 1 0px",
-            backgroundColor: option.color || bgcolor,
+            backgroundColor: isCurrent ? null : option.color || bgcolor,
             //padding: "10px 0px",
             fontWeight: "bold",
             fontSize: "1em",
             textShadow: "0px 0px 5px #ffffff77",
             borderRadius: "10px",
-            color: option.color ? "#1B1C1D" : color,
+            color: isCurrent ? null : option.color ? "#1B1C1D" : color,
             border: `5px solid ${bordercolor}`,
           }}
           key={option.code}
-          value={buttonIndex + 1}
+          value={option.code}
           compact
           onClick={(e, d) => {
             setSelectedButton(buttonIndex);
             setSelectedItem(itemIndex);
             setAnswers((answers) => {
               const newanswers = [...answers];
-              newanswers[itemIndex] = d.value;
+              newanswers[itemIndex].value = d.value;
               return newanswers;
             });
           }}

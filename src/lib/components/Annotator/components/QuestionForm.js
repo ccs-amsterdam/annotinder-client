@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Header, Button } from "semantic-ui-react";
+import {
+  addAnnotationsFromAnswer,
+  getAnswersFromAnnotations,
+} from "../functions/mapAnswersToAnnotations";
 import AnswerField from "./AnswerField";
 
 const DONE_COLOR = "#70cd70e6";
-const IRRELEVANT_COLOR = "red";
+const IRRELEVANT_COLOR = "grey";
 const ANSWERFIELD_BACKGROUND = "#1B1C1D";
 const ANSWERFIELD_COLOR = "white";
 //const ANSWERFIELD_BACKGROUND = "white";
@@ -20,15 +24,15 @@ const QuestionForm = ({
   blockEvents,
 }) => {
   const answered = useRef(false); // to prevent answering double (e.g. with swipe events)
-  const [annotations, setAnnotations] = useState(null);
+  const [answers, setAnswers] = useState(null);
 
   useEffect(() => {
     if (!questions) return;
-    prepareAnnotations(unit, tokens, questions, setAnnotations);
+    getAnswersFromAnnotations(unit, tokens, questions, setAnswers);
     answered.current = false;
-  }, [unit, tokens, setAnnotations, questions]);
+  }, [unit, tokens, setAnswers, questions]);
 
-  if (!questions || !unit || !annotations) return null;
+  if (!questions || !unit || !answers) return null;
   if (!questions?.[questionIndex]) {
     setQuestionIndex(0);
     return null;
@@ -37,26 +41,29 @@ const QuestionForm = ({
   const question = prepareQuestion(unit, questions[questionIndex]);
 
   const onSelect = (answer, onlySave = false) => {
-    // write result to IDB/server and skip to next question or next unit
-    // if onlySave is true, only write to db without going to next question
+    // This is the callback function used in the AnswerField Components.
+    // It posts results and skips to next question, or next unit if no questions left.
+    // If onlySave is true, only write to db without going to next question
     if (answered.current) return null;
     answered.current = true;
 
-    annotations[questionIndex].value = answer.code;
-    annotations[questionIndex].makes_irrelevant = answer.makes_irrelevant;
-    unit.annotations = updateAnnotations(annotations[questionIndex], unit.annotations);
-    processIrrelevantBranching(unit, questions, annotations, questionIndex);
+    answers[questionIndex].value = Array.isArray(answer.code)
+      ? answer.code
+      : [{ value: answer.code }];
+    answers[questionIndex].makes_irrelevant = answer.makes_irrelevant;
+    unit.annotations = addAnnotationsFromAnswer(answers[questionIndex], unit.annotations, question);
+    const irrelevantQuestions = processIrrelevantBranching(unit, questions, answers, questionIndex);
 
     // next (non-irrelevant) question in unit (null if no remaining)
     let newQuestionIndex = null;
     for (let i = questionIndex + 1; i < questions.length; i++) {
-      if (annotations[i].value === "IRRELEVANT") continue;
+      if (irrelevantQuestions[i]) continue;
       newQuestionIndex = i;
       break;
     }
 
     const status = newQuestionIndex === null ? "DONE" : "IN_PROGRESS";
-    const cleanAnnotations = unit.annotations.map((u) => {
+    let cleanAnnotations = unit.annotations.map((u) => {
       const cleanAnnotation = { ...u };
       delete cleanAnnotation.makes_irrelevant;
       return cleanAnnotation;
@@ -102,7 +109,7 @@ const QuestionForm = ({
         <QuestionIndexStep
           questions={questions}
           questionIndex={questionIndex}
-          annotations={annotations}
+          answers={answers}
           setQuestionIndex={setQuestionIndex}
         />
       ) : null}
@@ -128,7 +135,7 @@ const QuestionForm = ({
         </div>
 
         <AnswerField
-          currentAnswer={annotations?.[questionIndex]?.value}
+          currentAnswer={answers?.[questionIndex]?.value}
           questions={questions}
           questionIndex={questionIndex}
           onSelect={onSelect}
@@ -140,57 +147,56 @@ const QuestionForm = ({
   );
 };
 
-const processIrrelevantBranching = (unit, questions, annotations, questionIndex) => {
+const processIrrelevantBranching = (unit, questions, answers, questionIndex) => {
   // checks all the branching in the given answers
   const which = new Set();
   for (let a in Object.keys(unit.annotations)) {
     const makesIrrelevant = unit.annotations[a].makes_irrelevant;
-    if (makesIrrelevant == null || makesIrrelevant === null) continue;
+    if (makesIrrelevant == null) continue;
     for (let value of makesIrrelevant) {
       if (value === "REMAINING") {
-        for (let i = questionIndex + 1; i < annotations.length; i++) which.add(i);
+        for (let i = questionIndex + 1; i < questions.length; i++) which.add(i);
       }
       const i = questions.findIndex((q) => q.name === value);
       if (i >= 0) which.add(i);
     }
   }
+  const irrelevantQuestions = new Array(questions.length).fill(false);
 
-  for (let i = 0; i < annotations.length; i++) {
+  for (let i = 0; i < questions.length; i++) {
     if (which.has(i)) {
+      irrelevantQuestions[i] = true;
       // gives the value "IRRELEVANT" to targeted questions
-      annotations[i].value = "IRRELEVANT";
-      unit.annotations = updateAnnotations(annotations[i], unit.annotations);
+      for (let a of answers[i].value) a.value = "IRRELEVANT";
+      unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations, questions[i]);
     } else {
-      // this happens if a coders goes back and changes all answers that marked a question as "IRRELEVANT"
-      if (annotations[i].value === "IRRELEVANT") {
-        delete annotations[i].value;
-        unit.annotations = updateAnnotations(annotations[i], unit.annotations);
+      irrelevantQuestions[i] = false;
+      // If a question is marked as IRRELEVANT, double check whether this is still the case
+      // (a coder might have changed a previous answer)
+      for (let a of answers[i].value) {
+        if (a.value === "IRRELEVANT") delete a.value;
       }
+      unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations, questions[i]);
     }
   }
+  return irrelevantQuestions;
 };
 
-const prepareAnnotations = (unit, tokens, questions, setAnnotations) => {
-  // create a list with annotations for each question, and see if they have been answered yet
-  const annotations = [];
-  if (!unit.annotations) unit.annotations = [];
-  for (let i = 0; i < questions.length; i++) {
-    const annotation = createAnnotationObject(tokens, questions[i], i);
-    annotation.value = getCurrentAnswer(unit.annotations, annotation);
-    annotations.push(annotation);
-  }
-  setAnnotations(annotations);
-};
-
-const QuestionIndexStep = ({ questions, questionIndex, annotations, setQuestionIndex }) => {
+const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex }) => {
   //if (questions.length === 1) return null;
   const [canSelect, setCanSelect] = useState();
 
   useEffect(() => {
-    const cs = annotations.map((a) => a.value !== null);
+    const cs = answers.map((a) => {
+      if (Array.isArray(a.value)) {
+        return a.value[0].value !== null;
+      } else {
+        return a.value !== null;
+      }
+    });
     cs[0] = true;
     setCanSelect(cs);
-  }, [annotations, setCanSelect]);
+  }, [answers, setCanSelect]);
 
   useEffect(() => {
     setCanSelect((state) => {
@@ -201,10 +207,19 @@ const QuestionIndexStep = ({ questions, questionIndex, annotations, setQuestionI
   }, [questionIndex, setCanSelect]);
 
   const setColor = (i) => {
-    if (!annotations[i]) return ["black", IRRELEVANT_COLOR];
-    if (annotations[i].value === "IRRELEVANT") return ["black", IRRELEVANT_COLOR];
+    if (!answers[i]) return ["black", IRRELEVANT_COLOR];
+    let done, irrelevant;
+    if (Array.isArray(answers[i].value)) {
+      done = answers[i].value.filter((v) => !!v.value).length === answers.length;
+      irrelevant = answers[i].value[0].value === "IRRELEVANT";
+    } else {
+      done = !!answers[i].value;
+      irrelevant = answers[i].value === "IRRELEVANT";
+    }
+
+    if (irrelevant) return ["black", IRRELEVANT_COLOR];
     if (canSelect && i > questionIndex && !canSelect[i]) return ["white", "grey"];
-    if (annotations[i].value) return ["black", DONE_COLOR];
+    if (done) return ["black", DONE_COLOR];
     if (i === 0) return [DONE_COLOR, "#1B1C1D"];
     if (canSelect && canSelect[i]) return [DONE_COLOR, "#1B1C1D"];
     return [DONE_COLOR, "grey"];
@@ -254,110 +269,6 @@ const QuestionIndexStep = ({ questions, questionIndex, annotations, setQuestionI
     </div>
   );
 };
-
-const createAnnotationObject = (tokens, question, questionIndex) => {
-  // creates an object with all information about the annotation except for the
-  // value. This lets us check whether the annotations already exists, and add
-  // or change the value.
-
-  let annObj = { variable: question.name, value: null };
-
-  if (tokens.length > 0) {
-    const fields = {};
-    const lastToken = tokens[tokens.length - 1];
-
-    const charspan = [0, lastToken.offset + lastToken.length];
-    const indexspan = [0, tokens.length - 1];
-    let [unitStarted, unitEnded] = [false, false];
-
-    let i = 0;
-    for (let token of tokens) {
-      if (token.codingUnit && !fields[token.field]) fields[token.field] = 1;
-      if (!unitStarted && token.codingUnit) {
-        unitStarted = true;
-        charspan[0] = token.offset;
-        indexspan[0] = i;
-      }
-      if (!unitEnded && !token.codingUnit && unitStarted) {
-        unitEnded = true;
-        charspan[1] = tokens[i - 1].offset + tokens[i - 1].length;
-        indexspan[1] = i - 1;
-      }
-      i++;
-    }
-
-    // make these optional? Because they're not tokenizer agnostic
-    const meta = {
-      length_tokens: 1 + indexspan[1] - indexspan[0],
-      length_paragraphs: 1 + tokens[indexspan[1]].paragraph - tokens[indexspan[0]].paragraph,
-      length_sentences: 1 + tokens[indexspan[1]].sentence - tokens[indexspan[0]].sentence,
-    };
-
-    annObj = {
-      ...annObj,
-      field: Object.keys(fields).join(" + "),
-      offset: charspan[0],
-      length: charspan[1] - charspan[0],
-      meta,
-    };
-  }
-
-  return annObj;
-};
-
-const sameQuestion = (x, y) => {
-  return (
-    x.variable === y.variable &&
-    x.field === y.field &&
-    x.offset === y.offset &&
-    x.length === y.length
-  );
-};
-
-const getCurrentAnswer = (annotations, annotationObject) => {
-  if (!annotations) return null;
-  for (let annotation of annotations) {
-    if (sameQuestion(annotation, annotationObject)) return annotation.value;
-  }
-  return null;
-};
-
-const updateAnnotations = (newAnnotation, annotations) => {
-  if (!annotations) annotations = [];
-  for (let i = 0; i < annotations.length; i++) {
-    if (sameQuestion(annotations[i], newAnnotation)) {
-      annotations[i] = newAnnotation;
-      return annotations;
-    }
-  }
-  annotations.push(newAnnotation);
-  return annotations;
-};
-
-// const showCurrent = (currentAnswer, type) => {
-//   if (type === "confirm") return null;
-//   if (currentAnswer == null) return null;
-//   return (
-//     <div>
-//       <Segment
-//         basic
-//         style={{
-//           padding: "0 0 0.5em 0",
-//           margin: "0",
-//           borderRadius: "0",
-//           background: ANSWERFIELD_BACKGROUND,
-//           color: DONE_COLOR,
-//           textAlign: "center",
-//         }}
-//       >
-//         <div style={{ marginTop: "0.3em" }}>
-//           Current answer:{"  "}
-//           <b style={{ fontSize: "1.5em" }}>{`${currentAnswer}`}</b>
-//         </div>
-//       </Segment>
-//     </div>
-//   );
-// };
 
 const prepareQuestion = (unit, question) => {
   if (!question?.question) return "";

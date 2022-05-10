@@ -14,7 +14,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
       return (
         <SearchCode
           options={question.options}
-          currentAnswer={currentAnswer}
+          currentAnswer={currentAnswer[0].value}
           callback={onSelect}
           blockEvents={blockEvents}
         />
@@ -33,7 +33,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
       return (
         <SelectCode
           options={question.options}
-          currentAnswer={currentAnswer}
+          currentAnswer={currentAnswer[0].value}
           singleRow={question.single_row}
           sameSize={question.same_size}
           callback={onSelect}
@@ -44,7 +44,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
       return (
         <Annotinder
           swipeOptions={question.swipeOptions}
-          currentAnswer={currentAnswer}
+          currentAnswer={currentAnswer[0].value}
           callback={onSelect}
           swipe={swipe}
           blockEvents={blockEvents}
