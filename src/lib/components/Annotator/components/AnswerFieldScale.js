@@ -183,14 +183,15 @@ const Items = ({
 
   return (
     <div ref={containerRef} style={{ overflow: "auto" }}>
-      {items.map((item, itemIndex) => {
+      {items.map((itemObj, itemIndex) => {
+        const itemlabel = itemObj.label || itemObj.name || itemObj;
         const ref = createRef();
         rowRefs.current[itemIndex] = ref;
         return (
           <div>
             <div>
               <div style={{ color: "black", width: "100%", textAlign: "center" }}>
-                <b>{item}</b>
+                <b>{itemlabel}</b>
               </div>
               <div style={{ width: "100%", textAlign: "center", color: "#1678c2" }}>
                 <i>{answers?.[itemIndex]?.value ? answers[itemIndex].value : "..."}</i>

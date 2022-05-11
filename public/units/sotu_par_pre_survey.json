@@ -68,7 +68,11 @@
             "single_row": true,
             "same_size": true,
             "question": "test",
-            "items": ["Journalism", "Government", "Police"],
+            "items": [
+              { "name": "Journalists", "label": "Do you trust journalists?" },
+              { "name": "Government" },
+              { "name": "Police" }
+            ],
 
             "codes": [
               { "code": "Strongly disagree" },
