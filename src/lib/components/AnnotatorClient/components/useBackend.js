@@ -201,6 +201,17 @@ const SignIn = ({ recHost, setLogin }) => {
             </Grid.Column>
           </Grid.Row>
         </Grid>
+        <span
+          style={{
+            position: "absolute",
+            color: "grey",
+            fontSize: "10px",
+            left: "5px",
+            bottom: "-20px",
+          }}
+        >
+          Version 0.2.4
+        </span>
       </Segment>
     </>
   );

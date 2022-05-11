@@ -178,13 +178,18 @@ const Items = ({
   scrollToMiddle(containerRef?.current, rowRefs?.current?.[selectedItem]?.current, 0.5);
 
   return (
-    <div ref={containerRef} style={{ overflow: "auto" }}>
+    <div
+      ref={containerRef}
+      style={{
+        overflow: "auto",
+      }}
+    >
       {items.map((itemObj, itemIndex) => {
         const itemlabel = itemObj.label || itemObj.name || itemObj;
         const ref = createRef();
         rowRefs.current[itemIndex] = ref;
         return (
-          <div key={itemIndex}>
+          <div key={itemIndex} style={{ marginTop: "10px" }}>
             <div>
               <div style={{ color: "black", width: "100%", textAlign: "center" }}>
                 <b>{itemlabel}</b>
