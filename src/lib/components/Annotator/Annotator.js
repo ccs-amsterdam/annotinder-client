@@ -5,7 +5,6 @@ import FullScreenWindow from "./components/FullScreenWindow";
 import "./annotatorStyle.css";
 import JobController from "./components/JobController";
 
-const LOG = console.log;
 
 /**
  * Render an annotator for the provided jobServer class

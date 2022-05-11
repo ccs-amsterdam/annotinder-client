@@ -59,7 +59,8 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
   if (!unit) return null;
 
   // The size of the text div, in pct compared to the answer div
-  const splitHeight = unit?.text_window_size ?? settings.splitHeight;
+  let splitHeight = unit?.text_window_size ?? settings.splitHeight;
+  const formHeight = splitHeight === "auto" ? "auto" : `${100 - splitHeight}%`;
 
   // if there are only annotinder or confirm questions, minify the answer form
   let minifiedAnswerForm = true;
@@ -131,7 +132,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
       <div
         {...menuSwipe}
         style={{
-          height: minifiedAnswerForm ? null : `${100 - splitHeight}%`,
+          height: minifiedAnswerForm ? null : formHeight,
           fontSize: `${settings.lowerTextSize}em`,
         }}
       >

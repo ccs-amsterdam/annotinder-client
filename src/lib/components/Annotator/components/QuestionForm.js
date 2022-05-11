@@ -44,7 +44,6 @@ const QuestionForm = ({
   const onSelect = (answer, onlySave = false) => {
     // posts results and skips to next question, or next unit if no questions left.
     // If onlySave is true, only write to db without going to next question
-    console.log(blockAnswer.current);
     if (blockAnswer.current) return null;
     blockAnswer.current = true;
 

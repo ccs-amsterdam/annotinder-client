@@ -347,7 +347,7 @@ const JobTokenButton = ({ jobId, backend, style }) => {
           fluid
           secondary
           onClick={() => {
-            copyToClipboard(link?.url);
+            copyToClipboard(link?.qrUrl);
           }}
         >
           Copy link
