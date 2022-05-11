@@ -115,7 +115,7 @@ const SelectCode = React.memo(
         style={{
           display: "flex",
           flexWrap: singleRow ? null : "wrap",
-          alignItems: "center",
+          //alignItems: stretch ? "stretch" : "center",
           maxWidth: "100%",
           height: "100%",
         }}
