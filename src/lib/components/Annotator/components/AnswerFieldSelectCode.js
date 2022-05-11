@@ -5,10 +5,10 @@ import { moveUp, moveDown } from "../../../functions/refNavigation";
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
 const SelectCode = React.memo(
-  ({ options, currentAnswer, singleRow, sameSize, callback, blockEvents }) => {
+  ({ options, currentAnswer, singleRow, sameSize, onSelect, blockEvents }) => {
     // render buttons for options (an array of objects with keys 'label' and 'color')
-    // On selection perform callback function with the button label as input
-    // if canDelete is TRUE, also contains a delete button, which passes null to callback
+    // On selection perform onSelect function with the button label as input
+    // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
     const [selected, setSelected] = useState(null);
 
     const onKeydown = React.useCallback(
@@ -47,19 +47,19 @@ const SelectCode = React.memo(
           event.preventDefault();
           event.stopPropagation();
 
-          callback(options[selected]);
+          onSelect(options[selected]);
           // simulate active pseudoclass for transition effect
           const el = options[selected].ref.current;
           el.classList.add("active");
           setTimeout(() => el.classList.remove("active"), 5);
         }
       },
-      [selected, callback, options]
+      [selected, onSelect, options]
     );
 
     useEffect(() => {
       setSelected(null);
-    }, [callback, setSelected]);
+    }, [onSelect, setSelected]);
 
     useEffect(() => {
       if (!blockEvents) {
@@ -100,7 +100,7 @@ const SelectCode = React.memo(
               compact
               onMouseOver={() => setSelected(i)}
               onClick={(e, d) => {
-                callback(d.value);
+                onSelect(d.value);
               }}
             >
               {option.code}

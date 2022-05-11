@@ -37,7 +37,7 @@ const Body = ({ tokens, text_fields, meta_fields, image_fields, setReady, maxHei
       <Ref innerRef={containerRef}>
         <div
           key="tokens"
-          className="TokensContainer"
+          className="BodyContainer"
           style={{
             flex: "1 1 auto",
             display: "flex",
@@ -51,7 +51,7 @@ const Body = ({ tokens, text_fields, meta_fields, image_fields, setReady, maxHei
 
           <div
             style={{
-              flex: "1 97%",
+              flex: "1 1 97%",
               width: "100%",
             }}
           >

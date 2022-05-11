@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Button } from "semantic-ui-react";
 
-const Confirm = ({ callback, swipe, blockEvents }) => {
+const Confirm = ({ onSelect, swipe, blockEvents }) => {
   // there's only one option here and it's glorious
 
   const onKeydown = React.useCallback(
@@ -9,10 +9,10 @@ const Confirm = ({ callback, swipe, blockEvents }) => {
       if (event.keyCode === 32 || event.keyCode === 13) {
         event.preventDefault();
         event.stopPropagation();
-        callback({ code: "continue", color: "#2185d0" });
+        onSelect({ code: "continue", color: "#2185d0" });
       }
     },
-    [callback]
+    [onSelect]
   );
 
   useEffect(() => {
@@ -27,11 +27,11 @@ const Confirm = ({ callback, swipe, blockEvents }) => {
 
   useEffect(() => {
     if (swipe) {
-      if (swipe === "right") callback({ code: "continue", color: "#2185d0" });
-      if (swipe === "up") callback({ code: "continue", color: "#2185d0" });
-      if (swipe === "left") callback({ code: "continue", color: "#2185d0" });
+      if (swipe === "right") onSelect({ code: "continue", color: "#2185d0" });
+      if (swipe === "up") onSelect({ code: "continue", color: "#2185d0" });
+      if (swipe === "left") onSelect({ code: "continue", color: "#2185d0" });
     }
-  }, [swipe, callback]);
+  }, [swipe, onSelect]);
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
@@ -42,7 +42,7 @@ const Confirm = ({ callback, swipe, blockEvents }) => {
         content="Continue"
         size="huge"
         style={{ height: "100%" }}
-        onClick={() => callback({ code: "continue", color: "blue" })}
+        onClick={() => onSelect({ code: "continue", color: "blue" })}
       />
     </div>
   );

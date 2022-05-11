@@ -12,7 +12,7 @@ const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 
     };
 
   const transitionTime = 200;
-  const container = refs.text.current.getElementsByClassName("TokensContainer")[0];
+  const container = refs.text.current.getElementsByClassName("BodyContainer")[0];
   let scrolloffset = 0;
   // const blockSwipe = useRef()
 

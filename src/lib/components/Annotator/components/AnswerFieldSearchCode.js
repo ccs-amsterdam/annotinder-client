@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { Dropdown, Ref } from "semantic-ui-react";
 
-const SearchCode = React.memo(({ options, callback, blockEvents }) => {
+const SearchCode = React.memo(({ options, onSelect, blockEvents }) => {
   const ref = useRef();
 
   return (
@@ -34,7 +34,7 @@ const SearchCode = React.memo(({ options, callback, blockEvents }) => {
         minCharacters={0}
         autoComplete={"on"}
         onChange={(e, d) => {
-          callback(d.value);
+          onSelect(d.value);
         }}
       />
     </Ref>

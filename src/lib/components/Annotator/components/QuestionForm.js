@@ -20,14 +20,20 @@ const QuestionForm = ({
   swipe,
   blockEvents,
 }) => {
-  const answered = useRef(false); // to prevent answering double (e.g. with swipe events)
+  const blockAnswer = useRef(false); // to prevent answering double (e.g. with swipe events)
   const [answers, setAnswers] = useState(null);
+  const [questionText, setQuestionText] = useState("");
 
   useEffect(() => {
     if (!questions) return;
     getAnswersFromAnnotations(unit, tokens, questions, setAnswers);
-    answered.current = false;
+    blockAnswer.current = false;
   }, [unit, tokens, setAnswers, questions]);
+
+  useEffect(() => {
+    if (!questions?.[questionIndex] || !unit) return null;
+    setQuestionText(prepareQuestion(unit, questions[questionIndex]));
+  }, [unit, questions, questionIndex]);
 
   if (!questions || !unit || !answers) return null;
   if (!questions?.[questionIndex]) {
@@ -35,57 +41,66 @@ const QuestionForm = ({
     return null;
   }
 
-  const question = prepareQuestion(unit, questions[questionIndex]);
-
   const onSelect = (answer, onlySave = false) => {
-    // This is the callback function used in the AnswerField Components.
-    // It posts results and skips to next question, or next unit if no questions left.
+    // posts results and skips to next question, or next unit if no questions left.
     // If onlySave is true, only write to db without going to next question
-    if (answered.current) return null;
-    answered.current = true;
 
-    answers[questionIndex].values = Array.isArray(answer.code)
-      ? answer.code
-      : [{ value: answer.code }];
-    answers[questionIndex].makes_irrelevant = answer.makes_irrelevant;
-    unit.annotations = addAnnotationsFromAnswer(answers[questionIndex], unit.annotations, question);
-    const irrelevantQuestions = processIrrelevantBranching(unit, questions, answers, questionIndex);
+    if (blockAnswer.current) return null;
+    blockAnswer.current = true;
 
-    // next (non-irrelevant) question in unit (null if no remaining)
-    let newQuestionIndex = null;
-    for (let i = questionIndex + 1; i < questions.length; i++) {
-      if (irrelevantQuestions[i]) continue;
-      newQuestionIndex = i;
-      break;
-    }
+    try {
+      answers[questionIndex].values = Array.isArray(answer.code)
+        ? answer.code
+        : [{ value: answer.code }];
+      answers[questionIndex].makes_irrelevant = answer.makes_irrelevant;
+      unit.annotations = addAnnotationsFromAnswer(
+        answers[questionIndex],
+        unit.annotations,
+        questions[questionIndex]
+      );
+      const irrelevantQuestions = processIrrelevantBranching(
+        unit,
+        questions,
+        answers,
+        questionIndex
+      );
 
-    const status = newQuestionIndex === null ? "DONE" : "IN_PROGRESS";
-    let cleanAnnotations = unit.annotations.map((u) => {
-      const cleanAnnotation = { ...u };
-      delete cleanAnnotation.makes_irrelevant;
-      return cleanAnnotation;
-    });
-    //delete cleanAnnotations.makes_irrelevant;
-    unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status);
-
-    if (onlySave) {
-      answered.current = false;
-      return;
-    }
-
-    setTimeout(() => {
-      // wait a little bit, so coder can see their answer and breathe
-
-      // if none remain, go to next unit
-      if (newQuestionIndex === null) {
-        setUnitIndex((state) => state + 1);
-        setQuestionIndex(0);
-      } else {
-        setQuestionIndex(newQuestionIndex);
+      // next (non-irrelevant) question in unit (null if no remaining)
+      let newQuestionIndex = null;
+      for (let i = questionIndex + 1; i < questions.length; i++) {
+        if (irrelevantQuestions[i]) continue;
+        newQuestionIndex = i;
+        break;
       }
 
-      answered.current = false;
-    }, 250);
+      const status = newQuestionIndex === null ? "DONE" : "IN_PROGRESS";
+      let cleanAnnotations = unit.annotations.map((u) => {
+        const cleanAnnotation = { ...u };
+        delete cleanAnnotation.makes_irrelevant;
+        delete cleanAnnotation.values;
+        return cleanAnnotation;
+      });
+      //delete cleanAnnotations.makes_irrelevant;
+      unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status);
+
+      if (onlySave) {
+        blockAnswer.current = false;
+        return;
+      } else {
+        if (newQuestionIndex === null) {
+          setUnitIndex((state) => state + 1);
+          setQuestionIndex(0);
+          // go to next unit. Don't unblock answering (this happens when the new unit is loaded)
+        } else {
+          // go to next subquestion, and unblock answering after a half a second
+          setQuestionIndex(newQuestionIndex);
+          setTimeout(() => (blockAnswer.current = false), 500);
+        }
+      }
+    } catch (e) {
+      // just to make certain the annotator doesn't block if something goes wrong
+      blockAnswer.current = false;
+    }
   };
 
   return (
@@ -102,7 +117,14 @@ const QuestionForm = ({
     >
       <div style={{ width: "100%", display: "flex" }}>
         <div style={{}}>{children}</div>
-        <div style={{ width: "100%", textAlign: "center", paddingRight: "43px" }}>
+        <div
+          style={{
+            width: "100%",
+            textAlign: "center",
+
+            paddingRight: "43px",
+          }}
+        >
           <QuestionIndexStep
             questions={questions}
             questionIndex={questionIndex}
@@ -132,7 +154,7 @@ const QuestionForm = ({
             textAlign="center"
             style={{ color: ANSWERFIELD_COLOR, fontSize: "inherit" }}
           >
-            {question}
+            {questionText}
           </Header>
         </div>
         <Segment
@@ -235,6 +257,7 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
           <Button
             key={i}
             circular
+            size="mini"
             active={i === questionIndex}
             style={{
               border: `2px solid`,

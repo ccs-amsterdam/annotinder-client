@@ -28,7 +28,7 @@ const getPosition = (e) => {
       n = document.elementFromPoint(position.clientX, position.clientY);
     }
     if (n.className === "AnnotatableImage") {
-      return [n.getAttribute("imageFieldName"), n.getBoundingClientRect()];
+      return [n.getAttribute("imagefieldname"), n.getBoundingClientRect()];
     }
     return [null, null];
   } catch (e) {

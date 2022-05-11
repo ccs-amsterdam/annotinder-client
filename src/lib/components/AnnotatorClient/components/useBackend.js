@@ -14,16 +14,30 @@ const useBackend = () => {
   const [backend, setBackend] = useState(null);
   const [initializing, setInitializing] = useState(true);
 
-  // useEffect(() => {
-  //   // when log in successfull, add host to url param
-  //   if (!backend) return null;
-  //   let urlHost = searchParams.get("host")?.replace("%colon%", ":");
+  useEffect(() => {
+    // this tries to 'initialize' login with current settings, When done, initialize is set to
+    // false, and the hook will then return the backend and AuthForm. If a backend connection was not made,
+    // the auth form is a login screen. Otherwise its a logout screen.
+    let host = auth?.host || null;
+    let token = auth?.[host + "__token__"] || null;
+    if (!host || !token) {
+      setBackend(null);
+      setInitializing(false);
+      return;
+    }
+    if (backend && host === backend.host && token === backend.token) return; // do nothing if already logged in
 
-  //   if (backend.host !== urlHost) {
-  //     searchParams.set("host", backend.host);
-  //     setSearchParams(searchParams);
-  //   }
-  // }, [backend, searchParams, setSearchParams]);
+    const b = new Backend(host, token);
+    b.init()
+      .then(() => {
+        setBackend(b);
+        //setAuth({ ...auth, host: b.host, [b.host + "__token__"]: b.token }); // set host to last one logged in with
+      })
+      .catch((e) => {
+        setBackend(null);
+      })
+      .finally(() => setInitializing(false));
+  }, [auth, setAuth, backend, setInitializing]);
 
   useEffect(() => {
     // manage url parameters
@@ -56,33 +70,8 @@ const useBackend = () => {
     setAuth({ ...auth, host, [host + "__token__"]: token });
   }, [backend, auth, setAuth, searchParams, setSearchParams]);
 
-  useEffect(() => {
-    // this tries to 'initialize' login with current settings, When done, initialize is set to
-    // false, and the hook will then return the backend and AuthForm. If a backend connection was not made,
-    // the auth form is a login screen. Otherwise its a logout screen.
-    let host = auth?.host || null;
-    let token = auth?.[host + "__token__"] || null;
-    if (!host || !token) {
-      setBackend(null);
-      setInitializing(false);
-      return;
-    }
-    if (backend && host === backend.host && token === backend.token) return; // do nothing if already logged in
-
-    const b = new Backend(host, token);
-    b.init()
-      .then(() => {
-        setBackend(b);
-        //setAuth({ ...auth, host: b.host, [b.host + "__token__"]: b.token }); // set host to last one logged in with
-      })
-      .catch((e) => {
-        setBackend(null);
-      })
-      .finally(() => setInitializing(false));
-  }, [auth, setAuth, backend, setInitializing]);
-
-  if (initializing) return [null, null];
-  return [backend, <AuthForm backend={backend} auth={auth} setAuth={setAuth} />];
+  if (initializing) return [null, null, true];
+  return [backend, <AuthForm backend={backend} auth={auth} setAuth={setAuth} />, false];
 };
 
 export const AuthForm = ({ backend, auth, setAuth }) => {

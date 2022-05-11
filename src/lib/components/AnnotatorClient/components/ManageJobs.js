@@ -8,11 +8,13 @@ import {
   Table,
   Dropdown,
   Container,
-  Popup,
+  Portal,
+  Segment,
 } from "semantic-ui-react";
 import { useCSVDownloader } from "react-papaparse";
 import JobsTable from "./JobsTable";
 import QRCodeCanvas from "qrcode.react";
+import copyToClipboard from "../../../functions/copyToClipboard";
 
 export default function ManageJobs({ backend }) {
   const [jobs, setJobs] = useState([]);
@@ -315,22 +317,42 @@ const JobTokenButton = ({ jobId, backend, style }) => {
   }, [open, backend, jobId]);
 
   return (
-    <Popup
+    <Portal
       on="click"
       onOpen={() => setOpen(true)}
       hoverable
       mouseLeaveDelay={9999999}
       trigger={<Button style={{ padding: "5px", ...style }}>Get Job Token</Button>}
     >
-      <Header textAlign="center" style={{ fontSize: "1.5em" }}>
-        Create job coder
-      </Header>
-      <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
-      <br />
+      <Segment
+        style={{
+          bottom: "25%",
+          left: "25%",
+          position: "fixed",
+          minWidth: "50%",
+          zIndex: 1000,
+          background: "#dfeffb",
+          border: "1px solid #136bae",
+        }}
+      >
+        <Header textAlign="center" style={{ fontSize: "1.5em" }}>
+          Create job coder
+        </Header>
+        <div style={{ textAlign: "center" }}>
+          <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
+        </div>
+        <br />
 
-      <Button fluid secondary onClick={() => navigator.clipboard.writeText(link?.url)}>
-        Copy link
-      </Button>
-    </Popup>
+        <Button
+          fluid
+          secondary
+          onClick={() => {
+            copyToClipboard(link?.url);
+          }}
+        >
+          Copy link
+        </Button>
+      </Segment>
+    </Portal>
   );
 };

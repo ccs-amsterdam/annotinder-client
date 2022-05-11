@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Annotator from "../Annotator/Annotator";
-import { Grid } from "semantic-ui-react";
+import { Grid, Loader } from "semantic-ui-react";
 import useBackend from "./components/useBackend";
 import JobServerAPI from "./classes/JobServerAPI";
 import Home from "./components/Home";
@@ -13,10 +13,13 @@ import { useSearchParams } from "react-router-dom";
 // Codingjobs can then specify whether stay anonymous is allowed, and whether registration is required.
 
 const AnnotatorAmcatClient = () => {
-  const [backend, authForm] = useBackend();
-  const jobServer = useJobServer(backend);
+  const [backend, authForm, initBackend] = useBackend();
+  const [jobServer, initJobServer] = useJobServer(backend);
+
+  if (initBackend) return <Loader active content="Trying to connect to server" />;
 
   if (!backend) {
+    console.log("hey");
     // If backend isn't connected
     return (
       <Grid inverted textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
@@ -25,7 +28,10 @@ const AnnotatorAmcatClient = () => {
     );
   }
 
+  if (initJobServer) return <Loader active content="Looking for codingjob" />;
+
   if (!jobServer) {
+    console.log("hey2");
     // if backend is connected, but there is no jobServer (because no job_id was passed in the url)
     // show a screen with some relevant info for the user on this host. Like current / new jobs
     return <Home backend={backend} authForm={authForm} />;
@@ -37,10 +43,16 @@ const AnnotatorAmcatClient = () => {
 const useJobServer = (backend) => {
   const [jobServer, setJobServer] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [initializing, setInitializing] = useState(true);
   let jobId = backend?.restricted_job || searchParams.get("job_id");
 
   useEffect(() => {
-    if (!backend || jobId == null || jobId === null) {
+    if (!backend) {
+      setJobServer(null);
+      return;
+    }
+    if (jobId == null || jobId === null) {
+      setInitializing(false);
       setJobServer(null);
       return;
     }
@@ -52,10 +64,11 @@ const useJobServer = (backend) => {
       .catch(() => {
         searchParams.delete("job_id");
         setSearchParams(searchParams);
-      }); // add a check for if job_id is invalid
+      })
+      .finally(() => setInitializing(false)); // add a check for if job_id is invalid
   }, [backend, jobId, searchParams, setSearchParams]);
 
-  return jobServer;
+  return [jobServer, initializing];
 };
 
 export default React.memo(AnnotatorAmcatClient);

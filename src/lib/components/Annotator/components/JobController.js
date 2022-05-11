@@ -4,13 +4,15 @@ import { Popup, Button } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import IndexController from "./IndexController";
+import Finished from "./Finished";
 
 /**
  * Render an annotator for the provided jobServer class
  *
  * @param {*} jobServer  A jobServer class
  */
-const HeaderBar = ({
+const JobController = ({
+  children,
   jobServer,
   fullScreenButton,
   fullScreenNode,
@@ -18,39 +20,56 @@ const HeaderBar = ({
   setUnitIndex,
   height,
 }) => {
+  const [maxHeight, maxWidth] = getWindowSize(jobServer);
+
   return (
     <div
       style={{
-        height,
+        maxWidth,
+        maxHeight,
+        background: "white",
+        margin: "0 auto",
+        padding: "0",
+        height: "100%",
         width: "100%",
-        padding: "5px 5px 0px 5px",
-        display: "flex",
-        justifyContent: "space-between",
       }}
     >
       <div
         style={{
-          flex: "1 1 auto",
-          paddingTop: "3px",
-          paddingRight: "10px",
+          height: "45px",
+          width: "100%",
+          padding: "5px 5px 0px 5px",
+          display: "flex",
+          justifyContent: "space-between",
         }}
       >
-        <IndexController
-          n={jobServer?.progress?.n_total}
-          nCoded={jobServer?.progress?.n_coded || 0}
-          index={unitIndex}
-          setIndex={setUnitIndex}
-          canGoBack={jobServer?.progress?.seek_backwards}
-          canGoForward={jobServer?.progress?.seek_forwards}
-        />
-      </div>
-      <div>
-        <div>
-          <Button.Group>
-            {fullScreenButton}
-            <UserButton fullScreenNode={fullScreenNode} jobServer={jobServer} />
-          </Button.Group>
+        <div
+          style={{
+            flex: "1 1 auto",
+            paddingTop: "3px",
+            paddingRight: "10px",
+          }}
+        >
+          <IndexController
+            n={jobServer?.progress?.n_total}
+            nCoded={jobServer?.progress?.n_coded || 0}
+            index={unitIndex}
+            setIndex={setUnitIndex}
+            canGoBack={jobServer?.progress?.seek_backwards}
+            canGoForward={jobServer?.progress?.seek_forwards}
+          />
         </div>
+        <div>
+          <div>
+            <Button.Group>
+              {fullScreenButton}
+              <UserButton fullScreenNode={fullScreenNode} jobServer={jobServer} />
+            </Button.Group>
+          </div>
+        </div>
+      </div>
+      <div style={{ height: "calc(100% - 45px)" }}>
+        {unitIndex < jobServer?.progress?.n_total ? children : Finished}
       </div>
     </div>
   );
@@ -109,4 +128,15 @@ const BackToOverview = ({ jobServer }) => {
   );
 };
 
-export default React.memo(HeaderBar);
+const getWindowSize = (jobServer) => {
+  switch (jobServer?.codebook?.type) {
+    case "questions":
+      return ["1200px", "1000px"];
+    case "annotate":
+      return ["2000px", "2000px"];
+    default:
+      return ["100%", "100%"];
+  }
+};
+
+export default React.memo(JobController);

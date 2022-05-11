@@ -75,12 +75,12 @@ const getAnswerValues = (annotations, answer, question) => {
     // then fill an array with matched annotations
     return question.items.map((item) => {
       const itemname = item?.name ?? item; // item can be a string or {name, label}
-      const label = item?.label ?? item;
       for (let annotation of annotations || []) {
-        if (isMatch(annotation, answer, itemname))
-          return { item: itemname, label, value: annotation.value };
+        if (isMatch(annotation, answer, itemname)) {
+          return { item: itemname, value: annotation.value };
+        }
       }
-      return { item: itemname, label, value: null };
+      return { item: itemname, value: null };
     });
   }
 
@@ -126,7 +126,6 @@ export const addAnnotationsFromAnswer = (answer, annotations, question) => {
     return annotations;
   }
 
-  // just update the first match or push to array
   const valueMatched = answer.values.reduce((obj, value) => {
     obj[value.value] = false;
     return obj;

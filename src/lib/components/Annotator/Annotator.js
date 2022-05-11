@@ -3,7 +3,7 @@ import { Dimmer, Loader, Segment } from "semantic-ui-react";
 import Unit from "./components/Unit";
 import FullScreenWindow from "./components/FullScreenWindow";
 import "./annotatorStyle.css";
-import HeaderBar from "./components/HeaderBar";
+import JobController from "./components/JobController";
 
 /**
  * Render an annotator for the provided jobServer class
@@ -27,32 +27,18 @@ const Annotator = ({ jobServer, askFullScreen }) => {
     getUnit(jobServer, unitIndex, setPreparedUnit, setUnitIndex).then(() => setLoading(false));
   }, [unitIndex, jobServer, setUnitIndex, setPreparedUnit, setLoading]);
 
-  const [maxHeight, maxWidth] = getWindowSize(jobServer);
-
   return (
     <FullScreenWindow askFullScreen={askFullScreen}>
       {(fullScreenNode, fullScreenButton) => (
         // FullScreenWindow passes on the fullScreenNode needed to mount popups, and a fullScreenButton to handle on/off
-        <div
-          style={{
-            maxWidth,
-            maxHeight,
-            background: "white",
-            margin: "0 auto",
-            padding: "0",
-            height: "100%",
-            width: "100%",
-          }}
+        <JobController
+          jobServer={jobServer}
+          unitIndex={unitIndex}
+          setUnitIndex={setUnitIndex}
+          fullScreenButton={fullScreenButton}
+          fullScreenNode={fullScreenNode}
         >
-          <HeaderBar
-            jobServer={jobServer}
-            unitIndex={unitIndex}
-            setUnitIndex={setUnitIndex}
-            fullScreenButton={fullScreenButton}
-            fullScreenNode={fullScreenNode}
-            height={"45px"}
-          />
-          <Segment basic style={{ height: "calc(100% - 45px)", padding: "0", margin: "0" }}>
+          <Segment basic style={{ height: "100%", padding: "0", margin: "0" }}>
             <Dimmer inverted active={loading}>
               <Loader />
             </Dimmer>
@@ -66,7 +52,7 @@ const Annotator = ({ jobServer, askFullScreen }) => {
               nextDelay={jobServer?.progress?.next_delay}
             />
           </Segment>
-        </div>
+        </JobController>
       )}
     </FullScreenWindow>
   );
@@ -91,25 +77,7 @@ const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
       ...unit.unit,
     });
   } catch (e) {
-    if (e.response?.status === 404) {
-      setUnitIndex(null);
-    } else {
-      // currently 404 indicates that job is done (no more units left)
-      // should probably changes this because it 404 just feels bad
-      // console.error(e);
-    }
     setPreparedUnit(null);
-  }
-};
-
-const getWindowSize = (jobServer) => {
-  switch (jobServer?.codebook?.type) {
-    case "questions":
-      return ["1200px", "1000px"];
-    case "annotate":
-      return ["2000px", "2000px"];
-    default:
-      return ["100%", "100%"];
   }
 };
 

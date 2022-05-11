@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Button, Popup, Header } from "semantic-ui-react";
+import { Button, Header, Portal, Segment } from "semantic-ui-react";
 import FullDataTable from "./FullDataTable";
 import QRCodeCanvas from "qrcode.react";
+import copyToClipboard from "../../../functions/copyToClipboard";
 
 const columns = [
   { name: "role", width: 2, f: (row) => (row.is_admin ? "admin" : "coder") },
@@ -43,27 +44,38 @@ const LoginLinkButton = ({ row, backend, style }) => {
   }, [open, backend, row]);
 
   return (
-    <Popup
+    <Portal
       on="click"
       onOpen={() => setOpen(true)}
       hoverable
       mouseLeaveDelay={9999999}
       trigger={<Button icon="linkify" style={{ padding: "5px", ...style }} />}
     >
-      <Header style={{ fontSize: "1.5em" }}>Login link for {row.email}</Header>
-      <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
-      <br />
-      <br />
-      <a href={link?.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "2em" }}>
-        Login link
-      </a>
-      <Button
-        secondary
-        onClick={() => navigator.clipboard.writeText(link?.url)}
-        style={{ float: "right" }}
+      <Segment
+        style={{
+          bottom: "25%",
+          left: "25%",
+          position: "fixed",
+          minWidth: "50%",
+          zIndex: 1000,
+          background: "#dfeffb",
+          border: "1px solid #136bae",
+          textAlign: "center",
+        }}
       >
-        Copy link
-      </Button>
-    </Popup>
+        <Header style={{ fontSize: "1.5em" }}>Login link for {row.email}</Header>
+        <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
+        <br />
+        <br />
+        <a href={link?.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "2em" }}>
+          Login link
+        </a>
+        <br />
+        <br />
+        <Button secondary onClick={() => copyToClipboard(link?.url)}>
+          Copy link
+        </Button>
+      </Segment>
+    </Portal>
   );
 };

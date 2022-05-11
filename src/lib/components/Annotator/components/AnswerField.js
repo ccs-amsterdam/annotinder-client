@@ -13,7 +13,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
       <SearchCode
         options={question.options}
         currentAnswer={currentAnswer[0].value}
-        callback={onSelect}
+        onSelect={onSelect}
         blockEvents={blockEvents}
       />
     );
@@ -24,7 +24,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
         items={question.items || [""]}
         options={question.options}
         currentAnswer={currentAnswer}
-        callback={onSelect}
+        onSelect={onSelect}
         blockEvents={blockEvents}
       />
     );
@@ -36,7 +36,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
         currentAnswer={currentAnswer[0].value}
         singleRow={question.single_row}
         sameSize={question.same_size}
-        callback={onSelect}
+        onSelect={onSelect}
         blockEvents={blockEvents}
       />
     );
@@ -46,14 +46,14 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
       <Annotinder
         swipeOptions={question.swipeOptions}
         currentAnswer={currentAnswer[0].value}
-        callback={onSelect}
+        onSelect={onSelect}
         swipe={swipe}
         blockEvents={blockEvents}
       />
     );
 
   if (question.type === "confirm")
-    return <Confirm callback={onSelect} swipe={swipe} blockEvents={blockEvents} />;
+    return <Confirm onSelect={onSelect} swipe={swipe} blockEvents={blockEvents} />;
 
   return null;
 };

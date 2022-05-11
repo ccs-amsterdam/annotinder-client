@@ -3,18 +3,18 @@ import { Button, Ref, Icon } from "semantic-ui-react";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
-const Annotinder = React.memo(({ swipeOptions, callback, swipe, blockEvents }) => {
+const Annotinder = React.memo(({ swipeOptions, onSelect, swipe, blockEvents }) => {
   // const left = options.find(option => option.swipe === "left");
   // const up = options.find(option => option.swipe === "up");
   // const right = options.find(option => option.swipe === "right");
 
   useEffect(() => {
     if (swipe) {
-      if (swipe === "right") callback(swipeOptions.right);
-      if (swipe === "up") callback(swipeOptions.up);
-      if (swipe === "left") callback(swipeOptions.left);
+      if (swipe === "right") onSelect(swipeOptions.right);
+      if (swipe === "up") onSelect(swipeOptions.up);
+      if (swipe === "left") onSelect(swipeOptions.left);
     }
-  }, [swipe, callback, swipeOptions]);
+  }, [swipe, onSelect, swipeOptions]);
 
   const onKeydown = React.useCallback(
     (event) => {
@@ -25,14 +25,14 @@ const Annotinder = React.memo(({ swipeOptions, callback, swipe, blockEvents }) =
         if (event.key === "ArrowRight") option = swipeOptions.right;
         if (event.key === "ArrowUp") option = swipeOptions.up;
         if (event.key === "ArrowLeft") option = swipeOptions.left;
-        callback(option);
+        onSelect(option);
         const el = option.ref.current;
         el.classList.add("active");
         setTimeout(() => el.classList.remove("active"), 5);
       }
     },
 
-    [callback, swipeOptions]
+    [onSelect, swipeOptions]
   );
 
   useEffect(() => {
@@ -50,20 +50,19 @@ const Annotinder = React.memo(({ swipeOptions, callback, swipe, blockEvents }) =
       fluid
       style={{
         display: "flex",
-        flexWrap: "wrap",
-        alignContent: "stretch",
+        //flexWrap: "wrap",
+        //alignContent: "stretch",
+        //minHeight: "30px",
         height: "100%",
-        minHeight: "30px",
       }}
     >
       <Ref key={swipeOptions.left?.code} innerRef={swipeOptions.left?.ref}>
         <Button
           className="ripplebutton"
           disabled={swipeOptions.left == null}
-          onClick={(e, d) => callback(swipeOptions.left)}
+          onClick={(e, d) => onSelect(swipeOptions.left)}
           style={{
             margin: "0",
-            padding: "0",
             borderRadius: "0",
             border: "1px solid",
             background: swipeOptions.left?.color || "white",
@@ -81,10 +80,10 @@ const Annotinder = React.memo(({ swipeOptions, callback, swipe, blockEvents }) =
           <Button
             className="ripplebutton"
             disabled={swipeOptions.up == null}
-            onClick={(e, d) => callback(swipeOptions.up)}
+            onClick={(e, d) => onSelect(swipeOptions.up)}
             style={{
               margin: "0",
-              padding: "0",
+              paddin: "0",
               borderRadius: "0",
               border: "1px solid",
               background: swipeOptions.up?.color || "white",
@@ -101,9 +100,8 @@ const Annotinder = React.memo(({ swipeOptions, callback, swipe, blockEvents }) =
         <Button
           className="ripplebutton"
           disabled={swipeOptions.right == null}
-          onClick={(e, d) => callback(swipeOptions.right)}
+          onClick={(e, d) => onSelect(swipeOptions.right)}
           style={{
-            padding: "0",
             margin: "0",
             borderRadius: "0",
             border: "1px solid",

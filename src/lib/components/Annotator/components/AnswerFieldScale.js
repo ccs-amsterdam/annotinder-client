@@ -4,10 +4,10 @@ import { scrollToMiddle } from "../../../functions/scroll";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
-const Scale = React.memo(({ items, options, currentAnswer, callback, blockEvents }) => {
+const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents }) => {
   // render buttons for options (an array of objects with keys 'label' and 'color')
-  // On selection perform callback function with the button label as input
-  // if canDelete is TRUE, also contains a delete button, which passes null to callback
+  // On selection perform onSelect function with the button label as input
+  // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
   const [selectedItem, setSelectedItem] = useState(0);
   const [selectedButton, setSelectedButton] = useState(null);
   const [answers, setAnswers] = useState(null);
@@ -47,34 +47,28 @@ const Scale = React.memo(({ items, options, currentAnswer, callback, blockEvents
         event.preventDefault();
         event.stopPropagation();
         if (selectedItem === -1) {
-          if (!answers.some((a) => a.value === null)) callback({ code: answers });
+          if (!answers.some((a) => a.value === null)) onSelect({ code: answers });
         } else {
-          setAnswers((answers) => {
-            const newanswers = [...answers];
-            newanswers[selectedItem].value = options[selectedButton].code;
-            return newanswers;
-          });
+          const newanswers = [...answers];
+          newanswers[selectedItem].value = options[selectedButton].code;
+          onSelect({ code: newanswers }, true);
+          setAnswers(newanswers);
         }
       }
     },
-    [selectedButton, selectedItem, answers, setAnswers, callback, options, items]
+    [selectedButton, selectedItem, answers, setAnswers, onSelect, options, items]
   );
 
   useEffect(() => {
     setSelectedButton(null);
     setSelectedItem(0);
-    if (currentAnswer) {
-      console.log(currentAnswer);
+    if (currentAnswer && Array.isArray(currentAnswer) && currentAnswer.length === items.length) {
       setAnswers(currentAnswer);
     } else {
       const answers = items.map((item) => ({ item: item?.name || item, value: null }));
       setAnswers(answers);
     }
-  }, [currentAnswer, items, callback, setSelectedButton, setSelectedItem]);
-
-  useEffect(() => {
-    if (answers !== null) callback({ code: answers }, true); // uses onlySave to only write to DB
-  }, [answers, callback]);
+  }, [currentAnswer, items, onSelect, setSelectedButton, setSelectedItem]);
 
   useEffect(() => {
     if (!blockEvents) {
@@ -130,7 +124,7 @@ const Scale = React.memo(({ items, options, currentAnswer, callback, blockEvents
           onClick={() => {
             // this is a bit of an odd one out. We didn't anticipate having multiple answers,
             // so some of the previous logic doesn't hold
-            callback({ code: answers });
+            onSelect({ code: answers });
           }}
         />
 
@@ -159,6 +153,7 @@ const Scale = React.memo(({ items, options, currentAnswer, callback, blockEvents
         selectedButton={selectedButton}
         setSelectedButton={setSelectedButton}
         currentAnswer={currentAnswer}
+        onSelect={onSelect}
       />
     </div>
   );
@@ -173,6 +168,7 @@ const Items = ({
   options,
   selectedButton,
   setSelectedButton,
+  onSelect,
 }) => {
   const containerRef = useRef(null);
   const rowRefs = useRef([]);
@@ -188,7 +184,7 @@ const Items = ({
         const ref = createRef();
         rowRefs.current[itemIndex] = ref;
         return (
-          <div>
+          <div key={itemIndex}>
             <div>
               <div style={{ color: "black", width: "100%", textAlign: "center" }}>
                 <b>{itemlabel}</b>
@@ -215,6 +211,7 @@ const Items = ({
                 options={options}
                 selectedButton={selectedButton}
                 setSelectedButton={setSelectedButton}
+                onSelect={onSelect}
               />
             </div>
           </div>
@@ -233,11 +230,12 @@ const Item = ({
   options,
   selectedButton,
   setSelectedButton,
+  onSelect,
 }) => {
   const colorstep = 200 / options.length;
   return options.map((option, buttonIndex) => {
     let bordercolor = "#ece9e9";
-    const isCurrent = options[buttonIndex].code === answers[itemIndex].value;
+    const isCurrent = options[buttonIndex].code === answers?.[itemIndex]?.value;
     const isSelected = buttonIndex === selectedButton && itemIndex === selectedItem;
     if (isCurrent) bordercolor = "#2185d0";
     if (isSelected) bordercolor = "#1B1C1D";
@@ -271,11 +269,10 @@ const Item = ({
           onClick={(e, d) => {
             setSelectedButton(buttonIndex);
             setSelectedItem(itemIndex);
-            setAnswers((answers) => {
-              const newanswers = [...answers];
-              newanswers[itemIndex].value = d.value;
-              return newanswers;
-            });
+            const newanswers = [...answers];
+            newanswers[itemIndex].value = options[buttonIndex].code;
+            onSelect({ code: newanswers }, true);
+            setAnswers(newanswers);
           }}
         >
           {buttonIndex + 1}

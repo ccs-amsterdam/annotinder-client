@@ -42,14 +42,13 @@ const PositionTracker = forwardRef(({ tokens, positionTracker }, ref) => {
 });
 
 /**
- * Get an array of all tokens that are currenly visible (not outside of scroll) in TokenContainer
+ * Get an array of all tokens that are currenly visible (not outside of scroll) in BodyContainer
  *
- * @param {*} tokenContainer   ref for the TokenContainer element
  * @param {*} tokens           tokens array where each token has a .ref
  * @returns
  */
 const getVisibleTokens = (tokens) => {
-  const containerEl = docuent.getElementById("TokensContainer");
+  const containerEl = document.getElementById("BodyContainer");
   if (!containerEl) return null;
 
   const container = containerEl.getBoundingClientRect();
