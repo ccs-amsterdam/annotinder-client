@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import useLocalStorage from "../../hooks/useLocalStorage";
 
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { redeemJobToken } from "../AnnotatorClient/classes/Backend";
+import Backend, { redeemJobToken } from "../AnnotatorClient/classes/Backend";
 
 // store redeemed tokens in localstorage
 // If a token has already been redeemed, don't redeem it again
@@ -22,36 +22,42 @@ const GuestCoder = () => {
   const jobtoken = searchParams.get("jobtoken");
 
   useEffect(() => {
-    const key = `host:${host};user_id:${userId};jobtoken:${jobtoken}`;
-    if (!guestAuth[key]) {
-      redeemJobToken(host, jobtoken, userId)
-        .then((data) => {
-          setGuestAuth({ ...guestAuth, [key]: data });
-          navigate(`/?host=${host}&token=${data.token}&job_id=${data.job_id}`);
-        })
-        .catch((e) => {
-          console.error(e);
-        });
-    } else {
-      const data = guestAuth[key];
-      navigate(`/?host=${host}&token=${data.token}&job_id=${data.job_id}`);
-
-      // if tokens can expire, need some way to get token anew. But solution below won't work well,
-      // because it would also remove the token if connection is broken for whatever reason
-
-      // const b = new Backend(host, data.token);
-      // b.init()
-      // .then(() => {
-      //     navigate(`/?host=${host}&token=${data.token}&job_id=${data.job_id}`);
-      //   })
-      //   .catch((e) => {
-      //     delete guestAuth[key];
-      //     setGuestAuth({ ...guestAuth });
-      //   });
-    }
+    redeemShuffle(host, userId, jobtoken, guestAuth, setGuestAuth, navigate)
+      .then()
+      .catch((e) => {
+        console.log("show error message or something");
+      });
   }, [guestAuth, host, userId, jobtoken, navigate, setGuestAuth]);
 
   return <div></div>;
+};
+
+const redeemShuffle = async (host, userId, jobtoken, guestAuth, setGuestAuth, navigate) => {
+  const key = `host:${host};user_id:${userId};jobtoken:${jobtoken}`;
+
+  if (guestAuth[key]) {
+    const data = guestAuth[key];
+    const backend = new Backend(host, data.token);
+    try {
+      await backend.init();
+      // token still works
+      navigate(`/?host=${host}&token=${data.token}&job_id=${data.job_id}`);
+    } catch (e) {
+      // there is a token but it no longer works. (typically happens when resetting db in dev)
+      delete guestAuth[key];
+      setGuestAuth(guestAuth);
+    }
+  }
+
+  if (!guestAuth[key]) {
+    try {
+      const data = await redeemJobToken(host, jobtoken, userId);
+      setGuestAuth({ ...guestAuth, [key]: data });
+      navigate(`/?host=${host}&token=${data.token}&job_id=${data.job_id}`);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 };
 
 export default React.memo(GuestCoder);
