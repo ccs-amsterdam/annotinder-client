@@ -86,7 +86,6 @@ const SelectCode = React.memo(
               style={{
                 flex: sameSize ? "1 1 0px" : "1 1 100px",
                 backgroundColor: option.color,
-                padding: "10px 2px",
                 minWidth: "50px",
                 fontWeight: "bold",
                 textShadow: "0px 0px 5px #ffffff77",
