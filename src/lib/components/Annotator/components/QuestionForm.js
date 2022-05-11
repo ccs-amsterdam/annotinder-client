@@ -47,7 +47,7 @@ const QuestionForm = ({
     if (answered.current) return null;
     answered.current = true;
 
-    answers[questionIndex].value = Array.isArray(answer.code)
+    answers[questionIndex].values = Array.isArray(answer.code)
       ? answer.code
       : [{ value: answer.code }];
     answers[questionIndex].makes_irrelevant = answer.makes_irrelevant;
@@ -135,7 +135,7 @@ const QuestionForm = ({
         </div>
 
         <AnswerField
-          currentAnswer={answers?.[questionIndex]?.value}
+          currentAnswer={answers?.[questionIndex]?.values}
           questions={questions}
           questionIndex={questionIndex}
           onSelect={onSelect}
@@ -167,13 +167,13 @@ const processIrrelevantBranching = (unit, questions, answers, questionIndex) => 
     if (which.has(i)) {
       irrelevantQuestions[i] = true;
       // gives the value "IRRELEVANT" to targeted questions
-      for (let a of answers[i].value) a.value = "IRRELEVANT";
+      for (let a of answers[i].values) a.value = "IRRELEVANT";
       unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations, questions[i]);
     } else {
       irrelevantQuestions[i] = false;
       // If a question is marked as IRRELEVANT, double check whether this is still the case
       // (a coder might have changed a previous answer)
-      for (let a of answers[i].value) {
+      for (let a of answers[i].values) {
         if (a.value === "IRRELEVANT") delete a.value;
       }
       unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations, questions[i]);
@@ -188,11 +188,7 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
 
   useEffect(() => {
     const cs = answers.map((a) => {
-      if (Array.isArray(a.value)) {
-        return a.value[0].value !== null;
-      } else {
-        return a.value !== null;
-      }
+      return a.values[0].value !== null;
     });
     cs[0] = true;
     setCanSelect(cs);
@@ -208,15 +204,10 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
 
   const setColor = (i) => {
     if (!answers[i]) return ["black", IRRELEVANT_COLOR];
-    let done, irrelevant;
-    if (Array.isArray(answers[i].value)) {
-      done = answers[i].value.filter((v) => !!v.value).length === answers.length;
-      irrelevant = answers[i].value[0].value === "IRRELEVANT";
-    } else {
-      done = !!answers[i].value;
-      irrelevant = answers[i].value === "IRRELEVANT";
-    }
+    const done = answers[i].values.filter((v) => !!v.value).length === answers[i].values.length;
+    const irrelevant = answers[i].values[0].value === "IRRELEVANT";
 
+    console.log(answers[i]);
     if (irrelevant) return ["black", IRRELEVANT_COLOR];
     if (canSelect && i > questionIndex && !canSelect[i]) return ["white", "grey"];
     if (done) return ["black", DONE_COLOR];
@@ -248,7 +239,7 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
                 height: "30px",
                 borderRadius: "0",
                 fontSize: "12px",
-                border: "1px solid darkgrey",
+                border: "1px solid white",
                 background: background,
                 textOverflow: "clip",
                 overflow: "hidden",

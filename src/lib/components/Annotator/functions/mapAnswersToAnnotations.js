@@ -12,7 +12,7 @@ export const getAnswersFromAnnotations = (unit, tokens, questions, setAnswers) =
   if (!unit.annotations) unit.annotations = [];
   for (let i = 0; i < questions.length; i++) {
     const answer = createAnswer(tokens, questions[i]);
-    answer.value = getAnswerValue(unit.annotations, answer, questions[i]);
+    answer.values = getAnswerValues(unit.annotations, answer, questions[i]);
     answers.push(answer);
   }
   setAnswers(answers);
@@ -22,7 +22,7 @@ const createAnswer = (tokens, question) => {
   // creates an object with the variable, field, offset and length of the annotation
   // that corresponds to this answer.
 
-  let answer = { variable: question.name, value: null };
+  let answer = { variable: question.name, values: null };
   if (!tokens.length > 0) return answer;
 
   const fields = {};
@@ -66,7 +66,7 @@ const createAnswer = (tokens, question) => {
   return answer;
 };
 
-const getAnswerValue = (annotations, answer, question) => {
+const getAnswerValues = (annotations, answer, question) => {
   // loops over all annotations (in unit) to find the ones that match the question annotation
   // (i.e. that have the same variable, field, offset and length)
 
@@ -110,7 +110,7 @@ export const addAnnotationsFromAnswer = (answer, annotations, question) => {
   if (!annotations) annotations = [];
 
   if (question.type === "scale") {
-    valueloop: for (let valueObj of answer.value) {
+    valueloop: for (let valueObj of answer.values) {
       for (let annotation of annotations) {
         if (isMatch(annotation, answer, valueObj.item)) {
           annotation.value = valueObj.value;
@@ -127,7 +127,7 @@ export const addAnnotationsFromAnswer = (answer, annotations, question) => {
   }
 
   // just update the first match or push to array
-  const valueMatched = answer.value.reduce((obj, value) => {
+  const valueMatched = answer.values.reduce((obj, value) => {
     obj[value.value] = false;
     return obj;
   }, {});
