@@ -1,4 +1,4 @@
-const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 200) => {
+const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 160) => {
   if (!question) return {};
   const swipeable = ["annotinder", "confirm"];
   if (!swipeable.includes(question.type)) return {};
@@ -11,7 +11,7 @@ const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 
       right: { code: "Continue", color: "#2185d0" },
     };
 
-  const transitionTime = 200;
+  const transitionTime = 250;
   const container = refs.text.current.getElementsByClassName("BodyContainer")[0];
   let scrolloffset = 0;
   // const blockSwipe = useRef()
@@ -77,7 +77,9 @@ const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 
       if (deltaY < 0 && !swipeOptions.up) return;
       //if (deltaY !== 0 && deltaY > 0) return;
 
-      refs.text.current.style.transition = `transform ${transitionTime}ms ease-out, opacity ${transitionTime}ms ease-out`;
+      refs.text.current.style.transition = `transform ${transitionTime}ms ease-out, opacity ${
+        transitionTime * 5
+      }ms ease-out`;
 
       if (Math.abs(deltaX) < triggerdist && Math.abs(deltaY) < triggerdist) {
         refs.text.current.style.transform = `translateX(0%) translateY(0%)`;

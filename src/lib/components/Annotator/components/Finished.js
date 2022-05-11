@@ -1,11 +1,24 @@
-import React from "react";
-import { Grid, Header, Icon } from "semantic-ui-react";
+import React, { useState, useEffect } from "react";
+import { Button, Grid, Header, Icon } from "semantic-ui-react";
 import DownloadAnnotations from "./DownloadAnnotations";
 
 const Finished = ({ jobServer }) => {
-  if (!jobServer) return null;
+  const [debriefing, setDebriefing] = useState(null);
 
-  if (!jobServer.getAllAnnotations) {
+  useEffect(() => {
+    if (!jobServer?.backend) return;
+    jobServer.backend
+      .getDebriefing(jobServer.job_id)
+      .then((data) => {
+        setDebriefing(data);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }, [jobServer]);
+
+  if (!jobServer) return null;
+  if (debriefing) {
     return (
       <Grid
         container
@@ -13,11 +26,46 @@ const Finished = ({ jobServer }) => {
         verticalAlign="middle"
         style={{ margin: "0", padding: "0", height: "100%" }}
       >
-        <Grid.Row style={{ width: "100%" }}>
-          <div>
-            <Icon name="flag checkered" size="huge" style={{ transform: "scale(5)" }} />
-          </div>
-        </Grid.Row>
+        <Grid.Column textAlign="center">
+          <Grid.Row style={{ width: "100%" }}>
+            <div>
+              <Icon
+                name="flag checkered"
+                size="huge"
+                style={{ transform: "scale(2)", marginBottom: "50px" }}
+              />
+            </div>
+          </Grid.Row>
+          <Grid.Row>
+            <Header>{debriefing.message}</Header>
+            {debriefing.link ? (
+              <Button
+                as="a"
+                href={debriefing.link.replace("{user_id}", debriefing.user_id)}
+                rel="noopener noreferrer"
+                primary
+                content={debriefing.link_text || "Click here!"}
+              />
+            ) : null}
+          </Grid.Row>
+        </Grid.Column>
+      </Grid>
+    );
+  } else if (!jobServer.getAllAnnotations) {
+    return (
+      <Grid
+        container
+        centered
+        verticalAlign="middle"
+        style={{ margin: "0", padding: "0", height: "100%" }}
+      >
+        <Grid.Column textAlign="center">
+          <Grid.Row style={{ width: "100%" }}>
+            <div>
+              <Icon name="flag checkered" size="huge" style={{ transform: "scale(2)" }} />
+            </div>
+          </Grid.Row>
+        </Grid.Column>
       </Grid>
     );
   } else {

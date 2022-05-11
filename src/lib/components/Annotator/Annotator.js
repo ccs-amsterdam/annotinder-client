@@ -5,6 +5,8 @@ import FullScreenWindow from "./components/FullScreenWindow";
 import "./annotatorStyle.css";
 import JobController from "./components/JobController";
 
+const LOG = console.log;
+
 /**
  * Render an annotator for the provided jobServer class
  *
@@ -59,9 +61,13 @@ const Annotator = ({ jobServer, askFullScreen }) => {
 };
 
 const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
-  if (unitIndex < 0) return;
+  if (unitIndex < 0 || unitIndex >= jobServer.progress.n_total) return;
+
   try {
+    LOG("-------------");
+    LOG(unitIndex);
     const unit = await jobServer.getUnit(unitIndex);
+    LOG(unit);
 
     // if backend gives the unit index, ensure that connection to unitIndex is fully controlled
     // (in case the frontend accidentally asks for a unitIndex it doesn't yet have access to)
@@ -77,6 +83,7 @@ const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
       ...unit.unit,
     });
   } catch (e) {
+    console.log(e);
     setPreparedUnit(null);
   }
 };

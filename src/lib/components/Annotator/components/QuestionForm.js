@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Header, Button, Segment } from "semantic-ui-react";
+import { Header, Button, Segment, Icon } from "semantic-ui-react";
 import {
   addAnnotationsFromAnswer,
   getAnswersFromAnnotations,
@@ -44,7 +44,7 @@ const QuestionForm = ({
   const onSelect = (answer, onlySave = false) => {
     // posts results and skips to next question, or next unit if no questions left.
     // If onlySave is true, only write to db without going to next question
-
+    console.log(blockAnswer.current);
     if (blockAnswer.current) return null;
     blockAnswer.current = true;
 
@@ -81,27 +81,38 @@ const QuestionForm = ({
         return cleanAnnotation;
       });
       //delete cleanAnnotations.makes_irrelevant;
-      unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status);
 
       if (onlySave) {
+        // if just saving (for multivalue questions)
+        unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status);
         blockAnswer.current = false;
         return;
+      }
+      if (newQuestionIndex !== null) {
+        // if there is a next question, postAnnotation immediately and unblock answering after half a second
+        // (to prevent accidentally double clicking)
+        unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status);
+        setQuestionIndex(newQuestionIndex);
+        setTimeout(() => (blockAnswer.current = false), 500);
       } else {
-        if (newQuestionIndex === null) {
-          setUnitIndex((state) => state + 1);
-          setQuestionIndex(0);
-          // go to next unit. Don't unblock answering (this happens when the new unit is loaded)
-        } else {
-          // go to next subquestion, and unblock answering after a half a second
-          setQuestionIndex(newQuestionIndex);
-          setTimeout(() => (blockAnswer.current = false), 500);
-        }
+        // if this was the last question of the unit, wait untill postAnnotation is completed so that the database
+        // has registered that the unit is done (otherwise it won't give the next unit)
+        // don't need to unblock answering, because this happens automatically when the unit state is updated with the new unit
+        unit.jobServer
+          .postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status)
+          .then((res) => {
+            setUnitIndex((state) => state + 1);
+          });
       }
     } catch (e) {
       // just to make certain the annotator doesn't block if something goes wrong
       blockAnswer.current = false;
     }
   };
+
+  const done = !questions.some(
+    (q, i) => answers[i].values.filter((v) => !!v.value).length !== answers[i].values.length
+  );
 
   return (
     <div
@@ -121,8 +132,6 @@ const QuestionForm = ({
           style={{
             width: "100%",
             textAlign: "center",
-
-            paddingRight: "43px",
           }}
         >
           <QuestionIndexStep
@@ -131,6 +140,21 @@ const QuestionForm = ({
             answers={answers}
             setQuestionIndex={setQuestionIndex}
           />
+        </div>
+        <div style={{ position: "relative", width: "43px" }}>
+          {done ? (
+            <Icon
+              size="big"
+              name="check square outline"
+              style={{
+                position: "absolute",
+                float: "right",
+                paddingTop: "4px",
+                color: "lightgreen",
+              }}
+            />
+          ) : null}
+          }
         </div>
       </div>
 
@@ -244,15 +268,20 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
     const selected = questionIndex === i;
 
     if (irrelevant) return "grey";
-    if (done && selected) return "green";
+    if (done && selected) return "#0c4f83";
     if (selected) return "#0c4f83";
     if (done) return "#7fb9eb";
     return "#d3dfe9";
   };
 
+  // hide if only 1 question that is not yet done
+
+  const hide = questions.length === 1;
+
   return (
     <>
       {questions.map((q, i) => {
+        if (hide) return null;
         return (
           <Button
             key={i}

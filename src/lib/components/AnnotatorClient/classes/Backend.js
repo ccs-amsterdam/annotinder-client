@@ -83,6 +83,11 @@ class Backend {
     const res = await this.api.get(path);
     return res.data;
   }
+  async getDebriefing(job_id) {
+    const path = `annotator/codingjob/${job_id}/debriefing`;
+    const res = await this.api.get(path);
+    return res.data;
+  }
 
   // POST
   postCodingjob(codingjobPackage, title) {

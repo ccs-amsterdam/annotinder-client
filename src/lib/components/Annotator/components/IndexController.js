@@ -18,11 +18,7 @@ const IndexController = ({ n, nCoded, index, setIndex, canGoForward = true, canG
 
   useEffect(() => {
     if (!n) return null;
-    if (activePage - 1 === n) {
-      setIndex(null);
-    } else {
-      setIndex(activePage - 1);
-    }
+    setIndex(activePage - 1);
     setDelayedActivePage(activePage);
   }, [n, setIndex, activePage]);
 

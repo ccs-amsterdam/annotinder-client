@@ -3,7 +3,7 @@ import { Button, Ref, Icon } from "semantic-ui-react";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
-const Annotinder = React.memo(({ swipeOptions, onSelect, swipe, blockEvents }) => {
+const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, blockEvents }) => {
   // const left = options.find(option => option.swipe === "left");
   // const up = options.find(option => option.swipe === "up");
   // const right = options.find(option => option.swipe === "right");
@@ -21,6 +21,7 @@ const Annotinder = React.memo(({ swipeOptions, onSelect, swipe, blockEvents }) =
       // any arrowkey
       if (arrowKeys.includes(event.key)) {
         event.preventDefault();
+        event.stopPropagation();
         let option;
         if (event.key === "ArrowRight") option = swipeOptions.right;
         if (event.key === "ArrowUp") option = swipeOptions.up;
@@ -52,8 +53,9 @@ const Annotinder = React.memo(({ swipeOptions, onSelect, swipe, blockEvents }) =
         display: "flex",
         //flexWrap: "wrap",
         //alignContent: "stretch",
-        //minHeight: "30px",
+        //minHeight: "40px",
         height: "100%",
+        maxHeight: "38px", // prevents annoying wobble when button size increases on active
       }}
     >
       <Ref key={swipeOptions.left?.code} innerRef={swipeOptions.left?.ref}>
@@ -64,7 +66,7 @@ const Annotinder = React.memo(({ swipeOptions, onSelect, swipe, blockEvents }) =
           style={{
             margin: "0",
             borderRadius: "0",
-            border: "1px solid",
+            border: `4px solid ${currentAnswer === swipeOptions.left?.code ? "black" : "grey"}`,
             background: swipeOptions.left?.color || "white",
           }}
         >
@@ -85,7 +87,7 @@ const Annotinder = React.memo(({ swipeOptions, onSelect, swipe, blockEvents }) =
               margin: "0",
               paddin: "0",
               borderRadius: "0",
-              border: "1px solid",
+              border: `4px solid ${currentAnswer === swipeOptions.up?.code ? "black" : "grey"}`,
               background: swipeOptions.up?.color || "white",
             }}
           >
@@ -104,7 +106,7 @@ const Annotinder = React.memo(({ swipeOptions, onSelect, swipe, blockEvents }) =
           style={{
             margin: "0",
             borderRadius: "0",
-            border: "1px solid",
+            border: `4px solid ${currentAnswer === swipeOptions.right?.code ? "black" : "grey"}`,
             background: swipeOptions.right?.color || "white",
           }}
         >

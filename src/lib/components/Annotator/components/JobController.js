@@ -18,7 +18,6 @@ const JobController = ({
   fullScreenNode,
   unitIndex,
   setUnitIndex,
-  height,
 }) => {
   const [maxHeight, maxWidth] = getWindowSize(jobServer);
 
@@ -69,7 +68,7 @@ const JobController = ({
         </div>
       </div>
       <div style={{ height: "calc(100% - 45px)" }}>
-        {unitIndex < jobServer?.progress?.n_total ? children : Finished}
+        {unitIndex < jobServer?.progress?.n_total ? children : <Finished jobServer={jobServer} />}
       </div>
     </div>
   );
