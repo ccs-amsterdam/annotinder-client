@@ -1,0 +1,246 @@
+[
+  {
+    "unit": {
+      "unit_id": "email",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Welcome to this codingjob!",
+          "bold": true,
+          "size": 1.2,
+          "center": true
+        },
+        {
+          "name": "text",
+          "value": "This right here is just an example of how we can use a unit and codebook more flexibly to include information pages in a codingjob."
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "welcome",
+            "type": "confirm"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "email",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Barack Obama",
+          "bold": true,
+          "italic": false,
+          "size": 1.2,
+          "justify": true,
+          "center": true,
+          "paragraphs": true
+        },
+        {
+          "name": "text",
+          "value": "All these investments, in innovation, education, and infrastructure, will make America a better place to do business and create jobs. But to help our companies compete, we also have to knock down barriers that stand in the way of their success.",
+          "bold": false,
+          "italic": false,
+          "size": 1,
+          "justify": true,
+          "paragraphs": true
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "branching",
+            "type": "select code",
+            "question": "Do you want so skip to the third question?",
+            "codes": [
+              { "code": "No", "color": "red" },
+              { "code": "Yes", "color": "green", "makes_irrelevant": "trust" }
+            ]
+          },
+          {
+            "name": "trust",
+            "type": "scale",
+            "single_row": true,
+            "same_size": true,
+            "question": "test",
+            "items": ["Journalism", "Government", "Police"],
+
+            "codes": [
+              { "code": "Strongly disagree" },
+              { "code": "Disagree" },
+              { "code": "Somewhat disagree" },
+              { "code": "Neigher agree or disagree" },
+              { "code": "Somewhat agree" },
+              { "code": "Agree" },
+              { "code": "Strongly agree" }
+            ]
+          },
+          {
+            "name": "why_trust",
+            "type": "select code",
+            "question": "What makes you such a thrusting person?",
+            "codes": [
+              { "code": "Wine", "color": "red" },
+              { "code": "Beer", "color": "yellow" }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "Obama2011.89",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Barack Obama",
+          "bold": true,
+          "italic": false,
+          "size": 1.2,
+          "justify": true,
+          "paragraphs": true
+        },
+        {
+          "name": "text",
+          "value": "All these investments, in innovation, education, and infrastructure, will make America a better place to do business and create jobs. But to help our companies compete, we also have to knock down barriers that stand in the way of their success.",
+          "bold": false,
+          "italic": false,
+          "size": 1,
+          "justify": true,
+          "paragraphs": true
+        }
+      ],
+      "meta_fields": [
+        { "name": ["date"], "value": ["2011-01-25"] },
+        { "name": ["paragraph"], "value": [89] }
+      ],
+      "variables": []
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "Obama2012.30",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Barack Obama",
+          "bold": true,
+          "italic": false,
+          "size": 1.2,
+          "justify": true,
+          "paragraphs": true
+        },
+        {
+          "name": "text",
+          "value": "The two of them shared the optimism of a nation that had triumphed over a depression and fascism. They understood they were part of something larger, that they were contributing to a story of success that every American had a chance to share, the basic American promise that if you worked hard, you could do well enough to raise a family, own a home, send your kids to college, and put a little away for retirement.",
+          "bold": false,
+          "italic": false,
+          "size": 1,
+          "justify": true,
+          "paragraphs": true
+        }
+      ],
+      "meta_fields": [
+        { "name": ["date"], "value": ["2012-01-24"] },
+        { "name": ["paragraph"], "value": [30] }
+      ],
+      "variables": []
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "Bush2003.71",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "George W. Bush",
+          "bold": true,
+          "italic": false,
+          "size": 1.2,
+          "justify": true,
+          "paragraphs": true
+        },
+        {
+          "name": "text",
+          "value": "Our fourth goal is to apply the compassion of America to the deepest problems of America. For so many in our country, the homeless and the fatherless, the addicted, the need is great. Yet there's power, wonder-working power, in the goodness and idealism and faith of the American people.",
+          "bold": false,
+          "italic": false,
+          "size": 1,
+          "justify": true,
+          "paragraphs": true
+        }
+      ],
+      "meta_fields": [
+        { "name": ["date"], "value": ["2003-01-28"] },
+        { "name": ["paragraph"], "value": [71] }
+      ],
+      "variables": []
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "Obama2009.6",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Barack Obama",
+          "bold": true,
+          "italic": false,
+          "size": 1.2,
+          "justify": true,
+          "paragraphs": true
+        },
+        {
+          "name": "text",
+          "value": "And I intend to hold these banks fully accountable for the assistance they receive, and this time, they will have to clearly demonstrate how taxpayer dollars result in more lending for the American taxpayer. This time, CEOs won't be able to use taxpayer money to pad their paychecks or buy fancy drapes or disappear on a private jet. Those days are over.",
+          "bold": false,
+          "italic": false,
+          "size": 1,
+          "justify": true,
+          "paragraphs": true
+        }
+      ],
+      "meta_fields": [
+        { "name": ["date"], "value": ["2009-02-24"] },
+        { "name": ["paragraph"], "value": [6] }
+      ],
+      "variables": []
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "Bush2003.6",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "George W. Bush",
+          "bold": true,
+          "italic": false,
+          "size": 1.2,
+          "justify": true,
+          "paragraphs": true
+        },
+        {
+          "name": "text",
+          "value": "Today, the gravest danger in the war on terror, the gravest danger facing America and the world, is outlaw regimes that seek and possess nuclear, chemical, and biological weapons. These regimes could use such weapons for blackmail, terror, and mass murder. They could also give or sell those weapons to terrorist allies, who would use them without the least hesitation.",
+          "bold": false,
+          "italic": false,
+          "size": 1,
+          "justify": true,
+          "paragraphs": true
+        }
+      ],
+      "meta_fields": [
+        { "name": ["date"], "value": ["2003-01-28"] },
+        { "name": ["paragraph"], "value": [6] }
+      ],
+      "variables": []
+    }
+  }
+]

@@ -9,7 +9,7 @@
         { "code": "Neutral", "color": "grey", "swipe": "up" },
         { "code": "Positive", "color": "green", "swipe": "right" }
       ],
-      "type": "annotinder"
+      "type": "select code"
     }
   ]
 }
