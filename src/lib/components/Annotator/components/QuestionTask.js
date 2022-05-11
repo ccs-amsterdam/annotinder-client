@@ -3,7 +3,7 @@ import QuestionForm from "./QuestionForm";
 import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
 import { codeBookEdgesToMap, getCodeTreeArray } from "../../../functions/codebook";
-import { Button, Form, Input, Popup } from "semantic-ui-react";
+import { Button, Form, Input, Portal, Segment } from "semantic-ui-react";
 import standardizeColor from "../../../functions/standardizeColor";
 import swipeControl from "../functions/swipeControl";
 import useLocalStorage from "../../../hooks/useLocalStorage";
@@ -25,7 +25,8 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
   const [textReady, setTextReady] = useState(0);
   const [settings, setSettings] = useLocalStorage("questionTaskSettings", {
     splitHeight: 60,
-    textSize: 1,
+    upperTextSize: 1,
+    lowerTextSize: 1,
   });
   const divref = useRef(null);
 
@@ -83,12 +84,6 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
           //height: `${splitHeight}%`,
         }}
       >
-        <SettingsPopup
-          settings={settings}
-          setSettings={setSettings}
-          fullScreenNode={fullScreenNode}
-          cantChangeSplitHeight={minifiedAnswerForm || unit?.text_window_size != null}
-        />
         <div
           ref={refs.box}
           style={{
@@ -116,7 +111,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
               top: "0",
               backgroundColor: "white",
               //overflow: "hidden",
-              fontSize: `${settings.textSize}em`,
+              fontSize: `${settings.upperTextSize}em`,
               boxShadow: "5px 5px 20px 5px",
 
               //border: "0.5px solid",
@@ -133,7 +128,13 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
           </div>
         </div>
       </div>
-      <div {...menuSwipe} style={{ height: minifiedAnswerForm ? null : `${100 - splitHeight}%` }}>
+      <div
+        {...menuSwipe}
+        style={{
+          height: minifiedAnswerForm ? null : `${100 - splitHeight}%`,
+          fontSize: `${settings.lowerTextSize}em`,
+        }}
+      >
         <QuestionForm
           unit={unit}
           tokens={tokens}
@@ -143,7 +144,14 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
           setUnitIndex={setUnitIndex}
           swipe={swipe}
           blockEvents={blockEvents}
-        />
+        >
+          <SettingsPopup
+            settings={settings}
+            setSettings={setSettings}
+            fullScreenNode={fullScreenNode}
+            cantChangeSplitHeight={minifiedAnswerForm || unit?.text_window_size != null}
+          />
+        </QuestionForm>
       </div>
     </div>
   );
@@ -151,61 +159,85 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
 
 const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitHeight }) => {
   return (
-    <Popup
-      on="click"
+    <Portal
       mountNode={fullScreenNode || undefined}
+      on="click"
       trigger={
         <Button
-          size="huge"
+          size="large"
           icon="setting"
           style={{
-            position: "absolute",
             background: "transparent",
             cursor: "pointer",
-            top: "-10px",
-            left: "1px",
-            padding: "5px 0px",
-            height: "30px",
+            color: "white",
+            padding: "10px 10px",
+            paddingBottom: "2px",
             zIndex: 9000,
           }}
         />
       }
     >
-      <Form>
-        <Form.Group grouped>
-          {cantChangeSplitHeight ? null : (
+      <Segment
+        style={{
+          bottom: "0",
+          position: "fixed",
+          width: "50%",
+          zIndex: 1000,
+          background: "#dfeffb",
+          border: "1px solid #136bae",
+        }}
+      >
+        <Form>
+          <Form.Group grouped>
+            {cantChangeSplitHeight ? null : (
+              <Form.Field>
+                <label>
+                  Text window height{" "}
+                  <font style={{ color: "blue" }}>{`${settings.splitHeight}%`}</font>
+                </label>
+                <Input
+                  size="mini"
+                  step={2}
+                  min={20}
+                  max={80}
+                  type="range"
+                  value={settings.splitHeight}
+                  onChange={(e, d) => setSettings((state) => ({ ...state, splitHeight: d.value }))}
+                />
+              </Form.Field>
+            )}
             <Form.Field>
               <label>
-                text window size <font style={{ color: "blue" }}>{`${settings.splitHeight}%`}</font>
+                Upper text size <font style={{ color: "blue" }}>{`${settings.upperTextSize}`}</font>
               </label>
               <Input
                 size="mini"
-                step={2}
-                min={20}
-                max={80}
+                step={0.025}
+                min={0.4}
+                max={1.6}
                 type="range"
-                value={settings.splitHeight}
-                onChange={(e, d) => setSettings((state) => ({ ...state, splitHeight: d.value }))}
+                value={settings.upperTextSize}
+                onChange={(e, d) => setSettings((state) => ({ ...state, upperTextSize: d.value }))}
               />
             </Form.Field>
-          )}
-          <Form.Field>
-            <label>
-              text size scaling <font style={{ color: "blue" }}>{`${settings.textSize}`}</font>
-            </label>
-            <Input
-              size="mini"
-              step={0.025}
-              min={0.4}
-              max={1.6}
-              type="range"
-              value={settings.textSize}
-              onChange={(e, d) => setSettings((state) => ({ ...state, textSize: d.value }))}
-            />
-          </Form.Field>
-        </Form.Group>
-      </Form>
-    </Popup>
+            <Form.Field>
+              <label>
+                Lower text size <font style={{ color: "blue" }}>{`${settings.lowerTextSize}`}</font>
+              </label>
+              <Input
+                size="mini"
+                step={0.025}
+                min={0.4}
+                max={1.6}
+                type="range"
+                value={settings.lowerTextSize}
+                onChange={(e, d) => setSettings((state) => ({ ...state, lowerTextSize: d.value }))}
+              />
+            </Form.Field>
+          </Form.Group>
+        </Form>
+      </Segment>
+    </Portal>
   );
 };
 

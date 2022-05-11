@@ -1,19 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Header, Button } from "semantic-ui-react";
+import { Header, Button, Segment } from "semantic-ui-react";
 import {
   addAnnotationsFromAnswer,
   getAnswersFromAnnotations,
 } from "../functions/mapAnswersToAnnotations";
 import AnswerField from "./AnswerField";
 
-const DONE_COLOR = "#70cd70e6";
-const IRRELEVANT_COLOR = "grey";
 const ANSWERFIELD_BACKGROUND = "#1B1C1D";
 const ANSWERFIELD_COLOR = "white";
-//const ANSWERFIELD_BACKGROUND = "white";
-//const ANSWERFIELD_COLOR = "black";
 
 const QuestionForm = ({
+  children,
   unit,
   tokens,
   questions,
@@ -91,8 +88,6 @@ const QuestionForm = ({
     }, 250);
   };
 
-  const showQuestionButtons = questions && questions.length > 1;
-
   return (
     <div
       style={{
@@ -105,20 +100,23 @@ const QuestionForm = ({
         zIndex: 9000,
       }}
     >
-      {showQuestionButtons ? (
-        <QuestionIndexStep
-          questions={questions}
-          questionIndex={questionIndex}
-          answers={answers}
-          setQuestionIndex={setQuestionIndex}
-        />
-      ) : null}
+      <div style={{ width: "100%", display: "flex" }}>
+        <div style={{}}>{children}</div>
+        <div style={{ width: "100%", textAlign: "center", paddingRight: "43px" }}>
+          <QuestionIndexStep
+            questions={questions}
+            questionIndex={questionIndex}
+            answers={answers}
+            setQuestionIndex={setQuestionIndex}
+          />
+        </div>
+      </div>
 
       <div
         style={{
           display: "flex",
           flexFlow: "column",
-          height: showQuestionButtons ? "calc(100% - 30px)" : "100%",
+          height: "calc(100% - 30px)",
           width: "100%",
           maxHeight: "100%",
           padding: "10px",
@@ -129,19 +127,34 @@ const QuestionForm = ({
         }}
       >
         <div style={{ width: "100%", flex: "1 1 auto", paddingBottom: "10px" }}>
-          <Header as="h3" textAlign="center" style={{ color: ANSWERFIELD_COLOR }}>
+          <Header
+            as="h3"
+            textAlign="center"
+            style={{ color: ANSWERFIELD_COLOR, fontSize: "inherit" }}
+          >
             {question}
           </Header>
         </div>
-
-        <AnswerField
-          currentAnswer={answers?.[questionIndex]?.values}
-          questions={questions}
-          questionIndex={questionIndex}
-          onSelect={onSelect}
-          swipe={swipe}
-          blockEvents={blockEvents}
-        />
+        <Segment
+          style={{
+            flex: "0.5 1 auto",
+            padding: "0",
+            overflowY: "auto",
+            height: "100%",
+            width: "100%",
+            margin: "0",
+            fontSize: "inherit",
+          }}
+        >
+          <AnswerField
+            currentAnswer={answers?.[questionIndex]?.values}
+            questions={questions}
+            questionIndex={questionIndex}
+            onSelect={onSelect}
+            swipe={swipe}
+            blockEvents={blockEvents}
+          />
+        </Segment>
       </div>
     </div>
   );
@@ -202,62 +215,42 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
     });
   }, [questionIndex, setCanSelect]);
 
-  const setColor = (i) => {
-    if (!answers[i]) return ["black", IRRELEVANT_COLOR];
+  const getColor = (i) => {
+    if (!answers[i]) return "grey";
     const done = answers[i].values.filter((v) => !!v.value).length === answers[i].values.length;
     const irrelevant = answers[i].values[0].value === "IRRELEVANT";
+    const selected = questionIndex === i;
 
-    console.log(answers[i]);
-    if (irrelevant) return ["black", IRRELEVANT_COLOR];
-    if (canSelect && i > questionIndex && !canSelect[i]) return ["white", "grey"];
-    if (done) return ["black", DONE_COLOR];
-    if (i === 0) return [DONE_COLOR, "#1B1C1D"];
-    if (canSelect && canSelect[i]) return [DONE_COLOR, "#1B1C1D"];
-    return [DONE_COLOR, "grey"];
+    if (irrelevant) return "grey";
+    if (done && selected) return "green";
+    if (selected) return "#0c4f83";
+    if (done) return "#7fb9eb";
+    return "#d3dfe9";
   };
 
   return (
-    <div>
-      <Button.Group
-        fluid
-        style={{
-          border: "1px solid",
-          height: "30px",
-          padding: "1px",
-        }}
-      >
-        {questions.map((q, i) => {
-          const [color, background] = setColor(i);
-          return (
-            <Button
-              key={i}
-              active={i === questionIndex}
-              style={{
-                padding: "0em 0.2em 0.2em 0.2em",
-
-                minWidth: "2em",
-                height: "30px",
-                borderRadius: "0",
-                fontSize: "12px",
-                border: "1px solid white",
-                background: background,
-                textOverflow: "clip",
-                overflow: "hidden",
-                color: color,
-              }}
-              onClick={() => {
-                if (canSelect[i]) {
-                  setQuestionIndex(i);
-                }
-              }}
-            >
-              {/* {i + 1} */}
-              <span title={questions[i].name}>{questions[i].name}</span>
-            </Button>
-          );
-        })}
-      </Button.Group>
-    </div>
+    <>
+      {questions.map((q, i) => {
+        return (
+          <Button
+            key={i}
+            circular
+            active={i === questionIndex}
+            style={{
+              border: `2px solid`,
+              borderColor: i === questionIndex ? "black" : "white",
+              background: getColor(i),
+              color: "white",
+            }}
+            onClick={() => {
+              if (canSelect[i]) {
+                setQuestionIndex(i);
+              }
+            }}
+          />
+        );
+      })}
+    </>
   );
 };
 

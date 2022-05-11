@@ -3,6 +3,7 @@
 export const scrollToMiddle = (parent, child, position) => {
   // scroll parent to position of child
   // position should be value between 0 and 1 for relative position between top (0) and bottom (1)
+  if (!parent || !child) return;
   const parentBounding = parent.getBoundingClientRect();
   const clientBounding = child.getBoundingClientRect();
 
@@ -17,6 +18,7 @@ export const scrollToMiddle = (parent, child, position) => {
 export const keepInView = (parent, child) => {
   // scroll parent to position of child
   // position should be value between 0 and 1 for relative position between top (0) and bottom (1)
+  if (!parent || !child) return;
   const parentBounding = parent.getBoundingClientRect();
   const clientBounding = child.getBoundingClientRect();
 

@@ -89,10 +89,10 @@ const SelectCode = React.memo(
                 padding: "10px 2px",
                 minWidth: "50px",
                 fontWeight: "bold",
-                fontSize: "1em",
                 textShadow: "0px 0px 5px #ffffff77",
                 borderRadius: "10px",
                 color: "#1B1C1D",
+                fontSize: "inherit",
                 border: `5px solid ${bordercolor}`,
               }}
               key={option.code}
@@ -115,6 +115,7 @@ const SelectCode = React.memo(
         style={{
           display: "flex",
           flexWrap: singleRow ? null : "wrap",
+          alignItems: "center",
           maxWidth: "100%",
           height: "100%",
         }}

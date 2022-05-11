@@ -29,7 +29,6 @@
   {
     "unit": {
       "unit_id": "email",
-      "text_window_size": 0,
       "text_fields": [
         {
           "name": "title",

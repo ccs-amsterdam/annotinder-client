@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, createRef } from "react";
 import { Button, Ref, Icon, Label } from "semantic-ui-react";
+import { scrollToMiddle } from "../../../functions/scroll";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -173,20 +174,30 @@ const Items = ({
   selectedButton,
   setSelectedButton,
 }) => {
+  const containerRef = useRef(null);
+  const rowRefs = useRef([]);
+
+  if (!rowRefs.current.length === items.length)
+    rowRefs.current = new Array(items.length).fill(null);
+  scrollToMiddle(containerRef?.current, rowRefs?.current?.[selectedItem]?.current, 0.5);
+
   return (
-    <div style={{ overflow: "auto" }}>
+    <div ref={containerRef} style={{ overflow: "auto" }}>
       {items.map((item, itemIndex) => {
+        const ref = createRef();
+        rowRefs.current[itemIndex] = ref;
         return (
           <div>
             <div>
               <div style={{ color: "black", width: "100%", textAlign: "center" }}>
                 <b>{item}</b>
               </div>
-              <div style={{ color: "black", width: "100%", textAlign: "center" }}>
+              <div style={{ width: "100%", textAlign: "center", color: "#1678c2" }}>
                 <i>{answers?.[itemIndex]?.value ? answers[itemIndex].value : "..."}</i>
               </div>
             </div>
             <div
+              ref={ref}
               style={{
                 display: "flex",
                 maxWidth: "100%",
@@ -242,6 +253,8 @@ const Item = ({
           className="ripplebutton"
           style={{
             flex: "1 1 0px",
+            padding: "5px 0",
+
             backgroundColor: isCurrent ? null : option.color || bgcolor,
             //padding: "10px 0px",
             fontWeight: "bold",
@@ -249,7 +262,7 @@ const Item = ({
             textShadow: "0px 0px 5px #ffffff77",
             borderRadius: "10px",
             color: isCurrent ? null : option.color ? "#1B1C1D" : color,
-            border: `5px solid ${bordercolor}`,
+            border: `3px solid ${bordercolor}`,
           }}
           key={option.code}
           value={option.code}

@@ -34,13 +34,14 @@ const Confirm = ({ callback, swipe, blockEvents }) => {
   }, [swipe, callback]);
 
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%", height: "100%" }}>
       <Button
         fluid
         primary
         icon="play"
         content="Continue"
         size="huge"
+        style={{ height: "100%" }}
         onClick={() => callback({ code: "continue", color: "blue" })}
       />
     </div>
