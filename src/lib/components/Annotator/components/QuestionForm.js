@@ -295,7 +295,8 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
             }}
             onClick={() => {
               if (canSelect[i]) {
-                setQuestionIndex(i);
+                const irrelevant = answers[i].values[0].value === "IRRELEVANT";
+                if (!irrelevant) setQuestionIndex(i);
               }
             }}
           />
