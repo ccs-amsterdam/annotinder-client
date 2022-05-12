@@ -75,36 +75,39 @@ const SelectCode = React.memo(
       return options.map((option, i) => {
         let bordercolor = "#ece9e9";
         const isCurrent = option.code === currentAnswer;
-        if (isCurrent) bordercolor = "green";
+        if (isCurrent) bordercolor = "#0c4f83";
         if (i === selected) bordercolor = "#1B1C1D";
         if (isCurrent && i === selected) bordercolor = "#004200";
 
         return (
-          <Ref key={option.code} innerRef={option.ref}>
-            <Button
-              className="ripplebutton"
-              style={{
-                flex: sameSize ? "1 1 0px" : "1 1 100px",
-                backgroundColor: option.color,
-                minWidth: "50px",
-                fontWeight: "bold",
-                textShadow: "0px 0px 5px #ffffff77",
-                borderRadius: "10px",
-                color: "#1B1C1D",
-                fontSize: "inherit",
-                border: `5px solid ${bordercolor}`,
-              }}
-              key={option.code}
-              value={option}
-              compact
-              onMouseOver={() => setSelected(i)}
-              onClick={(e, d) => {
-                onSelect(d.value);
-              }}
-            >
-              {option.code}
-            </Button>
-          </Ref>
+          <div style={{ flex: sameSize ? "1 1 0px" : "1 1 100px", minWidth: "50px" }}>
+            <Ref key={option.code} innerRef={option.ref}>
+              <Button
+                fluid
+                className="ripplebutton"
+                style={{
+                  backgroundColor: option.color,
+                  padding: "2px",
+                  height: "100%",
+                  fontWeight: "bold",
+                  textShadow: "0px 0px 5px #ffffff77",
+                  borderRadius: "10px",
+                  color: "#1B1C1D",
+                  fontSize: "inherit",
+                  border: `5px solid ${bordercolor}`,
+                }}
+                key={option.code}
+                value={option}
+                compact
+                onMouseOver={() => setSelected(i)}
+                onClick={(e, d) => {
+                  onSelect(d.value);
+                }}
+              >
+                {option.code}
+              </Button>
+            </Ref>
+          </div>
         );
       });
     };

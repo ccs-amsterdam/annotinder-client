@@ -51,11 +51,7 @@ const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, b
       fluid
       style={{
         display: "flex",
-        //flexWrap: "wrap",
-        //alignContent: "stretch",
-        //minHeight: "40px",
         height: "100%",
-        maxHeight: "38px", // prevents annoying wobble when button size increases on active
       }}
     >
       <Ref key={swipeOptions.left?.code} innerRef={swipeOptions.left?.ref}>
@@ -65,8 +61,8 @@ const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, b
           onClick={(e, d) => onSelect(swipeOptions.left)}
           style={{
             margin: "0",
-            borderRadius: "0",
-            border: `4px solid ${currentAnswer === swipeOptions.left?.code ? "black" : "grey"}`,
+            borderRadius: "10px",
+            border: `4px solid ${currentAnswer === swipeOptions.left?.code ? "#0c4f83" : "white"}`,
             background: swipeOptions.left?.color || "white",
           }}
         >
@@ -86,8 +82,8 @@ const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, b
             style={{
               margin: "0",
               paddin: "0",
-              borderRadius: "0",
-              border: `4px solid ${currentAnswer === swipeOptions.up?.code ? "black" : "grey"}`,
+              borderRadius: "10px",
+              border: `4px solid ${currentAnswer === swipeOptions.up?.code ? "#0c4f83" : "white"}`,
               background: swipeOptions.up?.color || "white",
             }}
           >
@@ -105,8 +101,8 @@ const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, b
           onClick={(e, d) => onSelect(swipeOptions.right)}
           style={{
             margin: "0",
-            borderRadius: "0",
-            border: `4px solid ${currentAnswer === swipeOptions.right?.code ? "black" : "grey"}`,
+            borderRadius: "10px",
+            border: `4px solid ${currentAnswer === swipeOptions.right?.code ? "#0c4f83" : "white"}`,
             background: swipeOptions.right?.color || "white",
           }}
         >

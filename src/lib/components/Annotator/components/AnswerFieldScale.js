@@ -33,9 +33,11 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
         }
         if (event.key === "ArrowUp") {
           if (selectedItem > 0) setSelectedItem(selectedItem - 1);
-          if (selectedItem === 0) setSelectedItem(-1);
+          //if (selectedItem === 0) setSelectedItem(-1);
+          if (selectedItem < 0) setSelectedItem(nitems - 1);
         }
         if (event.key === "ArrowDown") {
+          if (selectedItem < 0) return;
           if (selectedItem < nitems - 1) setSelectedItem(selectedItem + 1);
           if (selectedItem === nitems - 1) setSelectedItem(-1);
         }
@@ -87,55 +89,45 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
   const done = nAnswered === answers.length;
 
   return (
-    <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    <div
+      style={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          margin: "3px",
-          marginBottom: "8px",
+          zIndex: 1,
+          position: "relative",
         }}
       >
         <Label
           size="large"
           style={{
-            flex: "1 1 0px",
+            position: "absolute",
+            left: 0,
+            top: 0,
             maxWidth: "40%",
+            background: "transparent",
             color: "black",
-            background: left.color || "rgb(205,205,205)",
           }}
         >
           <Icon name="arrow left" />
           {left.code}
         </Label>
-        <Button
-          primary
-          disabled={!done}
-          icon={done ? "play" : null}
-          content={done ? "Continue" : `${nAnswered} / ${answers.length}`}
-          style={{
-            flex: "1 1 0px",
-            textAlign: "center",
-            color: done ? null : "black",
-            margin: "0",
-            background: done ? null : "white",
-            border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
-          }}
-          onClick={() => {
-            // this is a bit of an odd one out. We didn't anticipate having multiple answers,
-            // so some of the previous logic doesn't hold
-            onSelect({ code: answers });
-          }}
-        />
 
         <Label
           size="large"
           style={{
-            flex: "1 1 0px",
+            position: "absolute",
+            right: 0,
+            top: 0,
             maxWidth: "40%",
             textAlign: "right",
-            color: right.color ? "black" : "white",
-            background: right.color || "rgb(50,50,50)",
+            background: "transparent",
+            color: "black",
           }}
         >
           {right.code}
@@ -155,6 +147,28 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
         currentAnswer={currentAnswer}
         onSelect={onSelect}
       />
+      <div>
+        <Button
+          primary
+          fluid
+          disabled={!done}
+          icon={done ? "play" : null}
+          content={done ? "Continue" : `${nAnswered} / ${answers.length}`}
+          style={{
+            flex: "1 1 0px",
+            textAlign: "center",
+            color: done ? null : "black",
+            margin: "0",
+            background: done ? null : "white",
+            border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
+          }}
+          onClick={() => {
+            // this is a bit of an odd one out. We didn't anticipate having multiple answers,
+            // so some of the previous logic doesn't hold
+            onSelect({ code: answers });
+          }}
+        />
+      </div>
     </div>
   );
 });
@@ -181,7 +195,12 @@ const Items = ({
     <div
       ref={containerRef}
       style={{
+        flex: "1 1 auto",
+        display: "flex",
+        flexDirection: "column",
+        //justifyContent: "space-around",
         overflow: "auto",
+        zIndex: 9000,
       }}
     >
       {items.map((itemObj, itemIndex) => {
@@ -189,7 +208,7 @@ const Items = ({
         const ref = createRef();
         rowRefs.current[itemIndex] = ref;
         return (
-          <div key={itemIndex} style={{ marginTop: "10px" }}>
+          <div key={itemIndex} style={{ paddingTop: "10px" }}>
             <div>
               <div style={{ color: "black", width: "100%", textAlign: "center" }}>
                 <b>{itemlabel}</b>
@@ -204,7 +223,7 @@ const Items = ({
                 display: "flex",
                 maxWidth: "100%",
                 padding: "0px 15px",
-                marginBottom: "10px",
+                paddingBottom: "10px",
               }}
             >
               <Item
@@ -250,39 +269,40 @@ const Item = ({
     const color = colorint < 100 ? "white" : "black";
 
     return (
-      <Ref key={option.code} innerRef={option.ref}>
-        <Button
-          fluid
-          primary
-          className="ripplebutton"
-          style={{
-            flex: "1 1 0px",
-            padding: "5px 0",
+      <div style={{ flex: "1 1 0px" }}>
+        <Ref key={option.code} innerRef={option.ref}>
+          <Button
+            fluid
+            primary
+            className="ripplebutton"
+            style={{
+              padding: "5px 0",
 
-            backgroundColor: isCurrent ? null : option.color || bgcolor,
-            //padding: "10px 0px",
-            fontWeight: "bold",
-            fontSize: "1em",
-            textShadow: "0px 0px 5px #ffffff77",
-            borderRadius: "10px",
-            color: isCurrent ? null : option.color ? "#1B1C1D" : color,
-            border: `3px solid ${bordercolor}`,
-          }}
-          key={option.code}
-          value={option.code}
-          compact
-          onClick={(e, d) => {
-            setSelectedButton(buttonIndex);
-            setSelectedItem(itemIndex);
-            const newanswers = [...answers];
-            newanswers[itemIndex].value = options[buttonIndex].code;
-            onSelect({ code: newanswers }, true);
-            setAnswers(newanswers);
-          }}
-        >
-          {buttonIndex + 1}
-        </Button>
-      </Ref>
+              backgroundColor: isCurrent ? null : option.color || bgcolor,
+              //padding: "10px 0px",
+              fontWeight: "bold",
+              fontSize: "1em",
+              textShadow: "0px 0px 5px #ffffff77",
+              borderRadius: "10px",
+              color: isCurrent ? null : option.color ? "#1B1C1D" : color,
+              border: `3px solid ${bordercolor}`,
+            }}
+            key={option.code}
+            value={option.code}
+            compact
+            onClick={(e, d) => {
+              setSelectedButton(buttonIndex);
+              setSelectedItem(itemIndex);
+              const newanswers = [...answers];
+              newanswers[itemIndex].value = options[buttonIndex].code;
+              onSelect({ code: newanswers }, true);
+              setAnswers(newanswers);
+            }}
+          >
+            {buttonIndex + 1}
+          </Button>
+        </Ref>
+      </div>
     );
   });
 };

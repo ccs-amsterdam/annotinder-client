@@ -8,7 +8,7 @@ import SelectCode from "./AnswerFieldSelectCode";
 const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe, blockEvents }) => {
   const question = questions[questionIndex];
 
-  if (question.type === "select code")
+  if (question.type === "search code")
     return (
       <SearchCode
         options={question.options}

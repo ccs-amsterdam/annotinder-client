@@ -133,6 +133,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
         {...menuSwipe}
         style={{
           height: minifiedAnswerForm ? null : formHeight,
+          minHeight: "20%",
           fontSize: `${settings.lowerTextSize}em`,
         }}
       >
