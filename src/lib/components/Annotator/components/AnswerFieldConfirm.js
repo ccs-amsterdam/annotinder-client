@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Button } from "semantic-ui-react";
 
-const Confirm = ({ onSelect, swipe, blockEvents }) => {
+const Confirm = ({ onSelect, button, swipe, blockEvents }) => {
   // there's only one option here and it's glorious
 
   const onKeydown = React.useCallback(
@@ -38,8 +38,7 @@ const Confirm = ({ onSelect, swipe, blockEvents }) => {
       <Button
         fluid
         primary
-        icon="play"
-        content="Continue"
+        content={button || "Continue"}
         size="huge"
         style={{ height: "100%" }}
         onClick={() => onSelect({ code: "continue", color: "blue" })}

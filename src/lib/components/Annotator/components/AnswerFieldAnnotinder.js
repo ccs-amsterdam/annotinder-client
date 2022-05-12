@@ -52,6 +52,9 @@ const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, b
       style={{
         display: "flex",
         height: "100%",
+        width: "100%",
+        fontSize: "inherit",
+        margin: "0",
       }}
     >
       <Ref key={swipeOptions.left?.code} innerRef={swipeOptions.left?.ref}>
@@ -60,13 +63,13 @@ const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, b
           disabled={swipeOptions.left == null}
           onClick={(e, d) => onSelect(swipeOptions.left)}
           style={{
-            margin: "0",
+            fontSize: "inherit",
             borderRadius: "10px",
             border: `4px solid ${currentAnswer === swipeOptions.left?.code ? "#0c4f83" : "white"}`,
             background: swipeOptions.left?.color || "white",
           }}
         >
-          <div style={{ color: "black", fontWeight: "bold", fontSize: "1em" }}>
+          <div style={{ color: "black", fontWeight: "bold" }}>
             <Icon name={swipeOptions.left?.code ? "arrow left" : null} />
             <span>{swipeOptions.left?.code || ""}</span>
           </div>
@@ -80,14 +83,14 @@ const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, b
             disabled={swipeOptions.up == null}
             onClick={(e, d) => onSelect(swipeOptions.up)}
             style={{
-              margin: "0",
-              paddin: "0",
+              fontSize: "inherit",
+
               borderRadius: "10px",
               border: `4px solid ${currentAnswer === swipeOptions.up?.code ? "#0c4f83" : "white"}`,
               background: swipeOptions.up?.color || "white",
             }}
           >
-            <div style={{ color: "black", fontWeight: "bold", fontSize: "1em" }}>
+            <div style={{ color: "black", fontWeight: "bold" }}>
               <Icon name={swipeOptions.up?.code ? "arrow up" : null} />
               <span>{swipeOptions.up?.code || ""}</span>
             </div>
@@ -100,13 +103,14 @@ const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, b
           disabled={swipeOptions.right == null}
           onClick={(e, d) => onSelect(swipeOptions.right)}
           style={{
-            margin: "0",
+            fontSize: "inherit",
+
             borderRadius: "10px",
             border: `4px solid ${currentAnswer === swipeOptions.right?.code ? "#0c4f83" : "white"}`,
             background: swipeOptions.right?.color || "white",
           }}
         >
-          <div style={{ color: "black", fontWeight: "bold", fontSize: "1em" }}>
+          <div style={{ color: "black", fontWeight: "bold" }}>
             <span>{swipeOptions.right?.code || ""}</span>
             <Icon name={swipeOptions.right?.code ? "arrow right" : null} />
           </div>

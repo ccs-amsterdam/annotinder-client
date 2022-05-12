@@ -196,11 +196,8 @@ const Items = ({
       ref={containerRef}
       style={{
         flex: "1 1 auto",
-        display: "flex",
-        flexDirection: "column",
         //justifyContent: "space-around",
         overflow: "auto",
-        zIndex: 9000,
       }}
     >
       {items.map((itemObj, itemIndex) => {

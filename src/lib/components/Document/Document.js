@@ -94,6 +94,7 @@ const Document = ({
         text_fields={preparedUnit.text_fields}
         meta_fields={preparedUnit.meta_fields}
         image_fields={preparedUnit.image_fields}
+        markdown_field={preparedUnit.markdown_field}
         setReady={setTokensReady}
         //maxHeight={variables && variables.length > 1 ? "calc(100% - 60px)" : "calc(100% - 30px)"}
         editMode={editMode}

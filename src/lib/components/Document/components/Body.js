@@ -4,10 +4,20 @@ import { scrollToMiddle } from "../../../functions/scroll";
 import Meta from "./Meta";
 import renderText from "../functions/renderText";
 import renderImages from "../functions/renderImages";
+import renderMarkdown from "../functions/renderMarkdown";
 
-const Body = ({ tokens, text_fields, meta_fields, image_fields, setReady, maxHeight }) => {
+const Body = ({
+  tokens,
+  text_fields,
+  meta_fields,
+  image_fields,
+  markdown_field,
+  setReady,
+  maxHeight,
+}) => {
   const [text, setText] = useState({});
   const [images, setImages] = useState({});
+  const [markdown, setMarkdown] = useState(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -27,8 +37,9 @@ const Body = ({ tokens, text_fields, meta_fields, image_fields, setReady, maxHei
     if (!tokens) return null;
     setText(renderText(tokens, text_fields, containerRef));
     setImages(renderImages(image_fields, containerRef));
+    setMarkdown(renderMarkdown(markdown_field));
     if (setReady) setReady((current) => current + 1); // setReady is an optional property used to let parents know the text is ready.
-  }, [tokens, text_fields, image_fields, setReady]);
+  }, [tokens, text_fields, image_fields, markdown_field, setReady]);
 
   if (tokens === null) return null;
 
@@ -56,6 +67,7 @@ const Body = ({ tokens, text_fields, meta_fields, image_fields, setReady, maxHei
             }}
           >
             <div key="content" style={{ paddingTop: "0px", paddingBottom: "0px", width: "100%" }}>
+              {markdown}
               {text_fields.map((tf) => text[tf.name])}
               {image_fields.map((imf) => images[imf.name])}
             </div>

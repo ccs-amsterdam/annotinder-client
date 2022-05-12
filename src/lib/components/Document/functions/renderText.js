@@ -125,7 +125,7 @@ const renderParagraph = (layout, paragraph_nr, sentences, end) => {
     // uses span behaving like p, because p is not allowed due to nested div (for Label)
     <div
       key={"pardiv" + paragraph_nr}
-      style={{ display: "flex", paddingRight: "20px", paddingLeft: "20px" }}
+      style={{ display: "flex", paddingRight: "25px", paddingLeft: "25px" }}
     >
       <span
         key={"par" + paragraph_nr}
@@ -134,7 +134,6 @@ const renderParagraph = (layout, paragraph_nr, sentences, end) => {
           flex: "1 98%",
           paddingBottom: end ? "1.5em" : "0em",
           display: "table",
-          paddingLeft: "0.3em",
         }}
       >
         {sentences}

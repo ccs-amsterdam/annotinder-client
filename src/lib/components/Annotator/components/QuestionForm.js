@@ -146,6 +146,7 @@ const QuestionForm = ({
               size="big"
               name="check square outline"
               style={{
+                fontSize: "30px",
                 position: "absolute",
                 float: "right",
                 paddingTop: "4px",
@@ -175,7 +176,7 @@ const QuestionForm = ({
           <Header
             as="h3"
             textAlign="center"
-            style={{ color: ANSWERFIELD_COLOR, fontSize: "inherit" }}
+            style={{ color: ANSWERFIELD_COLOR, fontSize: "1.4em" }}
           >
             {questionText}
           </Header>

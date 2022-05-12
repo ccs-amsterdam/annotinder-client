@@ -34,6 +34,7 @@ const useUnit = (unit, safetyCheck, returnTokens, setCodeHistory) => {
       text_fields: document.text_fields || [],
       meta_fields: document.meta_fields || [],
       image_fields: document.image_fields || [],
+      markdown_field: document.markdown_field,
     });
 
     setAnnotations(document.annotations);

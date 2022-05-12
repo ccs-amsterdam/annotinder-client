@@ -210,7 +210,8 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitH
             )}
             <Form.Field>
               <label>
-                Upper text size <font style={{ color: "blue" }}>{`${settings.upperTextSize}`}</font>
+                Content text size{" "}
+                <font style={{ color: "blue" }}>{`${settings.upperTextSize}`}</font>
               </label>
               <Input
                 size="mini"
@@ -224,7 +225,8 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitH
             </Form.Field>
             <Form.Field>
               <label>
-                Lower text size <font style={{ color: "blue" }}>{`${settings.lowerTextSize}`}</font>
+                Answer field text size{" "}
+                <font style={{ color: "blue" }}>{`${settings.lowerTextSize}`}</font>
               </label>
               <Input
                 size="mini"

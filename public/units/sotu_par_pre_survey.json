@@ -2,6 +2,7 @@
   {
     "unit": {
       "unit_id": "email",
+      "markdown_field": "<center>This here is a markdown *string*<center>",
       "text_fields": [
         {
           "name": "title",
@@ -20,7 +21,8 @@
         "questions": [
           {
             "name": "welcome",
-            "type": "confirm"
+            "type": "confirm",
+            "button": "Continue!!!"
           }
         ]
       }

@@ -53,7 +53,14 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
     );
 
   if (question.type === "confirm")
-    return <Confirm onSelect={onSelect} swipe={swipe} blockEvents={blockEvents} />;
+    return (
+      <Confirm
+        onSelect={onSelect}
+        button={questions?.[questionIndex]?.button}
+        swipe={swipe}
+        blockEvents={blockEvents}
+      />
+    );
 
   return null;
 };
