@@ -6,9 +6,9 @@ const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 
   let swipeOptions = question.swipeOptions;
   if (question.type === "confirm")
     swipeOptions = {
-      left: { code: "Continue", color: "#2185d0" },
-      up: { code: "Continue", color: "#2185d0" },
-      right: { code: "Continue", color: "#2185d0" },
+      left: { code: question.button || "Continue", color: "#2185d0" },
+      up: { code: question.button || "Continue", color: "#2185d0" },
+      right: { code: question.button || "Continue", color: "#2185d0" },
     };
 
   const transitionTime = 250;

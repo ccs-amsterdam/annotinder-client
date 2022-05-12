@@ -24,7 +24,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
   };
   const [textReady, setTextReady] = useState(0);
   const [settings, setSettings] = useLocalStorage("questionTaskSettings", {
-    splitHeight: 60,
+    splitHeight: 70,
     upperTextSize: 1,
     lowerTextSize: 1,
   });

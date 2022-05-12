@@ -57,6 +57,7 @@ const QuestionForm = ({
         unit.annotations,
         questions[questionIndex]
       );
+
       const irrelevantQuestions = processIrrelevantBranching(
         unit,
         questions,
@@ -73,13 +74,10 @@ const QuestionForm = ({
       }
 
       const status = newQuestionIndex === null ? "DONE" : "IN_PROGRESS";
-      let cleanAnnotations = unit.annotations.map((u) => {
-        const cleanAnnotation = { ...u };
-        delete cleanAnnotation.makes_irrelevant;
-        delete cleanAnnotation.values;
-        return cleanAnnotation;
+      const cleanAnnotations = unit.annotations.map((u) => {
+        const { field, offset, length, variable, value, meta, makes_irrelevant } = u;
+        return { field, offset, length, variable, value, meta, makes_irrelevant };
       });
-      //delete cleanAnnotations.makes_irrelevant;
 
       if (onlySave) {
         // if just saving (for multivalue questions)
@@ -146,11 +144,12 @@ const QuestionForm = ({
               size="big"
               name="check square outline"
               style={{
-                fontSize: "30px",
+                fontSize: "10px",
                 position: "absolute",
                 float: "right",
                 paddingTop: "4px",
                 color: "lightgreen",
+                transform: "scale(3)",
               }}
             />
           ) : null}
@@ -267,7 +266,7 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
     const irrelevant = answers[i].values[0].value === "IRRELEVANT";
     const selected = questionIndex === i;
 
-    if (irrelevant) return "grey";
+    if (irrelevant) return "crimson";
     if (done && selected) return "#0c4f83";
     if (selected) return "#0c4f83";
     if (done) return "#7fb9eb";

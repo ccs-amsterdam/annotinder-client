@@ -11,6 +11,7 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
   const [selectedItem, setSelectedItem] = useState(0);
   const [selectedButton, setSelectedButton] = useState(null);
   const [answers, setAnswers] = useState(null);
+  const [keynav, setKeynav] = useState(null);
   //const [confirmMsg, setConfirmMsg] = useState(false);
 
   const onKeydown = React.useCallback(
@@ -31,15 +32,21 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
         if (event.key === "ArrowLeft") {
           if (selectedButton > 0) setSelectedButton(selectedButton - 1);
         }
+
+        let newitem = null;
         if (event.key === "ArrowUp") {
-          if (selectedItem > 0) setSelectedItem(selectedItem - 1);
-          //if (selectedItem === 0) setSelectedItem(-1);
-          if (selectedItem < 0) setSelectedItem(nitems - 1);
+          if (selectedItem > 0) newitem = selectedItem - 1;
+          if (selectedItem < 0) newitem = nitems - 1;
         }
         if (event.key === "ArrowDown") {
-          if (selectedItem < 0) return;
-          if (selectedItem < nitems - 1) setSelectedItem(selectedItem + 1);
-          if (selectedItem === nitems - 1) setSelectedItem(-1);
+          if (selectedItem >= 0) {
+            if (selectedItem < nitems - 1) newitem = selectedItem + 1;
+            if (selectedItem === nitems - 1) newitem = -1;
+          }
+        }
+        if (newitem !== null) {
+          setSelectedItem(newitem);
+          setKeynav(newitem);
         }
         return;
       }
@@ -58,7 +65,7 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
         }
       }
     },
-    [selectedButton, selectedItem, answers, setAnswers, onSelect, options, items]
+    [selectedButton, selectedItem, answers, setAnswers, onSelect, options, items, setKeynav]
   );
 
   useEffect(() => {
@@ -146,6 +153,7 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
         setSelectedButton={setSelectedButton}
         currentAnswer={currentAnswer}
         onSelect={onSelect}
+        keynav={keynav}
       />
       <div>
         <Button
@@ -183,13 +191,19 @@ const Items = ({
   selectedButton,
   setSelectedButton,
   onSelect,
+  keynav,
 }) => {
   const containerRef = useRef(null);
   const rowRefs = useRef([]);
 
-  if (!rowRefs.current.length === items.length)
-    rowRefs.current = new Array(items.length).fill(null);
-  scrollToMiddle(containerRef?.current, rowRefs?.current?.[selectedItem]?.current, 0.5);
+  useEffect(() => {
+    // yes, this is ugly, but we just want the autoscroll on keynav and it's a bother to
+    // move the refs upwards
+    if (!keynav) return;
+    if (!rowRefs.current.length === items.length)
+      rowRefs.current = new Array(items.length).fill(null);
+    scrollToMiddle(containerRef?.current, rowRefs?.current?.[keynav]?.current, 0.5);
+  }, [keynav, items]);
 
   return (
     <div
