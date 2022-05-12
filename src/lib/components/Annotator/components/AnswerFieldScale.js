@@ -99,16 +99,18 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
     >
       <div
         style={{
-          zIndex: 1,
-          position: "relative",
+          //zIndex: 1,
+          //position: "relative",
+          display: "flex",
+          justifyContent: "space-between",
+          borderBottom: "1px solid black",
+          background: "#7fb9eb",
         }}
       >
         <Label
           size="large"
           style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
+            //position: "absolute",
             maxWidth: "40%",
             background: "transparent",
             color: "black",
@@ -121,9 +123,7 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
         <Label
           size="large"
           style={{
-            position: "absolute",
-            right: 0,
-            top: 0,
+            //position: "absolute",
             maxWidth: "40%",
             textAlign: "right",
             background: "transparent",
@@ -210,7 +210,9 @@ const Items = ({
         return (
           <div key={itemIndex} style={{ paddingTop: "10px" }}>
             <div>
-              <div style={{ color: "black", width: "100%", textAlign: "center" }}>
+              <div
+                style={{ color: "black", width: "100%", textAlign: "center", padding: "0 15px" }}
+              >
                 <b>{itemlabel}</b>
               </div>
               <div style={{ width: "100%", textAlign: "center", color: "#1678c2" }}>
@@ -277,7 +279,6 @@ const Item = ({
             className="ripplebutton"
             style={{
               padding: "5px 0",
-
               backgroundColor: isCurrent ? null : option.color || bgcolor,
               //padding: "10px 0px",
               fontWeight: "bold",
