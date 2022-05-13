@@ -80,25 +80,39 @@ export const importSpanAnnotations = (annotationsArray, tokens, currentAnnotatio
 export const toggleSpanAnnotation = (annotations, newAnnotation, rm, keep_empty) => {
   // Add span annotations in a way that prevents double assignments of the same group to a token
   const id = createId(newAnnotation);
+  const newSpan = newAnnotation.span;
 
-  for (let index = newAnnotation.span[0]; index <= newAnnotation.span[1]; index++) {
+  for (let index = newSpan[0]; index <= newSpan[1]; index++) {
     // Check if there exists an annotation with the same variable+value at this position and if so delete it
     if (annotations[index]) {
       if (annotations[index][id]) {
         // if an annotation with the same id exists, iterating over it's span to remove entirely
         const old = annotations[index][id];
-        const span = old.span;
-        for (let i = span[0]; i <= span[1]; i++) {
+        const oldSpan = old.span;
+        for (let i = oldSpan[0]; i <= oldSpan[1]; i++) {
           // since we go from the span, we are actually certain the annotation exists at these indices
           // but we just double check for stability
           if (annotations[i]) {
             if (annotations[i][id]) {
+              console.log(i);
+              console.log(newSpan);
+              if (i < newSpan[0] || i > newSpan[1]) {
+                console.log("whaat");
+                // if the old annotation is outside of the new annotation span, don't delete this part, but
+                // update it's span to exclude the part covered by the new annotation
+                if (i > newSpan[1]) annotations[i][id].span[0] = newSpan[1] + 1;
+                if (i < newSpan[0]) annotations[i][id].span[1] = newSpan[0] - 1;
+                continue;
+              }
+
               if (
                 keep_empty &&
                 Object.values(annotations[i]).filter((a) => a.variable === old.variable).length ===
                   1
               ) {
-                annotations[i][createId({ ...old, value: "EMPTY" })] = {
+                // if keep_empty, don't remove the annotation, but replace it with value "EMPTY"
+                // (note that we still remove the old value below)
+                annotations[i][createId({ variable: old.variable, value: "EMPTY" })] = {
                   ...annotations[i][id],
                   value: "EMPTY",
                 };

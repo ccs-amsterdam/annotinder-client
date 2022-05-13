@@ -86,6 +86,7 @@ const Document = ({
         height: "100%",
         maxHeight: "100%",
         flexDirection: "column",
+        cursor: editMode ? "pointer" : null,
         //background: "grey",
       }}
     >

@@ -38,15 +38,20 @@ const NewCodePage = ({
   );
 
   const getExistingAnnotations = (variable) => {
-    const annMap = {};
+    let annMap = {};
 
     for (let i = span[0]; i <= span[1]; i++) {
       if (annotations?.[i]) {
         for (let id of Object.keys(annotations[i])) {
-          const a = annotations[i][id];
+          const a = { ...annotations[i][id] };
+
+          // In editmode, use the original span so that the full annotation is replaced/removed.
+          // In open annotation mode, only edit the span of the current selection
+          if (!editMode) a.span = span;
+
           if (a.variable !== variable) continue;
           const annId = a.span[0] + "_" + id;
-          annMap[annId] = { id, ...annotations[i][id] };
+          annMap[annId] = { id, ...a };
         }
       }
     }
@@ -146,10 +151,11 @@ const NewCodePage = ({
         if (!codeMap[o.value]) continue;
 
         // check if more than one annotation of same value in this span.
-        const multiple = existing.find((e) => e.id !== o.id && e.value === o.value);
 
+        const multiple = existing.find((e) => e.id !== o.id && e.value === o.value);
+        console.log("multiple", multiple);
         if (multiple) {
-          // if multiple, add text snippet as label (and move code to tag) to disambiguate
+          // if multiple, add text snippet as label (and move code to tag) to disambiguate,
           buttonOptions.push({
             tag: o.value,
             label: '"' + getTextSnippet(tokens, o.span) + '"',

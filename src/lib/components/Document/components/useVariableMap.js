@@ -5,6 +5,22 @@ export default function useVariableMap(variables, selectedVariable, importedCode
   const [editMode, setEditMode] = useState(false);
   const [fullVariableMap, setFullVariableMap] = useState(null);
   const [variableMap, setVariableMap] = useState(null);
+  const [manualEditMode, setManualEditMode] = useState(false);
+
+  useEffect(() => {
+    const setManualMode = (e) => {
+      setManualEditMode(e.ctrlKey || e.altKey);
+    };
+
+    ["keydown", "mousedown", "keyup"].forEach((e) => {
+      window.addEventListener(e, setManualMode);
+    });
+    return () => {
+      ["keydown", "mousedown", "keyup"].forEach((e) => {
+        window.removeEventListener(e, setManualMode);
+      });
+    };
+  }, [setManualEditMode]);
 
   useEffect(() => {
     // creates fullVariableMap
@@ -59,6 +75,6 @@ export default function useVariableMap(variables, selectedVariable, importedCode
     setEditMode(vmap?.[selectedVariable]?.editMode || selectedVariable === "EDIT ALL");
   }, [importedCodes, fullVariableMap, selectedVariable, setVariableMap, setEditMode]);
 
-  if (!selectedVariable) return [null, editMode];
-  return [variableMap, editMode];
+  if (!selectedVariable) return [null, manualEditMode || editMode];
+  return [variableMap, manualEditMode || editMode];
 }

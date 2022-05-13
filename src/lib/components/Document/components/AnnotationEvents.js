@@ -61,6 +61,12 @@ export const AnnotationEvents = ({
   }, [tokens, setCurrentToken, setTokenSelection]);
 
   useEffect(() => {
+    // for when manual edit mode releases
+    setHoldArrow(false);
+    if (!editMode) setMover(null);
+  }, [editMode, setMover, holdArrow]);
+
+  useEffect(() => {
     // When arrow key is held, walk through tokens with increasing speed
     // this loops itself by updating mover (an object with position information)
     // this is like setIntervall, but allows custom time intervalls,

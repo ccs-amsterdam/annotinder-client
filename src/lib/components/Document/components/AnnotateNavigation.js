@@ -75,7 +75,7 @@ const showAnnotations = (tokens, annotations, variableMap, editMode) => {
     if (!token.ref?.current) continue;
 
     if (editMode) {
-      if (token.ref.current.style.cursor !== "default") token.ref.current.style.cursor = "default";
+      if (token.ref.current.style.cursor !== "default") token.ref.current.style.cursor = null;
     } else {
       if (token.ref.current.style.cursor !== "text") token.ref.current.style.cursor = "text";
     }

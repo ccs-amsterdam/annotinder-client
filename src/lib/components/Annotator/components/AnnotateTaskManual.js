@@ -31,10 +31,10 @@ const AnnotateTaskManual = ({ fullScreenNode }) => {
             maxWidth: "700px",
           }}
         >
-          <Table structured compact basic="very" unstackable>
+          <Table celled structured unstackable>
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell width={3}></Table.HeaderCell>
+                <Table.HeaderCell width={5}></Table.HeaderCell>
                 <Table.HeaderCell>Keyboard</Table.HeaderCell>
                 <Table.HeaderCell>Mouse</Table.HeaderCell>
                 <Table.HeaderCell>Touchpad</Table.HeaderCell>
@@ -69,14 +69,7 @@ const AnnotateTaskManual = ({ fullScreenNode }) => {
                   <i>tab</i> twice to begin, then once to close
                 </Table.Cell>
               </Table.Row>
-              <Table.Row>
-                <Table.Cell>
-                  <strong>Edit/remove code</strong>
-                </Table.Cell>
-                <Table.Cell colSpan="3">
-                  Select annotated words to overwrite or delete the code
-                </Table.Cell>
-              </Table.Row>
+
               <Table.Row>
                 <Table.Cell>
                   <strong>
@@ -98,6 +91,43 @@ const AnnotateTaskManual = ({ fullScreenNode }) => {
                   <i>ctrl+Enter</i> or <i>alt+Enter</i>
                 </Table.Cell>
                 <Table.Cell colSpan="2">Use the next unit button</Table.Cell>
+              </Table.Row>
+              <br />
+              <Table.Row>
+                <Table.Cell>
+                  <strong>Edit/remove code</strong>
+                </Table.Cell>
+                <Table.Cell colSpan="3">
+                  Select annotated words to overwrite or delete the code
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell>
+                  <strong>Edit mode</strong>
+                </Table.Cell>
+                <Table.Cell colSpan="3">
+                  If you hold <i>ctrl</i> or <i>alt</i>, you work in edit mode. Note that some
+                  codingjobs always have Edit mode enabled.
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell>
+                  <strong>Edit mode: navigation</strong>
+                </Table.Cell>
+
+                <Table.Cell>
+                  <i>Arrow keys</i> select last/next annotation
+                </Table.Cell>
+                <Table.Cell colSpan="2">Can only select existing annotations</Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell>
+                  <strong>Edit mode: update/delete</strong>
+                </Table.Cell>
+                <Table.Cell colSpan="3">
+                  Select a single token to get entire annotation, and update or delete this
+                  annotation
+                </Table.Cell>
               </Table.Row>
               {/* <Table.Row>
               <Table.Cell>
@@ -130,6 +160,10 @@ const AnnotateTaskManual = ({ fullScreenNode }) => {
                     </ListItem>
                     <ListItem as="li">
                       use <i>escape</i> to close popup and <i>delete</i> to remove code
+                    </ListItem>
+                    <ListItem as="li">
+                      hold <i>ctrl</i> or <i>alt</i> to select multiple codes without closing the
+                      popup
                     </ListItem>
                   </List>
                 </Table.HeaderCell>
