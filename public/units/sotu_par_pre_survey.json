@@ -7,11 +7,12 @@
         "questions": [
           {
             "name": "email",
-            "type": "text",
+            "type": "inputs",
             "items": [
               { "name": "email", "autocomplete": "email" },
-              { "name": "blabla", "multiple": true },
-              { "name": "blablablabla", "multiple": true }
+              { "name": "blabla", "multiple": true, "optional": true },
+              { "name": "age", "type": "number", "min": 5, "max": 120 },
+              { "name": "life_story", "label": "life story", "type": "textarea" }
             ]
           }
         ]

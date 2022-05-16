@@ -4,7 +4,7 @@ import Confirm from "./AnswerFieldConfirm";
 import Scale from "./AnswerFieldScale";
 import SearchCode from "./AnswerFieldSearchCode";
 import SelectCode from "./AnswerFieldSelectCode";
-import Text from "./AnswerFieldText";
+import Inputs from "./AnswerFieldInputs";
 
 const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe, blockEvents }) => {
   const question = questions[questionIndex];
@@ -22,7 +22,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
   if (question.type === "scale")
     return (
       <Scale
-        items={question.items || ["single_item"]}
+        items={question.items || [""]}
         options={question.options}
         currentAnswer={currentAnswer}
         onSelect={onSelect}
@@ -63,10 +63,10 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
       />
     );
 
-  if (question.type === "text")
+  if (question.type === "inputs")
     return (
-      <Text
-        items={question.items || ["single_item"]}
+      <Inputs
+        items={question.items || [""]}
         currentAnswer={currentAnswer}
         onSelect={onSelect}
         blockEvents={blockEvents}

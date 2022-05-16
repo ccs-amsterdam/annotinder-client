@@ -2,7 +2,11 @@ import React, { useEffect, useState, useRef, createRef } from "react";
 import { Button, Form } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
 
-const Text = ({ items, currentAnswer, onSelect, blockEvents }) => {
+/**
+ * Answerfield for (multiple) open input items, like text, number
+ * @returns
+ */
+const Inputs = ({ items, currentAnswer, onSelect, blockEvents }) => {
   const [selectedItem, setSelectedItem] = useState(0);
   const [answers, setAnswers] = useState(null);
 
@@ -18,17 +22,21 @@ const Text = ({ items, currentAnswer, onSelect, blockEvents }) => {
   }, []);
 
   useEffect(() => {
+    // read currentAnswer into answers state
     setSelectedItem(0);
-    console.log(currentAnswer);
     if (currentAnswer && Array.isArray(currentAnswer) && currentAnswer.length === items.length) {
-      setAnswers(currentAnswer);
+      setAnswers(currentAnswer.map((a, i) => ({ ...a, optional: items?.[i]?.optional })));
     } else {
-      const answers = items.map((item) => ({ item: item?.name || item, value: null }));
+      const answers = items.map((item) => ({
+        item: item?.name || item,
+        value: null,
+        optional: item?.optional,
+      }));
       setAnswers(answers);
     }
   }, [currentAnswer, items, onSelect, setSelectedItem]);
 
-  const done = answers && !answers.some((a) => a.value === null);
+  const done = answers && !answers.some((a) => (a.value === null || a.invalid) && !a.optional);
   if (!answers) return null;
 
   return (
@@ -57,7 +65,7 @@ const Text = ({ items, currentAnswer, onSelect, blockEvents }) => {
           fluid
           disabled={!done}
           icon={done ? "play" : null}
-          content={done ? "Continue" : "Please fill in all the required text fields"}
+          content={done ? "Continue" : "Please complete the form to continue"}
           style={{
             flex: "1 1 0px",
             textAlign: "center",
@@ -147,10 +155,11 @@ const Items = ({
       }}
     >
       {items.map((itemObj, itemIndex) => {
-        const itemlabel = itemObj.label || itemObj.name || itemObj;
-        let margin = "0px 10px";
-        if (itemIndex === 0) margin = "auto 10px 10px 10px";
-        if (itemIndex === items.length - 1) margin = "10px 10px auto 10px";
+        let itemlabel = itemObj.label || itemObj.name || itemObj;
+
+        let margin = "0px 0px";
+        if (itemIndex === 0) margin = "auto 0px 0px 0px";
+        if (itemIndex === items.length - 1) margin = "0px 0px auto 0px";
         return (
           <div
             key={itemIndex}
@@ -158,9 +167,13 @@ const Items = ({
           >
             <Form onSubmit={(e, d) => setSelectedItem((current) => current + 1)}>
               <Form.Field>
-                <label style={{ color: "black" }}>{itemlabel}</label>
+                <label style={{ color: "black" }}>
+                  {itemlabel}
+                  <i style={{ color: "grey" }}>{itemObj?.optional ? " (optional)" : ""}</i>
+                </label>
 
-                <TextInput
+                <Input
+                  item={itemObj}
                   rowRefs={rowRefs}
                   answers={answers}
                   setAnswers={setAnswers}
@@ -175,21 +188,66 @@ const Items = ({
   );
 };
 
-const TextInput = ({ rowRefs, answers, setAnswers, itemIndex }) => {
-  const onChange = (e) => {
-    if (!answers?.[itemIndex]) return;
-    answers[itemIndex].value = e.target.value;
-    setAnswers([...answers]);
-  };
+const Input = ({ item, rowRefs, answers, setAnswers, itemIndex }) => {
+  const ref = rowRefs?.current?.[itemIndex];
+
+  if (item?.type === "number") {
+    return (
+      <input
+        key={item.name}
+        ref={ref}
+        type={"number"}
+        min={item?.min}
+        max={item?.max}
+        value={Number(answers?.[itemIndex]?.value) || null}
+        style={{
+          maxWidth: "150px",
+          textAlign: "center",
+          background: answers[itemIndex].invalid ? "#ff000088" : "white",
+        }}
+        onChange={(e) => {
+          if (!answers?.[itemIndex]) return;
+          let value = e.target.value;
+          answers[itemIndex].value = value;
+          answers[itemIndex].invalid =
+            isNaN(value) || (item?.min && value < item.min) || (item?.max && value > item.max);
+          setAnswers([...answers]);
+        }}
+      />
+    );
+  }
+
+  if (item?.type === "textarea") {
+    return (
+      <textarea
+        key={item.name}
+        ref={ref}
+        rows={item?.rows || 5}
+        value={answers?.[itemIndex]?.value}
+        onChange={(e) => {
+          if (!answers?.[itemIndex]) return;
+          answers[itemIndex].value = e.target.value;
+          if (answers[itemIndex].value === "") answers[itemIndex].value = null;
+          setAnswers([...answers]);
+        }}
+      ></textarea>
+    );
+  }
 
   return (
     <input
-      ref={rowRefs?.current?.[itemIndex]}
+      key={item.name}
+      ref={ref}
       value={answers?.[itemIndex]?.value || ""}
-      style={{ maxWidth: "300px" }}
-      onChange={onChange}
+      style={{ maxWidth: "300px", textAlign: "center" }}
+      onChange={(e) => {
+        if (!answers?.[itemIndex]) return;
+        answers[itemIndex].value = e.target.value;
+        if (answers[itemIndex].value === "") answers[itemIndex].value = null;
+        setAnswers([...answers]);
+      }}
     />
   );
 };
 
-export default Text;
+export default Inputs;

@@ -146,8 +146,9 @@ const QuestionForm = ({
               style={{
                 fontSize: "10px",
                 position: "absolute",
-                float: "right",
+                right: "12px",
                 paddingTop: "4px",
+                marginRight: "0",
                 color: "lightgreen",
                 transform: "scale(3)",
               }}

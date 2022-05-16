@@ -11,7 +11,6 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
   const [selectedItem, setSelectedItem] = useState(0);
   const [selectedButton, setSelectedButton] = useState(null);
   const [answers, setAnswers] = useState(null);
-  const [keynav, setKeynav] = useState(null);
   //const [confirmMsg, setConfirmMsg] = useState(false);
 
   const onKeydown = React.useCallback(
@@ -46,7 +45,6 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
         }
         if (newitem !== null) {
           setSelectedItem(newitem);
-          setKeynav(newitem);
         }
         return;
       }
@@ -65,7 +63,7 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
         }
       }
     },
-    [selectedButton, selectedItem, answers, setAnswers, onSelect, options, items, setKeynav]
+    [selectedButton, selectedItem, answers, setAnswers, onSelect, options, items]
   );
 
   useEffect(() => {
@@ -153,7 +151,6 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
         setSelectedButton={setSelectedButton}
         currentAnswer={currentAnswer}
         onSelect={onSelect}
-        keynav={keynav}
       />
 
       <div>
@@ -192,7 +189,6 @@ const Items = ({
   selectedButton,
   setSelectedButton,
   onSelect,
-  keynav,
 }) => {
   const containerRef = useRef(null);
   const rowRefs = useRef([]);
@@ -202,11 +198,10 @@ const Items = ({
   }, [items, rowRefs]);
 
   useEffect(() => {
-    // yes, this is ugly, but we just want the autoscroll on keynav and it's a bother to
-    // move the refs upwards
-    if (!keynav) return;
-    scrollToMiddle(containerRef?.current, rowRefs?.current?.[keynav]?.current, 0.5);
-  }, [keynav, items]);
+    if (selectedItem < 0) return;
+    console.log(selectedItem);
+    scrollToMiddle(containerRef?.current, rowRefs?.current?.[selectedItem]?.current, 0.5);
+  }, [selectedItem, items, rowRefs]);
 
   return (
     <div
@@ -245,11 +240,9 @@ const Items = ({
                 answers={answers}
                 setAnswers={setAnswers}
                 selectedItem={selectedItem}
-                setSelectedItem={setSelectedItem}
                 itemIndex={itemIndex}
                 options={options}
                 selectedButton={selectedButton}
-                setSelectedButton={setSelectedButton}
                 onSelect={onSelect}
               />
             </div>
@@ -264,11 +257,9 @@ const Item = ({
   answers,
   setAnswers,
   selectedItem,
-  setSelectedItem,
   itemIndex,
   options,
   selectedButton,
-  setSelectedButton,
   onSelect,
 }) => {
   const colorstep = 200 / options.length;
@@ -293,7 +284,6 @@ const Item = ({
             style={{
               padding: "5px 0",
               backgroundColor: isCurrent ? null : option.color || bgcolor,
-              //padding: "10px 0px",
               fontWeight: "bold",
               fontSize: "1em",
               textShadow: "0px 0px 5px #ffffff77",
@@ -305,8 +295,6 @@ const Item = ({
             value={option.code}
             compact
             onClick={(e, d) => {
-              setSelectedButton(buttonIndex);
-              setSelectedItem(itemIndex);
               const newanswers = [...answers];
               newanswers[itemIndex].value = options[buttonIndex].code;
               onSelect({ code: newanswers }, true);

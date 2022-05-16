@@ -7,7 +7,7 @@
 // -- questions where multiple codes can be selected correspond to multiple annotations as usual,
 //    and in the question answers this is represented as an array of objects
 
-const HAS_ITEMS = ["scale", "text"];
+const HAS_ITEMS = ["scale", "inputs"];
 
 export const getAnswersFromAnnotations = (unit, tokens, questions, setAnswers) => {
   const answers = [];
@@ -75,6 +75,7 @@ const getAnswerValues = (annotations, answer, question) => {
   if (HAS_ITEMS.includes(question.type)) {
     // for question types that support items, loop over all items, create the variable (questionname.item)
     // then fill an array with matched annotations
+    question.items = question.items || [""];
     return question.items.map((item) => {
       const itemname = item?.name ?? item; // item can be a string or {name, label}
       for (let annotation of annotations || []) {
