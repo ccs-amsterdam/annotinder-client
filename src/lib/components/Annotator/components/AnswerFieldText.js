@@ -7,7 +7,19 @@ const Text = ({ items, currentAnswer, onSelect, blockEvents }) => {
   const [answers, setAnswers] = useState(null);
 
   useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      return "If you leave now, any changes made to text fields will not be saved.";
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  useEffect(() => {
     setSelectedItem(0);
+    console.log(currentAnswer);
     if (currentAnswer && Array.isArray(currentAnswer) && currentAnswer.length === items.length) {
       setAnswers(currentAnswer);
     } else {
@@ -16,8 +28,7 @@ const Text = ({ items, currentAnswer, onSelect, blockEvents }) => {
     }
   }, [currentAnswer, items, onSelect, setSelectedItem]);
 
-  const nAnswered = 0;
-  const done = false;
+  const done = answers && !answers.some((a) => a.value === null);
   if (!answers) return null;
 
   return (
@@ -30,29 +41,30 @@ const Text = ({ items, currentAnswer, onSelect, blockEvents }) => {
         justifyContent: "space-between",
       }}
     >
-      <div>
-        <Items
-          items={items}
-          onSelect={onSelect}
-          selectedItem={selectedItem}
-          setSelectedItem={setSelectedItem}
-          blockEvents={blockEvents}
-        />
-      </div>
+      <Items
+        answers={answers}
+        setAnswers={setAnswers}
+        items={items}
+        onSelect={onSelect}
+        selectedItem={selectedItem}
+        setSelectedItem={setSelectedItem}
+        blockEvents={blockEvents}
+      />
+
       <div>
         <Button
           primary
           fluid
           disabled={!done}
           icon={done ? "play" : null}
-          content={done ? "Continue" : `${nAnswered} / ${answers.length}`}
+          content={done ? "Continue" : "Please fill in all the required text fields"}
           style={{
             flex: "1 1 0px",
             textAlign: "center",
             color: done ? null : "black",
             margin: "0",
             background: done ? null : "white",
-            border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
+            border: `5px solid ${selectedItem === items.length ? "black" : "#ece9e9"}`,
           }}
           onClick={() => {
             // this is a bit of an odd one out. We didn't anticipate having multiple answers,
@@ -65,14 +77,25 @@ const Text = ({ items, currentAnswer, onSelect, blockEvents }) => {
   );
 };
 
-const Items = ({ items, onSelect, selectedItem, setSelectedItem, blockEvents }) => {
+const Items = ({
+  answers,
+  setAnswers,
+  items,
+  onSelect,
+  selectedItem,
+  setSelectedItem,
+  blockEvents,
+}) => {
   const containerRef = useRef(null);
   const rowRefs = useRef([]);
 
-  console.log(selectedItem);
+  useEffect(() => {
+    rowRefs.current = items.map(() => createRef());
+  }, [items, rowRefs]);
+
   useEffect(() => {
     const onKeydown = (e) => {
-      if (e.keyCode === 9) {
+      if (e.keyCode === 9 || e.KeyCode) {
         // tab key
         e.preventDefault();
         e.stopPropagation();
@@ -85,15 +108,13 @@ const Items = ({ items, onSelect, selectedItem, setSelectedItem, blockEvents }) 
           } else {
             newselecteditem = selectedItem >= items.length ? 0 : selectedItem + 1;
           }
-          if (e.shift)
-            scrollToMiddle(
-              containerRef?.current,
-              rowRefs?.current?.[newselecteditem]?.current,
-              0.5
-            );
-          rowRefs?.current?.[newselecteditem]?.current?.focus();
           return newselecteditem;
         });
+      }
+
+      if ((e.keyCode === 32 || e.keyCode === 13) && selectedItem === items.length) {
+        if (!answers.some((a) => a.value === null)) onSelect({ code: answers });
+        return;
       }
     };
 
@@ -103,7 +124,17 @@ const Items = ({ items, onSelect, selectedItem, setSelectedItem, blockEvents }) 
     return () => {
       window.removeEventListener("keydown", onKeydown);
     };
-  }, [blockEvents, items, setSelectedItem, containerRef, rowRefs]);
+  }, [blockEvents, items, onSelect, answers, selectedItem, setSelectedItem]);
+
+  useEffect(() => {
+    scrollToMiddle(containerRef?.current, rowRefs?.current?.[selectedItem]?.current, 0.5);
+    const selectedel = rowRefs?.current?.[selectedItem]?.current;
+    if (selectedel) {
+      setTimeout(() => selectedel.focus(), 10); // otherwise react keeps complaining
+    } else {
+      setTimeout(() => document.activeElement.blur(), 10);
+    }
+  }, [selectedItem, containerRef, rowRefs]);
 
   return (
     <div
@@ -111,24 +142,53 @@ const Items = ({ items, onSelect, selectedItem, setSelectedItem, blockEvents }) 
       style={{
         flex: "1 1 auto",
         overflow: "auto",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       {items.map((itemObj, itemIndex) => {
         const itemlabel = itemObj.label || itemObj.name || itemObj;
-        const ref = createRef();
-        rowRefs.current[itemIndex] = ref;
+        let margin = "0px 10px";
+        if (itemIndex === 0) margin = "auto 10px 10px 10px";
+        if (itemIndex === items.length - 1) margin = "10px 10px auto 10px";
         return (
-          <div key={itemIndex} style={{ paddingTop: "10px", width: "100%", textAlign: "center" }}>
-            <Form onSubmit={(e, d) => console.log(d.value)}>
+          <div
+            key={itemIndex}
+            style={{ padding: "10px", width: "100%", textAlign: "center", margin }}
+          >
+            <Form onSubmit={(e, d) => setSelectedItem((current) => current + 1)}>
               <Form.Field>
                 <label style={{ color: "black" }}>{itemlabel}</label>
-                <input style={{ maxWidth: "300px" }} />
+
+                <TextInput
+                  rowRefs={rowRefs}
+                  answers={answers}
+                  setAnswers={setAnswers}
+                  itemIndex={itemIndex}
+                />
               </Form.Field>
             </Form>
           </div>
         );
       })}
     </div>
+  );
+};
+
+const TextInput = ({ rowRefs, answers, setAnswers, itemIndex }) => {
+  const onChange = (e) => {
+    if (!answers?.[itemIndex]) return;
+    answers[itemIndex].value = e.target.value;
+    setAnswers([...answers]);
+  };
+
+  return (
+    <input
+      ref={rowRefs?.current?.[itemIndex]}
+      value={answers?.[itemIndex]?.value || ""}
+      style={{ maxWidth: "300px" }}
+      onChange={onChange}
+    />
   );
 };
 

@@ -15,6 +15,19 @@ const App = () => {
     width: document.documentElement.clientWidth,
   });
 
+  // useEffect(() => {
+  //   const handleBeforeUnload = (e) => {
+  //     e.preventDefault();
+  //     const msg = "Are you sure you want to leave?";
+  //     e.returnValue = msg;
+  //     return msg;
+  //   };
+  //   window.addEventListener("beforeunload", (e) => handleBeforeUnload(e));
+  //   return () => {
+  //     window.removeEventListener("beforeunload", (e) => handleBeforeUnload(e));
+  //   };
+  // }, []);
+
   useEffect(() => {
     // use window.innerHeight for height, because vh on mobile is weird (can include the address bar)
     // use document.documentElement.clientwidth for width, to exclude the scrollbar

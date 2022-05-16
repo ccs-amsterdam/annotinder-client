@@ -10,7 +10,8 @@
             "type": "text",
             "items": [
               { "name": "email", "autocomplete": "email" },
-              { "name": "blabla", "multiple": true }
+              { "name": "blabla", "multiple": true },
+              { "name": "blablablabla", "multiple": true }
             ]
           }
         ]

@@ -155,6 +155,7 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
         onSelect={onSelect}
         keynav={keynav}
       />
+
       <div>
         <Button
           primary
@@ -197,11 +198,13 @@ const Items = ({
   const rowRefs = useRef([]);
 
   useEffect(() => {
+    rowRefs.current = items.map(() => createRef());
+  }, [items, rowRefs]);
+
+  useEffect(() => {
     // yes, this is ugly, but we just want the autoscroll on keynav and it's a bother to
     // move the refs upwards
     if (!keynav) return;
-    if (!rowRefs.current.length === items.length)
-      rowRefs.current = new Array(items.length).fill(null);
     scrollToMiddle(containerRef?.current, rowRefs?.current?.[keynav]?.current, 0.5);
   }, [keynav, items]);
 
@@ -210,16 +213,15 @@ const Items = ({
       ref={containerRef}
       style={{
         flex: "1 1 auto",
-        //justifyContent: "space-around",
         overflow: "auto",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       {items.map((itemObj, itemIndex) => {
         const itemlabel = itemObj.label || itemObj.name || itemObj;
-        const ref = createRef();
-        rowRefs.current[itemIndex] = ref;
         return (
-          <div key={itemIndex} style={{ paddingTop: "10px" }}>
+          <div key={itemIndex} style={{ paddingTop: "10px", margin: "auto 10px" }}>
             <div>
               <div
                 style={{ color: "black", width: "100%", textAlign: "center", padding: "0 15px" }}
@@ -231,7 +233,7 @@ const Items = ({
               </div>
             </div>
             <div
-              ref={ref}
+              ref={rowRefs?.current?.[itemIndex]}
               style={{
                 display: "flex",
                 maxWidth: "100%",
@@ -282,7 +284,7 @@ const Item = ({
     const color = colorint < 100 ? "white" : "black";
 
     return (
-      <div style={{ flex: "1 1 0px" }}>
+      <div key={option.code} style={{ flex: "1 1 0px" }}>
         <Ref key={option.code} innerRef={option.ref}>
           <Button
             fluid

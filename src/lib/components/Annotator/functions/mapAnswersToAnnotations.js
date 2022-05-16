@@ -7,6 +7,8 @@
 // -- questions where multiple codes can be selected correspond to multiple annotations as usual,
 //    and in the question answers this is represented as an array of objects
 
+const HAS_ITEMS = ["scale", "text"];
+
 export const getAnswersFromAnnotations = (unit, tokens, questions, setAnswers) => {
   const answers = [];
   if (!unit.annotations) unit.annotations = [];
@@ -70,7 +72,7 @@ const getAnswerValues = (annotations, answer, question) => {
   // loops over all annotations (in unit) to find the ones that match the question annotation
   // (i.e. that have the same variable, field, offset and length)
 
-  if (["scale", "text"].includes(question.type)) {
+  if (HAS_ITEMS.includes(question.type)) {
     // for question types that support items, loop over all items, create the variable (questionname.item)
     // then fill an array with matched annotations
     return question.items.map((item) => {
@@ -109,7 +111,7 @@ export const addAnnotationsFromAnswer = (answer, annotations, question) => {
   // creates new ones.
   if (!annotations) annotations = [];
 
-  if (question.type === "scale") {
+  if (HAS_ITEMS.includes(question.type)) {
     valueloop: for (let valueObj of answer.values) {
       for (let annotation of annotations) {
         if (isMatch(annotation, answer, valueObj.item)) {
