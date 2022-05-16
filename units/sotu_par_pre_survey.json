@@ -2,7 +2,26 @@
   {
     "unit": {
       "unit_id": "email",
-      "markdown_field": "<center>This here is a markdown *string*<center>",
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "email",
+            "type": "inputs",
+            "items": [
+              { "name": "email", "type": "email" },
+              { "name": "blabla", "multiple": true, "optional": true },
+              { "name": "age", "type": "number", "min": 5, "max": 120 },
+              { "name": "life_story", "label": "life story", "type": "textarea" }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "welcome",
       "text_fields": [
         {
           "name": "title",
