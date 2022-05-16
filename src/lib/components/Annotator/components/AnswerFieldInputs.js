@@ -234,10 +234,35 @@ const Input = ({ item, rowRefs, answers, setAnswers, itemIndex }) => {
     );
   }
 
+  if (item?.type === "email")
+    return (
+      <input
+        type="email"
+        name="email"
+        key={item.name}
+        ref={ref}
+        autocomplete={"email"}
+        value={answers?.[itemIndex]?.value || ""}
+        style={{
+          maxWidth: "300px",
+          textAlign: "center",
+          background: answers[itemIndex].invalid ? "#ff000088" : "white",
+        }}
+        onChange={(e) => {
+          if (!answers?.[itemIndex]) return;
+          answers[itemIndex].value = e.target.value;
+          answers[itemIndex].invalid = !!e?.target?.validationMessage;
+          if (answers[itemIndex].value === "") answers[itemIndex].value = null;
+          setAnswers([...answers]);
+        }}
+      />
+    );
+
   return (
     <input
       key={item.name}
       ref={ref}
+      autocomplete={item?.autocomplete}
       value={answers?.[itemIndex]?.value || ""}
       style={{ maxWidth: "300px", textAlign: "center" }}
       onChange={(e) => {
