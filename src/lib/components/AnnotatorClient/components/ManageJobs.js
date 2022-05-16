@@ -105,35 +105,45 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }) => {
         style={{ paddingLeft: "", textAlign: "left" }}
       >
         <Table.Body>
-          <Table.Row>
-            <Table.Cell width="8" style={leftColStyle}>
+          <Table.Row key="id">
+            <Table.Cell key="name" width="8" style={leftColStyle}>
               ID
             </Table.Cell>
-            <Table.Cell width="8">{job?.id}</Table.Cell>
+            <Table.Cell key="value" width="8">
+              {job?.id}
+            </Table.Cell>
           </Table.Row>
-          <Table.Row>
-            <Table.Cell style={leftColStyle}>Units</Table.Cell>
-            <Table.Cell>{job?.n_total}</Table.Cell>
+          <Table.Row key="units">
+            <Table.Cell key="name" style={leftColStyle}>
+              Units
+            </Table.Cell>
+            <Table.Cell key="value">{job?.n_total}</Table.Cell>
           </Table.Row>
 
           {job?.jobset_details?.map((js, i) => {
             return (
-              <Table.Row>
-                <Table.Cell style={leftColStyle}>{i === 0 ? "Job sets" : ""}</Table.Cell>
-                <Table.Cell>
+              <Table.Row key={"set" + i}>
+                <Table.Cell key="name" style={leftColStyle}>
+                  {i === 0 ? "Job sets" : ""}
+                </Table.Cell>
+                <Table.Cell key="value">
                   {js.name} <i>({js.n_units} units</i>)
                 </Table.Cell>
               </Table.Row>
             );
           })}
-          <Table.Row>
-            <Table.Cell style={leftColStyle}>Rule set</Table.Cell>
-            <Table.Cell>{job?.rules?.ruleset}</Table.Cell>
+          <Table.Row key="ruleset">
+            <Table.Cell key="name" style={leftColStyle}>
+              Rule set
+            </Table.Cell>
+            <Table.Cell key="value">{job?.rules?.ruleset}</Table.Cell>
           </Table.Row>
 
-          <Table.Row>
-            <Table.Cell style={leftColStyle}>Archived</Table.Cell>
-            <Table.Cell>
+          <Table.Row key="archived">
+            <Table.Cell key="name" style={leftColStyle}>
+              Archived
+            </Table.Cell>
+            <Table.Cell key="value">
               <Checkbox
                 toggle
                 checked={job.archived}
@@ -143,9 +153,11 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }) => {
               />
             </Table.Cell>
           </Table.Row>
-          <Table.Row>
-            <Table.Cell style={leftColStyle}>Restricted</Table.Cell>
-            <Table.Cell>
+          <Table.Row key="restricted">
+            <Table.Cell key="name" style={leftColStyle}>
+              Restricted
+            </Table.Cell>
+            <Table.Cell key="value">
               <Checkbox
                 toggle
                 checked={job.restricted}
@@ -155,12 +167,14 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }) => {
               />
             </Table.Cell>
           </Table.Row>
-          <Table.Row>
+          <Table.Row key="jobusers">
             <JobUsers backend={backend} job={job} />
           </Table.Row>
-          <Table.Row>
-            <Table.Cell style={leftColStyle}>Unregistered coder</Table.Cell>
-            <Table.Cell>
+          <Table.Row key="unregistered">
+            <Table.Cell key="name" style={leftColStyle}>
+              Unregistered coder
+            </Table.Cell>
+            <Table.Cell key="value">
               <JobTokenButton jobId={jobId} backend={backend} />
             </Table.Cell>
           </Table.Row>

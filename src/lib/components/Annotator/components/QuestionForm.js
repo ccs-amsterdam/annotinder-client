@@ -28,7 +28,8 @@ const QuestionForm = ({
     if (!questions) return;
     getAnswersFromAnnotations(unit, tokens, questions, setAnswers);
     blockAnswer.current = false;
-  }, [unit, tokens, setAnswers, questions]);
+    setQuestionIndex(0);
+  }, [unit, tokens, setAnswers, setQuestionIndex, questions]);
 
   useEffect(() => {
     if (!questions?.[questionIndex] || !unit) return null;
@@ -187,6 +188,7 @@ const QuestionForm = ({
             padding: "0",
             overflowY: "auto",
             height: "100%",
+            minHeight: "50px", // safety net for when mobile keyboard pops up
             width: "100%",
             margin: "0",
             fontSize: "inherit",

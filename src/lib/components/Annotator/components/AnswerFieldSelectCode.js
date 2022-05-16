@@ -91,6 +91,7 @@ const SelectCode = React.memo(
 
         return (
           <div
+            key={option.code}
             style={{
               flex: true
                 ? `${Math.max(1 / perRow, 1 / options.length)} 1 0px`

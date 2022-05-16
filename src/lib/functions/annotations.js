@@ -94,10 +94,7 @@ export const toggleSpanAnnotation = (annotations, newAnnotation, rm, keep_empty)
           // but we just double check for stability
           if (annotations[i]) {
             if (annotations[i][id]) {
-              console.log(i);
-              console.log(newSpan);
               if (i < newSpan[0] || i > newSpan[1]) {
-                console.log("whaat");
                 // if the old annotation is outside of the new annotation span, don't delete this part, but
                 // update it's span to exclude the part covered by the new annotation
                 if (i > newSpan[1]) annotations[i][id].span[0] = newSpan[1] + 1;

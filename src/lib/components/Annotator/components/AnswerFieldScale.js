@@ -199,7 +199,6 @@ const Items = ({
 
   useEffect(() => {
     if (selectedItem < 0) return;
-    console.log(selectedItem);
     scrollToMiddle(containerRef?.current, rowRefs?.current?.[selectedItem]?.current, 0.5);
   }, [selectedItem, items, rowRefs]);
 
@@ -218,9 +217,7 @@ const Items = ({
         return (
           <div key={itemIndex} style={{ paddingTop: "10px", margin: "auto 10px" }}>
             <div>
-              <div
-                style={{ color: "black", width: "100%", textAlign: "center", padding: "0 15px" }}
-              >
+              <div style={{ color: "black", width: "100%", textAlign: "center", padding: "0 5px" }}>
                 <b>{itemlabel}</b>
               </div>
               <div style={{ width: "100%", textAlign: "center", color: "#1678c2" }}>

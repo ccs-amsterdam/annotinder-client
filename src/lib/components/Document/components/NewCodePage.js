@@ -153,7 +153,6 @@ const NewCodePage = ({
         // check if more than one annotation of same value in this span.
 
         const multiple = existing.find((e) => e.id !== o.id && e.value === o.value);
-        console.log("multiple", multiple);
         if (multiple) {
           // if multiple, add text snippet as label (and move code to tag) to disambiguate,
           buttonOptions.push({
