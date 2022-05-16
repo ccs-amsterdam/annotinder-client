@@ -70,7 +70,7 @@ const getAnswerValues = (annotations, answer, question) => {
   // loops over all annotations (in unit) to find the ones that match the question annotation
   // (i.e. that have the same variable, field, offset and length)
 
-  if (question.type === "scale") {
+  if (["scale", "text"].includes(question.type)) {
     // for question types that support items, loop over all items, create the variable (questionname.item)
     // then fill an array with matched annotations
     return question.items.map((item) => {

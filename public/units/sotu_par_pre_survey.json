@@ -2,16 +2,16 @@
   {
     "unit": {
       "unit_id": "email",
-<<<<<<< HEAD
-      "markdown_field": "<center>This here is a markdown *string*<center>",
-=======
       "codebook": {
         "type": "questions",
         "questions": [
           {
             "name": "email",
             "type": "text",
-            "autocomplete": true
+            "items": [
+              { "name": "email", "autocomplete": "email" },
+              { "name": "blabla", "multiple": true }
+            ]
           }
         ]
       }
@@ -20,7 +20,6 @@
   {
     "unit": {
       "unit_id": "welcome",
->>>>>>> alternative overwrite annotations
       "text_fields": [
         {
           "name": "title",
