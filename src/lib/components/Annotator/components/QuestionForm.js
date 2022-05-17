@@ -43,7 +43,7 @@ const QuestionForm = ({
     return null;
   }
 
-  const onSelect = (itemValues, onlySave = false) => {
+  const onSelect = (itemValues, onlySave = false, minDelay = 0) => {
     // posts results and skips to next question, or next unit if no questions left.
     // If onlySave is true, only write to db without going to next question
     if (blockAnswer.current) return null;
@@ -69,7 +69,6 @@ const QuestionForm = ({
         questionIndex
       );
 
-      console.log(3);
       // next (non-irrelevant) question in unit (null if no remaining)
       let newQuestionIndex = null;
       for (let i = questionIndex + 1; i < questions.length; i++) {
@@ -101,10 +100,14 @@ const QuestionForm = ({
         // if this was the last question of the unit, wait untill postAnnotation is completed so that the database
         // has registered that the unit is done (otherwise it won't give the next unit)
         // don't need to unblock answering, because this happens automatically when the unit state is updated with the new unit
+
+        const start = new Date();
         unit.jobServer
           .postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status)
           .then((res) => {
-            setUnitIndex((state) => state + 1);
+            const delay = new Date() - start;
+            const extradelay = Math.max(0, minDelay - delay);
+            setTimeout(() => setUnitIndex((state) => state + 1), extradelay);
           });
       }
     } catch (e) {

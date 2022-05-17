@@ -3,16 +3,16 @@ import { Button, Ref, Icon } from "semantic-ui-react";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
-const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, blockEvents }) => {
+const Annotinder = React.memo(({ itemValues, swipeOptions, onSelect, swipe, blockEvents }) => {
   // const left = options.find(option => option.swipe === "left");
   // const up = options.find(option => option.swipe === "up");
   // const right = options.find(option => option.swipe === "right");
 
   useEffect(() => {
     if (swipe) {
-      if (swipe === "right") onSelect(swipeOptions.right);
-      if (swipe === "up") onSelect(swipeOptions.up);
-      if (swipe === "left") onSelect(swipeOptions.left);
+      if (swipe === "right") onSelect({ value: swipeOptions.right.code, finish: true });
+      if (swipe === "up") onSelect({ value: swipeOptions.up.code, finish: true });
+      if (swipe === "left") onSelect({ value: swipeOptions.left.code, finish: true });
     }
   }, [swipe, onSelect, swipeOptions]);
 
@@ -26,7 +26,7 @@ const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, b
         if (event.key === "ArrowRight") option = swipeOptions.right;
         if (event.key === "ArrowUp") option = swipeOptions.up;
         if (event.key === "ArrowLeft") option = swipeOptions.left;
-        onSelect(option);
+        onSelect({ value: option.key, finish: true });
         const el = option.ref.current;
         el.classList.add("active");
         setTimeout(() => el.classList.remove("active"), 5);
@@ -46,6 +46,8 @@ const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, b
     };
   }, [onKeydown, blockEvents]);
 
+  const value = itemValues?.[0]?.values?.[0];
+
   return (
     <Button.Group
       fluid
@@ -61,11 +63,11 @@ const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, b
         <Button
           className="ripplebutton"
           disabled={swipeOptions.left == null}
-          onClick={(e, d) => onSelect(swipeOptions.left)}
+          onClick={(e, d) => onSelect({ value: swipeOptions.left.code, finish: true })}
           style={{
             fontSize: "inherit",
             borderRadius: "10px",
-            border: `4px solid ${currentAnswer === swipeOptions.left?.code ? "#0c4f83" : "white"}`,
+            border: `4px solid ${value === swipeOptions.left?.code ? "#0c4f83" : "white"}`,
             background: swipeOptions.left?.color || "white",
           }}
         >
@@ -81,12 +83,12 @@ const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, b
           <Button
             className="ripplebutton"
             disabled={swipeOptions.up == null}
-            onClick={(e, d) => onSelect(swipeOptions.up)}
+            onClick={(e, d) => onSelect({ value: swipeOptions.up.code, finish: true })}
             style={{
               fontSize: "inherit",
 
               borderRadius: "10px",
-              border: `4px solid ${currentAnswer === swipeOptions.up?.code ? "#0c4f83" : "white"}`,
+              border: `4px solid ${value === swipeOptions.up?.code ? "#0c4f83" : "white"}`,
               background: swipeOptions.up?.color || "white",
             }}
           >
@@ -101,12 +103,12 @@ const Annotinder = React.memo(({ swipeOptions, currentAnswer, onSelect, swipe, b
         <Button
           className="ripplebutton"
           disabled={swipeOptions.right == null}
-          onClick={(e, d) => onSelect(swipeOptions.right)}
+          onClick={(e, d) => onSelect({ value: swipeOptions.right.code, finish: true })}
           style={{
             fontSize: "inherit",
 
             borderRadius: "10px",
-            border: `4px solid ${currentAnswer === swipeOptions.right?.code ? "#0c4f83" : "white"}`,
+            border: `4px solid ${value === swipeOptions.right?.code ? "#0c4f83" : "white"}`,
             background: swipeOptions.right?.color || "white",
           }}
         >

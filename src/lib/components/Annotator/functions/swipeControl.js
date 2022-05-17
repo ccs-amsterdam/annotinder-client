@@ -91,8 +91,8 @@ const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 
         refs.box.current.style.transition = `opacity ${transitionTime}ms ease-out`;
         refs.box.current.style.opacity = 0;
 
-        let dir = "up";
-        dir = deltaX > 0 ? "right" : "left";
+        let dir = deltaX > 0 ? "right" : "up";
+        dir = deltaX < 0 ? "left" : dir;
         setSwipe(dir);
         setSwipe(null);
       }

@@ -36,8 +36,8 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
     };
   }, [currentAnswer, itemValues]);
 
-  const onFinish = (newItemValues = null) => {
-    onSelect(newItemValues || itemValues);
+  const onFinish = (newItemValues = null, minDelay = 200) => {
+    onSelect(newItemValues || itemValues, false, minDelay);
   };
 
   const onValueSelect = ({
@@ -46,6 +46,8 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
     multiple = false,
     finish = false,
     invalid = false,
+    onlySave = false,
+    minDelay = 200,
   } = {}) => {
     // this bad boy is used in all of the AnswerField sub-components to write values.
     // it's a bit complicated here, but it makes the code within the sub-components easier
@@ -76,7 +78,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
     const newItemValues = [...itemValues];
     newItemValues[itemIndex].invalid = invalid;
     setItemValues(newItemValues);
-    if (finish) onSelect(newItemValues);
+    if (finish) onSelect(newItemValues, onlySave, minDelay);
     return newItemValues;
   };
 
@@ -127,8 +129,8 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
   if (question.type === "annotinder")
     return (
       <Annotinder
+        itemValues={itemValues}
         swipeOptions={question.swipeOptions}
-        currentAnswer={currentAnswer}
         onSelect={onValueSelect}
         swipe={swipe}
         blockEvents={blockEvents}
