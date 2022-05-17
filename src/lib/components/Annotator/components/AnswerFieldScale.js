@@ -4,14 +4,12 @@ import { scrollToMiddle } from "../../../functions/scroll";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
-const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents }) => {
+const Scale = React.memo(({ items, itemValues, options, onSelect, onFinish, blockEvents }) => {
   // render buttons for options (an array of objects with keys 'label' and 'color')
   // On selection perform onSelect function with the button label as input
   // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
   const [selectedItem, setSelectedItem] = useState(0);
   const [selectedButton, setSelectedButton] = useState(null);
-  const [answers, setAnswers] = useState(null);
-  //const [confirmMsg, setConfirmMsg] = useState(false);
 
   const onKeydown = React.useCallback(
     (event) => {
@@ -54,28 +52,19 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
         event.preventDefault();
         event.stopPropagation();
         if (selectedItem === -1) {
-          if (!answers.some((a) => a.value === null)) onSelect({ code: answers });
+          if (!itemValues.some((a) => a.values?.[0] == null)) onFinish();
         } else {
-          const newanswers = [...answers];
-          newanswers[selectedItem].value = options[selectedButton].code;
-          onSelect({ code: newanswers }, true);
-          setAnswers(newanswers);
+          onSelect({ value: options[selectedButton].code, itemIndex: selectedItem });
         }
       }
     },
-    [selectedButton, selectedItem, answers, setAnswers, onSelect, options, items]
+    [selectedButton, selectedItem, itemValues, onSelect, onFinish, options, items]
   );
 
   useEffect(() => {
     setSelectedButton(null);
     setSelectedItem(0);
-    if (currentAnswer && Array.isArray(currentAnswer) && currentAnswer.length === items.length) {
-      setAnswers(currentAnswer);
-    } else {
-      const answers = items.map((item) => ({ item: item?.name || item, value: null }));
-      setAnswers(answers);
-    }
-  }, [currentAnswer, items, onSelect, setSelectedButton, setSelectedItem]);
+  }, [onFinish, setSelectedButton, setSelectedItem]);
 
   useEffect(() => {
     if (!blockEvents) {
@@ -89,9 +78,9 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
 
   const left = options[0];
   const right = options[options.length - 1];
-  if (answers === null) return null;
-  const nAnswered = answers.filter((a) => a.value !== null).length;
-  const done = nAnswered === answers.length;
+  if (itemValues == null) return null;
+  const nAnswered = itemValues.filter((iv) => iv.values?.[0] != null).length;
+  const done = nAnswered === itemValues.length;
 
   return (
     <div
@@ -107,6 +96,7 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
           //zIndex: 1,
           //position: "relative",
           display: "flex",
+          minHeight: "30px",
           justifyContent: "space-between",
           borderBottom: "1px solid black",
           background: "#7fb9eb",
@@ -141,15 +131,13 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
       </div>
 
       <Items
-        answers={answers}
-        setAnswers={setAnswers}
+        itemValues={itemValues}
         selectedItem={selectedItem}
         setSelectedItem={setSelectedItem}
         items={items}
         options={options}
         selectedButton={selectedButton}
         setSelectedButton={setSelectedButton}
-        currentAnswer={currentAnswer}
         onSelect={onSelect}
       />
 
@@ -157,9 +145,10 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
         <Button
           primary
           fluid
+          size="mini"
           disabled={!done}
           icon={done ? "play" : null}
-          content={done ? "Continue" : `${nAnswered} / ${answers.length}`}
+          content={done ? "Continue" : `${nAnswered} / ${itemValues.length}`}
           style={{
             flex: "1 1 0px",
             textAlign: "center",
@@ -169,9 +158,7 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
             border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
           }}
           onClick={() => {
-            // this is a bit of an odd one out. We didn't anticipate having multiple answers,
-            // so some of the previous logic doesn't hold
-            onSelect({ code: answers });
+            onFinish();
           }}
         />
       </div>
@@ -179,17 +166,7 @@ const Scale = React.memo(({ items, options, currentAnswer, onSelect, blockEvents
   );
 });
 
-const Items = ({
-  answers,
-  setAnswers,
-  selectedItem,
-  setSelectedItem,
-  items,
-  options,
-  selectedButton,
-  setSelectedButton,
-  onSelect,
-}) => {
+const Items = ({ itemValues, selectedItem, items, options, selectedButton, onSelect }) => {
   const containerRef = useRef(null);
   const rowRefs = useRef([]);
 
@@ -221,7 +198,9 @@ const Items = ({
                 <b>{itemlabel}</b>
               </div>
               <div style={{ width: "100%", textAlign: "center", color: "#1678c2" }}>
-                <i>{answers?.[itemIndex]?.value ? answers[itemIndex].value : "..."}</i>
+                <i>
+                  {itemValues?.[itemIndex]?.values?.[0] ? itemValues[itemIndex].values?.[0] : "..."}
+                </i>
               </div>
             </div>
             <div
@@ -234,8 +213,7 @@ const Items = ({
               }}
             >
               <Item
-                answers={answers}
-                setAnswers={setAnswers}
+                itemValues={itemValues}
                 selectedItem={selectedItem}
                 itemIndex={itemIndex}
                 options={options}
@@ -250,19 +228,11 @@ const Items = ({
   );
 };
 
-const Item = ({
-  answers,
-  setAnswers,
-  selectedItem,
-  itemIndex,
-  options,
-  selectedButton,
-  onSelect,
-}) => {
+const Item = ({ itemValues, selectedItem, itemIndex, options, selectedButton, onSelect }) => {
   const colorstep = 200 / options.length;
   return options.map((option, buttonIndex) => {
     let bordercolor = "#ece9e9";
-    const isCurrent = options[buttonIndex].code === answers?.[itemIndex]?.value;
+    const isCurrent = options[buttonIndex].code === itemValues?.[itemIndex]?.values[0];
     const isSelected = buttonIndex === selectedButton && itemIndex === selectedItem;
     if (isCurrent) bordercolor = "#2185d0";
     if (isSelected) bordercolor = "#1B1C1D";
@@ -272,7 +242,7 @@ const Item = ({
     const color = colorint < 100 ? "white" : "black";
 
     return (
-      <div key={option.code} style={{ flex: "1 1 0px" }}>
+      <div key={option.code} style={{ margin: "auto", flex: "1 1 0px" }}>
         <Ref key={option.code} innerRef={option.ref}>
           <Button
             fluid
@@ -292,10 +262,7 @@ const Item = ({
             value={option.code}
             compact
             onClick={(e, d) => {
-              const newanswers = [...answers];
-              newanswers[itemIndex].value = options[buttonIndex].code;
-              onSelect({ code: newanswers }, true);
-              setAnswers(newanswers);
+              onSelect({ value: options[buttonIndex].code, itemIndex });
             }}
           >
             {buttonIndex + 1}

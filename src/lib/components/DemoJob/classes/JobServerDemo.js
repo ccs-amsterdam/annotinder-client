@@ -22,6 +22,7 @@ class JobServerDemo {
     try {
       this.units[unit_index].annotation = annotation;
       this.units[unit_index].status = status;
+      this.progress.n_coded = Math.max(unit_index + 1, this.progress.n_coded);
     } catch (e) {
       console.error(e);
     }

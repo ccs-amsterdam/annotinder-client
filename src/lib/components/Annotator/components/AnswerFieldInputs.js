@@ -6,38 +6,17 @@ import { scrollToMiddle } from "../../../functions/scroll";
  * Answerfield for (multiple) open input items, like text, number
  * @returns
  */
-const Inputs = ({ items, currentAnswer, onSelect, blockEvents }) => {
+const Inputs = ({ items, itemValues, onSelect, onFinish, blockEvents }) => {
   const [selectedItem, setSelectedItem] = useState(0);
-  const [answers, setAnswers] = useState(null);
 
   useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      e.preventDefault();
-      return "If you leave now, any changes made to text fields will not be saved.";
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
-
-  useEffect(() => {
-    // read currentAnswer into answers state
     setSelectedItem(0);
-    if (currentAnswer && Array.isArray(currentAnswer) && currentAnswer.length === items.length) {
-      setAnswers(currentAnswer.map((a, i) => ({ ...a, optional: items?.[i]?.optional })));
-    } else {
-      const answers = items.map((item) => ({
-        item: item?.name || item,
-        value: null,
-        optional: item?.optional,
-      }));
-      setAnswers(answers);
-    }
-  }, [currentAnswer, items, onSelect, setSelectedItem]);
+  }, [onFinish]);
 
-  const done = answers && !answers.some((a) => (a.value === null || a.invalid) && !a.optional);
-  if (!answers) return null;
+  const done =
+    itemValues &&
+    !itemValues.some((a, i) => (a.values?.[0] == null || a.invalid) && !items[i].optional);
+  if (!itemValues) return null;
 
   return (
     <div
@@ -50,10 +29,11 @@ const Inputs = ({ items, currentAnswer, onSelect, blockEvents }) => {
       }}
     >
       <Items
-        answers={answers}
-        setAnswers={setAnswers}
+        itemValues={itemValues}
+        done={done}
         items={items}
         onSelect={onSelect}
+        onFinish={onFinish}
         selectedItem={selectedItem}
         setSelectedItem={setSelectedItem}
         blockEvents={blockEvents}
@@ -73,12 +53,12 @@ const Inputs = ({ items, currentAnswer, onSelect, blockEvents }) => {
             color: done ? null : "black",
             margin: "0",
             background: done ? null : "white",
-            border: `4px solid ${selectedItem === items.length ? "black" : "#ece9e9"}`,
+            border: `4px solid ${selectedItem === items.length ? "black" : "grey"}`,
           }}
           onClick={() => {
             // this is a bit of an odd one out. We didn't anticipate having multiple answers,
             // so some of the previous logic doesn't hold
-            onSelect({ code: answers });
+            onFinish();
           }}
         />
       </div>
@@ -87,10 +67,11 @@ const Inputs = ({ items, currentAnswer, onSelect, blockEvents }) => {
 };
 
 const Items = ({
-  answers,
-  setAnswers,
+  itemValues,
+  done,
   items,
   onSelect,
+  onFinish,
   selectedItem,
   setSelectedItem,
   blockEvents,
@@ -104,7 +85,7 @@ const Items = ({
 
   useEffect(() => {
     const onKeydown = (e) => {
-      if (e.keyCode === 9 || e.KeyCode) {
+      if (e.keyCode === 9) {
         // tab key
         e.preventDefault();
         e.stopPropagation();
@@ -122,7 +103,7 @@ const Items = ({
       }
 
       if ((e.keyCode === 32 || e.keyCode === 13) && selectedItem === items.length) {
-        if (!answers.some((a) => a.value === null)) onSelect({ code: answers });
+        if (done) onFinish();
         return;
       }
     };
@@ -133,7 +114,7 @@ const Items = ({
     return () => {
       window.removeEventListener("keydown", onKeydown);
     };
-  }, [blockEvents, items, onSelect, answers, selectedItem, setSelectedItem]);
+  }, [blockEvents, done, items, onSelect, onFinish, itemValues, selectedItem, setSelectedItem]);
 
   useEffect(() => {
     scrollToMiddle(containerRef?.current, rowRefs?.current?.[selectedItem]?.current, 0.5);
@@ -175,10 +156,10 @@ const Items = ({
                 </label>
 
                 <Input
+                  itemValues={itemValues}
+                  onSelect={onSelect}
                   item={itemObj}
                   rowRefs={rowRefs}
-                  answers={answers}
-                  setAnswers={setAnswers}
                   itemIndex={itemIndex}
                 />
               </Form.Field>
@@ -190,8 +171,10 @@ const Items = ({
   );
 };
 
-const Input = ({ item, rowRefs, answers, setAnswers, itemIndex }) => {
+const Input = ({ itemValues, onSelect, item, rowRefs, itemIndex }) => {
   const ref = rowRefs?.current?.[itemIndex];
+  console.log(itemValues);
+  const value = itemValues?.[itemIndex]?.values?.[0]; // for all non-multiple forms
 
   if (item?.type === "number") {
     return (
@@ -201,19 +184,18 @@ const Input = ({ item, rowRefs, answers, setAnswers, itemIndex }) => {
         type={"number"}
         min={item?.min}
         max={item?.max}
-        value={Number(answers?.[itemIndex]?.value) || null}
+        value={Number(value) || null}
         style={{
           maxWidth: "150px",
           textAlign: "center",
-          background: answers[itemIndex].invalid ? "#ff000088" : "white",
+          background: itemValues[itemIndex]?.invalid ? "#ff000088" : "white",
         }}
         onChange={(e) => {
-          if (!answers?.[itemIndex]) return;
+          if (!itemValues?.[itemIndex]) return;
           let value = e.target.value;
-          answers[itemIndex].value = value;
-          answers[itemIndex].invalid =
+          const invalid =
             isNaN(value) || (item?.min && value < item.min) || (item?.max && value > item.max);
-          setAnswers([...answers]);
+          onSelect({ value, itemIndex, invalid });
         }}
       />
     );
@@ -225,12 +207,11 @@ const Input = ({ item, rowRefs, answers, setAnswers, itemIndex }) => {
         key={item.name}
         ref={ref}
         rows={item?.rows || 5}
-        value={answers?.[itemIndex]?.value}
+        value={value}
         onChange={(e) => {
-          if (!answers?.[itemIndex]) return;
-          answers[itemIndex].value = e.target.value;
-          if (answers[itemIndex].value === "") answers[itemIndex].value = null;
-          setAnswers([...answers]);
+          if (!itemValues?.[itemIndex]) return;
+          const value = e.target.value === "" ? null : e.target.value;
+          onSelect({ value, itemIndex });
         }}
       ></textarea>
     );
@@ -243,19 +224,18 @@ const Input = ({ item, rowRefs, answers, setAnswers, itemIndex }) => {
         name="email"
         key={item.name}
         ref={ref}
-        autocomplete={"email"}
-        value={answers?.[itemIndex]?.value || ""}
+        autoComplete={"email"}
+        value={value || ""}
         style={{
           maxWidth: "300px",
           textAlign: "center",
-          background: answers[itemIndex].invalid ? "#ff000088" : "white",
+          background: itemValues[itemIndex].invalid ? "#ff000088" : "white",
         }}
         onChange={(e) => {
-          if (!answers?.[itemIndex]) return;
-          answers[itemIndex].value = e.target.value;
-          answers[itemIndex].invalid = !!e?.target?.validationMessage;
-          if (answers[itemIndex].value === "") answers[itemIndex].value = null;
-          setAnswers([...answers]);
+          if (!itemValues?.[itemIndex]) return;
+          const value = e.target.value === "" ? null : e.target.value;
+          const invalid = !!e.target.validationMessage;
+          onSelect({ value, itemIndex, invalid });
         }}
       />
     );
@@ -264,14 +244,13 @@ const Input = ({ item, rowRefs, answers, setAnswers, itemIndex }) => {
     <input
       key={item.name}
       ref={ref}
-      autocomplete={item?.autocomplete}
-      value={answers?.[itemIndex]?.value || ""}
+      autoComplete={item?.autocomplete}
+      value={value || ""}
       style={{ maxWidth: "300px", textAlign: "center" }}
       onChange={(e) => {
-        if (!answers?.[itemIndex]) return;
-        answers[itemIndex].value = e.target.value;
-        if (answers[itemIndex].value === "") answers[itemIndex].value = null;
-        setAnswers([...answers]);
+        if (!itemValues?.[itemIndex]) return;
+        const value = e.target.value === "" ? null : e.target.value;
+        onSelect({ value, itemIndex });
       }}
     />
   );

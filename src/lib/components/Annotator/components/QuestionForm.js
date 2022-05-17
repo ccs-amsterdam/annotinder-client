@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Header, Button, Segment, Icon } from "semantic-ui-react";
+import { getMakesIrrelevantArray } from "../functions/irrelevantBranching";
 import {
   addAnnotationsFromAnswer,
   getAnswersFromAnnotations,
@@ -42,17 +43,19 @@ const QuestionForm = ({
     return null;
   }
 
-  const onSelect = (answer, onlySave = false) => {
+  const onSelect = (itemValues, onlySave = false) => {
     // posts results and skips to next question, or next unit if no questions left.
     // If onlySave is true, only write to db without going to next question
     if (blockAnswer.current) return null;
     blockAnswer.current = true;
 
     try {
-      answers[questionIndex].values = Array.isArray(answer.code)
-        ? answer.code
-        : [{ value: answer.code }];
-      answers[questionIndex].makes_irrelevant = answer.makes_irrelevant;
+      answers[questionIndex].values = itemValues;
+      answers[questionIndex].makes_irrelevant = getMakesIrrelevantArray(
+        itemValues,
+        questions[questionIndex].options
+      );
+
       unit.annotations = addAnnotationsFromAnswer(
         answers[questionIndex],
         unit.annotations,
@@ -66,6 +69,7 @@ const QuestionForm = ({
         questionIndex
       );
 
+      console.log(3);
       // next (non-irrelevant) question in unit (null if no remaining)
       let newQuestionIndex = null;
       for (let i = questionIndex + 1; i < questions.length; i++) {
@@ -86,6 +90,7 @@ const QuestionForm = ({
         blockAnswer.current = false;
         return;
       }
+
       if (newQuestionIndex !== null) {
         // if there is a next question, postAnnotation immediately and unblock answering after half a second
         // (to prevent accidentally double clicking)
@@ -103,6 +108,7 @@ const QuestionForm = ({
           });
       }
     } catch (e) {
+      console.log(e);
       // just to make certain the annotator doesn't block if something goes wrong
       blockAnswer.current = false;
     }

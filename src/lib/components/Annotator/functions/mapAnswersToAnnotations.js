@@ -7,8 +7,6 @@
 // -- questions where multiple codes can be selected correspond to multiple annotations as usual,
 //    and in the question answers this is represented as an array of objects
 
-const HAS_ITEMS = ["scale", "inputs"];
-
 export const getAnswersFromAnnotations = (unit, tokens, questions, setAnswers) => {
   const answers = [];
   if (!unit.annotations) unit.annotations = [];
@@ -71,36 +69,29 @@ const createAnswer = (tokens, question) => {
 const getAnswerValues = (annotations, answer, question) => {
   // loops over all annotations (in unit) to find the ones that match the question annotation
   // (i.e. that have the same variable, field, offset and length)
+  // return an array of objects {item, values} that should match question.items (also see AnswerField.js)
+  // if question doesn't have items, will be an array of length 1 where item is null
 
-  if (HAS_ITEMS.includes(question.type)) {
-    // for question types that support items, loop over all items, create the variable (questionname.item)
-    // then fill an array with matched annotations
-    question.items = question.items || [""];
-    return question.items.map((item) => {
-      const itemname = item?.name ?? item; // item can be a string or {name, label}
-      for (let annotation of annotations || []) {
-        if (isMatch(annotation, answer, itemname)) {
-          return { item: itemname, value: annotation.value };
-        }
+  question.items = question.items || [""];
+  return question.items.map((item) => {
+    const itemname = item?.name ?? item; // item can be a string or {name, label}
+    const values = [];
+    for (let annotation of annotations || []) {
+      if (isMatch(annotation, answer, itemname)) {
+        values.push(annotation.value);
       }
-      return { item: itemname, value: null };
-    });
-  }
-
-  // create an array of all annotation values
-  if (!annotations) return null;
-  const values = [];
-  for (let annotation of annotations) {
-    if (isMatch(annotation, answer)) values.push({ value: annotation.value });
-  }
-  if (values.length === 0) return [{ value: null }];
-  return values;
+    }
+    return { item: itemname, optional: item.optional, values: values };
+  });
 };
 
-const isMatch = (annotation, answer, item = null) => {
-  const variable = item ? answer.variable + "." + item : answer.variable;
+const createVariable = (variable, item) => {
+  return item === "" || item == null ? variable : variable + "." + item;
+};
+
+const isMatch = (annotation, answer, item = "") => {
   return (
-    annotation.variable === variable &&
+    annotation.variable === createVariable(answer.variable, item) &&
     annotation.field === answer.field &&
     annotation.offset === answer.offset &&
     annotation.length === answer.length
@@ -112,44 +103,44 @@ export const addAnnotationsFromAnswer = (answer, annotations, question) => {
   // creates new ones.
   if (!annotations) annotations = [];
 
-  if (HAS_ITEMS.includes(question.type)) {
-    valueloop: for (let valueObj of answer.values) {
-      for (let annotation of annotations) {
-        if (isMatch(annotation, answer, valueObj.item)) {
-          annotation.value = valueObj.value;
-          continue valueloop;
-        }
-      }
-      annotations.push({
-        ...answer,
-        variable: `${answer.variable}.${valueObj.item}`,
-        value: valueObj.value,
-      });
-    }
-    return annotations;
-  }
-
-  const valueMatched = answer.values.reduce((obj, value) => {
-    obj[value.value] = false;
+  const valueMap = answer.values.reduce((obj, valueObj) => {
+    // create a map of answers[item][value]
+    if (obj[valueObj.item] === undefined) obj[valueObj.item] = {};
+    for (let value of valueObj.values) obj[valueObj.item][value] = false;
     return obj;
   }, {});
-  for (let annotation of annotations) {
-    if (isMatch(annotation, answer)) {
-      // if it is a match, three things can happen.
-      // - the annotation value does occur in the answer value, in which case we leave it alone
-      // - an answer value does not have an annotation, in which case we add it
-      // - the annotation value does not occur in the answer values, in which case we delete it
-      if (valueMatched[annotation.value] !== undefined) {
-        // if not undefined, the value occurs in the answer
-        valueMatched[annotation.value] = true;
-        continue;
-      } else {
-        annotation.value = undefined;
+
+  for (let item of Object.keys(valueMap)) {
+    for (let annotation of annotations) {
+      if (isMatch(annotation, answer, item)) {
+        // if it is a match, three things can happen.
+        // case 1: the annotation value does occur in the answer value, in which case we leave it alone
+        // case 2: the annotation value does not occur in the answer values, in which case we delete it
+        // case 3: an answer value does not have an annotation, in which case we add it
+        if (valueMap[item][annotation.value] !== undefined) {
+          // case 1
+          valueMap[item][annotation.value] = true; // keeping track for case 3
+        } else {
+          // case 2
+          annotation.value = undefined;
+        }
       }
     }
   }
-  for (let key of Object.keys(valueMatched)) {
-    if (!valueMatched[key]) annotations.push({ ...answer, value: key });
+
+  for (let item of Object.keys(valueMap)) {
+    for (let value of Object.keys(valueMap[item])) {
+      if (valueMap[item][value]) continue;
+      // case 3
+      const variable = createVariable(answer.variable, item);
+      annotations.push({
+        ...answer,
+        variable,
+        value,
+      });
+    }
   }
+  console.log(annotations);
+
   return annotations.filter((a) => a.value !== undefined);
 };
