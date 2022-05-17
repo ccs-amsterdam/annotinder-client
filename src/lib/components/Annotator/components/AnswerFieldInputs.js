@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, createRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Button, Form } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
 
@@ -6,12 +6,12 @@ import { scrollToMiddle } from "../../../functions/scroll";
  * Answerfield for (multiple) open input items, like text, number
  * @returns
  */
-const Inputs = ({ items, itemValues, onSelect, onFinish, blockEvents }) => {
+const Inputs = ({ items, itemValues, onSelect, onFinish, blockEvents, questionIndex }) => {
   const [selectedItem, setSelectedItem] = useState(0);
 
   useEffect(() => {
     setSelectedItem(0);
-  }, [onFinish]);
+  }, [questionIndex]);
 
   const done =
     itemValues &&
@@ -77,11 +77,6 @@ const Items = ({
   blockEvents,
 }) => {
   const containerRef = useRef(null);
-  const rowRefs = useRef([]);
-
-  useEffect(() => {
-    rowRefs.current = items.map(() => createRef());
-  }, [items, rowRefs]);
 
   useEffect(() => {
     const onKeydown = (e) => {
@@ -117,14 +112,14 @@ const Items = ({
   }, [blockEvents, done, items, onSelect, onFinish, itemValues, selectedItem, setSelectedItem]);
 
   useEffect(() => {
-    scrollToMiddle(containerRef?.current, rowRefs?.current?.[selectedItem]?.current, 0.5);
-    const selectedel = rowRefs?.current?.[selectedItem]?.current;
+    scrollToMiddle(containerRef?.current, items?.[selectedItem]?.ref?.current, 0.5);
+    const selectedel = items?.[selectedItem]?.ref?.current;
     if (selectedel) {
       setTimeout(() => selectedel.focus(), 10); // otherwise react keeps complaining
     } else {
       setTimeout(() => document.activeElement.blur(), 10);
     }
-  }, [selectedItem, containerRef, rowRefs]);
+  }, [selectedItem, containerRef, items]);
 
   return (
     <div
@@ -139,7 +134,6 @@ const Items = ({
     >
       {items.map((itemObj, itemIndex) => {
         let itemlabel = itemObj.label ?? itemObj.name ?? itemObj;
-
         let margin = "0px 0px";
         if (itemIndex === 0) margin = "auto 0px 0px 0px";
         if (itemIndex === items.length - 1) margin = "0px 0px auto 0px";
@@ -159,7 +153,6 @@ const Items = ({
                   itemValues={itemValues}
                   onSelect={onSelect}
                   item={itemObj}
-                  rowRefs={rowRefs}
                   itemIndex={itemIndex}
                 />
               </Form.Field>
@@ -171,16 +164,16 @@ const Items = ({
   );
 };
 
-const Input = ({ itemValues, onSelect, item, rowRefs, itemIndex }) => {
-  const ref = rowRefs?.current?.[itemIndex];
-  console.log(itemValues);
+const Input = ({ itemValues, onSelect, item, itemIndex }) => {
+  //const ref = useRef();
+  item.ref = useRef();
   const value = itemValues?.[itemIndex]?.values?.[0]; // for all non-multiple forms
 
   if (item?.type === "number") {
     return (
       <input
         key={item.name}
-        ref={ref}
+        ref={item.ref}
         type={"number"}
         min={item?.min}
         max={item?.max}
@@ -205,7 +198,7 @@ const Input = ({ itemValues, onSelect, item, rowRefs, itemIndex }) => {
     return (
       <textarea
         key={item.name}
-        ref={ref}
+        ref={item.ref}
         rows={item?.rows || 5}
         value={value}
         onChange={(e) => {
@@ -223,7 +216,7 @@ const Input = ({ itemValues, onSelect, item, rowRefs, itemIndex }) => {
         type="email"
         name="email"
         key={item.name}
-        ref={ref}
+        ref={item.ref}
         autoComplete={"email"}
         value={value || ""}
         style={{
@@ -243,7 +236,7 @@ const Input = ({ itemValues, onSelect, item, rowRefs, itemIndex }) => {
   return (
     <input
       key={item.name}
-      ref={ref}
+      ref={item.ref}
       autoComplete={item?.autocomplete}
       value={value || ""}
       style={{ maxWidth: "300px", textAlign: "center" }}

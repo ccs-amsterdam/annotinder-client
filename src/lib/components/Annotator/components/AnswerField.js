@@ -97,7 +97,8 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
         sameSize={question.same_size}
         onSelect={onValueSelect}
         onFinish={onFinish}
-        blockEvents={blockEvents}
+        blockEvents={blockEvents} // for disabling key/click events
+        questionIndex={questionIndex} // for use in useEffect for resetting values on question change
       />
     );
 
@@ -110,6 +111,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
         onSelect={onValueSelect}
         onFinish={onFinish}
         blockEvents={blockEvents}
+        questionIndex={questionIndex}
       />
     );
 
@@ -123,6 +125,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
         onSelect={onValueSelect}
         onFinish={onFinish}
         blockEvents={blockEvents}
+        questionIndex={questionIndex}
       />
     );
 
@@ -134,6 +137,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
         onSelect={onValueSelect}
         swipe={swipe}
         blockEvents={blockEvents}
+        questionIndex={questionIndex}
       />
     );
 
@@ -144,6 +148,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
         button={question?.button}
         swipe={swipe}
         blockEvents={blockEvents}
+        questionIndex={questionIndex}
       />
     );
 
@@ -155,6 +160,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
         onSelect={onValueSelect}
         onFinish={onFinish}
         blockEvents={blockEvents}
+        questionIndex={questionIndex}
       />
     );
 

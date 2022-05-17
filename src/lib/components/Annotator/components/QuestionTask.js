@@ -268,6 +268,7 @@ const getOptions = (cta) => {
       code: code.code,
       tree: tree,
       makes_irrelevant: code.makes_irrelevant,
+      required_for: code.required_for,
       color: standardizeColor(code.color, "88"),
       ref: React.createRef(), // used for keyboard navigation of buttons
     };

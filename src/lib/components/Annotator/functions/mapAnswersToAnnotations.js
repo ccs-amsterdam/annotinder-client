@@ -140,7 +140,6 @@ export const addAnnotationsFromAnswer = (answer, annotations, question) => {
       });
     }
   }
-  console.log(annotations);
 
   return annotations.filter((a) => a.value !== undefined);
 };

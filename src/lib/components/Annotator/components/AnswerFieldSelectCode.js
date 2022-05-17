@@ -6,7 +6,17 @@ import { scrollToMiddle } from "../../../functions/scroll";
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
 const SelectCode = React.memo(
-  ({ options, values, multiple, singleRow, sameSize, onSelect, onFinish, blockEvents }) => {
+  ({
+    options,
+    values,
+    multiple,
+    singleRow,
+    sameSize,
+    onSelect,
+    onFinish,
+    blockEvents,
+    questionIndex,
+  }) => {
     // render buttons for options (an array of objects with keys 'label' and 'color')
     // On selection perform onSelect function with the button label as input
     // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
@@ -80,7 +90,7 @@ const SelectCode = React.memo(
       // the first time using keyboard nav, there is not yet a selected (null)
       // if it has been used once, reset setSelected to 0 so the user always sees the cursor
       setSelected((selected) => (selected === null ? null : 0));
-    }, [onFinish, setSelected]);
+    }, [questionIndex, setSelected]);
 
     useEffect(() => {
       if (!blockEvents) {

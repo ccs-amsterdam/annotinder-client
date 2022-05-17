@@ -4,167 +4,169 @@ import { scrollToMiddle } from "../../../functions/scroll";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
-const Scale = React.memo(({ items, itemValues, options, onSelect, onFinish, blockEvents }) => {
-  // render buttons for options (an array of objects with keys 'label' and 'color')
-  // On selection perform onSelect function with the button label as input
-  // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
-  const [selectedItem, setSelectedItem] = useState(0);
-  const [selectedButton, setSelectedButton] = useState(null);
+const Scale = React.memo(
+  ({ items, itemValues, options, onSelect, onFinish, blockEvents, questionIndex }) => {
+    // render buttons for options (an array of objects with keys 'label' and 'color')
+    // On selection perform onSelect function with the button label as input
+    // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
+    const [selectedItem, setSelectedItem] = useState(0);
+    const [selectedButton, setSelectedButton] = useState(null);
 
-  const onKeydown = React.useCallback(
-    (event) => {
-      const nbuttons = options.length;
-      const nitems = items.length;
-      if (selectedButton === null) {
-        setSelectedButton(0);
-        return null;
-      }
-
-      // any arrowkey
-      if (arrowKeys.includes(event.key)) {
-        event.preventDefault();
-        if (event.key === "ArrowRight") {
-          if (selectedButton < nbuttons - 1) setSelectedButton(selectedButton + 1);
-        }
-        if (event.key === "ArrowLeft") {
-          if (selectedButton > 0) setSelectedButton(selectedButton - 1);
+    const onKeydown = React.useCallback(
+      (event) => {
+        const nbuttons = options.length;
+        const nitems = items.length;
+        if (selectedButton === null) {
+          setSelectedButton(0);
+          return null;
         }
 
-        let newitem = null;
-        if (event.key === "ArrowUp") {
-          if (selectedItem > 0) newitem = selectedItem - 1;
-          if (selectedItem < 0) newitem = nitems - 1;
+        // any arrowkey
+        if (arrowKeys.includes(event.key)) {
+          event.preventDefault();
+          if (event.key === "ArrowRight") {
+            if (selectedButton < nbuttons - 1) setSelectedButton(selectedButton + 1);
+          }
+          if (event.key === "ArrowLeft") {
+            if (selectedButton > 0) setSelectedButton(selectedButton - 1);
+          }
+
+          let newitem = null;
+          if (event.key === "ArrowUp") {
+            if (selectedItem > 0) newitem = selectedItem - 1;
+            if (selectedItem < 0) newitem = nitems - 1;
+          }
+          if (event.key === "ArrowDown") {
+            if (selectedItem >= 0) {
+              if (selectedItem < nitems - 1) newitem = selectedItem + 1;
+              if (selectedItem === nitems - 1) newitem = -1;
+            }
+          }
+          if (newitem !== null) {
+            setSelectedItem(newitem);
+          }
+          return;
         }
-        if (event.key === "ArrowDown") {
-          if (selectedItem >= 0) {
-            if (selectedItem < nitems - 1) newitem = selectedItem + 1;
-            if (selectedItem === nitems - 1) newitem = -1;
+
+        // space or enter
+        if (event.keyCode === 32 || event.keyCode === 13) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (selectedItem === -1) {
+            if (!itemValues.some((a) => a.values?.[0] == null)) onFinish();
+          } else {
+            onSelect({ value: options[selectedButton].code, itemIndex: selectedItem });
           }
         }
-        if (newitem !== null) {
-          setSelectedItem(newitem);
-        }
-        return;
-      }
+      },
+      [selectedButton, selectedItem, itemValues, onSelect, onFinish, options, items]
+    );
 
-      // space or enter
-      if (event.keyCode === 32 || event.keyCode === 13) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (selectedItem === -1) {
-          if (!itemValues.some((a) => a.values?.[0] == null)) onFinish();
-        } else {
-          onSelect({ value: options[selectedButton].code, itemIndex: selectedItem });
-        }
-      }
-    },
-    [selectedButton, selectedItem, itemValues, onSelect, onFinish, options, items]
-  );
+    useEffect(() => {
+      setSelectedButton(null);
+      setSelectedItem(0);
+    }, [questionIndex, setSelectedButton, setSelectedItem]);
 
-  useEffect(() => {
-    setSelectedButton(null);
-    setSelectedItem(0);
-  }, [onFinish, setSelectedButton, setSelectedItem]);
+    useEffect(() => {
+      if (!blockEvents) {
+        window.addEventListener("keydown", onKeydown);
+      } else window.removeEventListener("keydown", onKeydown);
 
-  useEffect(() => {
-    if (!blockEvents) {
-      window.addEventListener("keydown", onKeydown);
-    } else window.removeEventListener("keydown", onKeydown);
+      return () => {
+        window.removeEventListener("keydown", onKeydown);
+      };
+    }, [onKeydown, blockEvents]);
 
-    return () => {
-      window.removeEventListener("keydown", onKeydown);
-    };
-  }, [onKeydown, blockEvents]);
+    const left = options[0];
+    const right = options[options.length - 1];
+    if (itemValues == null) return null;
+    const nAnswered = itemValues.filter((iv) => iv.values?.[0] != null).length;
+    const done = nAnswered === itemValues.length;
 
-  const left = options[0];
-  const right = options[options.length - 1];
-  if (itemValues == null) return null;
-  const nAnswered = itemValues.filter((iv) => iv.values?.[0] != null).length;
-  const done = nAnswered === itemValues.length;
-
-  return (
-    <div
-      style={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
-    >
+    return (
       <div
         style={{
-          //zIndex: 1,
-          //position: "relative",
+          height: "100%",
           display: "flex",
-          minHeight: "30px",
+          flexDirection: "column",
           justifyContent: "space-between",
-          borderBottom: "1px solid black",
-          background: "#7fb9eb",
         }}
       >
-        <Label
-          size="large"
+        <div
           style={{
-            //position: "absolute",
-            maxWidth: "40%",
-            background: "transparent",
-            color: "black",
+            //zIndex: 1,
+            //position: "relative",
+            display: "flex",
+            minHeight: "30px",
+            justifyContent: "space-between",
+            borderBottom: "1px solid black",
+            background: "#7fb9eb",
           }}
         >
-          <Icon name="arrow left" />
-          {left.code}
-        </Label>
+          <Label
+            size="large"
+            style={{
+              //position: "absolute",
+              maxWidth: "40%",
+              background: "transparent",
+              color: "black",
+            }}
+          >
+            <Icon name="arrow left" />
+            {left.code}
+          </Label>
 
-        <Label
-          size="large"
-          style={{
-            //position: "absolute",
-            maxWidth: "40%",
-            textAlign: "right",
-            background: "transparent",
-            color: "black",
-          }}
-        >
-          {right.code}
-          <Icon name="arrow right" style={{ marginLeft: "5px" }} />
-        </Label>
-      </div>
+          <Label
+            size="large"
+            style={{
+              //position: "absolute",
+              maxWidth: "40%",
+              textAlign: "right",
+              background: "transparent",
+              color: "black",
+            }}
+          >
+            {right.code}
+            <Icon name="arrow right" style={{ marginLeft: "5px" }} />
+          </Label>
+        </div>
 
-      <Items
-        itemValues={itemValues}
-        selectedItem={selectedItem}
-        setSelectedItem={setSelectedItem}
-        items={items}
-        options={options}
-        selectedButton={selectedButton}
-        setSelectedButton={setSelectedButton}
-        onSelect={onSelect}
-      />
-
-      <div>
-        <Button
-          primary
-          fluid
-          size="mini"
-          disabled={!done}
-          icon={done ? "play" : null}
-          content={done ? "Continue" : `${nAnswered} / ${itemValues.length}`}
-          style={{
-            flex: "1 1 0px",
-            textAlign: "center",
-            color: done ? null : "black",
-            margin: "0",
-            background: done ? null : "white",
-            border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
-          }}
-          onClick={() => {
-            onFinish();
-          }}
+        <Items
+          itemValues={itemValues}
+          selectedItem={selectedItem}
+          setSelectedItem={setSelectedItem}
+          items={items}
+          options={options}
+          selectedButton={selectedButton}
+          setSelectedButton={setSelectedButton}
+          onSelect={onSelect}
         />
+
+        <div>
+          <Button
+            primary
+            fluid
+            size="mini"
+            disabled={!done}
+            icon={done ? "play" : null}
+            content={done ? "Continue" : `${nAnswered} / ${itemValues.length}`}
+            style={{
+              flex: "1 1 0px",
+              textAlign: "center",
+              color: done ? null : "black",
+              margin: "0",
+              background: done ? null : "white",
+              border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
+            }}
+            onClick={() => {
+              onFinish();
+            }}
+          />
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 const Items = ({ itemValues, selectedItem, items, options, selectedButton, onSelect }) => {
   const containerRef = useRef(null);
@@ -191,8 +193,11 @@ const Items = ({ itemValues, selectedItem, items, options, selectedButton, onSel
     >
       {items.map((itemObj, itemIndex) => {
         const itemlabel = itemObj.label || itemObj.name || itemObj;
+        let margin = "10px";
+        if (itemIndex === 0) margin = "auto 10px 10px 10px";
+        if (itemIndex === items.length - 1) margin = "10px 10px auto 10px";
         return (
-          <div key={itemIndex} style={{ paddingTop: "10px", margin: "auto 10px" }}>
+          <div key={itemIndex} style={{ paddingTop: "10px", margin }}>
             <div>
               <div style={{ color: "black", width: "100%", textAlign: "center", padding: "0 5px" }}>
                 <b>{itemlabel}</b>

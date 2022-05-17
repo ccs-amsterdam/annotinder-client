@@ -237,14 +237,14 @@ const processIrrelevantBranching = (unit, questions, answers, questionIndex) => 
     if (which.has(i)) {
       irrelevantQuestions[i] = true;
       // gives the value "IRRELEVANT" to targeted questions
-      for (let a of answers[i].values) a.value = "IRRELEVANT";
+      for (let a of answers[i].values) a.values = ["IRRELEVANT"];
       unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations, questions[i]);
     } else {
       irrelevantQuestions[i] = false;
       // If a question is marked as IRRELEVANT, double check whether this is still the case
       // (a coder might have changed a previous answer)
       for (let a of answers[i].values) {
-        if (a.value === "IRRELEVANT") delete a.value;
+        if (a.values[0] === "IRRELEVANT") a.values = [];
       }
       unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations, questions[i]);
     }
@@ -258,7 +258,11 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
 
   useEffect(() => {
     const cs = answers.map((a) => {
-      return a.values[0].value !== null;
+      return (
+        a.values[0].values != null &&
+        a.values[0].values.length !== 0 &&
+        a.values[0].values[0] !== "IRRELEVANT"
+      );
     });
     cs[0] = true;
     setCanSelect(cs);
@@ -274,8 +278,8 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
 
   const getColor = (i) => {
     if (!answers[i]) return "grey";
-    const done = answers[i].values.filter((v) => !!v.value).length === answers[i].values.length;
-    const irrelevant = answers[i].values[0].value === "IRRELEVANT";
+    const done = !answers[i].values.some((v) => v.values == null || v.values.length === 0);
+    const irrelevant = answers[i].values[0].values?.[0] === "IRRELEVANT";
     const selected = questionIndex === i;
 
     if (irrelevant) return "crimson";
@@ -307,7 +311,7 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
             }}
             onClick={() => {
               if (canSelect[i]) {
-                const irrelevant = answers[i].values[0].value === "IRRELEVANT";
+                const irrelevant = answers[i].values[0].values?.[0] === "IRRELEVANT";
                 if (!irrelevant) setQuestionIndex(i);
               }
             }}
