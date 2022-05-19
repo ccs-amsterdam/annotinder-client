@@ -39,7 +39,8 @@
     "react-scripts": "^5.0.0",
     "react-swipeable": "^6.2.0",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^2.1.1"
+    "semantic-ui-react": "^2.1.1",
+    "styled-components": "^5.3.5"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -133,18 +133,18 @@ const SelectCode = React.memo(
             <Ref key={option.code} innerRef={option.ref}>
               <Button
                 fluid
-                primary
                 className="ripplebutton"
                 style={{
                   overflowWrap: "break-word",
-                  backgroundColor: isCurrent ? null : option.color,
-                  padding: "5px",
+                  backgroundColor: option.color,
                   height: "100%",
+                  paddingTop: isCurrent ? "10px" : "5px",
                   fontWeight: "bold",
                   textShadow: "0px 0px 5px #ffffff77",
                   borderRadius: "10px",
-                  color: isCurrent ? null : "#1B1C1D",
+                  color: "#1B1C1D",
                   fontSize: "inherit",
+                  position: "relative",
                   border: `5px solid ${bordercolor}`,
                 }}
                 key={option.code}
@@ -156,6 +156,18 @@ const SelectCode = React.memo(
                 }}
               >
                 {option.code}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "0",
+                    left: "0",
+                    height: "100%",
+                    width: "100%",
+                    borderStyle: "solid",
+                    borderColor: isCurrent ? "#1B1C1D" : "#00000066",
+                    borderWidth: isCurrent ? "10px 5px 5px 5px" : "5px 5px 10px 5px",
+                  }}
+                ></div>
               </Button>
             </Ref>
           </div>

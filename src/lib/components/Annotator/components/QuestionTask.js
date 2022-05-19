@@ -7,10 +7,50 @@ import { Button, Form, Input, Portal, Segment } from "semantic-ui-react";
 import standardizeColor from "../../../functions/standardizeColor";
 import swipeControl from "../functions/swipeControl";
 import useLocalStorage from "../../../hooks/useLocalStorage";
+import styled from "styled-components";
 
-const documentSettings = {
-  centerVertical: true,
-};
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
+
+const TextWindow = styled.div`
+  flex: 1 1 auto;
+  position: relative;
+`;
+
+const SwipeableBox = styled.div`
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  outline: 1px solid black;
+  outline-offset: -1px;
+  position: absolute;
+`;
+
+const SwipeCode = styled.div`
+  padding: 0.6em 0.3em;
+  width: 100%;
+  font-size: 3em;
+  position: absolute;
+`;
+
+const Text = styled.div`
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  background-color: white;
+  font-size: ${(props) => props.fontsize}em;
+  box-shadow: 5px 5px 20px 5px;
+`;
+
+const QuestionMenu = styled.div`
+  height: ${(props) => (props.minifiedAnswerForm ? null : props.formHeight)};
+  min-height: ${(props) => (props.minifiedAnswerForm ? null : "200px")};
+  font-size: ${(props) => props.lowerTextSize}em;
+`;
 
 const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNode }) => {
   const [tokens, setTokens] = useState([]);
@@ -36,18 +76,14 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
   }, [codebook]);
 
   useEffect(() => {
-    if (!refs?.text.current) return null;
-    refs.box.current.style.backgroundColor = "white";
-    refs.text.current.style.transition = ``;
-    refs.box.current.style.transition = ``;
-    refs.box.current.style.opacity = 0;
-    refs.text.current.style.transform = "translateX(0%) translateY(0%)";
+    // when new unit arrives, reset style (in case of swipe) and make
+    // text transparent.
+    resetStyle(refs.text, refs.box);
   }, [refs.text, refs.box, unit, questionIndex]);
 
   useEffect(() => {
-    if (!refs?.text.current) return null;
-    refs.box.current.style.transition = `opacity 200ms ease-out`;
-    refs.box.current.style.opacity = 1;
+    // fade in text when the text is ready (which Document tells us)
+    fadeIn(refs.text, refs.box);
   }, [textReady, refs.text, refs.box, questionIndex]);
 
   // swipe controlls need to be up in the QuestionTask component due to working on the div containing the question screen
@@ -69,73 +105,27 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
     if (!minifiable.includes(question.type)) minifiedAnswerForm = false;
 
   return (
-    <div
-      ref={divref}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-      }}
-    >
-      <div
-        {...textSwipe}
-        style={{
-          flex: "1 1 auto",
-          position: "relative",
-          //height: `${splitHeight}%`,
-        }}
-      >
-        <div
-          ref={refs.box}
-          style={{
-            height: "100%",
-            width: "100%",
-            overflow: "hidden",
-            outline: "1px solid black",
-            outlineOffset: "-1px",
-            position: "absolute",
-
-            //border: "0.5px solid",
-          }}
-        >
+    <Container ref={divref}>
+      <TextWindow {...textSwipe}>
+        <SwipeableBox ref={refs.box}>
           {/* This div moves around behind the div containing the document to show the swipe code  */}
-          <div
-            ref={refs.code}
-            style={{ padding: "0.6em 0.3em", width: "100%", fontSize: "3em", position: "absolute" }}
-          />
-          <div
-            ref={refs.text}
-            style={{
-              height: "100%",
-              width: "100%",
-              position: "absolute",
-              top: "0",
-              backgroundColor: "white",
-              //overflow: "hidden",
-              fontSize: `${settings.upperTextSize}em`,
-              boxShadow: "5px 5px 20px 5px",
-
-              //border: "0.5px solid",
-            }}
-          >
+          <SwipeCode ref={refs.code} />
+          <Text ref={refs.text} fontsize={settings.upperTextSize}>
             <Document
               unit={unit}
-              settings={documentSettings}
               setReady={setTextReady}
               returnTokens={setTokens}
               fullScreenNode={fullScreenNode}
               positionTracker={refs.positionTracker}
             />
-          </div>
-        </div>
-      </div>
-      <div
+          </Text>
+        </SwipeableBox>
+      </TextWindow>
+      <QuestionMenu
         {...menuSwipe}
-        style={{
-          height: minifiedAnswerForm ? null : formHeight,
-          minHeight: minifiedAnswerForm ? null : "200px", // minimum height in px to prevent mobile keyboard from making things unreadable
-          fontSize: `${settings.lowerTextSize}em`,
-        }}
+        minifiedAnswerForm={minifiedAnswerForm}
+        fontSize={settings.lowerTextSize}
+        formHeight={formHeight}
       >
         <QuestionForm
           unit={unit}
@@ -154,8 +144,8 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
             cantChangeSplitHeight={minifiedAnswerForm || unit?.text_window_size != null}
           />
         </QuestionForm>
-      </div>
-    </div>
+      </QuestionMenu>
+    </Container>
   );
 };
 
@@ -282,6 +272,21 @@ const getOptions = (cta) => {
     swipeOptions.up = options?.[2];
   }
   return [options, swipeOptions];
+};
+
+const resetStyle = (text, box) => {
+  if (!text.current) return null;
+  box.current.style.backgroundColor = "white";
+  text.current.style.transition = ``;
+  box.current.style.transition = ``;
+  box.current.style.opacity = 0;
+  text.current.style.transform = "translateX(0%) translateY(0%)";
+};
+
+const fadeIn = (text, box) => {
+  if (!text.current) return null;
+  box.current.style.transition = `opacity 200ms ease-out`;
+  box.current.style.opacity = 1;
 };
 
 export default React.memo(QuestionTask);

@@ -164,7 +164,6 @@ const QuestionForm = ({
               }}
             />
           ) : null}
-          }
         </div>
       </div>
 
@@ -175,18 +174,18 @@ const QuestionForm = ({
           height: "calc(100% - 30px)",
           width: "100%",
           maxHeight: "100%",
-          padding: "10px",
+          padding: "0px 10px 5px 10px",
           color: ANSWERFIELD_COLOR,
 
           //borderBottomLeftRadius: "5px",
           //borderBottomRightRadius: "5px",
         }}
       >
-        <div style={{ width: "100%", flex: "1 1 auto", paddingBottom: "10px" }}>
+        <div style={{ width: "100%", flex: "1 1 auto", padding: "5px 0px" }}>
           <Header
             as="h3"
             textAlign="center"
-            style={{ color: ANSWERFIELD_COLOR, fontSize: "1.4em" }}
+            style={{ color: ANSWERFIELD_COLOR, fontSize: "1.2em" }}
           >
             {questionText}
           </Header>
@@ -304,7 +303,8 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
             size="mini"
             active={i === questionIndex}
             style={{
-              border: `2px solid`,
+              padding: "6px 15px",
+              border: `1px solid`,
               borderColor: i === questionIndex ? "black" : "white",
               background: getColor(i),
               color: "white",

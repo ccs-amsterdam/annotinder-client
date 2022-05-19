@@ -15,7 +15,7 @@ const Inputs = ({ items, itemValues, onSelect, onFinish, blockEvents, questionIn
 
   const done =
     itemValues &&
-    !itemValues.some((a, i) => (a.values?.[0] == null || a.invalid) && !items[i].optional);
+    !itemValues.some((a, i) => (a.values?.[0] == null || a.invalid) && !items?.[i]?.optional);
   if (!itemValues) return null;
 
   return (
@@ -53,7 +53,7 @@ const Inputs = ({ items, itemValues, onSelect, onFinish, blockEvents, questionIn
             color: done ? null : "black",
             margin: "0",
             background: done ? null : "white",
-            border: `4px solid ${selectedItem === items.length ? "black" : "grey"}`,
+            border: `4px solid ${selectedItem === items.length ? "black" : "#00000044"}`,
           }}
           onClick={() => {
             // this is a bit of an odd one out. We didn't anticipate having multiple answers,
