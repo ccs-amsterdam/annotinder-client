@@ -5,12 +5,7 @@ import AnnotatorAmcatClient from "./components/AnnotatorClient/AnnotatorAmcatCli
 import AnnotatorRClient from "./components/AnnotatorClient/AnnotatorRClient";
 
 import { prepareDocument } from "./functions/createDocuments";
-import {
-  standardizeCodes,
-  getCodebook,
-  getCodeTreeArray,
-  codeBookEdgesToMap,
-} from "./functions/codebook";
+import { standardizeCodes, getCodeTreeArray, codeBookEdgesToMap } from "./functions/codebook";
 import { exportSpanAnnotations } from "./functions/annotations";
 
 export {
@@ -21,7 +16,6 @@ export {
   AnnotatorAmcatClient,
   prepareDocument,
   standardizeCodes,
-  getCodebook,
   exportSpanAnnotations,
   getCodeTreeArray,
   codeBookEdgesToMap,

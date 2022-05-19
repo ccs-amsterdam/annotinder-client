@@ -1,6 +1,6 @@
 // custom scrollintoview
 
-export const scrollToMiddle = (parent, child, position) => {
+export const scrollToMiddle = (parent: HTMLElement, child: HTMLElement, position: number) => {
   // scroll parent to position of child
   // position should be value between 0 and 1 for relative position between top (0) and bottom (1)
   if (!parent || !child) return;
@@ -15,7 +15,7 @@ export const scrollToMiddle = (parent, child, position) => {
   parent.scrollTop = parent.scrollTop + clientTop - (topToCenter + parentTop);
 };
 
-export const keepInView = (parent, child) => {
+export const keepInView = (parent: HTMLElement, child: HTMLElement) => {
   // scroll parent to position of child
   // position should be value between 0 and 1 for relative position between top (0) and bottom (1)
   if (!parent || !child) return;

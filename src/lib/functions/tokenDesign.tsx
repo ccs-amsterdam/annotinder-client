@@ -1,4 +1,5 @@
 import standardizeColor from "./standardizeColor";
+import { CodeMap } from "../types";
 
 /**
  * Get the color from the codeMap for a given annotation value/code.
@@ -7,7 +8,7 @@ import standardizeColor from "./standardizeColor";
  * @param {*} codeMap         object with annotation values as keys, where values are objects with (at least) a color field
  * @returns
  */
-export const getColor = (annotationCode, codeMap) => {
+export const getColor = (annotationCode: string, codeMap: CodeMap) => {
   if (codeMap[annotationCode]) {
     let color;
     const foldTo = codeMap[annotationCode].foldToParent;
@@ -26,7 +27,7 @@ export const getColor = (annotationCode, codeMap) => {
  * @param {*} colors ...you know, colors
  * @returns
  */
-export const getColorGradient = (colors) => {
+export const getColorGradient = (colors: string[]) => {
   if (colors.length === 0) return "white";
   if (colors.length === 1) return colors[0];
 

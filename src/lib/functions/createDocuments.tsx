@@ -1,7 +1,8 @@
 import { importTokens, importTokenAnnotations, parseTokens } from "./tokens";
 import { importSpanAnnotations } from "./annotations";
+import { Document } from "../types";
 
-export const prepareDocument = (document, codes = {}) => {
+export const prepareDocument = (document: Document, codes = {}): Document => {
   const doc = { ...document };
   if (!doc.text_fields) {
     doc.text_fields = doc.text ? [{ name: "text", value: doc.text }] : [];
@@ -9,7 +10,6 @@ export const prepareDocument = (document, codes = {}) => {
   if (!doc.image_fields) {
     doc.image_fields = doc.image ? [{ name: "image", value: doc.image }] : [];
   }
-  if (!doc.grid) doc.grid = [];
   if (!doc.meta_fields) doc.meta_fields = [];
 
   if (doc.tokens) {

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { ReactElement } from "react";
+import { TextField, Token, RenderedText } from "../../../types";
 
-export default function renderText(tokens, text_fields, containerRef) {
-  const text = text_fields.reduce((obj, tf) => {
+export default function renderText(tokens: Token[], text_fields: TextField[], containerRef: any) {
+  const text: RenderedText = text_fields.reduce((obj: any, tf: TextField) => {
     obj[tf.name] = [];
     return obj;
   }, {});
@@ -16,7 +17,8 @@ export default function renderText(tokens, text_fields, containerRef) {
   let paragraph_nr = tokens[0].paragraph;
   let sentence_nr = tokens[0].sentence;
 
-  const getLayout = (field_name) => text_fields.find((tf) => tf.name === field_name);
+  const getLayout = (field_name: string) =>
+    text_fields.find((tf: TextField) => tf.name === field_name);
   let layout = getLayout(field_name);
 
   for (let i = 0; i < tokens.length; i++) {
@@ -68,17 +70,19 @@ export default function renderText(tokens, text_fields, containerRef) {
   return text;
 }
 
-const renderField = (layout, paragraph_nr, paragraphs, field) => {
-  const fontstyle = (paragraphs) => {
+const renderField = (
+  layout: TextField,
+  paragraph_key: string,
+  paragraphs: ReactElement[],
+  field: string
+) => {
+  const fontstyle = (paragraphs: ReactElement[]) => {
     if (layout) {
-      let textAlign = "left";
-      if (layout.justify) textAlign = "justify";
-      if (layout.center) textAlign = "center";
       return (
         <>
           {layout.label ? (
             <span
-              key={field + paragraph_nr + "label"}
+              key={field + paragraph_key + "label"}
               style={{
                 color: "grey",
                 fontWeight: "bold",
@@ -89,13 +93,13 @@ const renderField = (layout, paragraph_nr, paragraphs, field) => {
             </span>
           ) : null}
           <span
-            key={field + paragraph_nr}
+            key={field + paragraph_key}
             className="noselect"
             style={{
               fontSize: `${layout.size != null ? layout.size : 1}em`,
               fontWeight: layout.bold ? "bold" : "normal",
               fontStyle: layout.italic ? "italic" : "normal",
-              textAlign,
+              textAlign: layout.justify ? "justify" : layout.center ? "center" : "left",
             }}
           >
             {paragraphs}
@@ -113,7 +117,12 @@ const renderField = (layout, paragraph_nr, paragraphs, field) => {
   );
 };
 
-const renderParagraph = (layout, paragraph_nr, sentences, end) => {
+const renderParagraph = (
+  layout: TextField,
+  paragraph_nr: number,
+  sentences: ReactElement[],
+  end: boolean
+) => {
   if (layout?.paragraphs != null && !layout?.paragraphs)
     return (
       <span key={"par" + paragraph_nr}>
@@ -142,7 +151,7 @@ const renderParagraph = (layout, paragraph_nr, sentences, end) => {
   );
 };
 
-const renderSentence = (position, sentence_nr, tokens) => {
+const renderSentence = (position: number | string, sentence_nr: number, tokens: ReactElement[]) => {
   return (
     <span key={position + "_" + sentence_nr} className="sentence">
       {tokens}
@@ -150,13 +159,13 @@ const renderSentence = (position, sentence_nr, tokens) => {
   );
 };
 
-const renderToken = (token, codingUnit) => {
+const renderToken = (token: Token, codingUnit: boolean) => {
   return (
     <span
       key={"token" + token.index}
       ref={token.ref}
       className={codingUnit ? "token codingUnit" : "token"}
-      tokenindex={token.arrayIndex}
+      data-tokenindex={token.arrayIndex}
     >
       <span key={"pre" + token.index} className="pre">
         {token.pre}

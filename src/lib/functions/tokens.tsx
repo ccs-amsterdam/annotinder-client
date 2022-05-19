@@ -1,17 +1,19 @@
 import nlp from "compromise";
 import paragraphs from "compromise-paragraphs";
 nlp.extend(paragraphs);
+import { TextField, Token, RawToken, RawTokenColumn } from "../types";
 
 /**
  * Tokenize a document, but allowing for multiple text fields to be concatenated as different fields.
  * @param {*} text_fields  An array of objects, where each object has the structure {name, value}. 'name' becomes the name of the field, 'value' is the text
  *                         each item can also have an 'offset' key with an integer value, in case the value is a subset starting at the [offset] character (this is needed to get the correct positions in the original document)
  *                         each item can also have a 'unit_start' and 'unit_end' key, each with an integer value to indicate where in this text_field the codingUnit starts/ends.
- *                              If both unit_start and unit_end is omitted, the whole text is considered codingUnit.
+ *                         If both unit_start and unit_end is omitted, the whole text is considered codingUnit.
+ *                         As an alternative to unit_start and unit_end, can also have context_before and context_after to specify context, which should both be strings
  * @returns
  */
-export const parseTokens = (text_fields) => {
-  const tokens = [];
+export const parseTokens = (text_fields: TextField[]): Token[] => {
+  const tokens: Token[] = [];
   let token = null;
   let paragraph = 0; // offset can be used if position in original article is known
   let sentence = 0;
@@ -39,7 +41,8 @@ export const parseTokens = (text_fields) => {
       text = text + text_field.context_after;
     }
 
-    t = nlp.tokenize(text).paragraphs().json({ offset: true });
+    const tokenized = nlp.tokenize(text) as any; // circumvent some typescript issues
+    t = tokenized.paragraphs().json({ offset: true });
     // map to single array.
     for (let par = 0; par < t.length; par++) {
       for (let sent = 0; sent < t[par].sentences.length; sent++) {
@@ -57,7 +60,7 @@ export const parseTokens = (text_fields) => {
             if (text_field.unit_end != null && token.offset.start + offset > text_field.unit_end)
               unit_ended = true;
 
-            const tokenobj = {
+            const tokenobj: Token = {
               field: field,
               offset: token.offset.start + offset,
               length: token.offset.length,
@@ -67,7 +70,8 @@ export const parseTokens = (text_fields) => {
               text: token.text,
               pre: token.pre,
               post: token.post,
-              codingUnit: unit_started & !unit_ended,
+              codingUnit: unit_started && !unit_ended,
+              annotations: {},
             };
             tokens.push(tokenobj);
             tokenIndex++;
@@ -81,8 +85,8 @@ export const parseTokens = (text_fields) => {
   return tokens;
 };
 
-export const importTokens = (tokens) => {
-  tokens = tokensColumnToRow(tokens);
+export const importTokens = (tokens: RawToken[] | RawTokenColumn): Token[] => {
+  if (!Array.isArray(tokens)) tokens = tokensColumnToRow(tokens);
 
   let paragraph = 0;
   let last_paragraph = tokens[0].paragraph;
@@ -174,15 +178,33 @@ export const importTokens = (tokens) => {
     tokens[i].index = i;
   }
 
-  return tokens;
+  const preparedTokens: Token[] = [];
+  for (let token of tokens) {
+    // to appease typescript
+    const preparedToken: Token = {
+      field: token.field ?? "",
+      offset: token.offset ?? 0,
+      length: token.length ?? 0,
+      paragraph: token.paragraph ?? 0,
+      sentence: token.sentence ?? 0,
+      index: token.index ?? 0,
+      text: token.text ?? "",
+      pre: token.pre ?? "",
+      post: token.post ?? "",
+      codingUnit: token.codingUnit ?? true,
+      annotations: token.annotations ?? {},
+    };
+    preparedTokens.push(preparedToken);
+  }
+  return preparedTokens;
 };
 
-export const importTokenAnnotations = (tokens, codes) => {
+export const importTokenAnnotations = (tokens: Token[], codes: any) => {
   // returns annotations, and also modifies the codes object
   // codes keeps track of annotations to create a codebook
   if (tokens.length === 0) return [];
-  let annotations = [];
-  let codeTracker = {};
+  let annotations: any = [];
+  let codeTracker: any = {};
   let field = tokens[0].field;
   for (let i = 0; i < tokens.length; i++) {
     if (!tokens[i].annotations) {
@@ -191,10 +213,10 @@ export const importTokenAnnotations = (tokens, codes) => {
       continue;
     }
 
-    let annotationDict = {};
+    let annotationDict: any = {};
 
     for (let annotation of tokens[i].annotations) {
-      if (annotation.value === "") continue; // Should be a checkbox when importing
+      if (annotation.value === "") continue; // Whether to skip should be a parameter when importing
 
       if (!codes[annotation.name]) {
         codes[annotation.name] = new Set();
@@ -255,26 +277,26 @@ export const importTokenAnnotations = (tokens, codes) => {
 };
 
 /**
- * Check if tokens are in column format
- *  [{doc_id: [1,1,1,1,...]},{token_id: [1,2,3,4,etc.]}]
- * and if so, change to row format
- *  {doc_id: 1, token_id: 1}, {doc_id: 2, token_id: 2}
+ * changes tokens in column format
+ *  {{offset: [1,2], token: ["hello","world"]}
+ * to row format
+ *  [{offset: 1, token: "hello"}, {offset: 2, token: "world"}]
  *
  * row format is easier to work with, but column format is more efficient
  * so allow it to be used as input.
  * @param {} tokens
  */
-export const tokensColumnToRow = (tokens) => {
-  if (Array.isArray(tokens)) return tokens;
-  const columns = Object.keys(tokens);
-  const n = tokens[columns[0]].length;
+export const tokensColumnToRow = (tokens: RawTokenColumn): RawToken[] => {
+  const columns: string[] = Object.keys(tokens);
+  const n = tokens[columns[0] as keyof RawTokenColumn].length;
 
   const tokensArray = [];
   for (let i = 0; i < n; i++) {
-    const token = columns.reduce((obj, column) => {
-      obj[column] = tokens[column][i];
+    const token: RawToken = columns.reduce((obj, column) => {
+      obj[column] = tokens[column as keyof RawTokenColumn][i];
       return obj;
-    }, {});
+    }, {} as any);
+
     tokensArray.push(token);
   }
 

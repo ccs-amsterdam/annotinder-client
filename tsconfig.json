@@ -1,0 +1,15 @@
+{
+  "files": ["src/lib/index.tsx"],
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "module": "es6",
+    "target": "es5",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "lib": ["ES2021.String", "DOM"],
+    "declaration": true,
+    "allowSyntheticDefaultImports": true
+  }
+}

@@ -1,6 +1,7 @@
 import randomColor from "randomcolor";
+import { Code, CodeMap, CodeTree } from "../types";
 
-export const standardizeCodes = (codes, fillMissingColor) => {
+export const standardizeCodes = (codes: Code[] | string[], fillMissingColor: boolean): Code[] => {
   if (!codes) return [];
   return codes.map((code, i) => {
     if (typeof code !== "object") code = { code };
@@ -21,11 +22,11 @@ export const standardizeCodes = (codes, fillMissingColor) => {
   });
 };
 
-export const codeBookEdgesToMap = (codes, fillMissingColor = true) => {
+export const codeBookEdgesToMap = (codes: Code[] | string[], fillMissingColor: boolean = true) => {
   const standardizedCodes = standardizeCodes(codes, fillMissingColor);
-  // the payload is an array of objects, but for efficients operations
+  // codesis an array of objects, but for efficients operations
   // in the annotator we convert it to an object with the codes as keys
-  const codeMap = standardizedCodes.reduce((result, code) => {
+  const codeMap: CodeMap = standardizedCodes.reduce((result, code) => {
     result[code.code] = {
       ...code,
       children: [],
@@ -33,7 +34,7 @@ export const codeBookEdgesToMap = (codes, fillMissingColor = true) => {
       totalActiveChildren: 0,
     };
     return result;
-  }, {});
+  }, {} as any);
 
   // If there are codes of which the parent doesn't exist, add the parent
   const originalKeys = Object.keys(codeMap);
@@ -69,16 +70,31 @@ export const codeBookEdgesToMap = (codes, fillMissingColor = true) => {
   return codeMap;
 };
 
-export const getCodeTreeArray = (codeMap, showColors) => {
+/**
+ * Transform codeMap into an array of codes.
+ * The different from the original code array (that is used to create the codemap)
+ * is that codes in this array also contain information on their position in the tree (which among other things makes codes searchable by parent/child in dropdown selection)
+ * and that codes are sorted in the order of the tree (first code and all its children/grandchildren, seconcode and all its children/grandchildren, etc.)
+ * @param codeMap
+ * @param showColors
+ * @returns
+ */
+export const getCodeTreeArray = (codeMap: CodeMap, showColors: boolean): CodeTree[] => {
   let parents = Object.keys(codeMap).filter(
     (code) => !codeMap[code].parent || codeMap[code].parent === ""
   );
-  const codeTreeArray = [];
+  const codeTreeArray: CodeTree[] = [];
   fillCodeTreeArray(codeMap, parents, codeTreeArray, [], showColors);
   return codeTreeArray.map((object, i) => ({ ...object, i: i }));
 };
 
-const fillCodeTreeArray = (codeMap, parents, codeTreeArray, codeTrail, showColors) => {
+const fillCodeTreeArray = (
+  codeMap: CodeMap,
+  parents: string[],
+  codeTreeArray: CodeTree[],
+  codeTrail: string[],
+  showColors: boolean
+) => {
   for (const code of parents) {
     let newcodeTrail = [...codeTrail];
     newcodeTrail.push(code);
@@ -97,7 +113,7 @@ const fillCodeTreeArray = (codeMap, parents, codeTreeArray, codeTrail, showColor
   }
 };
 
-const parentData = (codeMap, code) => {
+const parentData = (codeMap: CodeMap, code: string) => {
   // get array of parents from highest to lowers (tree)
   // look at parents to see if one is not active (activeParent).
   //    (this only matters if the same parent is folded, otherwise only the parent code itself is inactive)

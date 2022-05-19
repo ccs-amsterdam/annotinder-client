@@ -1,8 +1,14 @@
-const createId = (annotation) => {
+import { Token, Annotation, SpanAnnotations } from "../types";
+
+const createId = (annotation: any): string => {
   return annotation.variable + "|" + annotation.value;
 };
 
-export const exportSpanAnnotations = (annotations, tokens, SpanAndText = false) => {
+export const exportSpanAnnotations = (
+  annotations: SpanAnnotations,
+  tokens: Token[],
+  SpanAndText = false
+): Annotation[] => {
   // export annotations from the object format (for fast use in the annotator) to array format
   if (Object.keys(annotations).length === 0) return [];
   const uniqueAnnotations = Object.keys(annotations).reduce((un_ann, index) => {
@@ -12,7 +18,7 @@ export const exportSpanAnnotations = (annotations, tokens, SpanAndText = false) 
 
       if (index !== "unit") if (ann[id].index !== ann[id].span[0]) continue;
 
-      const ann_obj = {
+      const ann_obj: Annotation = {
         variable: ann[id].variable,
         value: ann[id].value,
         field: ann[id].field,
@@ -24,7 +30,7 @@ export const exportSpanAnnotations = (annotations, tokens, SpanAndText = false) 
         const span = ann[id].span;
         const text = tokens
           .slice(span[0], span[1] + 1)
-          .map((t, i) => {
+          .map((t: Token, i: number) => {
             let string = t.text;
             if (i > 0) string = t.pre + string;
             if (i < span[1] - span[0]) string = string + t.post;
@@ -42,18 +48,22 @@ export const exportSpanAnnotations = (annotations, tokens, SpanAndText = false) 
   return uniqueAnnotations;
 };
 
-export const importSpanAnnotations = (annotationsArray, tokens, currentAnnotations = {}) => {
+export const importSpanAnnotations = (
+  annotationsArray: Annotation[],
+  tokens: Token[],
+  currentAnnotations = {}
+): SpanAnnotations => {
   if (annotationsArray.length === 0) return { ...currentAnnotations };
   // import span annotations. Uses the offset to match annotations to tokens
   const importedAnnotations = prepareSpanAnnotations(annotationsArray);
-  let trackAnnotations = {};
-  let matchedAnnotations = [];
+  let trackAnnotations: any = {};
+  let matchedAnnotations: any = [];
 
   for (let token of tokens) {
     findMatches(token, importedAnnotations, trackAnnotations, matchedAnnotations);
   }
 
-  const codeCounter = {};
+  const codeCounter: { [key: string]: number } = {};
   const annArray = [];
   for (let matchedAnnotation of matchedAnnotations) {
     if (!codeCounter[matchedAnnotation.id]) codeCounter[matchedAnnotation.id] = 0;
@@ -77,8 +87,13 @@ export const importSpanAnnotations = (annotationsArray, tokens, currentAnnotatio
   return currentAnnotations;
 };
 
-export const toggleSpanAnnotation = (annotations, newAnnotation, rm, keep_empty) => {
-  // Add span annotations in a way that prevents double assignments of the same group to a token
+export const toggleSpanAnnotation = (
+  annotations: SpanAnnotations,
+  newAnnotation: Annotation,
+  rm: boolean,
+  keep_empty: boolean
+): SpanAnnotations => {
+  // Add span annotations in a way that prevents double assignments of the same value to the same token
   const id = createId(newAnnotation);
   const newSpan = newAnnotation.span;
 
@@ -145,8 +160,8 @@ export const toggleSpanAnnotation = (annotations, newAnnotation, rm, keep_empty)
   return annotations;
 };
 
-const prepareSpanAnnotations = (annotations) => {
-  if (!annotations || annotations === "") return {};
+const prepareSpanAnnotations = (annotations: Annotation[]): SpanAnnotations => {
+  if (!annotations) return {};
   // create an object where the key is a field+offset, and the
   // value is an array that tells which ids (variable|value) start and end there
   // used in Tokens for matching to token indices
@@ -158,10 +173,15 @@ const prepareSpanAnnotations = (annotations) => {
     obj[ann.field][ann.offset].start.push(ann); // for the starting point the full annotation is given, so that we have all the information
     obj[ann.field][ann.offset + ann.length - 1].end.push(createId(ann)); // for the ending point we just need to know the id
     return obj;
-  }, {});
+  }, {} as any);
 };
 
-const findMatches = (token, importedAnnotations, trackAnnotations, matchedAnnotations) => {
+const findMatches = (
+  token: Token,
+  importedAnnotations: any,
+  trackAnnotations: any,
+  matchedAnnotations: any
+) => {
   const start = token.offset;
   const end = token.offset + token.length + token.post.length - 1;
   if (!importedAnnotations[token.field]) return;

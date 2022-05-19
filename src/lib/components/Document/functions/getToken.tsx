@@ -1,18 +1,10 @@
-export default function getImagePosition(e) {
-  const [image, position] = getPosition(e);
-  if (!image) return {};
-  const borderOffset = 3; // offset for border around img
-
-  return {
-    image,
-    x: e.clientX,
-    y: e.clientY,
-    imageX: position.x + borderOffset,
-    imageY: position.y + borderOffset,
-  };
+export default function getToken(tokens, e) {
+  const [n, annotated] = getNode(e);
+  if (n === null) return { index: null, annotated: false };
+  return { index: getTokenAttributes(tokens, n), annotated };
 }
 
-const getPosition = (e) => {
+const getNode = (e) => {
   try {
     // sometimes e is Restricted, and I have no clue why,
     // nor how to check this in a condition. hence the try clause
@@ -27,11 +19,24 @@ const getPosition = (e) => {
       let position = e.touches[0];
       n = document.elementFromPoint(position.clientX, position.clientY);
     }
-    if (n.className === "AnnotatableImage") {
-      return [n.getAttribute("imagefieldname"), n.getBoundingClientRect()];
+    if (n?.parentNode?.className === "item") {
+      return [null, false];
     }
-    return [null, null];
+
+    if (n) {
+      if (n.className.includes("token")) {
+        return [n, false];
+      }
+      if (n.parentNode) {
+        if (n.parentNode.className.includes("token")) return [n.parentNode, true];
+      }
+    }
+    return [null, false];
   } catch (e) {
-    return [null, null];
+    return [null, false];
   }
+};
+
+const getTokenAttributes = (tokens, tokenNode) => {
+  return parseInt(tokenNode.getAttribute("data-tokenindex"));
 };

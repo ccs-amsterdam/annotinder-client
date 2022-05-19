@@ -1,9 +1,19 @@
+interface Position {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+  x: number;
+  width: number;
+  height: number;
+}
+
 /**
  *
  * @param {*} arr An array of objects that each has a .ref key
  * @param {*} selected
  */
-export const moveUp = (arr, selected, xposition = null) => {
+export const moveUp = (arr: any, selected: number, xposition: number = null) => {
   // given an array of refs for buttons (or any divs), and the current selected button,
   // move to most overlapping button on previous row
   // (basically, what you want to happen when you press 'up' in a grid of buttons)
@@ -38,7 +48,7 @@ export const moveUp = (arr, selected, xposition = null) => {
  * @param {*} arr An array of objects that each has a .ref key
  * @param {*} selected
  */
-export const moveDown = (arr, selected, xposition = null) => {
+export const moveDown = (arr: any, selected: number, xposition: number = null) => {
   // like moveUp, but down
 
   const currentPos = getPosition(arr[selected].ref, arr?.[xposition]?.ref);
@@ -66,7 +76,7 @@ export const moveDown = (arr, selected, xposition = null) => {
   return arr.length - 1;
 };
 
-const sameRow = (a, b) => {
+const sameRow = (a: Position, b: Position) => {
   // we can't just check if y positions are the same, because they fool around a bit
   // so instead we look at how much buttons overlap on the y axis
 
@@ -79,7 +89,7 @@ const sameRow = (a, b) => {
   return overlap > 0.5 * a.height;
 };
 
-const calcColOverlap = (a, b) => {
+const calcColOverlap = (a: Position, b: Position): number => {
   const rightestLeft = Math.max(a.left, b.left);
   const leftestRight = Math.min(a.right, b.right);
 
@@ -88,7 +98,10 @@ const calcColOverlap = (a, b) => {
   return Math.max(pctA, pctB);
 };
 
-const getPosition = (ref, horizontalRef) => {
+const getPosition = (
+  ref: { current: HTMLElement },
+  horizontalRef?: { current: HTMLElement }
+): Position => {
   if (!ref?.current) return null;
   const pos = ref.current.getBoundingClientRect();
 
@@ -97,5 +110,15 @@ const getPosition = (ref, horizontalRef) => {
     pos.x = hpos.x;
     pos.width = hpos.width;
   }
-  return pos;
+
+  const position: Position = {
+    top: pos.top,
+    bottom: pos.bottom,
+    left: pos.left,
+    right: pos.right,
+    x: pos.x,
+    width: pos.width,
+    height: pos.height,
+  };
+  return position;
 };
