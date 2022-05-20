@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, ChangeEvent, SyntheticEvent } from "react";
 import { Dropdown, Header, Ref } from "semantic-ui-react";
 import { toggleSpanAnnotation } from "../../../functions/annotations";
 import { getColor } from "../../../functions/tokenDesign";
 import ButtonSelection from "./ButtonSelection";
+import { Annotation } from "../../../types";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -25,7 +26,7 @@ const NewCodePage = ({
 
   const onKeydown = React.useCallback(
     (event) => {
-      if (settings && !settings.searchBox && !settings.buttonMode === "recent") return null;
+      if (settings && !settings.searchBox && settings.buttonMode !== "recent") return null;
       const focusOnTextInput = textInputRef?.current?.children[0] === document.activeElement;
       if (!focusOnTextInput) setFocusOnButtons(true);
       if (event.keyCode === 27) setOpen(false);
@@ -37,7 +38,7 @@ const NewCodePage = ({
     [textInputRef, setOpen, settings]
   );
 
-  const getExistingAnnotations = (variable) => {
+  const getExistingAnnotations = (variable): Annotation[] => {
     let annMap = {};
 
     for (let i = span[0]; i <= span[1]; i++) {
@@ -66,7 +67,7 @@ const NewCodePage = ({
     };
   });
 
-  const onSelect = (annotation, ctrlKey) => {
+  const onSelect = (annotation, ctrlKey = false) => {
     if (annotation === "CANCEL") {
       setOpen(false);
       return;
@@ -183,9 +184,7 @@ const NewCodePage = ({
         <ButtonSelection
           id={"newCodePageButtons"}
           active={focusOnButtons}
-          setAnnotations={setAnnotations}
           options={options}
-          setOpen={setOpen}
           onSelect={onSelect}
         />
       </>
@@ -228,7 +227,10 @@ const NewCodePage = ({
           }}
           selectOnBlur={false}
           onChange={(e, d) => {
-            onSelect(d.value, e.ctrlKey || e.altKey);
+            // TODO: Typescript is again very sad. Should check whether e.ctrlKey and e.altKey really cannot exist on this event
+            // of if its just some obscure type thing
+            onSelect(d.value, false);
+            //onSelect(d.value, e.ctrlKey || e.altKey);
           }}
         />
       </Ref>
@@ -241,9 +243,8 @@ const NewCodePage = ({
 
   return (
     <>
-      <Header as="h5" textAlign="center">
-        "{getTextSnippet(tokens, span)}"
-      </Header>
+      {/* TODO: Used to be Header, but typescript doesn't seem to get along with semantic react */}
+      <h5 style={{ textAlign: "center" }}>"{getTextSnippet(tokens, span)}"</h5>
       {asDropdownSelection(dropdownOptions)}
       {asButtonSelection(buttonOptions)}
     </>

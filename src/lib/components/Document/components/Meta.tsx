@@ -3,7 +3,7 @@ import { Table } from "semantic-ui-react";
 
 const Meta = ({ meta_fields }) => {
   const cellStyle = (row) => {
-    const style = { borderTop: "none" };
+    const style: any = { borderTop: "none" };
     if (row.bold) style.fontWeight = "bold";
     if (row.italic) style.fontStyle = "italic";
     return style;
@@ -47,7 +47,6 @@ const Meta = ({ meta_fields }) => {
           lineHeight: "0.8",
           padding: "10px",
           paddingLeft: "10px",
-
           background: "#ffffff",
           color: "black",
         }}

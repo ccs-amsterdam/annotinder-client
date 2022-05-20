@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
-import { prepareDocument } from "../../../functions/createDocuments";
+import { getDocAndAnnotations } from "../functions/prepareUnit";
+import { SetState, Token, Unit, SpanAnnotations } from "../../../types";
+import { Doc, CodeHistory, ImportedCodes } from "../documentTypes";
 
-const useUnit = (unit, safetyCheck, returnTokens, setCodeHistory) => {
-  const [preparedUnit, setPreparedUnit] = useState({});
-  const [annotations, setAnnotations] = useState();
-  const [importedCodes, setImportedCodes] = useState({});
+const useUnit = (
+  unit: Unit,
+  safetyCheck: any,
+  returnTokens: (value: Token[]) => void,
+  setCodeHistory: (value: CodeHistory) => void
+): [Doc, SpanAnnotations, SetState<SpanAnnotations>, ImportedCodes] => {
+  const [doc, setDoc] = useState<Doc>(null);
+  const [annotations, setAnnotations] = useState<SpanAnnotations | null>(null);
+  const [importedCodes, setImportedCodes] = useState<ImportedCodes>({});
 
   useEffect(() => {
     if (!unit.annotations) unit.annotations = [];
@@ -22,28 +29,17 @@ const useUnit = (unit, safetyCheck, returnTokens, setCodeHistory) => {
 
     initializeCodeHistory(unit.annotations, setCodeHistory);
 
-    const document = prepareDocument(unit);
-    safetyCheck.current = {
-      tokens: document.tokens,
-      //annotationsChanged: false,
-      //annotations: hash(document.annotations),
-    };
-    setPreparedUnit({
-      tokens: document.tokens || [],
-      images: document.images || [],
-      text_fields: document.text_fields || [],
-      meta_fields: document.meta_fields || [],
-      image_fields: document.image_fields || [],
-      markdown_field: document.markdown_field,
-    });
+    const [document, annotations] = getDocAndAnnotations(unit);
+    safetyCheck.current = { tokens: document.tokens };
 
-    setAnnotations(document.annotations);
+    setDoc(document);
+    setAnnotations(annotations);
     if (returnTokens) returnTokens(document.tokens);
   }, [unit, returnTokens, safetyCheck, setCodeHistory, setImportedCodes]);
 
   // if returnAnnotations is falsy (so not passed to Document), make setAnnotations
   // falsy as well. This is used further down as a sign that annotations are disabled
-  return [preparedUnit, annotations, setAnnotations, importedCodes];
+  return [doc, annotations, setAnnotations, importedCodes];
 };
 
 const initializeCodeHistory = (annotations, setCodeHistory) => {

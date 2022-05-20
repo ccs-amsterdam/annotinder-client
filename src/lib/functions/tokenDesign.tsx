@@ -8,7 +8,7 @@ import { CodeMap } from "../types";
  * @param {*} codeMap         object with annotation values as keys, where values are objects with (at least) a color field
  * @returns
  */
-export const getColor = (annotationCode: string, codeMap: CodeMap) => {
+export const getColor = (annotationCode: string | number, codeMap: CodeMap) => {
   if (codeMap[annotationCode]) {
     let color;
     const foldTo = codeMap[annotationCode].foldToParent;

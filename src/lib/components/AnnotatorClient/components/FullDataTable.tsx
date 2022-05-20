@@ -1,27 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { Container, Pagination, Table, Icon, Search } from "semantic-ui-react";
+import { SetState } from "../../../types";
 
 const PAGESIZE = 10;
+interface FullData {
+  [key: string]: any;
+}
+[];
+interface Columns {
+  [key: string]: any;
+}
+[];
+
+interface FullDataTableProps {
+  /** array with objects */
+  fullData: FullData;
+  /** // if table needs to update fulldata state */
+  setFullData: SetState<FullData>;
+  /** array with objects specifying what data to show in the columns */
+  columns: Columns;
+  /**  Optional. If given, clicking row calls the function with the row object as argument */
+  onClick: (rowobj: object) => void;
+  /**Optional, Component or Array with Components that render buttons. Will be put in a buttongroup in first column.
+               The component will be given the props "row" (the row object), "backend" (see backend property), and "setData" (for setFullData). */
+  buttons: any;
+  //* If buttons is used, backend can be passed along, so that it can be given to the button rendering component */
+  backend: any;
+  //* isActive A function that takes a row as input, and returns a boolean for whether the row is displayed as active */
+  isActive: (rowObj: any) => true;
+}
 
 /**
  * PaginationTable wrapper for if the full data is already in memory
- * @param {array} fullData array with objects
- * @param {function} setFullData if table needs to update fulldata state
- * @param {array} columns  array with objects specifying what data to show in the columns
- * @param {function} onClick Optional. If given, clicking row calls the function with the row object as argument
- * @param {array}   buttons  Optional, Component or Array with Components that render buttons. Will be put in a buttongroup in first column.
- *                           The component will be given the props "row" (the row object), "backend" (see backend property), and "setData" (for setFullData).
- * @param {class}  backend   If buttons is used, backend can be passed along, so that it can be given to the button rendering component
- * @param {function} isActive A function that takes a row as input, and returns a boolean for whether the row is displayed as active
  */
 export default function FullDataTable({
   fullData,
-  setFullData,
+  setFullData = undefined,
   columns,
-  onClick,
-  buttons,
-  backend,
-  isActive,
+  onClick = undefined,
+  buttons = undefined,
+  backend = undefined,
+  isActive = undefined,
 }) {
   const [data, setData] = useState([]);
   const [pages, setPages] = useState(1);
@@ -35,7 +54,7 @@ export default function FullDataTable({
   };
 
   useEffect(() => {
-    if (!search === "") {
+    if (search !== "") {
       setFilteredData(fullData);
       return;
     }
@@ -221,7 +240,7 @@ const PaginationTable = ({
         <Table.Header>
           <Table.Row>
             {buttons ? (
-              <Table.HeaderCell key="buttons" width={buttons.length * 2} style={headerStyleLeft} />
+              <Table.HeaderCell key="buttons" widths={buttons.length * 2} style={headerStyleLeft} />
             ) : null}
             {createHeaderRow(data, columns)}
           </Table.Row>

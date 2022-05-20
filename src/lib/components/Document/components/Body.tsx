@@ -6,15 +6,7 @@ import renderText from "../functions/renderText";
 import renderImages from "../functions/renderImages";
 import renderMarkdown from "../functions/renderMarkdown";
 
-const Body = ({
-  tokens,
-  text_fields,
-  meta_fields,
-  image_fields,
-  markdown_field,
-  setReady,
-  maxHeight,
-}) => {
+const Body = ({ tokens, text_fields, meta_fields, image_fields, markdown_field, setReady }) => {
   const [text, setText] = useState({});
   const [images, setImages] = useState({});
   const [markdown, setMarkdown] = useState(null);
@@ -55,7 +47,6 @@ const Body = ({
             flexDirection: "column",
             alignItems: "center",
             overflow: "auto",
-            maxHeight: maxHeight,
           }}
         >
           <Meta meta_fields={meta_fields} />

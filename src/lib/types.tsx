@@ -1,6 +1,14 @@
 import { ReactElement } from "react";
 // common interfaces
 
+///// CONVENIENCE
+
+// For passing on setState functions, which can either take a value or a function
+export interface SetState<Type> {
+  (value: Type): void;
+  (state: (value: Type) => Type): void;
+}
+
 ///// ANNOTATIONS
 export interface Annotation {
   variable: string;
@@ -12,6 +20,7 @@ export interface Annotation {
   text?: string;
   span?: [number, number];
   token_span?: [number, number];
+  id?: string;
 }
 
 // {token_index: {variable+value: {SpanAnnotation}}}
@@ -24,12 +33,18 @@ export interface SpanAnnotations {
 
 ///// UNIT DATA
 
-export interface Document {
+export interface Unit {
+  jobServer: any;
+  unitIndex: number;
+  unitId: number | string; // this is the backend id, not the external id
+  annotations: Annotation[];
+  status: "DONE" | "IN_PROGRESS";
+  tokens?: RawToken[];
   text_fields?: TextField[];
   meta_fields?: MetaField[];
   image_fields?: ImageField[];
   markdown_field?: string;
-  [key: string]: any;
+  importedAnnotations?: Annotation[];
 }
 
 export interface TextField {

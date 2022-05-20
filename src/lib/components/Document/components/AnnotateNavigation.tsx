@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { AnnotationEvents } from "./AnnotationEvents";
 import { Popup, List } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
+import { SetState, Token, SpanAnnotations } from "../../../types";
+import { VariableMap } from "../documentTypes";
 
 /**
  * The NavigationEvents component handles all eventlisteners
@@ -48,7 +50,6 @@ const AnnotateNavigation = ({
         annotations={annotations}
         variableMap={variableMap}
         fullScreenNode={fullScreenNode}
-        onlyFirst={false}
       />
       {disableAnnotations ? null : (
         <AnnotationEvents
@@ -130,7 +131,7 @@ const allowedAnnotations = (annotations, variableMap) => {
       const codeMap = variableMap[variable].codeMap;
       const code = annotations[id].value;
       if (!codeMap[code] || !codeMap[code].active || !codeMap[code].activeParent)
-        if (!code === "EMPTY") delete annotations[id];
+        if (code !== "EMPTY") delete annotations[id];
     }
   }
   return annotations;
@@ -167,9 +168,9 @@ const annotateToken = (token, annotations, variableMap) => {
   const cl = token.ref.current.classList;
   cl.add("annotated");
   allLeft ? cl.add("allLeft") : cl.remove("allLeft");
-  anyLeft & !allLeft ? cl.add("anyLeft") : cl.remove("anyLeft");
+  anyLeft && !allLeft ? cl.add("anyLeft") : cl.remove("anyLeft");
   allRight ? cl.add("allRight") : cl.remove("allRight");
-  anyRight & !allRight ? cl.add("anyRight") : cl.remove("anyRight");
+  anyRight && !allRight ? cl.add("anyRight") : cl.remove("anyRight");
 
   const textColor = getColorGradient(colors.text);
   const preColor = allLeft ? "white" : getColorGradient(colors.pre);
@@ -214,6 +215,15 @@ const showSelection = (tokens, selection, editMode) => {
   }
 };
 
+interface AnnotationPopupProps {
+  tokens: Token[];
+  currentToken: { i: number };
+  setCurrentToken: SetState<{ i: number }>;
+  annotations: SpanAnnotations;
+  variableMap: VariableMap;
+  fullScreenNode: any;
+}
+
 const AnnotationPopup = React.memo(
   ({
     tokens,
@@ -222,8 +232,7 @@ const AnnotationPopup = React.memo(
     annotations,
     variableMap,
     fullScreenNode,
-    onlyFirst,
-  }) => {
+  }: AnnotationPopupProps) => {
     const [content, setContent] = useState(null);
     const [refresh, setRefresh] = useState(0);
 
@@ -243,7 +252,6 @@ const AnnotationPopup = React.memo(
       const list = ids.reduce((arr, id, i) => {
         const variable = tokenAnnotations[id].variable;
         const value = tokenAnnotations[id].value;
-        if (onlyFirst && currentToken.i !== tokenAnnotations[id].span[0]) return arr;
         if (!variableMap[variable]) return arr;
         const codeMap = variableMap[variable].codeMap;
         if (!codeMap[value]) return arr;
@@ -266,7 +274,7 @@ const AnnotationPopup = React.memo(
 
       setContent(<List>{list}</List>);
       setRefresh(0);
-    }, [tokens, currentToken, setCurrentToken, annotations, onlyFirst, variableMap, setRefresh]);
+    }, [tokens, currentToken, setCurrentToken, annotations, variableMap, setRefresh]);
 
     useEffect(() => {
       // ugly hack, but popup won't scroll along, so refresh position at intervalls if content is not null

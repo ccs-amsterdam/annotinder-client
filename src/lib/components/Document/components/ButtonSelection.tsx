@@ -178,7 +178,7 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
   return <div key={id}>{mapButtons()}</div>;
 };
 
-const CloseButton = ({ selected, onClick, style }) => {
+const CloseButton = ({ selected, onClick, style = {} }) => {
   return (
     <Button
       icon="window close"

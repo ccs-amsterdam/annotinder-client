@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import { Button } from "semantic-ui-react";
 
-const SelectVariable = ({ variables, variable, setVariable, minHeight, editAll }) => {
+const SelectVariable = ({ variables, variable, setVariable, editAll }) => {
   const variableNames = useMemo(() => {
     let variableNames = [];
     if (variables != null && variables?.length > 0) {
@@ -72,7 +72,6 @@ const SelectVariable = ({ variables, variable, setVariable, minHeight, editAll }
         setVariable={setVariable}
         variables={variables}
         variableNames={variableNames}
-        minHeight={minHeight}
       />
       <p
         style={{
@@ -87,7 +86,7 @@ const SelectVariable = ({ variables, variable, setVariable, minHeight, editAll }
   );
 };
 
-const VariableButtons = ({ variable, setVariable, variables, variableNames, minHeight }) => {
+const VariableButtons = ({ variable, setVariable, variables, variableNames }) => {
   const mapVariables = () => {
     return variableNames.map((name) => {
       return (
@@ -120,7 +119,7 @@ const VariableButtons = ({ variable, setVariable, variables, variableNames, minH
   if (variableNames?.length === 1) return null;
   return (
     <>
-      <Button.Group attached="bottom" fluid style={{ minHeight: `${minHeight / 2}px` }}>
+      <Button.Group attached="bottom" fluid>
         {mapVariables()}
       </Button.Group>
     </>

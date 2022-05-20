@@ -250,7 +250,7 @@ const JobUsers = ({ backend, job }) => {
           value={selection}
           onChange={(e, d) => {
             setChanged(true);
-            setSelection(d.value);
+            setSelection(d.value as string[]);
           }}
           options={options}
           style={{ width: "100%" }}
@@ -275,7 +275,7 @@ const AnnotationProgress = ({ job, annotations }) => {
         label={"Total units finished"}
         value={annotations.totalProgress}
         total={job.n_total}
-        bold
+        bold={true}
       />
       <br />
       {Object.entries(annotations.progress).map(([key, value]) => {
@@ -285,7 +285,7 @@ const AnnotationProgress = ({ job, annotations }) => {
   );
 };
 
-const LabeledProgress = ({ label, value, total, bold }) => {
+const LabeledProgress = ({ label, value, total, bold = false }) => {
   return (
     <div style={{ display: "flex", fontWeight: bold ? "bold" : "normal" }}>
       <span
@@ -309,7 +309,7 @@ const LabeledProgress = ({ label, value, total, bold }) => {
   );
 };
 
-const JobTokenButton = ({ jobId, backend, style }) => {
+const JobTokenButton = ({ jobId, backend, style = {} }) => {
   const [link, setLink] = useState(null);
   const [open, setOpen] = useState(false);
 

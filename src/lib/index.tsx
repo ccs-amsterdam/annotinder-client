@@ -4,7 +4,6 @@ import JobServerDemo from "./components/DemoJob/classes/JobServerDemo";
 import AnnotatorAmcatClient from "./components/AnnotatorClient/AnnotatorAmcatClient";
 import AnnotatorRClient from "./components/AnnotatorClient/AnnotatorRClient";
 
-import { prepareDocument } from "./functions/createDocuments";
 import { standardizeCodes, getCodeTreeArray, codeBookEdgesToMap } from "./functions/codebook";
 import { exportSpanAnnotations } from "./functions/annotations";
 
@@ -14,7 +13,6 @@ export {
   JobServerDemo,
   AnnotatorRClient,
   AnnotatorAmcatClient,
-  prepareDocument,
   standardizeCodes,
   exportSpanAnnotations,
   getCodeTreeArray,

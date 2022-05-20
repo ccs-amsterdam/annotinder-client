@@ -1,4 +1,11 @@
 class JobServerAPI {
+  backend: any; // TODO: add interface
+  job_id: number;
+  setJobServer: any;
+  progress: any;
+  codebook: any;
+  return_link: string;
+
   constructor(backend, job_id, setJobServer, return_link) {
     this.backend = backend;
     this.job_id = job_id;

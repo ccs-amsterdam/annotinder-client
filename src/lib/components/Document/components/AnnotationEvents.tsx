@@ -214,7 +214,9 @@ const TokenMouseEvents = ({
   const tapped = useRef(null);
   const touch = useRef(null);
   const istouch = useRef(
-    "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0
+    "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      (navigator as any).msMaxTouchPoints > 0
   ); // hack to notice if device uses touch (because single touch somehow triggers mouseup)
 
   const storeMouseTokenSelection = useCallback(
@@ -243,7 +245,7 @@ const TokenMouseEvents = ({
     (e) => {
       if (!touch.current?.time) return;
       const now = new Date();
-      const timepassed = now - touch.current.time;
+      const timepassed = now.getTime() - touch.current.time.getTime();
       if (timepassed > 150) return;
       const token = touch.current.token;
 
@@ -285,7 +287,7 @@ const TokenMouseEvents = ({
         setCurrentToken({ i: token.index });
         setTokenSelection((state) => (state.length === 0 ? state : []));
       } else {
-        rmTapped(tapped.current);
+        rmTapped(tokens, tapped.current);
         setTokenSelection((state) => updateSelection(state, tokens, token.index, true));
       }
     },

@@ -46,7 +46,6 @@ const SelectAnnotationPage = ({
         id={"currentCodePageButtons"}
         active={true}
         options={options}
-        setOpen={setOpen}
         onSelect={onButtonSelection}
       />
     </div>

@@ -8,27 +8,40 @@ import SelectVariable from "./components/SelectVariable";
 
 import "./documentStyle.css";
 import useVariableMap from "./components/useVariableMap";
+import { Code, Unit, Annotation, SpanAnnotations, Token } from "../../types";
+import { CodeHistory, Variable } from "./documentTypes";
+
+interface DocumentProps {
+  /** A unit object, as created in JobServerClass (or standardizeUnit) */
+  unit: Unit;
+  /** An array of variables */
+  variables?: Variable[];
+  /** An object with settings. Supports "editAll" (and probably more to come) */
+  settings?: {
+    editAll: boolean;
+  };
+  /** for getting acces to annotations from the parent component
+   *  If not given, Document is automatically in read only mode (i.e. cannot make annotations) */
+  onChangeAnnotations?: (value: Annotation[]) => void;
+  /** for getting access to the tokens from the parent component  */
+  returnTokens?: (tokens: Token[]) => void;
+  /** returnVariableMap */
+  returnVariableMap?: (variablemap: any) => void;
+  /** for setting a boolean state indicating whether the document is ready to render */
+  setReady?: (state: (counter: number) => number) => void;
+  /** a boolean value for blocking all event listeners */
+  blockEvents?: boolean;
+  /** in fullscreenmode popups require a mountNode */
+  fullScreenNode?: any;
+}
 
 /**
  * This is hopefully the only Component in this folder that you'll ever see. It should be fairly isolated
  * and easy to use, but behind the scenes it gets dark real fast.
- * @param {*} unit     A unit object, as created in JobServerClass (or standardizeUnit)
- * @param {*} variables An object with variables, where each variable is an array of codes
- * @param {*} settings An object with settings. Supports "editAll" (and probably more to come)
- * @param {*} onChangeAnnotations An optional function for saving annotations.
- *                              If not given, users cannot make annotations
- * @param {*} returnTokens   An optional function for getting access to the tokens array
- * @param {*} returnVariableMap An optional function for getting access to the variableMap
- * @param {*} setReady       A function for passing a boolean to the parent to indicate that the
- *                           text is ready (which is usefull if the parent wants to transition
- *                           to new texts nicely)
- * @param {*} blockEvents    boolean. If true, disable event listeners
- * @param {*} fullScreenNode In fullscreenmode, popups can require a mountNode.
- * @returns
  */
 const Document = ({
   unit,
-  variables, //codes,
+  variables,
   settings,
   onChangeAnnotations,
   returnTokens,
@@ -36,13 +49,13 @@ const Document = ({
   setReady,
   blockEvents,
   fullScreenNode,
-}) => {
+}: DocumentProps) => {
   const safetyCheck = useRef(null); // ensures only new annotations for the current unit are passed to onChangeAnnotations
   const [variable, setVariable] = useState(null);
-  const [codeHistory, setCodeHistory] = useState({});
+  const [codeHistory, setCodeHistory] = useState<CodeHistory>({});
   const [tokensReady, setTokensReady] = useState(0);
 
-  const [preparedUnit, annotations, setAnnotations, importedCodes] = useUnit(
+  const [doc, annotations, setAnnotations, importedCodes] = useUnit(
     unit,
     safetyCheck,
     returnTokens,
@@ -50,7 +63,7 @@ const Document = ({
   );
   const [variableMap, editMode] = useVariableMap(variables, variable, importedCodes);
   const [codeSelector, triggerCodeSelector, codeSelectorOpen] = useCodeSelector(
-    preparedUnit.tokens,
+    doc.tokens,
     variableMap,
     editMode,
     variables,
@@ -64,20 +77,21 @@ const Document = ({
   useEffect(() => {
     if (!annotations || !onChangeAnnotations) return;
     // check if same unit, to prevent annotations from spilling over due to race conditions
-    if (safetyCheck.current.tokens !== preparedUnit.tokens) return;
-    onChangeAnnotations(exportSpanAnnotations(annotations, preparedUnit.tokens, true));
-  }, [preparedUnit.tokens, annotations, onChangeAnnotations]);
+    if (safetyCheck.current.tokens !== doc.tokens) return;
+    onChangeAnnotations(exportSpanAnnotations(annotations, doc.tokens, true));
+  }, [doc.tokens, annotations, onChangeAnnotations]);
 
   useEffect(() => {
     if (returnVariableMap) returnVariableMap(variableMap);
   }, [variableMap, returnVariableMap]);
 
   useEffect(() => {
-    if (setReady) setReady((current) => current + 1);
-    setAnnotations((state) => ({ ...state })); //trigger DOM update after token refs have been prepared
+    if (setReady) setReady((counter) => counter + 1);
+    // TODO: can't figure out type for functional update. ts complains that SpanAnnotation can't be a SpanAnnotation or something
+    setAnnotations((annotations: SpanAnnotations) => ({ ...annotations })); //trigger DOM update after token refs have been prepared
   }, [tokensReady, setAnnotations, setReady]);
 
-  if (!preparedUnit.tokens && !preparedUnit.image_fields) return null;
+  if (!doc.tokens && !doc.image_fields) return null;
 
   return (
     <div
@@ -87,39 +101,37 @@ const Document = ({
         maxHeight: "100%",
         flexDirection: "column",
         cursor: editMode ? "pointer" : null,
-        //background: "grey",
       }}
     >
-      <Body
-        tokens={preparedUnit.tokens}
-        text_fields={preparedUnit.text_fields}
-        meta_fields={preparedUnit.meta_fields}
-        image_fields={preparedUnit.image_fields}
-        markdown_field={preparedUnit.markdown_field}
-        setReady={setTokensReady}
-        //maxHeight={variables && variables.length > 1 ? "calc(100% - 60px)" : "calc(100% - 30px)"}
-        editMode={editMode}
-      />
+      <>
+        <Body
+          tokens={doc.tokens}
+          text_fields={doc.text_fields}
+          meta_fields={doc.meta_fields}
+          image_fields={doc.image_fields}
+          markdown_field={doc.markdown_field}
+          setReady={setTokensReady}
+        />
 
-      <SelectVariable
-        variables={variables}
-        variable={variable}
-        setVariable={setVariable}
-        editAll={settings?.editAll}
-        //minHeight={variables && variables.length > 1 ? 60 : 30} //'px'
-      />
+        <SelectVariable
+          variables={variables}
+          variable={variable}
+          setVariable={setVariable}
+          editAll={settings?.editAll}
+        />
 
-      <AnnotateNavigation
-        tokens={preparedUnit.tokens}
-        variableMap={variableMap}
-        annotations={annotations}
-        disableAnnotations={!onChangeAnnotations || !variableMap}
-        editMode={editMode || variable === "EDIT ALL"}
-        triggerCodeSelector={triggerCodeSelector}
-        eventsBlocked={codeSelectorOpen || blockEvents}
-        fullScreenNode={fullScreenNode}
-      />
-      {codeSelector || null}
+        <AnnotateNavigation
+          tokens={doc.tokens}
+          variableMap={variableMap}
+          annotations={annotations}
+          disableAnnotations={!onChangeAnnotations || !variableMap}
+          editMode={editMode || variable === "EDIT ALL"}
+          triggerCodeSelector={triggerCodeSelector}
+          eventsBlocked={codeSelectorOpen || blockEvents}
+          fullScreenNode={fullScreenNode}
+        />
+        {codeSelector || null}
+      </>
     </div>
   );
 };

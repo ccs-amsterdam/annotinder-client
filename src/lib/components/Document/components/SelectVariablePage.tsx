@@ -48,7 +48,6 @@ export default function SelectVariablePage({
         id={"currentCodePageButtons"}
         active={true}
         options={options}
-        setOpen={setOpen}
         onSelect={(value, ctrlKey) => {
           if (value === "CANCEL") {
             setOpen(false);

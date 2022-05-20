@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
 import { codeBookEdgesToMap } from "../../../functions/codebook";
+import { ImportedCodes, Variable, VariableMap } from "../documentTypes";
 
-export default function useVariableMap(variables, selectedVariable, importedCodes) {
+export default function useVariableMap(
+  variables: Variable[],
+  selectedVariable: string,
+  importedCodes: ImportedCodes
+) {
   const [editMode, setEditMode] = useState(false);
-  const [fullVariableMap, setFullVariableMap] = useState(null);
-  const [variableMap, setVariableMap] = useState(null);
+  const [fullVariableMap, setFullVariableMap] = useState<VariableMap>(null);
+  const [variableMap, setVariableMap] = useState<VariableMap>(null);
   const [manualEditMode, setManualEditMode] = useState(false);
 
   useEffect(() => {
@@ -29,7 +34,7 @@ export default function useVariableMap(variables, selectedVariable, importedCode
       return null;
     }
 
-    const vm = {};
+    const vm: any = {};
     for (let variable of variables) {
       let cm = codeBookEdgesToMap(variable.codes);
       cm = Object.keys(cm).reduce((obj, key) => {

@@ -30,9 +30,7 @@ export default function Home({ backend, authForm }) {
         setMenuItem={setMenuItem}
       />
       <div style={{ height: "5%" }}></div>
-      <div attached="bottom" style={{ height: "calc(95% - 50px)", overflow: "auto" }}>
-        {renderItem()}
-      </div>
+      <div style={{ height: "calc(95% - 50px)", overflow: "auto" }}>{renderItem()}</div>
     </div>
   );
 }

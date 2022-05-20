@@ -4,6 +4,7 @@ import Unit from "./components/Unit";
 import FullScreenWindow from "./components/FullScreenWindow";
 import "./annotatorStyle.css";
 import JobController from "./components/JobController";
+import { Unit } from "../../types";
 
 /**
  * Render an annotator for the provided jobServer class
@@ -12,7 +13,7 @@ import JobController from "./components/JobController";
  */
 const Annotator = ({ jobServer, askFullScreen }) => {
   const [unitIndex, setUnitIndex] = useState(-1);
-  const [preparedUnit, setPreparedUnit] = useState(null);
+  const [unit, setUnit] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -24,8 +25,8 @@ const Annotator = ({ jobServer, askFullScreen }) => {
     // When unitIndex changes, get the unit
     if (!jobServer || unitIndex === null) return;
     setLoading(true);
-    getUnit(jobServer, unitIndex, setPreparedUnit, setUnitIndex).then(() => setLoading(false));
-  }, [unitIndex, jobServer, setUnitIndex, setPreparedUnit, setLoading]);
+    getUnit(jobServer, unitIndex, setUnit, setUnitIndex).then(() => setLoading(false));
+  }, [unitIndex, jobServer, setUnitIndex, setUnit, setLoading]);
 
   return (
     <FullScreenWindow askFullScreen={askFullScreen}>
@@ -43,7 +44,7 @@ const Annotator = ({ jobServer, askFullScreen }) => {
               <Loader />
             </Dimmer>
             <Unit
-              unit={preparedUnit}
+              unit={unit}
               jobServer={jobServer}
               unitIndex={unitIndex}
               setUnitIndex={setUnitIndex}
@@ -58,7 +59,12 @@ const Annotator = ({ jobServer, askFullScreen }) => {
   );
 };
 
-const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
+const getUnit = async (
+  jobServer: any,
+  unitIndex: number,
+  setUnit: (value: Unit) => void,
+  setUnitIndex: (value: number) => void
+): void => {
   if (unitIndex < 0 || unitIndex >= jobServer.progress.n_total) return;
 
   try {
@@ -69,7 +75,7 @@ const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
     // NOTE THAT THIS RELIES ON REACT 18 FOR BATCHING STATE UPDATES
     if (unit.index && unitIndex !== unit.index) setUnitIndex(unit.index);
 
-    setPreparedUnit({
+    setUnit({
       jobServer,
       unitIndex: unit.index || unitIndex, // unit can (should?) return an index to keep it fully controlled
       unitId: unit.id,
@@ -79,7 +85,7 @@ const getUnit = async (jobServer, unitIndex, setPreparedUnit, setUnitIndex) => {
     });
   } catch (e) {
     console.log(e);
-    setPreparedUnit(null);
+    setUnit(null);
   }
 };
 

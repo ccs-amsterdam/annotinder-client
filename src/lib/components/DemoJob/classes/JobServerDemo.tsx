@@ -1,4 +1,11 @@
+import { Unit } from "../../../types";
+
 class JobServerDemo {
+  codebook: any; // TODO: add codebook interface
+  units: any[];
+  progress: any;
+  return_link: string;
+
   constructor(codebook, units) {
     this.codebook = codebook;
     this.units = units.map((u, i) => ({ ...u, index: i }));

@@ -54,7 +54,7 @@ export default function ManageUsers({ backend }) {
           value={text}
           rows="10"
           style={{ width: "100%" }}
-          onChange={(e, d) => setText(d.value)}
+          onChange={(e, d) => setText(String(d.value))}
         ></TextArea>
         <Button fluid primary onClick={() => onCreate()}>
           Create users
