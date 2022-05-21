@@ -1,105 +1,127 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Dropdown, Ref } from "semantic-ui-react";
+import { OnSelectParams, AnswerOption } from "../../../types";
 
-const SearchCode = React.memo(({ options, values, multiple, onSelect, onFinish, blockEvents }) => {
-  const ref = useRef();
-  const changed = useRef(false);
-  const [focuson, setFocuson] = useState("dropdown");
+interface SearchCodeProps {
+  /** The options the user can choose from */
+  options: AnswerOption[];
+  /** An array of answer values. If multiple is false, should have length 1 */
+  values: string[];
+  /** If true, multiple options can be chosen */
+  multiple: boolean;
+  /** The function used to update the values */
+  onSelect: (params: OnSelectParams) => void;
+  /** Like onSelect, but for finishing the question/unit with the current values */
+  onFinish: () => void;
+  /** If true, all eventlisteners are stopped */
+  blockEvents: boolean;
+}
 
-  useEffect(() => {
-    setFocuson("dropdown");
-  }, [onSelect]);
+const SearchCode = React.memo(
+  ({ options, values, multiple, onSelect, onFinish, blockEvents = false }: SearchCodeProps) => {
+    const ref = useRef<HTMLInputElement>();
+    const changed = useRef(false);
+    const [focuson, setFocuson] = useState("dropdown");
 
-  useEffect(() => {
-    const onKeydown = (e) => {
-      if (e.keyCode === 9) {
-        // tab key
-        e.preventDefault();
-        e.stopPropagation();
-        setFocuson((focuson) => {
-          if (focuson === "button") {
-            ref?.current?.click();
-            return "dropdown";
-          }
-          document.activeElement.blur();
-          return "button";
-        });
-      }
-      if ((e.keyCode === 32 || e.keyCode === 13) && focuson === "button") {
-        onSelect(values, 0, true);
-      }
-    };
+    useEffect(() => {
+      setFocuson("dropdown");
+    }, [onSelect]);
 
-    window.addEventListener("keydown", onKeydown);
-    return () => {
-      window.removeEventListener("keydown", onKeydown);
-    };
-  }, [focuson, setFocuson, onSelect, values]);
+    useEffect(() => {
+      const onKeydown = (e) => {
+        if (e.keyCode === 9) {
+          // tab key
+          e.preventDefault();
+          e.stopPropagation();
+          setFocuson((focuson) => {
+            if (focuson === "button") {
+              ref?.current?.click();
+              return "dropdown";
+            }
+            if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+            return "button";
+          });
+        }
+        if ((e.keyCode === 32 || e.keyCode === 13) && focuson === "button") {
+          onSelect({ value: values, finish: true });
+        }
+      };
 
-  changed.current = false;
-  return (
-    <div style={{ display: "flex", height: "100%" }}>
-      <div style={{ flex: "1 1 auto", minHeight: "185px", padding: "10px" }}>
-        <Ref innerRef={ref}>
-          <Dropdown
-            fluid
-            scrolling
-            multiple={multiple}
-            upward={false}
-            placeholder={"<type to search>"}
-            searchInput={{ autoFocus: !blockEvents }}
-            style={{ minWidth: "12em" }}
-            value={multiple ? values : values?.[0] || null}
-            options={options.map((option) => {
-              return {
-                key: option.code,
-                value: option.code,
-                text: option.code + (option.tree ? " (" + option.tree + ")" : ""),
-                content: (
-                  <>
-                    {option.code}
-                    <br />
-                    <span style={{ color: "grey" }}>{option.tree}</span>
-                  </>
-                ),
-              };
-            })}
-            search
-            selection
-            compact
-            selectOnNavigation={false}
-            minCharacters={0}
-            autoComplete={"on"}
-            onChange={(e, d) => {
-              changed.current = true;
-              onSelect({ value: d.value, itemIndex: 0, multiple, finish: !multiple });
-            }}
-            onClose={(e, d) => {
-              // stupid hack, since onChange doesn't fire if same value is chosen again
-              if (multiple) return;
-              if (!changed.current) onSelect([d.value], 0, true);
-            }}
-          />
-        </Ref>
-      </div>
-      {multiple ? (
-        <div style={{ minWidth: "100px", height: "100%" }}>
-          <Button
-            primary
-            icon="play"
-            fluid
-            style={{
-              height: "100%",
-              border: `5px solid ${focuson === "button" ? "black" : "rgb(211, 223, 233)"}`,
-            }}
-            onClick={() => {
-              onFinish();
-            }}
-          />
+      window.addEventListener("keydown", onKeydown);
+      return () => {
+        window.removeEventListener("keydown", onKeydown);
+      };
+    }, [focuson, setFocuson, onSelect, values]);
+
+    changed.current = false;
+    return (
+      <div style={{ display: "flex", height: "100%" }}>
+        <div style={{ flex: "1 1 auto", minHeight: "185px", padding: "10px" }}>
+          <Ref innerRef={ref}>
+            <Dropdown
+              fluid
+              scrolling
+              multiple={multiple}
+              upward={false}
+              placeholder={"<type to search>"}
+              searchInput={{ autoFocus: !blockEvents }}
+              style={{ minWidth: "12em" }}
+              value={multiple ? values : values?.[0] || null}
+              options={options.map((option) => {
+                return {
+                  key: option.code,
+                  value: option.code,
+                  text: option.code + (option.tree ? " (" + option.tree + ")" : ""),
+                  content: (
+                    <>
+                      {option.code}
+                      <br />
+                      <span style={{ color: "grey" }}>{option.tree}</span>
+                    </>
+                  ),
+                };
+              })}
+              search
+              selection
+              compact
+              selectOnNavigation={false}
+              minCharacters={0}
+              autoComplete={"on"}
+              onChange={(e, d) => {
+                changed.current = true;
+                // code can only be number or string, and multiple determines whether array or scalar
+                const value = d.value as number | string | (number | string)[];
+                onSelect({ value, itemIndex: 0, multiple, finish: !multiple });
+              }}
+              onClose={(e, d) => {
+                // stupid hack, since onChange doesn't fire if same value is chosen again
+                if (multiple) return;
+                // if multiple is false, d must be scalar. And option code can only be string or number, so it's safe to cast
+                const value = [d.value as string | number];
+                if (!changed.current) onSelect({ value, finish: true });
+              }}
+            />
+          </Ref>
         </div>
-      ) : null}
-    </div>
-  );
-});
+        {multiple ? (
+          <div style={{ minWidth: "100px", height: "100%" }}>
+            <Button
+              primary
+              icon="play"
+              fluid
+              style={{
+                height: "100%",
+                border: `5px solid ${focuson === "button" ? "black" : "rgb(211, 223, 233)"}`,
+              }}
+              onClick={() => {
+                onFinish();
+              }}
+            />
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+);
 
 export default SearchCode;

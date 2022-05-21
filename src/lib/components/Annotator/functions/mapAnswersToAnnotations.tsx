@@ -7,6 +7,8 @@
 // -- questions where multiple codes can be selected correspond to multiple annotations as usual,
 //    and in the question answers this is represented as an array of objects
 
+import { Annotation, Answer, AnswerItem } from "../../../types";
+
 export const getAnswersFromAnnotations = (unit, tokens, questions, setAnswers) => {
   const answers = [];
   if (!unit.annotations) unit.annotations = [];
@@ -18,12 +20,12 @@ export const getAnswersFromAnnotations = (unit, tokens, questions, setAnswers) =
   setAnswers(answers);
 };
 
-const createAnswer = (tokens, question) => {
+const createAnswer = (tokens, question): Answer => {
   // creates an object with the variable, field, offset and length of the annotation
   // that corresponds to this answer.
 
   let answer = { variable: question.name, values: null };
-  if (!tokens.length > 0) return answer;
+  if (tokens.length === 0) return answer;
 
   const fields = {};
   const lastToken = tokens[tokens.length - 1];
@@ -48,25 +50,15 @@ const createAnswer = (tokens, question) => {
     i++;
   }
 
-  // make these optional? Because they're not tokenizer agnostic
-  const meta = {
-    length_tokens: 1 + indexspan[1] - indexspan[0],
-    length_paragraphs: 1 + tokens[indexspan[1]].paragraph - tokens[indexspan[0]].paragraph,
-    length_sentences: 1 + tokens[indexspan[1]].sentence - tokens[indexspan[0]].sentence,
-  };
-
-  answer = {
+  return {
     ...answer,
     field: Object.keys(fields).join(" + "),
     offset: charspan[0],
     length: charspan[1] - charspan[0],
-    meta,
   };
-
-  return answer;
 };
 
-const getAnswerValues = (annotations, answer, question) => {
+const getAnswerValues = (annotations: Annotation[], answer: Answer, question): AnswerItem[] => {
   // loops over all annotations (in unit) to find the ones that match the question annotation
   // (i.e. that have the same variable, field, offset and length)
   // return an array of objects {item, values} that should match question.items (also see AnswerField.js)

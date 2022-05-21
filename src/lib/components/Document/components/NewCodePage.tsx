@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef, ChangeEvent, SyntheticEvent } from "react";
-import { Dropdown, Header, Ref } from "semantic-ui-react";
+import React, { useState, useEffect, useRef } from "react";
+import { Dropdown, Ref } from "semantic-ui-react";
 import { toggleSpanAnnotation } from "../../../functions/annotations";
 import { getColor } from "../../../functions/tokenDesign";
 import ButtonSelection from "./ButtonSelection";
-import { Annotation } from "../../../types";
+import { SpanAnnotation } from "../../../types";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -38,7 +38,7 @@ const NewCodePage = ({
     [textInputRef, setOpen, settings]
   );
 
-  const getExistingAnnotations = (variable): Annotation[] => {
+  const getExistingAnnotations = (variable): SpanAnnotation[] => {
     let annMap = {};
 
     for (let i = span[0]; i <= span[1]; i++) {

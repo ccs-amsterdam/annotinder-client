@@ -1,12 +1,35 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button, Form } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
+import { OnSelectParams, AnswerItem } from "../../../types";
+
+interface InputsProps {
+  /** The item array of the current question. Contains al settings for items */
+  items: any[];
+  /** An array of answer items (matching the items array in length and order)  */
+  itemValues: AnswerItem[];
+  /** The function used to update the values */
+  onSelect: (params: OnSelectParams) => void;
+  /** Like onSelect, but for finishing the question/unit with the current values */
+  onFinish: () => void;
+  /** If true, all eventlisteners are stopped */
+  blockEvents: boolean;
+  /** The index of the question.  */
+  questionIndex: number;
+}
 
 /**
  * Answerfield for (multiple) open input items, like text, number
  * @returns
  */
-const Inputs = ({ items, itemValues, onSelect, onFinish, blockEvents, questionIndex }) => {
+const Inputs = ({
+  items,
+  itemValues,
+  onSelect,
+  onFinish,
+  blockEvents,
+  questionIndex,
+}: InputsProps) => {
   const [selectedItem, setSelectedItem] = useState(0);
 
   useEffect(() => {
@@ -117,12 +140,15 @@ const Items = ({
     if (selectedel) {
       setTimeout(() => selectedel.focus(), 10); // otherwise react keeps complaining
     } else {
-      setTimeout(() => document.activeElement.blur(), 10);
+      setTimeout(() => {
+        if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+      }, 10);
     }
   }, [selectedItem, containerRef, items]);
 
   return (
     <div
+      key="itemsdiv"
       ref={containerRef}
       style={{
         flex: "1 1 auto",
@@ -139,7 +165,7 @@ const Items = ({
         if (itemIndex === items.length - 1) margin = "0px 0px auto 0px";
         return (
           <div
-            key={itemObj.label}
+            key={itemIndex + "_" + itemObj.label}
             style={{ padding: "10px", width: "100%", textAlign: "center", margin }}
           >
             <Form onSubmit={(e, d) => setSelectedItem((current) => current + 1)}>
@@ -177,7 +203,7 @@ const Input = ({ itemValues, onSelect, item, itemIndex }) => {
         type={"number"}
         min={item?.min}
         max={item?.max}
-        value={Number(value) || null}
+        value={Number(value) || ""}
         style={{
           maxWidth: "150px",
           textAlign: "center",
@@ -187,7 +213,9 @@ const Input = ({ itemValues, onSelect, item, itemIndex }) => {
           if (!itemValues?.[itemIndex]) return;
           let value = e.target.value;
           const invalid =
-            isNaN(value) || (item?.min && value < item.min) || (item?.max && value > item.max);
+            isNaN(Number(value)) ||
+            (item?.min && value < item.min) ||
+            (item?.max && value > item.max);
           onSelect({ value, itemIndex, invalid });
         }}
       />
@@ -200,7 +228,7 @@ const Input = ({ itemValues, onSelect, item, itemIndex }) => {
         key={item.name}
         ref={item.ref}
         rows={item?.rows || 5}
-        value={value}
+        value={value || ""}
         onChange={(e) => {
           if (!itemValues?.[itemIndex]) return;
           const value = e.target.value === "" ? null : e.target.value;

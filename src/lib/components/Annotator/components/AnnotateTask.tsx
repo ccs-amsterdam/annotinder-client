@@ -4,10 +4,13 @@ import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import AnnotateTaskManual from "./AnnotateTaskManual";
+import { Annotation, Unit, VariableMap } from "../../../types";
 
-const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNode, nextDelay }) => {
-  const [annotations, setAnnotations] = useAnnotations(unit);
-  const [variableMap, setVariableMap] = useState(null);
+const NEXTDELAY = 500;
+
+const AnnotateTask = ({ unit, codebook, setUnitIndex, fullScreenNode, blockEvents = false }) => {
+  const [annotations, onChangeAnnotations] = useAnnotations(unit);
+  const [variableMap, setVariableMap] = useState<VariableMap>(null);
   const [settings, setSettings] = useLocalStorage("annotateTaskSettings", { textSize: 1 });
   const [tokens, setTokens] = useState(null);
 
@@ -49,19 +52,14 @@ const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
             fullScreenNode={fullScreenNode}
           />
           <AnnotateTaskManual fullScreenNode={fullScreenNode} />
-          <NextUnitButton
-            unit={unit}
-            annotations={annotations}
-            setUnitIndex={setUnitIndex}
-            nextDelay={nextDelay}
-          />
+          <NextUnitButton unit={unit} annotations={annotations} setUnitIndex={setUnitIndex} />
         </Button.Group>
         <div style={{ height: "calc(100% - 30px)", fontSize: `${settings.textSize}em` }}>
           <Document
             unit={unit}
             settings={codebook?.settings}
             variables={codebook?.variables}
-            onChangeAnnotations={setAnnotations}
+            onChangeAnnotations={onChangeAnnotations}
             returnTokens={setTokens}
             returnVariableMap={setVariableMap}
             blockEvents={blockEvents}
@@ -74,9 +72,9 @@ const AnnotateTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
   );
 };
 
-const useAnnotations = (unit) => {
+const useAnnotations = (unit: Unit): [Annotation[], (value: Annotation[]) => void] => {
   // simple hook for onChangeAnnotations that posts to server and returns state
-  const [annotations, setAnnotations] = useState([]);
+  const [annotations, setAnnotations] = useState<Annotation[]>([]);
   const safeWrite = useRef(null);
   //const hasChanged = useRef(false);
 
@@ -93,7 +91,7 @@ const useAnnotations = (unit) => {
   }, [unit, setAnnotations]);
 
   const onChangeAnnotations = React.useCallback(
-    (newAnnotations) => {
+    (newAnnotations: Annotation[]) => {
       if (unit.unitId !== safeWrite.current) return;
       setAnnotations(newAnnotations);
       const cleanAnnotations = getCleanAnnotations(newAnnotations);
@@ -131,7 +129,7 @@ const getCleanAnnotations = (annotations) => {
   });
 };
 
-const NextUnitButton = ({ unit, annotations, setUnitIndex, nextDelay }) => {
+const NextUnitButton = ({ unit, annotations, setUnitIndex }) => {
   const [tempDisable, setTempDisable] = useState("ready");
 
   const onNext = () => {
@@ -148,7 +146,7 @@ const NextUnitButton = ({ unit, annotations, setUnitIndex, nextDelay }) => {
         setTempDisable("cooldown");
         setTimeout(() => {
           setTempDisable("ready");
-        }, nextDelay || 1000);
+        }, NEXTDELAY);
       })
       .catch((e) => {
         console.error(e);
@@ -207,7 +205,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }) => {
         <Form.Group grouped>
           <Form.Field>
             <label>
-              text size scaling <font style={{ color: "blue" }}>{`${settings.textSize}`}</font>
+              text size scaling <span style={{ color: "blue" }}>{`${settings.textSize}`}</span>
             </label>
             <Input
               size="mini"

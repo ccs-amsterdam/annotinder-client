@@ -1,5 +1,5 @@
 import React from "react";
-import { Table } from "semantic-ui-react";
+import { SemanticWIDTHS, Table } from "semantic-ui-react";
 import { getColor } from "../../../functions/tokenDesign";
 
 const COLWIDTHS = [4, 4, 2, 2]; // for offset and text
@@ -20,16 +20,32 @@ const AnnotateTable = ({ tokens, variableMap, annotations }) => {
     >
       <Table.Header className="annotations-thead" style={{ height: "30px" }}>
         <Table.Row>
-          <Table.HeaderCell title="Variable" width={COLWIDTHS[0]} style={{ padding: "5px" }}>
+          <Table.HeaderCell
+            title="Variable"
+            width={COLWIDTHS[0] as SemanticWIDTHS}
+            style={{ padding: "5px" }}
+          >
             Variable
           </Table.HeaderCell>
-          <Table.HeaderCell title="Vale" width={COLWIDTHS[1]} style={{ padding: "5px" }}>
+          <Table.HeaderCell
+            title="Vale"
+            width={COLWIDTHS[1] as SemanticWIDTHS}
+            style={{ padding: "5px" }}
+          >
             Value
           </Table.HeaderCell>
-          <Table.HeaderCell title="Field" width={COLWIDTHS[2]} style={{ padding: "5px" }}>
+          <Table.HeaderCell
+            title="Field"
+            width={COLWIDTHS[2] as SemanticWIDTHS}
+            style={{ padding: "5px" }}
+          >
             Field
           </Table.HeaderCell>
-          <Table.HeaderCell title="Position" width={COLWIDTHS[3]} style={{ padding: "5px" }}>
+          <Table.HeaderCell
+            title="Position"
+            width={COLWIDTHS[3] as SemanticWIDTHS}
+            style={{ padding: "5px" }}
+          >
             Position
           </Table.HeaderCell>
           <Table.HeaderCell title="Text" style={{ padding: "5px" }}>
@@ -94,17 +110,21 @@ const AnnotationRow = ({ variable, variableMap, annotation, onClick, text }) => 
       onClick={() => onClick(annotation.token_span)}
       style={{ cursor: "pointer", border: "0px !important" }}
     >
-      <Table.Cell width={COLWIDTHS[0]}>
+      <Table.Cell width={COLWIDTHS[0] as SemanticWIDTHS}>
         <span title={variable}>{variable}</span>
       </Table.Cell>
 
-      <Table.Cell title={label} width={COLWIDTHS[1]} style={color ? { background: color } : null}>
+      <Table.Cell
+        title={label}
+        width={COLWIDTHS[1] as SemanticWIDTHS}
+        style={color ? { background: color } : null}
+      >
         <span title={label}>{label}</span>
       </Table.Cell>
-      <Table.Cell title={annotation.field} width={COLWIDTHS[2]}>
+      <Table.Cell title={annotation.field} width={COLWIDTHS[2] as SemanticWIDTHS}>
         {annotation.field}
       </Table.Cell>
-      <Table.Cell title={position} width={COLWIDTHS[3]}>
+      <Table.Cell title={position} width={COLWIDTHS[3] as SemanticWIDTHS}>
         {position}
       </Table.Cell>
       <Table.Cell>

@@ -1,7 +1,7 @@
 import nlp from "compromise";
+import { TextField, Token, RawToken, RawTokenColumn } from "../types";
 import paragraphs from "compromise-paragraphs";
 nlp.extend(paragraphs);
-import { TextField, Token, RawToken, RawTokenColumn } from "../types";
 
 /**
  * Tokenize a document, but allowing for multiple text fields to be concatenated as different fields.
@@ -71,7 +71,7 @@ export const parseTokens = (text_fields: TextField[]): Token[] => {
               pre: token.pre,
               post: token.post,
               codingUnit: unit_started && !unit_ended,
-              annotations: {},
+              annotations: [],
             };
             tokens.push(tokenobj);
             tokenIndex++;
@@ -192,7 +192,7 @@ export const importTokens = (tokens: RawToken[] | RawTokenColumn): Token[] => {
       pre: token.pre ?? "",
       post: token.post ?? "",
       codingUnit: token.codingUnit ?? true,
-      annotations: token.annotations ?? {},
+      annotations: token.annotations ?? [],
     };
     preparedTokens.push(preparedToken);
   }
@@ -214,7 +214,6 @@ export const importTokenAnnotations = (tokens: Token[], codes: any) => {
     }
 
     let annotationDict: any = {};
-
     for (let annotation of tokens[i].annotations) {
       if (annotation.value === "") continue; // Whether to skip should be a parameter when importing
 

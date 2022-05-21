@@ -23,7 +23,7 @@ const QuestionForm = ({
 }) => {
   const blockAnswer = useRef(false); // to prevent answering double (e.g. with swipe events)
   const [answers, setAnswers] = useState(null);
-  const [questionText, setQuestionText] = useState("");
+  const [questionText, setQuestionText] = useState(<div />);
 
   useEffect(() => {
     if (!questions) return;
@@ -43,7 +43,7 @@ const QuestionForm = ({
     return null;
   }
 
-  const onSelect = (itemValues, onlySave = false, minDelay = 0) => {
+  const onAnswer = (itemValues, onlySave = false, minDelay = 0) => {
     // posts results and skips to next question, or next unit if no questions left.
     // If onlySave is true, only write to db without going to next question
     if (blockAnswer.current) return null;
@@ -105,7 +105,7 @@ const QuestionForm = ({
         unit.jobServer
           .postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status)
           .then((res) => {
-            const delay = new Date() - start;
+            const delay = new Date().getTime() - start.getTime();
             const extradelay = Math.max(0, minDelay - delay);
             setTimeout(() => setUnitIndex((state) => state + 1), extradelay);
           });
@@ -206,7 +206,7 @@ const QuestionForm = ({
             currentAnswer={answers?.[questionIndex]?.values}
             questions={questions}
             questionIndex={questionIndex}
-            onSelect={onSelect}
+            onAnswer={onAnswer}
             swipe={swipe}
             blockEvents={blockEvents}
           />
@@ -253,7 +253,7 @@ const processIrrelevantBranching = (unit, questions, answers, questionIndex) => 
 
 const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex }) => {
   //if (questions.length === 1) return null;
-  const [canSelect, setCanSelect] = useState();
+  const [canSelect, setCanSelect] = useState([]);
 
   useEffect(() => {
     const cs = answers.map((a) => {
@@ -270,6 +270,7 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
   useEffect(() => {
     setCanSelect((state) => {
       const newState = [...state];
+      if (questionIndex >= newState.length) return null;
       newState[questionIndex] = true;
       return newState;
     });
@@ -310,7 +311,7 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
               color: "white",
             }}
             onClick={() => {
-              if (canSelect[i]) {
+              if (canSelect?.[i]) {
                 const irrelevant = answers[i].values[0].values?.[0] === "IRRELEVANT";
                 if (!irrelevant) setQuestionIndex(i);
               }
@@ -323,7 +324,7 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
 };
 
 const prepareQuestion = (unit, question) => {
-  if (!question?.question) return "";
+  if (!question?.question) return <div />;
   let preparedQuestion = question.question;
   if (!unit.variables) return markedString(preparedQuestion);
 

@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AnnotationEvents } from "./AnnotationEvents";
 import { Popup, List } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
-import { SetState, Token, SpanAnnotations } from "../../../types";
-import { VariableMap } from "../documentTypes";
+import { VariableMap, SetState, Token, SpanAnnotations } from "../../../types";
 
 /**
  * The NavigationEvents component handles all eventlisteners

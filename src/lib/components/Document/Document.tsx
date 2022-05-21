@@ -8,8 +8,16 @@ import SelectVariable from "./components/SelectVariable";
 
 import "./documentStyle.css";
 import useVariableMap from "./components/useVariableMap";
-import { Code, Unit, Annotation, SpanAnnotations, Token } from "../../types";
-import { CodeHistory, Variable } from "./documentTypes";
+import {
+  CodeHistory,
+  Variable,
+  VariableMap,
+  Unit,
+  Annotation,
+  SpanAnnotations,
+  Token,
+  SetState,
+} from "../../types";
 
 interface DocumentProps {
   /** A unit object, as created in JobServerClass (or standardizeUnit) */
@@ -24,11 +32,11 @@ interface DocumentProps {
    *  If not given, Document is automatically in read only mode (i.e. cannot make annotations) */
   onChangeAnnotations?: (value: Annotation[]) => void;
   /** for getting access to the tokens from the parent component  */
-  returnTokens?: (tokens: Token[]) => void;
+  returnTokens?: SetState<Token[]>;
   /** returnVariableMap */
-  returnVariableMap?: (variablemap: any) => void;
+  returnVariableMap?: SetState<VariableMap>;
   /** for setting a boolean state indicating whether the document is ready to render */
-  setReady?: (state: (counter: number) => number) => void;
+  setReady?: SetState<number>;
   /** a boolean value for blocking all event listeners */
   blockEvents?: boolean;
   /** in fullscreenmode popups require a mountNode */
@@ -87,7 +95,6 @@ const Document = ({
 
   useEffect(() => {
     if (setReady) setReady((counter) => counter + 1);
-    // TODO: can't figure out type for functional update. ts complains that SpanAnnotation can't be a SpanAnnotation or something
     setAnnotations((annotations: SpanAnnotations) => ({ ...annotations })); //trigger DOM update after token refs have been prepared
   }, [tokensReady, setAnnotations, setReady]);
 
@@ -125,7 +132,7 @@ const Document = ({
           variableMap={variableMap}
           annotations={annotations}
           disableAnnotations={!onChangeAnnotations || !variableMap}
-          editMode={editMode || variable === "EDIT ALL"}
+          editMode={editMode}
           triggerCodeSelector={triggerCodeSelector}
           eventsBlocked={codeSelectorOpen || blockEvents}
           fullScreenNode={fullScreenNode}

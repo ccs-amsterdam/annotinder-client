@@ -4,7 +4,7 @@ import { Button } from "semantic-ui-react";
 
 const DownloadAnnotations = ({ jobServer }) => {
   const [data, setData] = useState(null);
-  const [CSVDownloader, Type] = useCSVDownloader();
+  const { CSVDownloader, Type } = useCSVDownloader();
 
   useEffect(() => {
     switch (jobServer.codebook.type) {

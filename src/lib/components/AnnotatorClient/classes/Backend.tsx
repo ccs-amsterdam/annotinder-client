@@ -1,4 +1,4 @@
-import Axios from "axios";
+import Axios, { AxiosInstance } from "axios";
 
 export async function passwordLogin(host, email, password) {
   const d = new FormData();
@@ -9,13 +9,19 @@ export async function passwordLogin(host, email, password) {
 }
 
 export async function redeemJobToken(host, token, user_id) {
-  const params = { token };
-  if (user_id) params.user_id = user_id;
+  const params = { token, user_id };
   const res = await Axios.get(`${host}/annotator/guest/jobtoken`, { params });
   return res.data;
 }
 
 class Backend {
+  host: string;
+  token: string;
+  api: AxiosInstance;
+  is_admin: boolean;
+  email: string;
+  restricted_job: number;
+
   constructor(host, token) {
     this.host = host;
     this.token = token;
@@ -35,7 +41,7 @@ class Backend {
 
   // GET
 
-  async getToken(user) {
+  async getToken(user = undefined) {
     const path = `annotator/users/${user || "me"}/token`;
     const res = await this.api.get(path);
     return res.data;
@@ -118,8 +124,7 @@ class Backend {
     return await this.api.post(`annotator/codingjob/${job_id}/settings`, settingsObj);
   }
   async setJobUsers(job_id, users, only_add) {
-    const body = { users };
-    if (only_add) body.only_add = true;
+    const body = { users, only_add };
     return await this.api.post(`annotator/codingjob/${job_id}/users`, body);
   }
 }

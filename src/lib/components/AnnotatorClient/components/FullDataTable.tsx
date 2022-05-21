@@ -1,33 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Container, Pagination, Table, Icon, Search } from "semantic-ui-react";
-import { SetState } from "../../../types";
 
 const PAGESIZE = 10;
 interface FullData {
   [key: string]: any;
 }
-[];
+
 interface Columns {
   [key: string]: any;
 }
-[];
 
 interface FullDataTableProps {
   /** array with objects */
   fullData: FullData;
   /** // if table needs to update fulldata state */
-  setFullData: SetState<FullData>;
+  setFullData?: Dispatch<SetStateAction<FullData>>;
   /** array with objects specifying what data to show in the columns */
-  columns: Columns;
+  columns?: Columns;
   /**  Optional. If given, clicking row calls the function with the row object as argument */
-  onClick: (rowobj: object) => void;
+  onClick?: (rowobj: object) => void;
   /**Optional, Component or Array with Components that render buttons. Will be put in a buttongroup in first column.
                The component will be given the props "row" (the row object), "backend" (see backend property), and "setData" (for setFullData). */
-  buttons: any;
+  buttons?: any;
   //* If buttons is used, backend can be passed along, so that it can be given to the button rendering component */
-  backend: any;
+  backend?: any;
   //* isActive A function that takes a row as input, and returns a boolean for whether the row is displayed as active */
-  isActive: (rowObj: any) => true;
+  isActive?: (rowObj: any) => boolean;
 }
 
 /**
@@ -36,15 +34,15 @@ interface FullDataTableProps {
 export default function FullDataTable({
   fullData,
   setFullData = undefined,
-  columns,
+  columns = undefined,
   onClick = undefined,
   buttons = undefined,
   backend = undefined,
   isActive = undefined,
-}) {
+}: FullDataTableProps) {
   const [data, setData] = useState([]);
   const [pages, setPages] = useState(1);
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredData, setFilteredData] = useState<FullData>([]);
   const [search, setSearch] = useState("");
 
   const pageChange = (activePage) => {

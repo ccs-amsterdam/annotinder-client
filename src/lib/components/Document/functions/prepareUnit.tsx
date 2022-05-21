@@ -1,7 +1,6 @@
 import { importTokens, importTokenAnnotations, parseTokens } from "../../../functions/tokens";
 import { importSpanAnnotations } from "../../../functions/annotations";
-import { SpanAnnotations, Unit } from "../../../types";
-import { Doc } from "../documentTypes";
+import { Doc, SpanAnnotations, Unit } from "../../../types";
 
 export const getDocAndAnnotations = (unit: Unit, codes = {}): [Doc, SpanAnnotations] => {
   // d is an intermediate object to do some processing on the Unit and extract the document and annotations

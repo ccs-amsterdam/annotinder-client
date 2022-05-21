@@ -6,10 +6,9 @@ class JobServerAPI {
   codebook: any;
   return_link: string;
 
-  constructor(backend, job_id, setJobServer, return_link) {
+  constructor(backend, job_id, setJobServer, return_link = undefined) {
     this.backend = backend;
     this.job_id = job_id;
-    this.where = "remote";
     this.return_link = return_link;
     this.setJobServer = setJobServer;
   }

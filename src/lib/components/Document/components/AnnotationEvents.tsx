@@ -64,7 +64,7 @@ export const AnnotationEvents = ({
     // for when manual edit mode releases
     setHoldArrow(false);
     if (!editMode) setMover(null);
-  }, [editMode, setMover, holdArrow]);
+  }, [editMode, setMover, setHoldArrow]);
 
   useEffect(() => {
     // When arrow key is held, walk through tokens with increasing speed
@@ -255,6 +255,10 @@ const TokenMouseEvents = ({
         setTokenSelection((state) => (state.length === 0 ? state : []));
         return;
       }
+
+      // should only prevent default after confirming a token is selected, otherwise
+      // any other touch events are disabled
+      e.preventDefault();
 
       if (editMode) {
         annotationFromSelection(tokens, [token.index, token.index], triggerCodePopup);

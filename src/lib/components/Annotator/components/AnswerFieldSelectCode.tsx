@@ -2,8 +2,30 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button, Ref } from "semantic-ui-react";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
 import { scrollToMiddle } from "../../../functions/scroll";
+import { AnswerOption, OnSelectParams } from "../../../types";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
+
+interface SelectCodeProps {
+  /** The options the user can choose from */
+  options: AnswerOption[];
+  /** An array of answer values. If multiple is false, should have length 1 */
+  values: string[];
+  /** If true, multiple options can be chosen */
+  multiple: boolean;
+  /** If true, all buttons are put on the same row */
+  singleRow: boolean;
+  /** If true, all buttons are kept mostly the same size (can deviate if some options have more characters) */
+  sameSize: boolean;
+  /** The function used to update the values */
+  onSelect: (params: OnSelectParams) => void;
+  /** Like onSelect, but for finishing the question/unit with the current values */
+  onFinish: () => void;
+  /** If true, all eventlisteners are stopped */
+  blockEvents: boolean;
+  /** The index of the question.  */
+  questionIndex: number;
+}
 
 const SelectCode = React.memo(
   ({
@@ -16,13 +38,13 @@ const SelectCode = React.memo(
     onFinish,
     blockEvents,
     questionIndex,
-  }) => {
+  }: SelectCodeProps) => {
     // render buttons for options (an array of objects with keys 'label' and 'color')
     // On selection perform onSelect function with the button label as input
     // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
     const [selected, setSelected] = useState(null);
-    const container = useRef();
-    const finishbutton = useRef();
+    const container = useRef<HTMLDivElement>();
+    const finishbutton = useRef<HTMLElement>();
 
     const onKeydown = React.useCallback(
       (event) => {
@@ -45,7 +67,12 @@ const SelectCode = React.memo(
 
           if (event.key === "ArrowDown") {
             setSelected(moveDown(buttons, selected));
-            scrollToMiddle(container?.current, buttons?.[selected]?.ref?.current.parentNode, 0.5);
+
+            scrollToMiddle(
+              container?.current,
+              buttons?.[selected]?.ref?.current.parentElement,
+              0.5
+            );
           }
 
           if (event.key === "ArrowLeft") {
@@ -54,7 +81,11 @@ const SelectCode = React.memo(
 
           if (event.key === "ArrowUp") {
             setSelected(moveUp(buttons, selected));
-            scrollToMiddle(container?.current, buttons?.[selected]?.ref?.current.parentNode, 0.5);
+            scrollToMiddle(
+              container?.current,
+              buttons?.[selected]?.ref?.current.parentElement,
+              0.5
+            );
           }
 
           return;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Dimmer, Loader, Segment } from "semantic-ui-react";
-import Unit from "./components/Unit";
+import AnnotateUnit from "./components/AnnotateUnit";
 import FullScreenWindow from "./components/FullScreenWindow";
 import "./annotatorStyle.css";
 import JobController from "./components/JobController";
@@ -11,7 +11,7 @@ import { Unit } from "../../types";
  *
  * @param {*} jobServer  A jobServer class
  */
-const Annotator = ({ jobServer, askFullScreen }) => {
+const Annotator = ({ jobServer, askFullScreen = false }) => {
   const [unitIndex, setUnitIndex] = useState(-1);
   const [unit, setUnit] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -43,14 +43,12 @@ const Annotator = ({ jobServer, askFullScreen }) => {
             <Dimmer inverted active={loading}>
               <Loader />
             </Dimmer>
-            <Unit
+            <AnnotateUnit
               unit={unit}
               jobServer={jobServer}
               unitIndex={unitIndex}
               setUnitIndex={setUnitIndex}
-              fullScreenButton={fullScreenButton}
               fullScreenNode={fullScreenNode}
-              nextDelay={jobServer?.progress?.next_delay}
             />
           </Segment>
         </JobController>
@@ -64,7 +62,7 @@ const getUnit = async (
   unitIndex: number,
   setUnit: (value: Unit) => void,
   setUnitIndex: (value: number) => void
-): void => {
+) => {
   if (unitIndex < 0 || unitIndex >= jobServer.progress.n_total) return;
 
   try {

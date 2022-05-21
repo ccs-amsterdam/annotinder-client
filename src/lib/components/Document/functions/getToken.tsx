@@ -29,19 +29,15 @@ const getNode = (e: TouchEvent | MouseEvent): [Element, boolean] => {
       n = document.elementFromPoint(position.clientX, position.clientY);
     }
 
-    if (n.parentNode) {
-      const pn = n.parentNode as Element;
-      if (pn.className === "item") return [null, false];
+    if (n.parentElement) {
+      if (n.parentElement.className === "item") return [null, false];
     }
 
     if (n) {
-      if (n.className.includes("token")) {
-        return [n, false];
+      if (n.classList.contains("token")) return [n, false];
+      if (n.parentElement) {
+        if (n.parentElement.classList.contains("token")) return [n.parentElement, true];
       }
-      // TODO: According to typescript this is impossible, so check whether it's still needed or just legacy junk
-      // if ("parentNode" in n) {
-      //   if (n.parentNode.classList.includes("token")) return [n.parentNode, true];
-      // }
     }
     return [null, false];
   } catch (e) {

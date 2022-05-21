@@ -85,16 +85,6 @@ const AnnotateTaskManual = ({ fullScreenNode }) => {
               </Table.Row>
               <Table.Row>
                 <Table.Cell>
-                  <strong>Finish unit</strong>
-                </Table.Cell>
-                <Table.Cell>
-                  <i>ctrl+Enter</i> or <i>alt+Enter</i>
-                </Table.Cell>
-                <Table.Cell colSpan="2">Use the next unit button</Table.Cell>
-              </Table.Row>
-              <br />
-              <Table.Row>
-                <Table.Cell>
                   <strong>Edit/remove code</strong>
                 </Table.Cell>
                 <Table.Cell colSpan="3">
@@ -103,18 +93,27 @@ const AnnotateTaskManual = ({ fullScreenNode }) => {
               </Table.Row>
               <Table.Row>
                 <Table.Cell>
+                  <strong>Finish unit</strong>
+                </Table.Cell>
+                <Table.Cell>
+                  <i>ctrl+Enter</i> or <i>alt+Enter</i>
+                </Table.Cell>
+                <Table.Cell colSpan="2">Use the next unit button</Table.Cell>
+              </Table.Row>
+              <br />
+
+              <Table.Row>
+                <Table.Cell>
                   <strong>Edit mode</strong>
                 </Table.Cell>
                 <Table.Cell colSpan="3">
-                  If you hold <i>ctrl</i> or <i>alt</i>, you work in edit mode. Note that some
-                  codingjobs always have Edit mode enabled.
+                  A job, or a specific variable in a job, can also be in <b>edit mode</b>
                 </Table.Cell>
               </Table.Row>
               <Table.Row>
                 <Table.Cell>
                   <strong>Edit mode: navigation</strong>
                 </Table.Cell>
-
                 <Table.Cell>
                   <i>Arrow keys</i> select last/next annotation
                 </Table.Cell>

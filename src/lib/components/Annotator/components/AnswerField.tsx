@@ -5,11 +5,23 @@ import Scale from "./AnswerFieldScale";
 import SearchCode from "./AnswerFieldSearchCode";
 import SelectCode from "./AnswerFieldSelectCode";
 import Inputs from "./AnswerFieldInputs";
+import { OnSelectParams } from "../../../types";
 
-const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe, blockEvents }) => {
+const MIN_DELAY = 200;
+// TODO: using questionindex for resetting states is bad, because it doesn't update for consequtive codebooks with 1 question
+
+const AnswerField = ({
+  currentAnswer,
+  questions,
+  questionIndex,
+  onAnswer,
+  swipe,
+  blockEvents = false,
+}) => {
   const question = questions[questionIndex];
   const [itemValues, setItemValues] = useState(currentAnswer);
 
+  console.log(question);
   useEffect(() => {
     // Note that currentAnswer:
     // is an array of objects: [{item: 'string of item name', values: [array of unique answer values]}]
@@ -36,19 +48,18 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
     };
   }, [currentAnswer, itemValues]);
 
-  const onFinish = (newItemValues = null, minDelay = 200) => {
-    onSelect(newItemValues || itemValues, false, minDelay);
+  const onFinish = () => {
+    onAnswer(itemValues, false, MIN_DELAY);
   };
 
-  const onValueSelect = ({
+  const onSelect = ({
     value,
     itemIndex = 0,
     multiple = false,
     finish = false,
     invalid = false,
-    onlySave = false,
-    minDelay = 200,
-  } = {}) => {
+    save = false,
+  }: OnSelectParams = {}) => {
     // this bad boy is used in all of the AnswerField sub-components to write values.
     // it's a bit complicated here, but it makes the code within the sub-components easier
     // itemValues is an array of objects, where each object is an item.
@@ -78,7 +89,11 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
     const newItemValues = [...itemValues];
     newItemValues[itemIndex].invalid = invalid;
     setItemValues(newItemValues);
-    if (finish) onSelect(newItemValues, onlySave, minDelay);
+    if (finish) {
+      onAnswer(newItemValues, false, MIN_DELAY);
+    } else {
+      if (save) onAnswer(newItemValues, true, MIN_DELAY);
+    }
     return newItemValues;
   };
 
@@ -95,7 +110,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
         multiple={question.multiple}
         singleRow={question.single_row}
         sameSize={question.same_size}
-        onSelect={onValueSelect}
+        onSelect={onSelect}
         onFinish={onFinish}
         blockEvents={blockEvents} // for disabling key/click events
         questionIndex={questionIndex} // for use in useEffect for resetting values on question change
@@ -108,10 +123,9 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
         options={question.options}
         values={itemValues[0].values}
         multiple={question.multiple}
-        onSelect={onValueSelect}
+        onSelect={onSelect}
         onFinish={onFinish}
         blockEvents={blockEvents}
-        questionIndex={questionIndex}
       />
     );
 
@@ -120,9 +134,8 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
       <Scale
         itemValues={itemValues}
         items={question.items || [""]}
-        values={itemValues}
         options={question.options}
-        onSelect={onValueSelect}
+        onSelect={onSelect}
         onFinish={onFinish}
         blockEvents={blockEvents}
         questionIndex={questionIndex}
@@ -134,21 +147,19 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
       <Annotinder
         itemValues={itemValues}
         swipeOptions={question.swipeOptions}
-        onSelect={onValueSelect}
+        onSelect={onSelect}
         swipe={swipe}
         blockEvents={blockEvents}
-        questionIndex={questionIndex}
       />
     );
 
   if (question.type === "confirm")
     return (
       <Confirm
-        onSelect={onValueSelect}
+        onSelect={onSelect}
         button={question?.button}
         swipe={swipe}
         blockEvents={blockEvents}
-        questionIndex={questionIndex}
       />
     );
 
@@ -157,7 +168,7 @@ const AnswerField = ({ currentAnswer, questions, questionIndex, onSelect, swipe,
       <Inputs
         items={question.items || [null]}
         itemValues={itemValues}
-        onSelect={onValueSelect}
+        onSelect={onSelect}
         onFinish={onFinish}
         blockEvents={blockEvents}
         questionIndex={questionIndex}

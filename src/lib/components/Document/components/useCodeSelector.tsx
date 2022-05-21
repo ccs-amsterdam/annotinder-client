@@ -223,7 +223,7 @@ const CodeSelectorPopup = React.memo(
           }}
         >
           {/* TODO: this used to be a segment, but somehow ts doesn't like those either. But maybe this broke the portal */}
-          <div
+          <Segment
             style={{
               bottom: "0",
               position: "fixed",
@@ -234,7 +234,7 @@ const CodeSelectorPopup = React.memo(
             }}
           >
             {children}
-          </div>
+          </Segment>
         </Portal>
       );
     }

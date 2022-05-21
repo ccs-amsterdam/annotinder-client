@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import { getDocAndAnnotations } from "../functions/prepareUnit";
-import { SetState, Token, Unit, SpanAnnotations } from "../../../types";
-import { Doc, CodeHistory, ImportedCodes } from "../documentTypes";
+import {
+  Doc,
+  CodeHistory,
+  ImportedCodes,
+  SetState,
+  Token,
+  Unit,
+  SpanAnnotations,
+} from "../../../types";
 
 const useUnit = (
   unit: Unit,
@@ -9,7 +16,7 @@ const useUnit = (
   returnTokens: (value: Token[]) => void,
   setCodeHistory: (value: CodeHistory) => void
 ): [Doc, SpanAnnotations, SetState<SpanAnnotations>, ImportedCodes] => {
-  const [doc, setDoc] = useState<Doc>(null);
+  const [doc, setDoc] = useState<Doc>({});
   const [annotations, setAnnotations] = useState<SpanAnnotations | null>(null);
   const [importedCodes, setImportedCodes] = useState<ImportedCodes>({});
 

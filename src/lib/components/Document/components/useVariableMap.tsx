@@ -1,31 +1,15 @@
 import { useState, useEffect } from "react";
 import { codeBookEdgesToMap } from "../../../functions/codebook";
-import { ImportedCodes, Variable, VariableMap } from "../documentTypes";
+import { ImportedCodes, Variable, VariableMap } from "../../../types";
 
 export default function useVariableMap(
   variables: Variable[],
   selectedVariable: string,
   importedCodes: ImportedCodes
-) {
-  const [editMode, setEditMode] = useState(false);
+): [VariableMap, boolean] {
   const [fullVariableMap, setFullVariableMap] = useState<VariableMap>(null);
   const [variableMap, setVariableMap] = useState<VariableMap>(null);
-  const [manualEditMode, setManualEditMode] = useState(false);
-
-  useEffect(() => {
-    const setManualMode = (e) => {
-      setManualEditMode(e.ctrlKey || e.altKey);
-    };
-
-    ["keydown", "mousedown", "keyup"].forEach((e) => {
-      window.addEventListener(e, setManualMode);
-    });
-    return () => {
-      ["keydown", "mousedown", "keyup"].forEach((e) => {
-        window.removeEventListener(e, setManualMode);
-      });
-    };
-  }, [setManualEditMode]);
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     // creates fullVariableMap
@@ -80,6 +64,6 @@ export default function useVariableMap(
     setEditMode(vmap?.[selectedVariable]?.editMode || selectedVariable === "EDIT ALL");
   }, [importedCodes, fullVariableMap, selectedVariable, setVariableMap, setEditMode]);
 
-  if (!selectedVariable) return [null, manualEditMode || editMode];
-  return [variableMap, manualEditMode || editMode];
+  if (!selectedVariable) return [null, editMode];
+  return [variableMap, editMode];
 }

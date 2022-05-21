@@ -1,11 +1,29 @@
 import React, { useState, useEffect, useRef, createRef } from "react";
 import { Button, Ref, Icon, Label } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
+import { OnSelectParams, AnswerOption, AnswerItem } from "../../../types";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
+interface ScaleProps {
+  /** The item array of the current question. Contains al settings for items */
+  items: any[];
+  /** An array of answer items (matching the items array in length and order)  */
+  itemValues: AnswerItem[];
+  /** The options the user can choose from */
+  options: AnswerOption[];
+  /** The function used to update the values */
+  onSelect: (params: OnSelectParams) => void;
+  /** Like onSelect, but for finishing the question/unit with the current values */
+  onFinish: () => void;
+  /** If true, all eventlisteners are stopped */
+  blockEvents: boolean;
+  /** The index of the question.  */
+  questionIndex: number;
+}
+
 const Scale = React.memo(
-  ({ items, itemValues, options, onSelect, onFinish, blockEvents, questionIndex }) => {
+  ({ items, itemValues, options, onSelect, onFinish, blockEvents, questionIndex }: ScaleProps) => {
     // render buttons for options (an array of objects with keys 'label' and 'color')
     // On selection perform onSelect function with the button label as input
     // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
@@ -134,11 +152,9 @@ const Scale = React.memo(
         <Items
           itemValues={itemValues}
           selectedItem={selectedItem}
-          setSelectedItem={setSelectedItem}
           items={items}
           options={options}
           selectedButton={selectedButton}
-          setSelectedButton={setSelectedButton}
           onSelect={onSelect}
         />
 

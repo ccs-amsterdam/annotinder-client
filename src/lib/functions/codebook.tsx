@@ -79,12 +79,12 @@ export const codeBookEdgesToMap = (codes: Code[] | string[], fillMissingColor: b
  * @param showColors
  * @returns
  */
-export const getCodeTreeArray = (codeMap: CodeMap, showColors: boolean): CodeTree[] => {
+export const getCodeTreeArray = (codeMap: CodeMap): CodeTree[] => {
   let parents = Object.keys(codeMap).filter(
     (code) => !codeMap[code].parent || codeMap[code].parent === ""
   );
   const codeTreeArray: CodeTree[] = [];
-  fillCodeTreeArray(codeMap, parents, codeTreeArray, [], showColors);
+  fillCodeTreeArray(codeMap, parents, codeTreeArray, []);
   return codeTreeArray.map((object, i) => ({ ...object, i: i }));
 };
 
@@ -92,8 +92,7 @@ const fillCodeTreeArray = (
   codeMap: CodeMap,
   parents: string[],
   codeTreeArray: CodeTree[],
-  codeTrail: string[],
-  showColors: boolean
+  codeTrail: string[]
 ) => {
   for (const code of parents) {
     let newcodeTrail = [...codeTrail];
@@ -108,7 +107,7 @@ const fillCodeTreeArray = (
     });
 
     if (codeMap[code].children) {
-      fillCodeTreeArray(codeMap, codeMap[code].children, codeTreeArray, newcodeTrail, showColors);
+      fillCodeTreeArray(codeMap, codeMap[code].children, codeTreeArray, newcodeTrail);
     }
   }
 };

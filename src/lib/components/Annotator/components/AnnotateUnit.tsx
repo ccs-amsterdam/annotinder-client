@@ -2,7 +2,7 @@ import React from "react";
 import QuestionTask from "./QuestionTask";
 import AnnotateTask from "./AnnotateTask";
 
-const Unit = ({ unit, jobServer, unitIndex, setUnitIndex, fullScreenNode, nextDelay }) => {
+const AnnotateUnit = ({ unit, jobServer, unitIndex, setUnitIndex, fullScreenNode }) => {
   // Both the unit and the codingjob can have a codebook
   // codebook is the default codebook applied to all units
   // unit.codebook is a unit specific codebook that overrides the default
@@ -19,7 +19,6 @@ const Unit = ({ unit, jobServer, unitIndex, setUnitIndex, fullScreenNode, nextDe
         codebook={codebook}
         setUnitIndex={setUnitIndex}
         fullScreenNode={fullScreenNode}
-        nextDelay={nextDelay}
       />
     );
 
@@ -30,11 +29,10 @@ const Unit = ({ unit, jobServer, unitIndex, setUnitIndex, fullScreenNode, nextDe
         codebook={codebook}
         setUnitIndex={setUnitIndex}
         fullScreenNode={fullScreenNode}
-        nextDelay={nextDelay}
       />
     );
 
   return null;
 };
 
-export default Unit;
+export default AnnotateUnit;

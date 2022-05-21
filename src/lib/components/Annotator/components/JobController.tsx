@@ -104,7 +104,7 @@ const UserButton = ({ fullScreenNode, jobServer }) => {
               style={{ marginTop: "0" }}
               onClick={() => {
                 setAuth({ ...auth, [auth.host + "__token__"]: null });
-                window.location.reload("/");
+                window.location.reload();
               }}
             />
           ) : null}

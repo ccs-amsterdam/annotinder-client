@@ -8,7 +8,8 @@ export const FullScreenWindow = ({ children, askFullScreen }) => {
 
   return (
     <FullScreen handle={fsHandle}>
-      <DOMNodeProvider style={{ height: "100%" }}>
+      {/* TODO: check if removing style={{ height: "100%" }} didn't break anything */}
+      <DOMNodeProvider>
         {(fullScreenNode) => {
           // FullScreenFix children should be called as a function to pass on the fullScreenNode argument
           return (

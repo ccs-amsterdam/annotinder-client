@@ -8,6 +8,7 @@ import standardizeColor from "../../../functions/standardizeColor";
 import swipeControl from "../functions/swipeControl";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import styled from "styled-components";
+import { AnswerOption, SwipeOptions, Swipes } from "../../../types";
 
 const Container = styled.div`
   display: flex;
@@ -52,7 +53,7 @@ const QuestionMenu = styled.div`
   font-size: ${(props) => props.lowerTextSize}em;
 `;
 
-const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNode }) => {
+const QuestionTask = ({ unit, codebook, setUnitIndex, fullScreenNode, blockEvents = false }) => {
   const [tokens, setTokens] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState(null);
@@ -60,7 +61,6 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
     text: useRef(),
     box: useRef(),
     code: useRef(),
-    positionTracker: useRef({ containerRef: null }),
   };
   const [textReady, setTextReady] = useState(0);
   const [settings, setSettings] = useLocalStorage("questionTaskSettings", {
@@ -88,7 +88,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
 
   // swipe controlls need to be up in the QuestionTask component due to working on the div containing the question screen
   // use separate swipe for text (document) and menu rows, because swiping up in the text is only possible if scrolled all the way down
-  const [swipe, setSwipe] = useState(null);
+  const [swipe, setSwipe] = useState<Swipes>(null);
   const textSwipe = useSwipeable(swipeControl(questions?.[questionIndex], refs, setSwipe, false));
   const menuSwipe = useSwipeable(swipeControl(questions?.[questionIndex], refs, setSwipe, true));
 
@@ -116,7 +116,6 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, blockEvents, fullScreenNod
               setReady={setTextReady}
               returnTokens={setTokens}
               fullScreenNode={fullScreenNode}
-              positionTracker={refs.positionTracker}
             />
           </Text>
         </SwipeableBox>
@@ -185,7 +184,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitH
               <Form.Field>
                 <label>
                   Text window height{" "}
-                  <font style={{ color: "blue" }}>{`${settings.splitHeight}%`}</font>
+                  <span style={{ color: "blue" }}>{`${settings.splitHeight}%`}</span>
                 </label>
                 <Input
                   size="mini"
@@ -201,7 +200,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitH
             <Form.Field>
               <label>
                 Content text size{" "}
-                <font style={{ color: "blue" }}>{`${settings.upperTextSize}`}</font>
+                <span style={{ color: "blue" }}>{`${settings.upperTextSize}`}</span>
               </label>
               <Input
                 size="mini"
@@ -216,7 +215,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitH
             <Form.Field>
               <label>
                 Answer field text size{" "}
-                <font style={{ color: "blue" }}>{`${settings.lowerTextSize}`}</font>
+                <span style={{ color: "blue" }}>{`${settings.lowerTextSize}`}</span>
               </label>
               <Input
                 size="mini"
@@ -246,15 +245,15 @@ const prepareQuestions = (codebook) => {
   });
 };
 
-const getOptions = (cta) => {
+const getOptions = (cta): [AnswerOption[], SwipeOptions] => {
   const options = [];
-  const swipeOptions = {}; // object, for fast lookup in swipeControl
+  const swipeOptions: any = {}; // object, for fast lookup in swipeControl
 
   for (let code of cta) {
     if (!code.active) continue;
     if (!code.activeParent) continue;
     let tree = code.tree.join(" - ");
-    const option = {
+    const option: AnswerOption = {
       code: code.code,
       tree: tree,
       makes_irrelevant: code.makes_irrelevant,

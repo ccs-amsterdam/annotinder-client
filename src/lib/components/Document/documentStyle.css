@@ -69,14 +69,10 @@ span.token.annotated > span {
 
 span.token.annotated.anyLeft > span.text {
   border-left: solid;
-  border-left-width: 0.1px;
+  border-left-width: 0px;
   border-bottom-left-radius: 0px;
 }
-span.token.annotated.anyLeft > span.text {
-  border-left: 1px solid;
-  border-left-width: 0.1px;
-  border-bottom-left-radius: 0px;
-}
+
 span.token.annotated.allLeft > span.pre {
   border: none;
   background: none;
@@ -89,7 +85,7 @@ span.token.annotated.allLeft > span.text {
 }
 
 span.token.annotated.anyRight > span.text {
-  border-right: 1px solid;
+  border-right: 0px solid;
 }
 span.token.annotated.allRight > span.post {
   border: none;

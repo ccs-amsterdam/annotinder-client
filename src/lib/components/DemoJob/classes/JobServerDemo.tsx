@@ -1,5 +1,3 @@
-import { Unit } from "../../../types";
-
 class JobServerDemo {
   codebook: any; // TODO: add codebook interface
   units: any[];
