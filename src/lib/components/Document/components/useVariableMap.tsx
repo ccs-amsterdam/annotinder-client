@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { codeBookEdgesToMap } from "../../../functions/codebook";
-import { ImportedCodes, Variable, VariableMap } from "../../../types";
+import { VariableValueMap, Variable, VariableMap } from "../../../types";
 
 export default function useVariableMap(
   variables: Variable[],
   selectedVariable: string,
-  importedCodes: ImportedCodes
+  importedCodes: VariableValueMap
 ): [VariableMap, boolean] {
   const [fullVariableMap, setFullVariableMap] = useState<VariableMap>(null);
   const [variableMap, setVariableMap] = useState<VariableMap>(null);
@@ -21,7 +21,7 @@ export default function useVariableMap(
     const vm: any = {};
     for (let variable of variables) {
       let cm = codeBookEdgesToMap(variable.codes);
-      cm = Object.keys(cm).reduce((obj, key) => {
+      cm = Object.keys(cm).reduce((obj: any, key) => {
         if (!cm[key].active || !cm[key].activeParent) return obj;
         obj[key] = cm[key];
         return obj;
@@ -40,7 +40,7 @@ export default function useVariableMap(
       return;
     }
 
-    let vmap;
+    let vmap: VariableMap;
     if (selectedVariable === null || selectedVariable === "EDIT ALL") {
       vmap = fullVariableMap;
     } else {
@@ -52,11 +52,14 @@ export default function useVariableMap(
     for (let variable of Object.keys(vmap)) {
       vmap[variable] = { ...vmap[variable] };
       if (vmap[variable]?.onlyImported) {
-        vmap[variable].codeMap = Object.keys(vmap[variable].codeMap).reduce((imported, code) => {
-          if (importedCodes?.[variable]?.[code])
-            imported[code] = { ...vmap[variable].codeMap[code] };
-          return imported;
-        }, {});
+        vmap[variable].codeMap = Object.keys(vmap[variable].codeMap).reduce(
+          (imported: any, code) => {
+            if (importedCodes?.[variable]?.[code])
+              imported[code] = { ...vmap[variable].codeMap[code] };
+            return imported;
+          },
+          {}
+        );
       }
     }
 

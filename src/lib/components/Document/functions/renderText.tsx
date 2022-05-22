@@ -1,7 +1,11 @@
 import React, { ReactElement } from "react";
 import { TextField, Token, RenderedText } from "../../../types";
 
-export default function renderText(tokens: Token[], text_fields: TextField[], containerRef: any) {
+export default function renderText(
+  tokens: Token[],
+  text_fields: TextField[],
+  containerRef: any
+): RenderedText {
   const text: RenderedText = text_fields.reduce((obj: any, tf: TextField) => {
     obj[tf.name] = [];
     return obj;
@@ -17,9 +21,9 @@ export default function renderText(tokens: Token[], text_fields: TextField[], co
   let paragraph_nr = tokens[0].paragraph;
   let sentence_nr = tokens[0].sentence;
 
-  const getLayout = (field_name: string) =>
+  const getTextField = (field_name: string) =>
     text_fields.find((tf: TextField) => tf.name === field_name);
-  let layout = getLayout(field_name);
+  let textField = getTextField(field_name);
 
   for (let i = 0; i < tokens.length; i++) {
     tokens[i].arrayIndex = i;
@@ -32,7 +36,7 @@ export default function renderText(tokens: Token[], text_fields: TextField[], co
       if (paragraph.length > 0) {
         field.push(
           renderParagraph(
-            getLayout(field_name),
+            getTextField(field_name),
             paragraph_nr,
             paragraph,
             tokens[i].paragraph !== paragraph_nr
@@ -45,7 +49,7 @@ export default function renderText(tokens: Token[], text_fields: TextField[], co
     if (tokens[i].field !== field_name) {
       if (field.length > 0)
         text[field_name].push(
-          renderField(getLayout(field_name), i + "_" + field_name, field, field_name)
+          renderField(getTextField(field_name), i + "_" + field_name, field, field_name)
         );
       field = [];
     }
@@ -62,25 +66,25 @@ export default function renderText(tokens: Token[], text_fields: TextField[], co
     sentence.push(renderToken(tokens[i], codingUnit));
   }
 
-  layout = getLayout(field_name);
+  textField = getTextField(field_name);
   if (sentence.length > 0) paragraph.push(renderSentence("last", sentence_nr, sentence));
-  if (paragraph.length > 0) field.push(renderParagraph(layout, paragraph_nr, paragraph, false));
+  if (paragraph.length > 0) field.push(renderParagraph(textField, paragraph_nr, paragraph, false));
   if (field.length > 0)
-    text[field_name].push(renderField(layout, "last_" + field_name, field, field_name));
+    text[field_name].push(renderField(textField, "last_" + field_name, field, field_name));
   return text;
 }
 
 const renderField = (
-  layout: TextField,
+  textField: TextField,
   paragraph_key: string,
   paragraphs: ReactElement[],
   field: string
 ) => {
   const fontstyle = (paragraphs: ReactElement[]) => {
-    if (layout) {
+    if (textField) {
       return (
         <>
-          {layout.label ? (
+          {textField.label ? (
             <span
               key={field + paragraph_key + "label"}
               style={{
@@ -89,18 +93,19 @@ const renderField = (
                 textAlign: "center",
               }}
             >
-              {layout.label}
+              {textField.label}
             </span>
           ) : null}
           <span
             key={field + paragraph_key}
             className="noselect"
-            style={{
-              fontSize: `${layout.size != null ? layout.size : 1}em`,
-              fontWeight: layout.bold ? "bold" : "normal",
-              fontStyle: layout.italic ? "italic" : "normal",
-              textAlign: layout.justify ? "justify" : layout.center ? "center" : "left",
-            }}
+            style={textField.style}
+            // style={{
+            //   fontSize: `${textField.size != null ? textField.size : 1}em`,
+            //   fontWeight: textField.bold ? "bold" : "normal",
+            //   fontStyle: textField.italic ? "italic" : "normal",
+            //   textAlign: textField.justify ? "justify" : textField.center ? "center" : "left",
+            // }}
           >
             {paragraphs}
           </span>
@@ -118,12 +123,12 @@ const renderField = (
 };
 
 const renderParagraph = (
-  layout: TextField,
+  textField: TextField,
   paragraph_nr: number,
   sentences: ReactElement[],
   end: boolean
 ) => {
-  if (layout?.paragraphs != null && !layout?.paragraphs)
+  if (textField?.paragraphs != null && !textField?.paragraphs)
     return (
       <span key={"par" + paragraph_nr}>
         <span>{sentences}</span>

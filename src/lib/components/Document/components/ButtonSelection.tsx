@@ -1,22 +1,28 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Divider, Icon, Ref } from "semantic-ui-react";
 
 import { moveDown, moveUp } from "../../../functions/refNavigation";
+import { CodeSelectorOption, CodeSelectorValue } from "../../../types";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
-const ButtonSelection = ({ id, active, options, onSelect }) => {
+interface ButtonSelectionProps {
+  id: string;
+  active: boolean;
+  options: CodeSelectorOption[];
+  onSelect: (value: CodeSelectorValue, ctrlKey: boolean) => void;
+}
+
+const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps) => {
   const [selected, setSelected] = useState(1);
-  const [allOptions, setAllOptions] = useState([]);
-  const deleted = useRef({});
+  const [allOptions, setAllOptions] = useState<CodeSelectorOption[]>([]);
 
   useEffect(() => {
     // add cancel button and (most importantly) add refs used for navigation
-    const cancelOption = {
-      cancel: true,
+    const cancelOption: CodeSelectorOption = {
       label: "CLOSE",
       color: "grey",
-      value: "CANCEL",
+      value: { cancel: true },
       textColor: "white",
     };
 
@@ -75,9 +81,9 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
     };
   }, [active, onKeydown]);
 
-  const button = (option, i) => {
+  const button = (option: CodeSelectorOption, i: number) => {
     const textColor = option.value.delete ? "#682c2c" : "black";
-    const tagColor = option.value.delete ? option.value : "white";
+    const tagColor = option.value.delete ? option.color : "white";
     const tagBorderColor = option.color.slice(0, 7);
     const borderColor = option.value.delete ? "darkred" : "black";
     const bgColor = option.color;
@@ -127,14 +133,12 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
     const selectButtons = [];
     const deleteButtons = [];
     for (let option of allOptions) {
-      if (deleted.current[option.value]) continue;
-
-      if (option.value === "CANCEL")
+      if (option.value.cancel)
         cancelButton = (
           <Ref key={option.label + "_" + i} innerRef={option.ref}>
             <CloseButton
               selected={i === selected}
-              onClick={(e, d) => onSelect("CANCEL", e.ctrlKey || e.altKey)}
+              onClick={(e, d) => onSelect(option.value, e.ctrlKey || e.altKey)}
             />
           </Ref>
         );
@@ -178,7 +182,12 @@ const ButtonSelection = ({ id, active, options, onSelect }) => {
   return <div key={id}>{mapButtons()}</div>;
 };
 
-const CloseButton = ({ selected, onClick, style = {} }) => {
+interface CloseButtonProps {
+  selected: boolean;
+  onClick: (e: any, d: Object) => void;
+}
+
+const CloseButton = ({ selected, onClick }: CloseButtonProps) => {
   return (
     <Button
       icon="window close"
@@ -190,7 +199,6 @@ const CloseButton = ({ selected, onClick, style = {} }) => {
         position: "absolute",
         left: "calc(50% - 15px)",
         top: "-20px",
-        ...style,
       }}
       onClick={onClick}
     />

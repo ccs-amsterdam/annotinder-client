@@ -1,17 +1,34 @@
-import { ReactElement, RefObject } from "react";
+import {
+  ReactElement,
+  RefObject,
+  Dispatch,
+  SetStateAction,
+  MutableRefObject,
+  CSSProperties,
+} from "react";
 // common interfaces
 
-///// GENERIC
+///// UTIL
 
 // For passing on setState functions, which can either take a value or a function
-export interface SetState<Type> {
-  (value: Type): void;
-  (value: (value: Type) => Type): void;
-}
+// export interface SetState<Type> {
+//   (value: Type): void;
+//   (value: (value: Type) => Type): void;
+// }
 // !! apparently this already exists as Dispatch<SetStateAction<string>>
-//    where Dispatch<function> just says return value is void
+//    where Dispatch<function> just says return value is voi
+
+///// CONVENIENCE
+
+// shorthand for the many setstate props being passed around
+export type SetState<Type> = Dispatch<SetStateAction<Type>>;
+
+// shorthand for the fullscreennode
+export type FullScreenNode = MutableRefObject<HTMLDivElement | null>;
 
 ///// ANNOTATIONS
+export type Span = [number, number];
+
 export interface Annotation {
   variable: string;
   length: number;
@@ -20,21 +37,20 @@ export interface Annotation {
   offset: number;
   index?: number;
   text?: string;
-  span?: [number, number];
-  token_span?: [number, number];
+  span?: Span;
+  token_span?: Span;
 }
 
-// an intermediate format for annotations used internally for more efficient editing in 'annotation' mode
-export interface SpanAnnotation extends Annotation {
-  id?: string;
+/** An object with all annotations linked to a token, quickly accessible by their (unique) variable + '.' + value
+ */
+export interface TokenAnnotations {
+  [key: string]: Annotation;
 }
 
-// {token_index: {variable+value: {SpanAnnotation}}}
-// note that js doesn't distinguish between '2' and 2 as a key
+/** All tokenAnnotations quickly accessible by token index
+ */
 export interface SpanAnnotations {
-  [key: number | string]: {
-    [key: string]: SpanAnnotation;
-  };
+  [key: number | string]: TokenAnnotations;
 }
 
 ///// QUESTIONS MODE
@@ -98,6 +114,46 @@ export interface OnSelectParams {
   save?: boolean;
 }
 
+///// ANNOTATE MODE
+
+/** This one's intentionally flexible, because the codeselector popup handles multiple types of selections */
+export interface CodeSelectorValue {
+  variable?: string;
+  span?: Span;
+  value?: string | number;
+  delete?: boolean;
+  cancel?: boolean;
+}
+
+/** This one's intentionally flexible, because the codeselector popup handles multiple types of selections */
+export interface CodeSelectorOption {
+  /** The value returned by the dropbox/buttonselection */
+  value: CodeSelectorValue;
+  /** label shown in buttonselection */
+  label?: string | number;
+  /** color of button */
+  color?: string;
+  /** text shown as a tag attached to the button */
+  tag?: string | number;
+  /** used in buttons to set text color */
+  textColor?: string;
+  /** If the options are rendered as buttons, the ref enables navigation */
+  ref?: RefObject<HTMLElement>;
+}
+
+export interface CodeSelectorDropdownOption {
+  /** Dropdown doesn't allow objects as values, so we use codes as values, and later find the full value */
+  value: string;
+  /** After getting the selected value, we can return the actual value object */
+  fullvalue?: CodeSelectorValue;
+  /** Used in dropdown for searching string match */
+  text?: string;
+  /** Used in dropdown to render label */
+  content?: ReactElement;
+}
+
+export type TokenSelection = [number, number] | [];
+
 ///// UNIT DATA
 
 export interface Unit {
@@ -117,12 +173,14 @@ export interface Unit {
 export interface TextField {
   name: string;
   value: string;
+  label?: string;
   offset?: number;
   unit_start?: number;
   unit_end?: number;
   context_before?: string;
   context_after?: string;
-  [key: string]: string | number | boolean; // mostly layout stuff
+  paragraphs?: boolean;
+  style?: CSSProperties;
 }
 
 export interface RenderedText {
@@ -134,8 +192,7 @@ export interface ImageField {
   filename?: string;
   base64?: string;
   caption?: string;
-  style?: any;
-  [key: string]: string | number | boolean; // mostly layout stuff
+  style?: CSSProperties;
 }
 
 export interface RenderedImages {
@@ -144,9 +201,9 @@ export interface RenderedImages {
 
 export interface MetaField {
   name: string;
-  label: string;
   value: string | number;
-  [key: string]: string | number | boolean; // mostly layout stuff
+  label: string;
+  style?: CSSProperties;
 }
 
 ///// CODES
@@ -184,6 +241,7 @@ export interface Token {
   containerRef?: any; // once rendered, a Token will carry refs for it's own element and it's container element
   ref?: any;
   arrayIndex?: number; // once rendered, the index of the rendered tokens. Can differ from 'index' if current unit is a subset of a document (so index does not start at 0)
+  select?: (span: Span) => void; // a function that can be called on a token to select it
 }
 
 // token as it can occur in a unit. This includes alternative conventions in NLP parsers
@@ -236,7 +294,12 @@ export interface Doc {
   markdown_field?: string;
 }
 
-export interface ImportedCodes {
+export interface DocumentSettings {
+  editAll: boolean;
+  editMode: boolean;
+}
+
+export interface VariableValueMap {
   /** Keys are variable names, values are objects in which keys are code-values, and their value is always true.
    *  Used for quick lookup of whether a value is allowed to be used for a given variable
    */
@@ -247,7 +310,7 @@ export interface ImportedCodes {
 
 export interface CodeHistory {
   /** Keys are variable names, values are arrays of values that the variable has recently been coded with */
-  [key: string]: string[];
+  [key: string]: (string | number)[];
 }
 
 export interface Variable {
@@ -266,4 +329,8 @@ export interface Variable {
 
 export interface VariableMap {
   [key: string]: Variable;
+}
+
+export interface TriggerCodePopup {
+  (index: number, span: Span): void;
 }

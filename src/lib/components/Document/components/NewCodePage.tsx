@@ -1,28 +1,55 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Dropdown, Ref } from "semantic-ui-react";
-import { toggleSpanAnnotation } from "../../../functions/annotations";
+import { createId, toggleSpanAnnotation } from "../../../functions/annotations";
 import { getColor } from "../../../functions/tokenDesign";
 import ButtonSelection from "./ButtonSelection";
-import { SpanAnnotation } from "../../../types";
+import {
+  CodeHistory,
+  Span,
+  Annotation,
+  SpanAnnotations,
+  TokenAnnotations,
+  VariableMap,
+  SetState,
+  Token,
+  CodeSelectorValue,
+  CodeSelectorOption,
+  CodeSelectorDropdownOption,
+  CodeMap,
+} from "../../../types";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
+
+interface NewCodepageProps {
+  tokens: Token[];
+  variable: string;
+  variableMap: VariableMap;
+  annotations: SpanAnnotations;
+  tokenAnnotations: TokenAnnotations;
+  setAnnotations: SetState<SpanAnnotations>;
+  editMode: boolean;
+  span: Span;
+  setOpen: SetState<boolean>;
+  codeHistory: CodeHistory;
+  setCodeHistory: SetState<CodeHistory>;
+}
 
 const NewCodePage = ({
   tokens,
   variable,
   variableMap,
-  codeHistory,
-  settings,
   annotations,
   tokenAnnotations,
   setAnnotations,
   editMode,
   span,
   setOpen,
+  codeHistory,
   setCodeHistory,
-}) => {
+}: NewCodepageProps) => {
   const textInputRef = useRef(null);
   const [focusOnButtons, setFocusOnButtons] = useState(true);
+  const settings = variableMap[variable];
 
   const onKeydown = React.useCallback(
     (event) => {
@@ -38,8 +65,8 @@ const NewCodePage = ({
     [textInputRef, setOpen, settings]
   );
 
-  const getExistingAnnotations = (variable): SpanAnnotation[] => {
-    let annMap = {};
+  const getExistingAnnotations = (variable: string): Annotation[] => {
+    let annMap: any = {};
 
     for (let i = span[0]; i <= span[1]; i++) {
       if (annotations?.[i]) {
@@ -67,19 +94,19 @@ const NewCodePage = ({
     };
   });
 
-  const onSelect = (annotation, ctrlKey = false) => {
-    if (annotation === "CANCEL") {
+  const onSelect = (value: CodeSelectorValue, ctrlKey = false) => {
+    if (value.cancel) {
       setOpen(false);
       return;
     }
-    updateAnnotations(tokens, annotation, setAnnotations, setCodeHistory, editMode);
+    updateAnnotations(tokens, value, setAnnotations, setCodeHistory, editMode);
 
     if (!variableMap?.[variable]?.multiple && !ctrlKey) setOpen(false);
   };
 
-  const autoCode = (codeMap, existing) => {
+  const autoCode = (codeMap: CodeMap, existing: Annotation[]): void => {
     const codes = Object.keys(codeMap);
-    if (codes.length !== 1) return null;
+    if (codes.length !== 1) return;
 
     const value = codes[0];
     const nonEmpty = existing.filter((e) => e.value !== "EMPTY");
@@ -94,10 +121,10 @@ const NewCodePage = ({
     }
   };
 
-  const getOptions = () => {
-    const existing = getExistingAnnotations(variable);
-    const buttonOptions = [];
-    const dropdownOptions = [];
+  const getOptions = (): [CodeSelectorOption[], CodeSelectorDropdownOption[]] => {
+    const existing: Annotation[] = getExistingAnnotations(variable);
+    const buttonOptions: CodeSelectorOption[] = [];
+    const dropdownOptions: CodeSelectorDropdownOption[] = [];
     const codeMap = variableMap?.[variable]?.codeMap;
     autoCode(codeMap, existing);
 
@@ -109,7 +136,6 @@ const NewCodePage = ({
 
       if (settings && settings.buttonMode === "all")
         buttonOptions.push({
-          key: code,
           label: code,
           value: { variable, value: code, span, delete: false },
           color: getColor(code, codeMap),
@@ -118,9 +144,9 @@ const NewCodePage = ({
       let tree = codeMap[code].tree.join(" - ");
 
       dropdownOptions.push({
-        key: code,
-        value: { variable, value: code, span, delete: false },
-        text: code + " test" + tree,
+        value: code,
+        fullvalue: { variable, value: code, span, delete: false },
+        text: code + " " + tree,
         content: (
           <>
             {code}
@@ -134,11 +160,10 @@ const NewCodePage = ({
     // use 'recent' mode if specified, or if settings are missing
     if (!settings || settings.buttonMode === "recent") {
       let nRecent = 9;
-      for (let code of codeHistory) {
+      for (let code of codeHistory[variable] || []) {
         if (nRecent < 0) break;
         if (!codeMap[code]) continue;
         buttonOptions.push({
-          key: code,
           label: code,
           value: { variable, value: code, span, delete: false },
           color: getColor(code, codeMap),
@@ -153,7 +178,9 @@ const NewCodePage = ({
 
         // check if more than one annotation of same value in this span.
 
-        const multiple = existing.find((e) => e.id !== o.id && e.value === o.value);
+        const multiple = existing.find((e) => {
+          return createId(e) !== createId(o) && e.value === o.value;
+        });
         if (multiple) {
           // if multiple, add text snippet as label (and move code to tag) to disambiguate,
           buttonOptions.push({
@@ -177,10 +204,14 @@ const NewCodePage = ({
     return [buttonOptions, dropdownOptions];
   };
 
-  const asButtonSelection = (options) => {
+  const asButtonSelection = (options: CodeSelectorOption[]) => {
     return (
       <>
-        {settings.buttonMode === "recent" && codeHistory.length > 0 ? <b>Recent codes</b> : null}
+        {settings.buttonMode === "recent" &&
+        codeHistory[variable] &&
+        codeHistory[variable].length > 0 ? (
+          <b>Recent codes</b>
+        ) : null}
         <ButtonSelection
           id={"newCodePageButtons"}
           active={focusOnButtons}
@@ -191,7 +222,7 @@ const NewCodePage = ({
     );
   };
 
-  const asDropdownSelection = (options) => {
+  const asDropdownSelection = (options: CodeSelectorDropdownOption[]) => {
     if (options.length === 0) return null;
 
     // use searchBox if specified OR if settings are missing
@@ -229,7 +260,11 @@ const NewCodePage = ({
           onChange={(e, d) => {
             // TODO: Typescript is again very sad. Should check whether e.ctrlKey and e.altKey really cannot exist on this event
             // of if its just some obscure type thing
-            onSelect(d.value, false);
+            for (let o of options) {
+              if (o.value !== d.value) continue;
+              onSelect(o.fullvalue, false);
+              break;
+            }
             //onSelect(d.value, e.ctrlKey || e.altKey);
           }}
         />
@@ -251,7 +286,7 @@ const NewCodePage = ({
   );
 };
 
-const getTextSnippet = (tokens, span, maxlength = 8) => {
+const getTextSnippet = (tokens: Token[], span: Span, maxlength = 8) => {
   let text = tokens.slice(span[0], span[1] + 1).map((t, i) => {
     if (i === 0) return t.text + t.post;
     if (i === span[1] - span[0]) return t.pre + t.text;
@@ -266,25 +301,35 @@ const getTextSnippet = (tokens, span, maxlength = 8) => {
   return text.join("");
 };
 
-const updateAnnotations = (tokens, annotation, setAnnotations, setCodeHistory, editMode) => {
-  const [from, to] = annotation.span;
-  annotation.index = tokens[from].index;
-  annotation.length = tokens[to].length + tokens[to].offset - tokens[from].offset;
-  annotation.span = [tokens[from].index, tokens[to].index];
-  annotation.field = tokens[from].field;
-  annotation.offset = tokens[from].offset;
+const updateAnnotations = (
+  tokens: Token[],
+  value: CodeSelectorValue,
+  setAnnotations: SetState<SpanAnnotations>,
+  setCodeHistory: SetState<CodeHistory>,
+  editMode: boolean
+) => {
+  const [from, to] = value.span;
+  const annotation: Annotation = {
+    variable: value.variable,
+    value: value.value,
+    span: value.span,
+    index: tokens[from].index,
+    offset: tokens[from].offset,
+    length: tokens[to].length + tokens[to].offset - tokens[from].offset,
+    field: tokens[from].field,
+  };
 
-  setAnnotations((state) =>
-    toggleSpanAnnotation({ ...state }, annotation, annotation.delete, editMode)
+  setAnnotations((state: SpanAnnotations) =>
+    toggleSpanAnnotation({ ...state }, annotation, value.delete, editMode)
   );
 
-  setCodeHistory((state) => {
+  setCodeHistory((state: CodeHistory) => {
     if (!state?.[annotation.variable]) state[annotation.variable] = [];
     return {
       ...state,
       [annotation.variable]: [
         annotation.value,
-        ...state[annotation.variable].filter((v) => v !== annotation.value),
+        ...state[annotation.variable].filter((v: string) => v !== annotation.value),
       ],
     };
   });

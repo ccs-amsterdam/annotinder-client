@@ -1,14 +1,12 @@
 import React from "react";
 import { Table } from "semantic-ui-react";
+import { MetaField } from "../../../types";
 
-const Meta = ({ meta_fields }) => {
-  const cellStyle = (row) => {
-    const style: any = { borderTop: "none" };
-    if (row.bold) style.fontWeight = "bold";
-    if (row.italic) style.fontStyle = "italic";
-    return style;
-  };
+interface MetaProps {
+  meta_fields: MetaField[];
+}
 
+const Meta = ({ meta_fields }: MetaProps) => {
   const rows = () => {
     return meta_fields.map((row) => {
       return (
@@ -16,13 +14,13 @@ const Meta = ({ meta_fields }) => {
           key={row.label || row.name}
           style={{
             lineHeight: "1.2",
-            fontSize: `${(row.size != null ? row.size : 1) + 0.3}em`,
+            fontSize: `1.3em`,
           }}
         >
           <Table.Cell width={1} style={{ borderTop: "none" }}>
             <b>{row.label || row.name}</b>
           </Table.Cell>
-          <Table.Cell style={cellStyle(row)}>{row.value}</Table.Cell>
+          <Table.Cell style={row.style}>{row.value}</Table.Cell>
         </Table.Row>
       );
     });

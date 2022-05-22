@@ -2,7 +2,27 @@ import React, { useState, useEffect } from "react";
 import { AnnotationEvents } from "./AnnotationEvents";
 import { Popup, List } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
-import { VariableMap, SetState, Token, SpanAnnotations } from "../../../types";
+import {
+  VariableMap,
+  SetState,
+  Token,
+  SpanAnnotations,
+  TokenAnnotations,
+  TokenSelection,
+  TriggerCodePopup,
+  FullScreenNode,
+} from "../../../types";
+
+interface AnnotateNavigationProps {
+  tokens: Token[];
+  variableMap: VariableMap;
+  annotations: SpanAnnotations;
+  disableAnnotations: boolean;
+  editMode: boolean;
+  triggerCodeSelector: TriggerCodePopup;
+  eventsBlocked: boolean;
+  fullScreenNode: FullScreenNode;
+}
 
 /**
  * The NavigationEvents component handles all eventlisteners
@@ -18,9 +38,9 @@ const AnnotateNavigation = ({
   triggerCodeSelector,
   eventsBlocked,
   fullScreenNode,
-}) => {
+}: AnnotateNavigationProps) => {
   const [currentToken, setCurrentToken] = useState({ i: null });
-  const [tokenSelection, setTokenSelection] = useState([]);
+  const [tokenSelection, setTokenSelection] = useState<TokenSelection>([]);
 
   useEffect(() => {
     if (!variableMap) return null;
@@ -28,7 +48,7 @@ const AnnotateNavigation = ({
   }, [tokens, annotations, variableMap, editMode]);
 
   useEffect(() => {
-    showSelection(tokens, tokenSelection, editMode);
+    showSelection(tokens, tokenSelection);
   }, [tokens, tokenSelection, editMode]);
 
   useEffect(() => {
@@ -67,7 +87,12 @@ const AnnotateNavigation = ({
   );
 };
 
-const showAnnotations = (tokens, annotations, variableMap, editMode) => {
+const showAnnotations = (
+  tokens: Token[],
+  annotations: SpanAnnotations,
+  variableMap: VariableMap,
+  editMode: boolean
+) => {
   // loop over tokens. Do some styling. Then get the (allowed) annotations for this token,
   // and apply styling to annotated tokens
   for (let i = 0; i < tokens.length; i++) {
@@ -114,7 +139,7 @@ const showAnnotations = (tokens, annotations, variableMap, editMode) => {
 //   return annotations;
 // };
 
-const allowedAnnotations = (annotations, variableMap) => {
+const allowedAnnotations = (annotations: TokenAnnotations, variableMap: VariableMap) => {
   // get all annotations that are currently 'allowed', meaning that the variable is selected
   // and the codes are valid and active codes in the codebook
   if (!annotations) return null;
@@ -136,11 +161,11 @@ const allowedAnnotations = (annotations, variableMap) => {
   return annotations;
 };
 
-const annotateToken = (token, annotations, variableMap) => {
+const annotateToken = (token: Token, annotations: TokenAnnotations, variableMap: VariableMap) => {
   // Set specific classes for nice css to show the start/end of codes
   let nLeft = 0;
   let nRight = 0;
-  const colors = { pre: [], text: [], post: [] };
+  const colors: any = { pre: [], text: [], post: [] };
   let nAnnotations = Object.keys(annotations).length;
 
   for (let id of Object.keys(annotations)) {
@@ -183,14 +208,14 @@ const annotateToken = (token, annotations, variableMap) => {
 //   token.ref.current.style.marginBottom = "-1em";
 // };
 
-const setTokenColor = (token, pre, text, post) => {
+const setTokenColor = (token: Token, pre: string, text: string, post: string) => {
   const children = token.ref.current.children;
   children[0].style.background = pre;
   children[1].style.background = text;
   children[2].style.background = post;
 };
 
-const showSelection = (tokens, selection, editMode) => {
+const showSelection = (tokens: Token[], selection: TokenSelection) => {
   for (let token of tokens) {
     if (!token.ref?.current) continue;
     token.ref.current.classList.remove("tapped");

@@ -6,20 +6,15 @@
         {
           "name": "title",
           "value": "Barack Obama",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "All these investments, in innovation, education, and infrastructure, will make America a better place to do business and create jobs. But to help our companies compete, we also have to knock down barriers that stand in the way of their success.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "All these investments, in innovation, education, and infrastructure, will make America a better place to do business and create jobs. But to help our companies compete, we also have to knock down barriers that stand in the way of their success."
         }
       ],
       "meta_fields": [
@@ -36,20 +31,15 @@
         {
           "name": "title",
           "value": "Barack Obama",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "The two of them shared the optimism of a nation that had triumphed over a depression and fascism. They understood they were part of something larger, that they were contributing to a story of success that every American had a chance to share, the basic American promise that if you worked hard, you could do well enough to raise a family, own a home, send your kids to college, and put a little away for retirement.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "The two of them shared the optimism of a nation that had triumphed over a depression and fascism. They understood they were part of something larger, that they were contributing to a story of success that every American had a chance to share, the basic American promise that if you worked hard, you could do well enough to raise a family, own a home, send your kids to college, and put a little away for retirement."
         }
       ],
       "meta_fields": [
@@ -66,20 +56,15 @@
         {
           "name": "title",
           "value": "George W. Bush",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "Our fourth goal is to apply the compassion of America to the deepest problems of America. For so many in our country, the homeless and the fatherless, the addicted, the need is great. Yet there's power, wonder-working power, in the goodness and idealism and faith of the American people.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "Our fourth goal is to apply the compassion of America to the deepest problems of America. For so many in our country, the homeless and the fatherless, the addicted, the need is great. Yet there's power, wonder-working power, in the goodness and idealism and faith of the American people."
         }
       ],
       "meta_fields": [
@@ -96,20 +81,15 @@
         {
           "name": "title",
           "value": "Barack Obama",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "And I intend to hold these banks fully accountable for the assistance they receive, and this time, they will have to clearly demonstrate how taxpayer dollars result in more lending for the American taxpayer. This time, CEOs won't be able to use taxpayer money to pad their paychecks or buy fancy drapes or disappear on a private jet. Those days are over.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "And I intend to hold these banks fully accountable for the assistance they receive, and this time, they will have to clearly demonstrate how taxpayer dollars result in more lending for the American taxpayer. This time, CEOs won't be able to use taxpayer money to pad their paychecks or buy fancy drapes or disappear on a private jet. Those days are over."
         }
       ],
       "meta_fields": [
@@ -126,20 +106,15 @@
         {
           "name": "title",
           "value": "George W. Bush",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "Today, the gravest danger in the war on terror, the gravest danger facing America and the world, is outlaw regimes that seek and possess nuclear, chemical, and biological weapons. These regimes could use such weapons for blackmail, terror, and mass murder. They could also give or sell those weapons to terrorist allies, who would use them without the least hesitation.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "Today, the gravest danger in the war on terror, the gravest danger facing America and the world, is outlaw regimes that seek and possess nuclear, chemical, and biological weapons. These regimes could use such weapons for blackmail, terror, and mass murder. They could also give or sell those weapons to terrorist allies, who would use them without the least hesitation."
         }
       ],
       "meta_fields": [
@@ -156,20 +131,15 @@
         {
           "name": "title",
           "value": "Barack Obama",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "The recovery plan and the financial stability plan are the immediate steps we're taking to revive our economy in the short term. But the only way to fully restore America's economic strength is to make the long-term investments that will lead to new jobs, new industries, and a renewed ability to compete with the rest of the world. The only way this century will be another American century is if we confront at last the price of our dependence on oil and the high cost of health care, the schools that aren't preparing our children and the mountain of debt they stand to inherit. That is our responsibility.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "The recovery plan and the financial stability plan are the immediate steps we're taking to revive our economy in the short term. But the only way to fully restore America's economic strength is to make the long-term investments that will lead to new jobs, new industries, and a renewed ability to compete with the rest of the world. The only way this century will be another American century is if we confront at last the price of our dependence on oil and the high cost of health care, the schools that aren't preparing our children and the mountain of debt they stand to inherit. That is our responsibility."
         }
       ],
       "meta_fields": [
@@ -186,20 +156,15 @@
         {
           "name": "title",
           "value": "Barack Obama",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "You know, one of my proudest possessions is the flag that the SEAL team took with them on the mission to get bin Laden. On it are each of their names. Some may be Democrats, some may be Republicans, but that doesn't matter. Just like it didn't matter that day in the Situation Room, when I sat next to Bob Gates, a man who was George Bush's Defense Secretary, and Hillary Clinton, a woman who ran against me for President.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "You know, one of my proudest possessions is the flag that the SEAL team took with them on the mission to get bin Laden. On it are each of their names. Some may be Democrats, some may be Republicans, but that doesn't matter. Just like it didn't matter that day in the Situation Room, when I sat next to Bob Gates, a man who was George Bush's Defense Secretary, and Hillary Clinton, a woman who ran against me for President."
         }
       ],
       "meta_fields": [
@@ -216,20 +181,15 @@
         {
           "name": "title",
           "value": "Barack Obama",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "Now, clean energy breakthroughs will only translate into clean energy jobs if businesses know there will be a market for what they're selling. So tonight I challenge you to join me in setting a new goal: By 2035, 80 percent of America's electricity will come from clean energy sources.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "Now, clean energy breakthroughs will only translate into clean energy jobs if businesses know there will be a market for what they're selling. So tonight I challenge you to join me in setting a new goal: By 2035, 80 percent of America's electricity will come from clean energy sources."
         }
       ],
       "meta_fields": [
@@ -246,20 +206,15 @@
         {
           "name": "title",
           "value": "George W. Bush",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "On trade, we must trust American workers to compete with anyone in the world and empower them by opening up new markets overseas. Today, our economic growth increasingly depends on our ability to sell American goods and crops and services all over the world. So we're working to break down barriers to trade and investment wherever we can. We're working for a successful Doha round of trade talks, and we must complete a good agreement this year. At the same time, we're pursuing opportunities to open up new markets by passing free trade agreements.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "On trade, we must trust American workers to compete with anyone in the world and empower them by opening up new markets overseas. Today, our economic growth increasingly depends on our ability to sell American goods and crops and services all over the world. So we're working to break down barriers to trade and investment wherever we can. We're working for a successful Doha round of trade talks, and we must complete a good agreement this year. At the same time, we're pursuing opportunities to open up new markets by passing free trade agreements."
         }
       ],
       "meta_fields": [
@@ -276,20 +231,15 @@
         {
           "name": "title",
           "value": "Barack Obama",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "It is our generation's task, then, to reignite the true engine of America's economic growth: a rising, thriving middle class.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "It is our generation's task, then, to reignite the true engine of America's economic growth: a rising, thriving middle class."
         }
       ],
       "meta_fields": [
@@ -306,20 +256,15 @@
         {
           "name": "title",
           "value": "George W. Bush",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "Thanks to the work of our law enforcement officials and coalition partners, hundreds of terrorists have been arrested. Yet, tens of thousands of trained terrorists are still at large. These enemies view the entire world as a battlefield, and we must pursue them wherever they are. So long as training camps operate, so long as nations harbor terrorists, freedom is at risk. And America and our allies must not and will not allow it.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "Thanks to the work of our law enforcement officials and coalition partners, hundreds of terrorists have been arrested. Yet, tens of thousands of trained terrorists are still at large. These enemies view the entire world as a battlefield, and we must pursue them wherever they are. So long as training camps operate, so long as nations harbor terrorists, freedom is at risk. And America and our allies must not and will not allow it."
         }
       ],
       "meta_fields": [
@@ -336,20 +281,15 @@
         {
           "name": "title",
           "value": "George W. Bush",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "A tax rate of 15 percent is too high for those who earn low wages, so we must lower the rate to 10 percent. No one should pay more than a third of the money they earn in Federal income taxes, so we lowered the top rate to 33 percent.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "A tax rate of 15 percent is too high for those who earn low wages, so we must lower the rate to 10 percent. No one should pay more than a third of the money they earn in Federal income taxes, so we lowered the top rate to 33 percent."
         }
       ],
       "meta_fields": [
@@ -366,20 +306,15 @@
         {
           "name": "title",
           "value": "George W. Bush",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "I urge you to pass these measures, for the good of both our environment and our economy. Even more, I ask you to take a crucial step and protect our environment in ways that generations before us could not have imagined.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "I urge you to pass these measures, for the good of both our environment and our economy. Even more, I ask you to take a crucial step and protect our environment in ways that generations before us could not have imagined."
         }
       ],
       "meta_fields": [
@@ -396,20 +331,15 @@
         {
           "name": "title",
           "value": "George W. Bush",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "Year after year, Saddam Hussein has gone to elaborate lengths, spent enormous sums, taken great risks to build and keep weapons of mass destruction. But why? The only possible explanation, the only possible use he could have for those weapons, is to dominate, intimidate, or attack.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "Year after year, Saddam Hussein has gone to elaborate lengths, spent enormous sums, taken great risks to build and keep weapons of mass destruction. But why? The only possible explanation, the only possible use he could have for those weapons, is to dominate, intimidate, or attack."
         }
       ],
       "meta_fields": [
@@ -426,20 +356,15 @@
         {
           "name": "title",
           "value": "Barack Obama",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "The development of natural gas will create jobs and power trucks and factories that are cleaner and cheaper, proving that we don't have to choose between our environment and our economy. And by the way, it was public research dollars, over the course of 30 years, that helped develop the technologies to extract all this natural gas out of shale rock, reminding us that Government support is critical in helping businesses get new energy ideas off the ground.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "The development of natural gas will create jobs and power trucks and factories that are cleaner and cheaper, proving that we don't have to choose between our environment and our economy. And by the way, it was public research dollars, over the course of 30 years, that helped develop the technologies to extract all this natural gas out of shale rock, reminding us that Government support is critical in helping businesses get new energy ideas off the ground."
         }
       ],
       "meta_fields": [
@@ -456,20 +381,15 @@
         {
           "name": "title",
           "value": "Barack Obama",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "Just as jobs and businesses can now race across borders, so can new threats and new challenges. No single wall separates East and West. No one rival superpower is aligned against us.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "Just as jobs and businesses can now race across borders, so can new threats and new challenges. No single wall separates East and West. No one rival superpower is aligned against us."
         }
       ],
       "meta_fields": [
@@ -486,20 +406,15 @@
         {
           "name": "title",
           "value": "Barack Obama",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "You see, an economy built to last is one where we encourage the talent and ingenuity of every person in this country. That means women should earn equal pay for equal work. It means we should support everyone who's willing to work and every risk taker and entrepreneur who aspires to become the next Steve Jobs.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "You see, an economy built to last is one where we encourage the talent and ingenuity of every person in this country. That means women should earn equal pay for equal work. It means we should support everyone who's willing to work and every risk taker and entrepreneur who aspires to become the next Steve Jobs."
         }
       ],
       "meta_fields": [
@@ -516,20 +431,15 @@
         {
           "name": "title",
           "value": "George W. Bush",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "Keeping America competitive requires us to be good stewards of tax dollars. Every year of my Presidency, we've reduced the growth of nonsecurity discretionary spending, and last year, you passed bills that cut this spending. This year, my budget will cut it again and reduce or eliminate more than 140 programs that are performing poorly or not fulfilling essential priorities. By passing these reforms, we will save the American taxpayer another $14 billion next year and stay on track to cut the deficit in half by 2009.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "Keeping America competitive requires us to be good stewards of tax dollars. Every year of my Presidency, we've reduced the growth of nonsecurity discretionary spending, and last year, you passed bills that cut this spending. This year, my budget will cut it again and reduce or eliminate more than 140 programs that are performing poorly or not fulfilling essential priorities. By passing these reforms, we will save the American taxpayer another $14 billion next year and stay on track to cut the deficit in half by 2009."
         }
       ],
       "meta_fields": [
@@ -546,20 +456,15 @@
         {
           "name": "title",
           "value": "Barack Obama",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "And that's why I've asked Vice President Biden to lead a tough, unprecedented oversight effort; because nobody messes with Joe. I--am I right? They don't mess with him. I have told each of my Cabinet, as well as mayors and Governors across the country, that they will be held accountable by me and the American people for every dollar they spend. I've appointed a proven and aggressive Inspector General to ferret out any and all cases of waste and fraud. And we have created a new web site called recovery.gov, so that every American can find out how and where their money is being spent.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "And that's why I've asked Vice President Biden to lead a tough, unprecedented oversight effort; because nobody messes with Joe. I--am I right? They don't mess with him. I have told each of my Cabinet, as well as mayors and Governors across the country, that they will be held accountable by me and the American people for every dollar they spend. I've appointed a proven and aggressive Inspector General to ferret out any and all cases of waste and fraud. And we have created a new web site called recovery.gov, so that every American can find out how and where their money is being spent."
         }
       ],
       "meta_fields": [
@@ -576,20 +481,15 @@
         {
           "name": "title",
           "value": "Barack Obama",
-          "bold": true,
-          "italic": false,
-          "size": 1.2,
-          "justify": true,
-          "paragraphs": true
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
         },
         {
           "name": "text",
-          "value": "One last point on financial security: For decades, few things exposed hard-working families to economic hardship more than a broken health care system. And in case you haven't heard, we're in the process of fixing that. Now, a preexisting condition used to mean that someone like Amanda Shelley, a physician's assistant and single mom from Arizona, couldn't get health insurance. But on January 1, she got covered. On January 3, she felt a sharp pain. On January 6, she had emergency surgery. Just one week earlier, Amanda said, and that surgery would have meant bankruptcy.",
-          "bold": false,
-          "italic": false,
-          "size": 1,
-          "justify": true,
-          "paragraphs": true
+          "value": "One last point on financial security: For decades, few things exposed hard-working families to economic hardship more than a broken health care system. And in case you haven't heard, we're in the process of fixing that. Now, a preexisting condition used to mean that someone like Amanda Shelley, a physician's assistant and single mom from Arizona, couldn't get health insurance. But on January 1, she got covered. On January 3, she felt a sharp pain. On January 6, she had emergency surgery. Just one week earlier, Amanda said, and that surgery would have meant bankruptcy."
         }
       ],
       "meta_fields": [

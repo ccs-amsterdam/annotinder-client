@@ -3,11 +3,12 @@ import { getDocAndAnnotations } from "../functions/prepareUnit";
 import {
   Doc,
   CodeHistory,
-  ImportedCodes,
   SetState,
+  Annotation,
   Token,
   Unit,
   SpanAnnotations,
+  VariableValueMap,
 } from "../../../types";
 
 const useUnit = (
@@ -15,10 +16,10 @@ const useUnit = (
   safetyCheck: any,
   returnTokens: (value: Token[]) => void,
   setCodeHistory: (value: CodeHistory) => void
-): [Doc, SpanAnnotations, SetState<SpanAnnotations>, ImportedCodes] => {
+): [Doc, SpanAnnotations, SetState<SpanAnnotations>, VariableValueMap] => {
   const [doc, setDoc] = useState<Doc>({});
   const [annotations, setAnnotations] = useState<SpanAnnotations | null>(null);
-  const [importedCodes, setImportedCodes] = useState<ImportedCodes>({});
+  const [importedCodes, setImportedCodes] = useState<VariableValueMap>({});
 
   useEffect(() => {
     if (!unit.annotations) unit.annotations = [];
@@ -26,10 +27,14 @@ const useUnit = (
       if (unit.annotations.length === 0 && unit.status !== "DONE") {
         unit.annotations = unit.importedAnnotations;
       }
-      const importedCodes = {};
+
+      const importedCodes: VariableValueMap = {};
       for (let a of unit.importedAnnotations) {
-        if (!importedCodes[a.variable]) importedCodes[a.variable] = {};
-        if (!importedCodes[a.variable][a.value]) importedCodes[a.variable][a.value] = true;
+        if (!importedCodes[a.variable]) {
+          importedCodes[a.variable] = { [a.value]: true };
+        } else {
+          importedCodes[a.variable][a.value] = true;
+        }
       }
       setImportedCodes(importedCodes);
     }
@@ -49,18 +54,25 @@ const useUnit = (
   return [doc, annotations, setAnnotations, importedCodes];
 };
 
-const initializeCodeHistory = (annotations, setCodeHistory) => {
-  const ch = {};
+const initializeCodeHistory = (
+  annotations: Annotation[],
+  setCodeHistory: SetState<CodeHistory>
+): void => {
+  const vvh: VariableValueMap = {};
 
   for (let annotation of annotations) {
-    if (!ch[annotation.variable]) ch[annotation.variable] = new Set();
-    ch[annotation.variable].add(annotation.value);
+    if (!vvh[annotation.variable]) {
+      vvh[annotation.variable] = { [annotation.value]: true };
+    } else {
+      vvh[annotation.variable][annotation.value] = true;
+    }
   }
 
-  for (let key of Object.keys(ch)) {
-    ch[key] = [...ch[key]];
+  const codeHistory: CodeHistory = {};
+  for (let variable of Object.keys(vvh)) {
+    codeHistory[variable] = Object.keys(vvh[variable]);
   }
-  setCodeHistory(ch);
+  setCodeHistory(codeHistory);
 };
 
 export default useUnit;

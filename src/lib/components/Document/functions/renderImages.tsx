@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useRef, ReactElement } from "react";
-import { ImageField } from "../../../types";
+import React, { useState, useEffect, useRef } from "react";
+import { ImageField, RenderedImages } from "../../../types";
 
 interface Size {
   height: string;
   width: string;
 }
 
-export default function renderImages(image_fields: ImageField[], containerRef: any) {
-  const images: { [key: string]: ReactElement } = {};
+export default function renderImages(
+  image_fields: ImageField[],
+  containerRef: any
+): RenderedImages {
+  const images: RenderedImages = {};
   for (let image_field of image_fields) {
     images[image_field.name] = (
       <AnnotatableImage key={image_field.name} ref={containerRef} image_field={image_field} />

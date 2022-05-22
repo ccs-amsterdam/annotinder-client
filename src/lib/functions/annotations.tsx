@@ -1,6 +1,6 @@
 import { Token, Annotation, SpanAnnotations } from "../types";
 
-const createId = (annotation: any): string => {
+export const createId = (annotation: any): string => {
   return annotation.variable + "|" + annotation.value;
 };
 

@@ -1,7 +1,17 @@
 import React, { useEffect } from "react";
 import { Popup } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
+import { CodeSelectorOption, SetState, Span, SpanAnnotations, VariableMap } from "../../../types";
 import ButtonSelection from "./ButtonSelection";
+
+interface SelectVariablePageProps {
+  variable: string;
+  setVariable: SetState<string>;
+  annotations: SpanAnnotations;
+  span: Span;
+  setOpen: SetState<boolean>;
+  variableMap: VariableMap;
+}
 
 export default function SelectVariablePage({
   variable,
@@ -10,12 +20,12 @@ export default function SelectVariablePage({
   span,
   setOpen,
   variableMap,
-}) {
-  const getOptions = () => {
+}: SelectVariablePageProps) {
+  const getOptions = (): CodeSelectorOption[] => {
     let variables = Object.keys(variableMap);
-    const variableColors = {};
+    const variableColors: Record<string, string> = {};
     for (let v of variables) {
-      const colors = {};
+      const colors: Record<string | number, string> = {};
       for (let i = span[0]; i <= span[1]; i++) {
         if (!annotations[i]) continue;
         for (let id of Object.keys(annotations[i])) {
@@ -28,15 +38,16 @@ export default function SelectVariablePage({
     }
 
     return variables.map((variable) => ({
+      key: variable,
       color: variableColors[variable],
       label: variable,
-      value: variable,
+      value: { variable },
     }));
   };
 
   const options = getOptions();
   useEffect(() => {
-    if (options.length === 1) setVariable(options[0].value);
+    if (options.length === 1) setVariable(options[0].value.variable);
   }, [options, setVariable]);
 
   if (variable || !span) return null;
@@ -49,11 +60,11 @@ export default function SelectVariablePage({
         active={true}
         options={options}
         onSelect={(value, ctrlKey) => {
-          if (value === "CANCEL") {
+          if (value.cancel) {
             setOpen(false);
             return;
           }
-          setVariable(value);
+          setVariable(value.variable);
         }}
       />
     </div>

@@ -4,7 +4,18 @@ import { Popup, Portal, Segment } from "semantic-ui-react";
 import SelectVariablePage from "./SelectVariablePage";
 import SelectAnnotationPage from "./SelectAnnotationPage";
 import NewCodePage from "./NewCodePage";
-import { SetState, SpanAnnotations, Token } from "../../../types";
+import {
+  CodeHistory,
+  FullScreenNode,
+  SetState,
+  Span,
+  SpanAnnotations,
+  Token,
+  TokenAnnotations,
+  TriggerCodePopup,
+  Variable,
+  VariableMap,
+} from "../../../types";
 
 /**
  * This hook is an absolute monster, as it takes care of a lot of moving parts.
@@ -27,25 +38,25 @@ import { SetState, SpanAnnotations, Token } from "../../../types";
  * @returns
  */
 const useCodeSelector = (
-  tokens,
-  variableMap,
-  editMode,
-  variables,
-  annotations,
-  setAnnotations,
-  codeHistory,
-  setCodeHistory,
-  fullScreenNode
-) => {
+  tokens: Token[],
+  variableMap: VariableMap,
+  editMode: boolean,
+  variables: Variable[],
+  annotations: SpanAnnotations,
+  setAnnotations: SetState<SpanAnnotations>,
+  codeHistory: CodeHistory,
+  setCodeHistory: SetState<CodeHistory>,
+  fullScreenNode: FullScreenNode
+): [ReactElement, TriggerCodePopup, boolean] => {
   const [open, setOpen] = useState(false);
-  const [span, setSpan] = useState<[number, number]>(null);
+  const [span, setSpan] = useState<Span>(null);
   const [variable, setVariable] = useState(null);
   const [tokenRef, setTokenRef] = useState(null);
-  const [tokenAnnotations, setTokenAnnotations] = useState({});
+  const [tokenAnnotations, setTokenAnnotations] = useState<TokenAnnotations>({});
 
   const triggerFunction = React.useCallback(
     // this function can be called to open the code selector.
-    (index, span) => {
+    (index: number, span: Span) => {
       if (!tokens[index].ref) return;
       setTokenRef(tokens[index].ref);
       setTokenAnnotations(annotations[index] || {});
@@ -67,7 +78,7 @@ const useCodeSelector = (
     if (!open) setVariable(null);
   }, [open]);
 
-  if (!variables) return [null, null, null, true];
+  if (!variables) return [null, null, true];
 
   let popup = (
     <CodeSelectorPopup
@@ -92,14 +103,13 @@ const useCodeSelector = (
           tokens={tokens}
           variable={variable}
           variableMap={variableMap}
-          settings={variableMap?.[variable]}
           annotations={annotations}
           tokenAnnotations={tokenAnnotations}
           setAnnotations={setAnnotations}
           span={span}
           editMode={editMode}
           setOpen={setOpen}
-          codeHistory={codeHistory[variable] || []}
+          codeHistory={codeHistory}
           setCodeHistory={setCodeHistory}
         />
       </>
@@ -118,8 +128,8 @@ interface SelectPageProps {
   setVariable: SetState<string>;
   variableMap: any;
   annotations: SpanAnnotations;
-  span: [number, number];
-  setSpan: SetState<[number, number]>;
+  span: Span;
+  setSpan: SetState<Span>;
   setOpen: SetState<boolean>;
 }
 

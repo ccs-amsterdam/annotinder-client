@@ -17,6 +17,7 @@ import {
   SpanAnnotations,
   Token,
   SetState,
+  FullScreenNode,
 } from "../../types";
 
 interface DocumentProps {
@@ -40,7 +41,7 @@ interface DocumentProps {
   /** a boolean value for blocking all event listeners */
   blockEvents?: boolean;
   /** in fullscreenmode popups require a mountNode */
-  fullScreenNode?: any;
+  fullScreenNode?: FullScreenNode;
 }
 
 /**

@@ -70,7 +70,7 @@ const annotationRows = (tokens, variableMap, annotations) => {
   const onClick = (span) => {
     if (!span) return;
     const token = tokens?.[span[0]];
-    if (token?.triggerCodePopup) token.triggerCodePopup(span);
+    if (token?.select) token.select(span);
   };
 
   for (const annotation of annotations) {

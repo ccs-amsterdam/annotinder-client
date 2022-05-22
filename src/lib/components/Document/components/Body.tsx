@@ -5,10 +5,35 @@ import Meta from "./Meta";
 import renderText from "../functions/renderText";
 import renderImages from "../functions/renderImages";
 import renderMarkdown from "../functions/renderMarkdown";
+import {
+  ImageField,
+  MetaField,
+  RenderedImages,
+  RenderedText,
+  SetState,
+  TextField,
+  Token,
+} from "../../../types";
 
-const Body = ({ tokens, text_fields, meta_fields, image_fields, markdown_field, setReady }) => {
-  const [text, setText] = useState({});
-  const [images, setImages] = useState({});
+interface BodyProps {
+  tokens: Token[];
+  text_fields: TextField[];
+  meta_fields: MetaField[];
+  image_fields: ImageField[];
+  markdown_field: string;
+  setReady: SetState<number>;
+}
+
+const Body = ({
+  tokens,
+  text_fields,
+  meta_fields,
+  image_fields,
+  markdown_field,
+  setReady,
+}: BodyProps) => {
+  const [text, setText] = useState<RenderedText>({});
+  const [images, setImages] = useState<RenderedImages>({});
   const [markdown, setMarkdown] = useState(null);
   const containerRef = useRef(null);
 

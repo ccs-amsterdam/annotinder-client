@@ -1,7 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { Popup } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
+import {
+  CodeSelectorOption,
+  SetState,
+  Span,
+  SpanAnnotations,
+  Token,
+  VariableMap,
+} from "../../../types";
 import ButtonSelection from "./ButtonSelection";
+
+interface SelectAnnotationPageProps {
+  tokens: Token[];
+  variable: string;
+  setVariable: SetState<string>;
+  annotations: SpanAnnotations;
+  span: Span;
+  setSpan: SetState<Span>;
+  setOpen: SetState<boolean>;
+  variableMap: VariableMap;
+}
 
 const SelectAnnotationPage = ({
   tokens,
@@ -12,12 +31,12 @@ const SelectAnnotationPage = ({
   setSpan,
   setOpen,
   variableMap,
-}) => {
+}: SelectAnnotationPageProps) => {
   const [options, setOptions] = useState(null);
 
   const onButtonSelection = React.useCallback(
-    (value) => {
-      if (value === "CANCEL") {
+    (value, ctrlKey) => {
+      if (value.cancel) {
         setOpen(false);
         return;
       }
@@ -33,7 +52,7 @@ const SelectAnnotationPage = ({
     setOptions(options);
     if (options.length === 0) setOpen(false);
     if (options.length === 1) {
-      onButtonSelection(options[0].value);
+      onButtonSelection(options[0].value, false);
     }
   }, [annotations, span, variableMap, tokens, onButtonSelection, setOpen]);
 
@@ -52,7 +71,7 @@ const SelectAnnotationPage = ({
   );
 };
 
-const getTextSnippet = (tokens, span, maxlength = 8) => {
+const getTextSnippet = (tokens: Token[], span: Span, maxlength = 8) => {
   let text = tokens.slice(span[0], span[1] + 1).map((t) => t.pre + t.text + t.post);
   if (text.length > maxlength)
     text = [
@@ -63,9 +82,13 @@ const getTextSnippet = (tokens, span, maxlength = 8) => {
   return text.join("");
 };
 
-const getAnnotationOptions = (annotations, span, variableMap, tokens) => {
-  // create an array of spans, where key is the text, and
-  const variableSpans = {};
+const getAnnotationOptions = (
+  annotations: SpanAnnotations,
+  span: Span,
+  variableMap: VariableMap,
+  tokens: Token[]
+): CodeSelectorOption[] => {
+  const variableSpans: any = {};
 
   for (let i = span[0]; i <= span[1]; i++) {
     if (!annotations[i]) continue;
@@ -98,7 +121,10 @@ const getAnnotationOptions = (annotations, span, variableMap, tokens) => {
   }
 
   return Object.keys(variableSpans).map((key) => {
-    return { ...variableSpans[key], color: getColorGradient(variableSpans[key].colors) };
+    return {
+      ...variableSpans[key],
+      color: getColorGradient(variableSpans[key].colors),
+    };
   });
 };
 

@@ -1,9 +1,17 @@
 import React, { useEffect, useMemo } from "react";
 import { Button } from "semantic-ui-react";
+import { Variable, SetState } from "../../../types";
 
-const SelectVariable = ({ variables, variable, setVariable, editAll }) => {
-  const variableNames = useMemo(() => {
-    let variableNames = [];
+interface SelectVariableProps {
+  variables: Variable[];
+  variable: string;
+  setVariable: SetState<string>;
+  editAll: boolean;
+}
+
+const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVariableProps) => {
+  const variableNames: string[] = useMemo(() => {
+    let variableNames: string[] = [];
     if (variables != null && variables?.length > 0) {
       variableNames = variables.map((v) => v.name);
       if (editAll) variableNames.push("EDIT ALL");
@@ -11,34 +19,34 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }) => {
     return variableNames;
   }, [variables, editAll]);
 
-  const onKeyDown = (e) => {
-    let move = 0;
-    if (e.keyCode === 9) {
-      e.preventDefault();
-      if (e.shiftKey) {
-        if (!e.repeat) {
-          move = -1;
-        }
-      } else {
-        if (!e.repeat) {
-          move = 1;
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      let move = 0;
+      if (e.keyCode === 9) {
+        e.preventDefault();
+        if (e.shiftKey) {
+          if (!e.repeat) {
+            move = -1;
+          }
+        } else {
+          if (!e.repeat) {
+            move = 1;
+          }
         }
       }
-    }
 
-    const currentIndex = variableNames.findIndex((name) => name === variable);
-    let newIndex = currentIndex + move;
-    if (newIndex > variableNames.length - 1) newIndex = 0;
-    if (newIndex < 0) newIndex = variableNames.length - 1;
-    setVariable(variableNames[newIndex]);
-  };
+      const currentIndex = variableNames.findIndex((name) => name === variable);
+      let newIndex = currentIndex + move;
+      if (newIndex > variableNames.length - 1) newIndex = 0;
+      if (newIndex < 0) newIndex = variableNames.length - 1;
+      setVariable(variableNames[newIndex]);
+    };
 
-  useEffect(() => {
     window.addEventListener("keydown", onKeyDown);
     return () => {
       window.removeEventListener("keydown", onKeyDown);
     };
-  });
+  }, [setVariable, variable, variableNames]);
 
   useEffect(() => {
     if (variable === null) setVariable(variableNames[0]);
@@ -86,7 +94,19 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }) => {
   );
 };
 
-const VariableButtons = ({ variable, setVariable, variables, variableNames }) => {
+interface VariableButtonsProps {
+  variable: string;
+  setVariable: SetState<string>;
+  variables: Variable[];
+  variableNames: string[];
+}
+
+const VariableButtons = ({
+  variable,
+  setVariable,
+  variables,
+  variableNames,
+}: VariableButtonsProps) => {
   const mapVariables = () => {
     return variableNames.map((name) => {
       return (
