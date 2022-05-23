@@ -11,13 +11,24 @@ import {
   Loader,
   Checkbox,
 } from "semantic-ui-react";
-
+import Backend from "../classes/Backend";
 import UsersTable from "./UsersTable";
+import { SetState, User } from "../../../types";
 
-export default function ManageUsers({ backend }) {
+interface AddUser {
+  email: string;
+  exists: boolean;
+  validEmail: boolean;
+}
+
+interface ManageUsersProps {
+  backend: Backend;
+}
+
+export default function ManageUsers({ backend }: ManageUsersProps) {
   const [text, setText] = useState("");
-  const [users, setUsers] = useState([]);
-  const [addUsers, setAddUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [addUsers, setAddUsers] = useState<AddUser[]>([]);
 
   const onCreate = () => {
     const newUsers = text.split(/[\s,;\n]/).reduce((newUsers, email) => {
@@ -64,11 +75,18 @@ export default function ManageUsers({ backend }) {
   );
 }
 
-const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }) => {
+interface CreateUserModalProps {
+  backend: Backend;
+  addUsers: AddUser[];
+  setAddUsers: SetState<AddUser[]>;
+  setUsers: SetState<User[]>;
+}
+
+const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }: CreateUserModalProps) => {
   const [status, setStatus] = useState("idle");
   const [asAdmin, setAsAdmin] = useState(false);
 
-  const onSubmit = async (event) => {
+  const onSubmit = async () => {
     const users = addUsers.reduce((submitUsers, user) => {
       if (!user.validEmail || user.exists) return submitUsers;
       submitUsers.push({ email: user.email, admin: asAdmin, password: "test" });

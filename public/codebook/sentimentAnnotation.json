@@ -1,6 +1,6 @@
 {
   "type": "annotate",
-  "no_table": false,
+  "settings": { "no_table": false },
   "variables": [
     {
       "codes": [

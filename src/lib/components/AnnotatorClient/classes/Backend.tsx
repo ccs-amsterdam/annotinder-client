@@ -1,4 +1,5 @@
 import Axios, { AxiosInstance } from "axios";
+import { User } from "../../../types";
 
 export async function passwordLogin(host, email, password) {
   const d = new FormData();
@@ -12,6 +13,13 @@ export async function redeemJobToken(host, token, user_id) {
   const params = { token, user_id };
   const res = await Axios.get(`${host}/annotator/guest/jobtoken`, { params });
   return res.data;
+}
+
+interface AuthToken {
+  token: string;
+  email: string;
+  is_admin: boolean;
+  restricted_job: number;
 }
 
 class Backend {
@@ -41,16 +49,16 @@ class Backend {
 
   // GET
 
-  async getToken(user = undefined) {
+  async getToken(user: string = undefined): Promise<AuthToken> {
     const path = `annotator/users/${user || "me"}/token`;
     const res = await this.api.get(path);
     return res.data;
   }
-  async getJobToken(job_id) {
+  async getJobToken(job_id: number): Promise<string> {
     const res = await this.api.get(`annotator/codingjob/${job_id}/token`);
-    return res.data;
+    return res.data.token;
   }
-  async getUsers() {
+  async getUsers(): Promise<User[]> {
     const res = await this.api.get("annotator/users");
     return res.data.users;
   }

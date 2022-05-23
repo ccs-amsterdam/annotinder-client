@@ -3,6 +3,7 @@ import Backend, { passwordLogin } from "../classes/Backend";
 import { Header, Form, Button, Segment, Grid } from "semantic-ui-react";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { SetState } from "../../../types";
 
 const useBackend = () => {
   // Hook that tries to log in with the host and token from local storage
@@ -74,10 +75,16 @@ const useBackend = () => {
   return [backend, <AuthForm backend={backend} auth={auth} setAuth={setAuth} />, false];
 };
 
-export const AuthForm = ({ backend, auth, setAuth }) => {
+interface AuthFormProps {
+  backend: Backend;
+  auth: any;
+  setAuth: SetState<any>;
+}
+
+export const AuthForm = ({ backend, auth, setAuth }: AuthFormProps) => {
   const host = auth?.host || null;
 
-  const setLogin = (host, token) => {
+  const setLogin = (host: string, token: string) => {
     setAuth({ ...auth, host, [host + "__token__"]: token });
   };
 
@@ -89,7 +96,11 @@ export const AuthForm = ({ backend, auth, setAuth }) => {
   return <SignIn recHost={host} setLogin={setLogin} />;
 };
 
-const SignOut = ({ setLogout }) => {
+interface SignOutProps {
+  setLogout: () => void;
+}
+
+const SignOut = ({ setLogout }: SignOutProps) => {
   return (
     <>
       <Grid textAlign="center">
@@ -103,7 +114,12 @@ const SignOut = ({ setLogout }) => {
   );
 };
 
-const SignIn = ({ recHost, setLogin }) => {
+interface SignInProps {
+  recHost: "string";
+  setLogin: (host: string, token: string) => void;
+}
+
+const SignIn = ({ recHost, setLogin }: SignInProps) => {
   const [host, setHost] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

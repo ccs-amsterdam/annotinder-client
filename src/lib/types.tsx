@@ -29,6 +29,8 @@ export type FullScreenNode = MutableRefObject<HTMLDivElement | null>;
 ///// ANNOTATIONS
 export type Span = [number, number];
 
+export type Status = "DONE" | "IN_PROGRESS";
+
 export interface Annotation {
   variable: string;
   length: number;
@@ -53,7 +55,47 @@ export interface SpanAnnotations {
   [key: number | string]: TokenAnnotations;
 }
 
+///// CODEBOOK
+
+export interface CodeBook {
+  type: "annotation" | "questions";
+  variables: Variable[];
+  questions: Question[];
+  settings?: {
+    no_table?: boolean;
+  };
+}
+
 ///// QUESTIONS MODE
+
+export interface Question {
+  name: string;
+  type: QuestionType;
+  question?: string;
+  codes?: Code[];
+  items?: QuestionItem[];
+  single_row?: boolean;
+  same_size?: boolean;
+  button?: string;
+}
+
+export type QuestionType =
+  | "search code"
+  | "select code"
+  | "scale"
+  | "annotinder"
+  | "confirm"
+  | "inputs";
+
+export interface QuestionItem {
+  name: string;
+  label?: string;
+  type?: QuestionItemType;
+  min?: number;
+  max?: number;
+}
+
+export type QuestionItemType = "email" | "number" | "textarea" | "text";
 
 // an intermediate format that maps annotations to questions in 'questions' mode
 export interface Answer {
@@ -116,6 +158,20 @@ export interface OnSelectParams {
 
 ///// ANNOTATE MODE
 
+export interface Variable {
+  name: string;
+  codes: Code[];
+  instruction: string;
+  searchBox: boolean;
+  buttonMode: "all" | "recent";
+  only_edit: boolean;
+  only_imported: boolean;
+  multiple: boolean;
+  editMode: boolean;
+  onlyImported: boolean;
+  codeMap?: CodeMap;
+}
+
 /** This one's intentionally flexible, because the codeselector popup handles multiple types of selections */
 export interface CodeSelectorValue {
   variable?: string;
@@ -154,21 +210,52 @@ export interface CodeSelectorDropdownOption {
 
 export type TokenSelection = [number, number] | [];
 
+///// JOBSERVER
+
+export interface Progress {
+  n_total: number;
+  n_coded: number;
+  seek_backwards?: boolean;
+  seek_forwards?: boolean;
+}
+
 ///// UNIT DATA
 
+/** A unit after it has been prepared by the jobServer. This is for internal use */
 export interface Unit {
   jobServer: any;
   unitIndex: number;
   unitId: number | string; // this is the backend id, not the external id
   annotations: Annotation[];
-  status: "DONE" | "IN_PROGRESS";
+  status: UnitStatus;
   tokens?: RawToken[];
   text_fields?: TextField[];
   meta_fields?: MetaField[];
   image_fields?: ImageField[];
   markdown_field?: string;
   importedAnnotations?: Annotation[];
+  /** A unit can carry its own codebook. This will then be used instead of the codebook at the codingjob level */
+  codebook?: CodeBook;
 }
+
+/** A unit in the raw JSON structure. This is also the same structure in which it should be uploaded to the backend  */
+export interface RawUnit {
+  unit_id: string; // The external id. A unique id provided when creating the codingjob
+  text_fields?: TextField[];
+  meta_fields?: MetaField[];
+  image_fields?: ImageField[];
+  markdown_field?: string;
+  annotations?: Annotation[];
+}
+
+/** A unit as it can be served by the backend */
+export interface BackendUnit extends RawUnit {
+  index?: number;
+  status?: UnitStatus;
+  annotation?: Annotation[]; // backend calls the annotations array annotation. Should probably change this
+}
+
+export type UnitStatus = "DONE" | "IN_PROGRESS";
 
 export interface TextField {
   name: string;
@@ -313,24 +400,64 @@ export interface CodeHistory {
   [key: string]: (string | number)[];
 }
 
-export interface Variable {
-  name: string;
-  codes: Code[];
-  instruction: string;
-  searchBox: boolean;
-  buttonMode: "all" | "recent";
-  only_edit: boolean;
-  only_imported: boolean;
-  multiple: boolean;
-  editMode: boolean;
-  onlyImported: boolean;
-  codeMap?: CodeMap;
-}
-
 export interface VariableMap {
   [key: string]: Variable;
 }
 
 export interface TriggerCodePopup {
   (index: number, span: Span): void;
+}
+
+///// FULLDATATABLE
+
+/** An object where keys are column names and values their value for this particular row */
+export interface RowObj {
+  [key: string]: any;
+}
+
+export interface Column {
+  /** The name of the column to show */
+  name: string;
+  /** The column label. If empty, uses name */
+  label?: string;
+  /** The width of the column, in Semantic UIs 16-part format */
+  width?: number;
+  /** A function that takes the rowObj as input and returns what to show in the table */
+  f?: (row: RowObj) => number | string | ReactElement;
+  /** If TRUE, add title to span so full value shows on hover */
+  title?: boolean;
+  date?: boolean;
+}
+
+///// MANAGE USERS
+
+export interface User {
+  email: string;
+  admin: boolean;
+  password?: string;
+}
+
+///// MANAGE JOBS
+
+export interface Job {
+  id: number;
+  title: string;
+  created: string;
+  creator: string;
+  archived?: boolean;
+  restricted?: boolean;
+  users: User[];
+  jobset_details: JobSetDetail[];
+  rules?: Rules;
+  n_total: number;
+}
+
+export interface JobSetDetail {
+  name: string;
+  n_units: number;
+}
+
+export interface Rules {
+  ruleset: "crowdcoding" | "fixedset";
+  [key: string]: any;
 }

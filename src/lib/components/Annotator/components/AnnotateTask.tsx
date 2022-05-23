@@ -17,7 +17,7 @@ const AnnotateTask = ({ unit, codebook, setUnitIndex, fullScreenNode, blockEvent
   if (!unit || codebook?.variables === null) return null;
 
   const renderAnnotateTable = () => {
-    if (codebook?.no_table) return null;
+    if (codebook?.settings?.no_table) return null;
     return (
       <Grid.Column
         width={6}

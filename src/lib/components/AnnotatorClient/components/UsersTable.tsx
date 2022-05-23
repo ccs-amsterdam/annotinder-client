@@ -1,15 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, CSSProperties } from "react";
 import { Button, Header, Portal, Segment } from "semantic-ui-react";
 import FullDataTable from "./FullDataTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
+import { Column, RowObj, SetState } from "../../../types";
+import Backend from "../classes/Backend";
 
-const columns = [
+const columns: Column[] = [
   { name: "role", width: 2, f: (row) => (row.is_admin ? "admin" : "coder") },
   { name: "email", width: 11, title: true },
 ];
 
-export default function UsersTable({ backend, users, setUsers }) {
+interface UsersTableProps {
+  backend: Backend;
+  users: RowObj[];
+  setUsers: SetState<RowObj[]>;
+}
+
+export default function UsersTable({ backend, users, setUsers }: UsersTableProps) {
   useEffect(() => {
     backend
       .getUsers()
@@ -22,7 +30,13 @@ export default function UsersTable({ backend, users, setUsers }) {
   );
 }
 
-const LoginLinkButton = ({ row, backend, style }) => {
+interface LoginLinkButtonProps {
+  row: RowObj;
+  backend: Backend;
+  style: CSSProperties;
+}
+
+const LoginLinkButton = ({ row, backend, style }: LoginLinkButtonProps) => {
   const [link, setLink] = useState(null);
   const [open, setOpen] = useState(false);
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, CSSProperties } from "react";
 import {
   Grid,
   Header,
@@ -15,11 +15,17 @@ import { useCSVDownloader } from "react-papaparse";
 import JobsTable from "./JobsTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
+import Backend from "../classes/Backend";
+import { Job, User, SetState } from "../../../types";
 
-export default function ManageJobs({ backend }) {
-  const [jobs, setJobs] = useState([]);
-  const [jobId, setJobId] = useState(null);
-  const [job, setJob] = useState(null);
+interface ManageJobsProps {
+  backend: Backend;
+}
+
+export default function ManageJobs({ backend }: ManageJobsProps) {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobId, setJobId] = useState<number>(null);
+  const [job, setJob] = useState<Job>(null);
 
   return (
     <Grid stackable textAlign="center" style={{ height: "100%" }}>
@@ -41,7 +47,13 @@ export default function ManageJobs({ backend }) {
   );
 }
 
-const setJobSettings = async (id, backend, settingsObj, setJobs, setJob) => {
+const setJobSettings = async (
+  id: number,
+  backend: Backend,
+  settingsObj: { archived?: boolean; restricted?: boolean },
+  setJobs,
+  setJob
+) => {
   backend.setJobSettings(id, settingsObj);
   setJobs((jobs) => {
     const i = jobs.findIndex((j) => j.id === Number(id));
@@ -54,9 +66,23 @@ const setJobSettings = async (id, backend, settingsObj, setJobs, setJob) => {
 
 const leftColStyle = { fontWeight: "bold", textAlign: "right", paddingRight: "15px" };
 
-const JobDetails = ({ backend, job, setJob, jobId, setJobs }) => {
+interface AnnotationData {
+  data: any;
+  progress: { [key: string]: number };
+  totalProgress: number;
+}
+
+interface JobDetailsProps {
+  backend: Backend;
+  job: Job;
+  setJob: SetState<Job>;
+  jobId: number;
+  setJobs: SetState<Job[]>;
+}
+
+const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) => {
   const { CSVDownloader, Type } = useCSVDownloader();
-  const [annotations, setAnnotations] = useState(null);
+  const [annotations, setAnnotations] = useState<AnnotationData>(null);
 
   useEffect(() => {
     setAnnotations(null);
@@ -212,7 +238,12 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }) => {
   );
 };
 
-const JobUsers = ({ backend, job }) => {
+interface JobUsersProps {
+  backend: Backend;
+  job: Job;
+}
+
+const JobUsers = ({ backend, job }: JobUsersProps) => {
   const [options, setOptions] = useState([]);
   const [selection, setSelection] = useState([]);
   const [changed, setChanged] = useState(false);
@@ -220,11 +251,11 @@ const JobUsers = ({ backend, job }) => {
   useEffect(() => {
     backend
       .getUsers()
-      .then((users) => {
+      .then((users: User[]) => {
         const options = users.map((u) => ({ key: u.email, value: u.email, text: u.email }));
         setOptions(options);
       })
-      .catch((e) => setOptions([]));
+      .catch((e: Error) => setOptions([]));
   }, [backend, setOptions]);
 
   useEffect(() => {
@@ -266,7 +297,12 @@ const JobUsers = ({ backend, job }) => {
   );
 };
 
-const AnnotationProgress = ({ job, annotations }) => {
+interface AnnotationProgressProps {
+  job: any;
+  annotations: AnnotationData;
+}
+
+const AnnotationProgress = ({ job, annotations }: AnnotationProgressProps) => {
   if (!annotations?.progress) return null;
   return (
     <div style={{ marginTop: "20px", height: "100%" }}>
@@ -285,7 +321,14 @@ const AnnotationProgress = ({ job, annotations }) => {
   );
 };
 
-const LabeledProgress = ({ label, value, total, bold = false }) => {
+interface LabeledProgressProps {
+  label: string;
+  value: number;
+  total: number;
+  bold?: boolean;
+}
+
+const LabeledProgress = ({ label, value, total, bold = false }: LabeledProgressProps) => {
   return (
     <div style={{ display: "flex", fontWeight: bold ? "bold" : "normal" }}>
       <span
@@ -309,7 +352,13 @@ const LabeledProgress = ({ label, value, total, bold = false }) => {
   );
 };
 
-const JobTokenButton = ({ jobId, backend, style = {} }) => {
+interface JobTokenButtonProps {
+  jobId: number;
+  backend: Backend;
+  style?: CSSProperties;
+}
+
+const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => {
   const [link, setLink] = useState(null);
   const [open, setOpen] = useState(false);
 
@@ -318,14 +367,14 @@ const JobTokenButton = ({ jobId, backend, style = {} }) => {
     if (!open) return;
     backend
       .getJobToken(jobId)
-      .then((token) => {
+      .then((token: string) => {
         const qrhost = backend.host.replace(":", "%colon%");
         setLink({
-          url: `${window.location.origin}/ccs-annotator-client/guest/?host=${backend.host}&jobtoken=${token.token}`,
-          qrUrl: `${window.location.origin}/ccs-annotator-client/guest/?host=${qrhost}&jobtoken=${token.token}`,
+          url: `${window.location.origin}/ccs-annotator-client/guest/?host=${backend.host}&jobtoken=${token}`,
+          qrUrl: `${window.location.origin}/ccs-annotator-client/guest/?host=${qrhost}&jobtoken=${token}`,
         });
       })
-      .catch((e) => {
+      .catch((e: Error) => {
         console.error(e);
       });
   }, [open, backend, jobId]);

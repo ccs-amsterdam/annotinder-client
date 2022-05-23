@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import FullDataTable from "./FullDataTable";
 import { Button } from "semantic-ui-react";
+import { Column } from "../../../types";
 
-const columns = [
+const columns: Column[] = [
   { name: "id", title: true, width: 2 },
   { name: "title", title: true, width: 6 },
   { name: "created", title: true, date: true, width: 6 },
