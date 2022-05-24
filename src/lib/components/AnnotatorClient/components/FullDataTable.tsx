@@ -1,12 +1,10 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction, ReactElement } from "react";
 import { Container, Pagination, Table, Icon, Search } from "semantic-ui-react";
+import { ButtonComponentProps, Column, RowObj, SetState } from "../../../types";
+import Backend from "../classes/Backend";
 
 const PAGESIZE = 10;
 interface FullData {
-  [key: string]: any;
-}
-
-interface Columns {
   [key: string]: any;
 }
 
@@ -16,12 +14,12 @@ interface FullDataTableProps {
   /** // if table needs to update fulldata state */
   setFullData?: Dispatch<SetStateAction<FullData>>;
   /** array with objects specifying what data to show in the columns */
-  columns?: Columns;
+  columns?: Column[];
   /**  Optional. If given, clicking row calls the function with the row object as argument */
   onClick?: (rowobj: object) => void;
   /**Optional, Component or Array with Components that render buttons. Will be put in a buttongroup in first column.
                The component will be given the props "row" (the row object), "backend" (see backend property), and "setData" (for setFullData). */
-  buttons?: any;
+  buttons?: React.FC<ButtonComponentProps> | React.FC<ButtonComponentProps>[];
   //* If buttons is used, backend can be passed along, so that it can be given to the button rendering component */
   backend?: any;
   //* isActive A function that takes a row as input, and returns a boolean for whether the row is displayed as active */
@@ -40,12 +38,12 @@ export default function FullDataTable({
   backend = undefined,
   isActive = undefined,
 }: FullDataTableProps) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<RowObj[]>([]);
   const [pages, setPages] = useState(1);
   const [filteredData, setFilteredData] = useState<FullData>([]);
   const [search, setSearch] = useState("");
 
-  const pageChange = (activePage) => {
+  const pageChange = (activePage: number) => {
     const offset = (activePage - 1) * PAGESIZE;
     const newdata = filteredData.slice(offset, offset + PAGESIZE);
     setData(newdata);
@@ -57,7 +55,7 @@ export default function FullDataTable({
       return;
     }
     const lsearch = search.toLowerCase();
-    const fdata = fullData.filter((row) => {
+    const fdata = fullData.filter((row: RowObj) => {
       for (let value of Object.values(row)) {
         if (typeof value === "object") continue;
         if (String(value).toLowerCase().includes(lsearch)) return true;
@@ -133,6 +131,19 @@ const footerStyle = {
   textAlign: "center",
 };
 
+interface PaginationTableProps {
+  data: RowObj[];
+  setFullData: SetState<RowObj[]>;
+  columns: Column[];
+  pages: number;
+  pageChange: (value: number) => void;
+  onClick: (value: RowObj) => void;
+  buttons: React.FC<ButtonComponentProps> | React.FC<ButtonComponentProps>[];
+  backend: Backend;
+  setSearch: SetState<string>;
+  isActive: (rowObj: any) => boolean;
+}
+
 /**
  * A nice table with pagination
  * @param {array} data an Array with data for a single page
@@ -152,8 +163,8 @@ const PaginationTable = ({
   backend,
   setSearch,
   isActive,
-}) => {
-  const createHeaderRow = (data, columns) => {
+}: PaginationTableProps) => {
+  const createHeaderRow = (data: RowObj, columns: Column[]) => {
     return columns.map((col, i) => {
       let style = headerStyle;
       if (i === 0 && !buttons) style = headerStyleLeft;
@@ -166,7 +177,7 @@ const PaginationTable = ({
     });
   };
 
-  const createBodyRows = (data) => {
+  const createBodyRows = (data: RowObj[]) => {
     return data.map((rowObj, i) => {
       return (
         <Table.Row
@@ -181,19 +192,9 @@ const PaginationTable = ({
     });
   };
 
-  const createRowCells = (rowObj) => {
+  const createRowCells = (rowObj: RowObj) => {
     let cells = columns.map((column, i) => {
       if (column.hide) return null;
-      columns.ref = React.createRef();
-
-      if (column.component) {
-        const Component = column.component;
-        return (
-          <Table.Cell ref={column.ref} key={i} style={rowStyle}>
-            <Component backend={backend} rowObj={rowObj} />
-          </Table.Cell>
-        );
-      }
 
       let content;
       if (column.f) {
@@ -206,7 +207,7 @@ const PaginationTable = ({
         content = content.toISOString().slice(0, 19).replace(/T/g, " ");
       }
       return (
-        <Table.Cell ref={column.ref} key={i} style={rowStyle}>
+        <Table.Cell key={i} style={rowStyle}>
           <span title={column.title ? content : null}>{content}</span>
         </Table.Cell>
       );
@@ -215,7 +216,7 @@ const PaginationTable = ({
       const buttonsArray = Array.isArray(buttons) ? buttons : [buttons];
       cells = [
         <Table.Cell key={"button." + rowObj.id} style={{ rowStyle, padding: "0px !important" }}>
-          {buttonsArray.map((ButtonComponent, i) => (
+          {buttonsArray.map((ButtonComponent: React.FC<ButtonComponentProps>, i) => (
             <ButtonComponent
               key={rowObj.id + "." + i}
               row={rowObj}
@@ -232,13 +233,15 @@ const PaginationTable = ({
   };
   //if (data.length < 1) return null;
 
+  const nbuttons = Array.isArray(buttons) ? buttons.length : 1;
+
   return (
     <Container>
       <Table unstackable selectable fixed compact="very" size="small" style={{ border: "none" }}>
         <Table.Header>
           <Table.Row>
             {buttons ? (
-              <Table.HeaderCell key="buttons" widths={buttons.length * 2} style={headerStyleLeft} />
+              <Table.HeaderCell key="buttons" widths={nbuttons * 2} style={headerStyleLeft} />
             ) : null}
             {createHeaderRow(data, columns)}
           </Table.Row>
@@ -259,7 +262,13 @@ const PaginationTable = ({
   );
 };
 
-const FooterContent = ({ pages, pageChange, setSearch }) => {
+interface FooterContentProps {
+  pages: number;
+  pageChange: (value: number) => void;
+  setSearch: SetState<string>;
+}
+
+const FooterContent = ({ pages, pageChange, setSearch }: FooterContentProps) => {
   const [loading, setLoading] = useState(false);
   const [delayedSearch, setDelayedSearch] = useState("");
 
@@ -307,7 +316,7 @@ const FooterContent = ({ pages, pageChange, setSearch }) => {
         secondary
         defaultActivePage={1}
         totalPages={pages}
-        onPageChange={(e, d) => pageChange(d.activePage)}
+        onPageChange={(e, d) => pageChange(Number(d.activePage))}
         style={{ padding: "0", fontSize: "0.9em" }}
       ></Pagination>
     </div>

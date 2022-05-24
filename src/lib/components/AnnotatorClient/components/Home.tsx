@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { ReactElement, useState } from "react";
 import { Icon, List, Menu, Popup } from "semantic-ui-react";
+import { SetState } from "../../../types";
+import Backend from "../classes/Backend";
 import CoderView from "./CoderView";
 import ManageJobs from "./ManageJobs";
 import ManageUsers from "./ManageUsers";
 
-export default function Home({ backend, authForm }) {
+interface HomeProps {
+  backend: Backend;
+  authForm: ReactElement;
+}
+
+export default function Home({ backend, authForm }: HomeProps) {
   const [menuItem, setMenuItem] = useState("coderView");
   if (!backend) return null;
 
@@ -35,13 +42,26 @@ export default function Home({ backend, authForm }) {
   );
 }
 
-const menuItems = [
+interface MenuItem {
+  label: string;
+  value: string;
+  onlyAdmin: boolean;
+}
+
+const menuItems: MenuItem[] = [
   { label: "Coder view", value: "coderView", onlyAdmin: true },
   { label: "Manage jobs", value: "manageJobs", onlyAdmin: true },
   { label: "Manage users", value: "manageUsers", onlyAdmin: true },
 ];
 
-const MenuBar = ({ backend, authForm, menuItem, setMenuItem }) => {
+interface MenuBarProps {
+  backend: Backend;
+  authForm: ReactElement;
+  menuItem: string;
+  setMenuItem: SetState<string>;
+}
+
+const MenuBar = ({ backend, authForm, menuItem, setMenuItem }: MenuBarProps) => {
   return (
     <Menu pointing secondary style={{ marginBottom: "10px" }}>
       {menuItems.map((item) => {

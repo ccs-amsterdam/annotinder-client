@@ -51,17 +51,17 @@ const setJobSettings = async (
   id: number,
   backend: Backend,
   settingsObj: { archived?: boolean; restricted?: boolean },
-  setJobs,
-  setJob
+  setJobs: SetState<Job[]>,
+  setJob: SetState<Job>
 ) => {
   backend.setJobSettings(id, settingsObj);
-  setJobs((jobs) => {
-    const i = jobs.findIndex((j) => j.id === Number(id));
+  setJobs((jobs: Job[]) => {
+    const i = jobs.findIndex((j: Job) => j.id === Number(id));
     if (i >= 0) jobs[i] = { ...jobs[i], ...settingsObj };
     return [...jobs];
   });
   // setJob is optional because it doesn't work if set via the button in FullDataTable
-  if (setJob) setJob((job) => ({ ...job, ...settingsObj }));
+  if (setJob) setJob((job: Job) => ({ ...job, ...settingsObj }));
 };
 
 const leftColStyle = { fontWeight: "bold", textAlign: "right", paddingRight: "15px" };
@@ -90,13 +90,13 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
 
   const getAnnotations = async () => {
     const units = await backend.getCodingjobAnnotations(job.id);
-    const uniqueUnits = {};
-    const progress = {};
+    const uniqueUnits: Record<string, boolean> = {};
+    const progress: Record<string, number> = {};
     const data = [];
     for (let unit of units) {
       if (!progress[unit.coder]) progress[unit.coder] = 0;
       if (unit.status === "DONE") progress[unit.coder]++;
-      uniqueUnits[unit.id] = true;
+      uniqueUnits[unit.unit_id] = true;
 
       for (let ann of unit.annotation) {
         data.push({

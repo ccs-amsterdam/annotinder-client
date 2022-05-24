@@ -1,5 +1,5 @@
 import Axios, { AxiosInstance } from "axios";
-import { User } from "../../../types";
+import { Annotation, Job, JobAnnotation, JobSettings, Status, User } from "../../../types";
 
 export async function passwordLogin(host, email, password) {
   const d = new FormData();
@@ -76,62 +76,51 @@ class Backend {
     const res = await this.api.get(path);
     return res.data;
   }
-  async getCodingjob(job_id) {
+  async getCodingjob(job_id: number): Promise<Job> {
     const res = await this.api.get(`annotator/codingjob/${job_id}`);
     return res.data;
   }
-  async getCodingjobDetails(job_id) {
+  async getCodingjobDetails(job_id: number): Promise<Job> {
     const res = await this.api.get(`annotator/codingjob/${job_id}/details`);
     return res.data;
   }
-  async getCodingjobAnnotations(job_id) {
+  async getCodingjobAnnotations(job_id: number): Promise<JobAnnotation[]> {
     const res = await this.api.get(`annotator/codingjob/${job_id}/annotations`);
     return res.data;
   }
-  async getAllJobs() {
+  async getAllJobs(): Promise<Job[]> {
     const res = await this.api.get("annotator/codingjob");
-    return res.data;
+    return res.data.jobs;
   }
-  async getUserJobs(user) {
+  async getUserJobs(user?: string): Promise<Job[]> {
     const path = `annotator/users/${user || "me"}/codingjob`;
     const res = await this.api.get(path);
-    return res.data;
+    return res.data.jobs;
   }
-  async getDebriefing(job_id) {
+  async getDebriefing(job_id: number) {
     const path = `annotator/codingjob/${job_id}/debriefing`;
     const res = await this.api.get(path);
     return res.data;
   }
 
   // POST
-  postCodingjob(codingjobPackage, title) {
-    codingjobPackage.title = title;
-
-    return this.api.post(`annotator/codingjob`, {
-      title: title,
-      units: codingjobPackage.units,
-      codebook: codingjobPackage.codebook,
-      provenance: codingjobPackage.provenance,
-      rules: codingjobPackage.rules,
-    });
-  }
-  postPassword(user, password) {
+  postPassword(user?: string, password?: string) {
     const body = { password };
     return this.api.post(`annotator/users/${user || "me"}`, body);
   }
-  postUsers(users) {
+  postUsers(users: User[]) {
     return this.api.post("annotator/users", {
-      users: users.users,
+      users,
     });
   }
-  postAnnotation(job_id, unit_id, annotation, status) {
+  postAnnotation(job_id: number, unit_id: number, annotation: Annotation[], status: Status) {
     const data = { annotation, status };
     return this.api.post(`annotator/codingjob/${job_id}/unit/${unit_id}/annotation`, data);
   }
-  async setJobSettings(job_id, settingsObj) {
+  async setJobSettings(job_id: number, settingsObj: JobSettings): Promise<void> {
     return await this.api.post(`annotator/codingjob/${job_id}/settings`, settingsObj);
   }
-  async setJobUsers(job_id, users, only_add) {
+  async setJobUsers(job_id: number, users: User[], only_add: boolean) {
     const body = { users, only_add };
     return await this.api.post(`annotator/codingjob/${job_id}/users`, body);
   }

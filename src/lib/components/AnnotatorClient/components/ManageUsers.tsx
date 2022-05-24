@@ -93,7 +93,7 @@ const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }: CreateUse
       return submitUsers;
     }, []);
     try {
-      await backend.postUsers({ users });
+      await backend.postUsers(users);
       await backend
         .getUsers()
         .then(setUsers)

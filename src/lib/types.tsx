@@ -6,6 +6,8 @@ import {
   MutableRefObject,
   CSSProperties,
 } from "react";
+import { SemanticWIDTHS } from "semantic-ui-react";
+import Backend from "./components/AnnotatorClient/classes/Backend";
 // common interfaces
 
 ///// UTIL
@@ -421,12 +423,22 @@ export interface Column {
   /** The column label. If empty, uses name */
   label?: string;
   /** The width of the column, in Semantic UIs 16-part format */
-  width?: number;
+  width?: SemanticWIDTHS;
   /** A function that takes the rowObj as input and returns what to show in the table */
   f?: (row: RowObj) => number | string | ReactElement;
   /** If TRUE, add title to span so full value shows on hover */
   title?: boolean;
   date?: boolean;
+  hide?: boolean;
+  ref?: RefObject<HTMLElement>;
+}
+
+export interface ButtonComponentProps {
+  key: string;
+  row: RowObj;
+  backend: Backend;
+  setData: SetState<RowObj[]>;
+  style: CSSProperties;
 }
 
 ///// MANAGE USERS
@@ -446,18 +458,33 @@ export interface Job {
   creator: string;
   archived?: boolean;
   restricted?: boolean;
-  users: User[];
-  jobset_details: JobSetDetail[];
+  users?: User[];
+  jobset_details?: JobSet[];
   rules?: Rules;
   n_total: number;
 }
 
-export interface JobSetDetail {
+export interface JobSet {
   name: string;
-  n_units: number;
+  units?: RawUnit[];
+  codebook?: CodeBook;
+  n_units?: number;
 }
 
 export interface Rules {
   ruleset: "crowdcoding" | "fixedset";
   [key: string]: any;
+}
+
+export interface JobSettings {
+  archived?: boolean;
+  restricted?: boolean;
+}
+
+export interface JobAnnotation {
+  jobset: string;
+  unit_id: string;
+  coder: string;
+  annotation: Annotation[];
+  status: Status;
 }
