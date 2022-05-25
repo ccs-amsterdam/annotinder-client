@@ -294,6 +294,7 @@ const TokenMouseEvents = ({
   const onTouchUp = useCallback(
     (e) => {
       if (!touch.current?.time) return;
+      console.log("7");
       const now = new Date();
       const timepassed = now.getTime() - touch.current.time.getTime();
       if (timepassed > 150) return;

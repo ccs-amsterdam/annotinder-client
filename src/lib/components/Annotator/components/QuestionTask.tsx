@@ -50,7 +50,7 @@ const Text = styled.div`
 const QuestionMenu = styled.div`
   height: ${(props) => (props.minifiedAnswerForm ? null : props.formHeight)};
   min-height: ${(props) => (props.minifiedAnswerForm ? null : "200px")};
-  font-size: ${(props) => props.lowerTextSize}em;
+  font-size: ${(props) => props.fontSize}em;
 `;
 
 const QuestionTask = ({ unit, codebook, setUnitIndex, fullScreenNode, blockEvents = false }) => {

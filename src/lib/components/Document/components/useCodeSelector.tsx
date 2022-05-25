@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement } from "react";
+import React, { useState, useEffect, ReactElement, useRef } from "react";
 import { Popup, Portal, Segment } from "semantic-ui-react";
 
 import SelectVariablePage from "./SelectVariablePage";
@@ -185,8 +185,17 @@ interface CodeSelectorPopupProps {
 const CodeSelectorPopup = React.memo(
   ({ children, fullScreenNode, open, setOpen, positionRef }: CodeSelectorPopupProps) => {
     const popupMargin = "5px";
+    const canIClose = useRef(false);
     let position = "top left";
+    let portalposition = 0;
     let maxHeight = "100vh";
+
+    useEffect(() => {
+      // Due to click propagation when opening the popup is triggered, the popup can
+      // immediately call onClose as the click reaches the document root. Here we
+      // use a ref to ignore the first call to onClose.
+      canIClose.current = false;
+    }, [open]);
 
     if (positionRef?.current) {
       // determine popup position and maxHeight/maxWidth
@@ -204,11 +213,9 @@ const CodeSelectorPopup = React.memo(
       const leftSpace = bc.left / window.innerWidth;
       const rightSpace = (window.innerWidth - bc.right) / window.innerWidth;
       position = rightSpace > leftSpace ? position + " left" : position + " right";
-    }
 
-    // somehow onclose trigger when first opening popup. this hack enables closing it
-    // when clicking outside of the popup
-    let canIClose = false;
+      portalposition = Math.max(0, bc.top + 20);
+    }
 
     // if this is a small screen, use a portal instead of a popup
     const smallscreen = window.innerWidth < 768;
@@ -221,21 +228,15 @@ const CodeSelectorPopup = React.memo(
           mountNode={fullScreenNode || undefined}
           open={open}
           onClose={(e, d) => {
-            if (canIClose) setOpen(false);
-            canIClose = true;
-          }}
-          style={{
-            margin: popupMargin,
-            padding: "0px",
-            minWidth: "15em",
-            maxHeight,
-            overflow: "visible",
+            console.log("onclose");
+            if (canIClose.current) setOpen(false);
+            canIClose.current = true;
           }}
         >
           {/* TODO: this used to be a segment, but somehow ts doesn't like those either. But maybe this broke the portal */}
           <Segment
             style={{
-              bottom: "0",
+              top: portalposition,
               position: "fixed",
               width: "100%",
               zIndex: 1000,
@@ -260,8 +261,8 @@ const CodeSelectorPopup = React.memo(
         open={open}
         mouseLeaveDelay={10000000} // just don't use mouse leave
         onClose={(e, d) => {
-          if (canIClose) setOpen(false);
-          canIClose = true;
+          if (canIClose.current) setOpen(false);
+          canIClose.current = true;
         }}
         style={{
           margin: popupMargin,

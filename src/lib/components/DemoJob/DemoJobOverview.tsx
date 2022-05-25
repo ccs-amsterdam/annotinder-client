@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import JobServerDemo from "./classes/JobServerDemo";
 import Annotator from "../Annotator/Annotator";
-import { Button, Grid, Header, Menu, Icon, Segment } from "semantic-ui-react";
+import { Button, Grid, Header, Menu, Icon, Segment, Portal } from "semantic-ui-react";
 import FullDataTable from "../AnnotatorClient/components/FullDataTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../functions/copyToClipboard";
@@ -159,32 +159,37 @@ const DemoJobLink = ({ units, codebook }) => {
   const url = `${window.location.origin}/ccs-annotator-client/demo?units=${units}&codebook=${codebook}`;
 
   return (
-    <Segment
-      style={{
-        minWidth: "50%",
-        zIndex: 1000,
-        background: "#dfeffb",
-        border: "1px solid #136bae",
-      }}
-    >
-      <Header textAlign="center" style={{ fontSize: "1.5em" }}>
-        Demo Job link
-      </Header>
-      <div style={{ textAlign: "center" }}>
-        <QRCodeCanvas value={encodeURI(url)} size={256} />
-      </div>
-      <br />
-
-      <Button
-        fluid
-        secondary
-        onClick={() => {
-          copyToClipboard(url);
+    <Portal on="click" trigger={<Button fluid secondary content="Show link" />}>
+      <Segment
+        style={{
+          bottom: "25%",
+          left: "25%",
+          position: "fixed",
+          minWidth: "50%",
+          zIndex: 1000,
+          background: "#dfeffb",
+          border: "1px solid #136bae",
         }}
       >
-        Copy link
-      </Button>
-    </Segment>
+        <Header textAlign="center" style={{ fontSize: "1.5em" }}>
+          Demo Job link
+        </Header>
+        <div style={{ textAlign: "center" }}>
+          <QRCodeCanvas value={encodeURI(url)} size={256} />
+        </div>
+        <br />
+
+        <Button
+          fluid
+          secondary
+          onClick={() => {
+            copyToClipboard(url);
+          }}
+        >
+          Copy link
+        </Button>
+      </Segment>
+    </Portal>
   );
 };
 

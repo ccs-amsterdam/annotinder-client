@@ -169,6 +169,7 @@ const SelectCode = React.memo(
                   overflowWrap: "break-word",
                   backgroundColor: option.color,
                   height: "100%",
+                  padding: "5px 5px",
                   paddingTop: isCurrent ? "10px" : "5px",
                   fontWeight: "bold",
                   textShadow: "0px 0px 5px #ffffff77",

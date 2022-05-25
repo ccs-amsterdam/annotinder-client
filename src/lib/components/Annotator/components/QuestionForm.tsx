@@ -130,6 +130,7 @@ const QuestionForm = ({
         borderTop: `3px double ${ANSWERFIELD_COLOR}`,
         boxShadow: "5px 5px 5px 1px grey",
         overflow: "auto",
+        fontSize: "inherit",
         zIndex: 9000,
       }}
     >
@@ -176,12 +177,13 @@ const QuestionForm = ({
           maxHeight: "100%",
           padding: "0px 10px 5px 10px",
           color: ANSWERFIELD_COLOR,
+          fontSize: "inherit",
 
           //borderBottomLeftRadius: "5px",
           //borderBottomRightRadius: "5px",
         }}
       >
-        <div style={{ width: "100%", flex: "1 1 auto", padding: "5px 0px" }}>
+        <div style={{ width: "100%", flex: "1 1 auto", padding: "5px 0px", fontSize: "inherit" }}>
           <Header
             as="h3"
             textAlign="center"
