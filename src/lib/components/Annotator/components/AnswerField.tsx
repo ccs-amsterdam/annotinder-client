@@ -11,23 +11,24 @@ const MIN_DELAY = 200;
 // TODO: using questionindex for resetting states is bad, because it doesn't update for consequtive codebooks with 1 question
 
 const AnswerField = ({
-  currentAnswer,
+  answers,
   questions,
   questionIndex,
   onAnswer,
   swipe,
   blockEvents = false,
 }) => {
-  const question = questions[questionIndex];
-  const [itemValues, setItemValues] = useState(currentAnswer);
+  const [question, setQuestion] = useState(questions[questionIndex]);
+  const [itemValues, setItemValues] = useState(answers[questionIndex]);
 
-  console.log(question);
   useEffect(() => {
+    const currentAnswer = answers?.[questionIndex]?.values;
     // Note that currentAnswer:
     // is an array of objects: [{item: 'string of item name', values: [array of unique answer values]}]
     // order and length mathces question.items. If question doesn't have items, it must be an array of length 1
     setItemValues(currentAnswer);
-  }, [currentAnswer]);
+    setQuestion(questions[questionIndex]);
+  }, [answers, questions, questionIndex]);
 
   useEffect(() => {
     // if answer changed but has not been saved, warn users when they try to close the app
@@ -38,7 +39,7 @@ const AnswerField = ({
       return msg;
     };
 
-    if (currentAnswer !== itemValues) {
+    if (answers?.[questionIndex]?.values !== itemValues) {
       window.addEventListener("beforeunload", handleBeforeUnload);
     } else {
       window.removeEventListener("beforeunload", handleBeforeUnload);
@@ -46,7 +47,7 @@ const AnswerField = ({
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [currentAnswer, itemValues]);
+  }, [answers, questionIndex, itemValues]);
 
   const onFinish = () => {
     onAnswer(itemValues, false, MIN_DELAY);
@@ -97,7 +98,7 @@ const AnswerField = ({
     return newItemValues;
   };
 
-  if (!itemValues) return null;
+  //if (!itemValues) return null;
   // use these props:
   // values         array of values
   // itemValues     object with items as keys and values array as value

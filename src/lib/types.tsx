@@ -282,6 +282,7 @@ export interface ImageField {
   base64?: string;
   caption?: string;
   style?: CSSProperties;
+  url?: string;
 }
 
 export interface RenderedImages {

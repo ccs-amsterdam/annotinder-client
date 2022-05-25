@@ -10,7 +10,7 @@ interface SelectCodeProps {
   /** The options the user can choose from */
   options: AnswerOption[];
   /** An array of answer values. If multiple is false, should have length 1 */
-  values: string[];
+  values: (string | number)[];
   /** If true, multiple options can be chosen */
   multiple: boolean;
   /** If true, all buttons are put on the same row */

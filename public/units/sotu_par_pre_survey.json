@@ -56,7 +56,7 @@
       "text_fields": [
         {
           "name": "title",
-          "value": "Barack Obama",
+          "value": "Branching",
           "style": {
             "fontWeight": "bold",
             "fontSize": "1.2em",
@@ -65,7 +65,7 @@
         },
         {
           "name": "text",
-          "value": "All these investments, in innovation, education, and infrastructure, will make America a better place to do business and create jobs. But to help our companies compete, we also have to knock down barriers that stand in the way of their success."
+          "value": "You can do some simple branching."
         }
       ],
       "codebook": {
@@ -74,22 +74,26 @@
           {
             "name": "branching",
             "type": "select code",
-            "question": "Do you want so skip to the third question?",
+            "question": "Do you want so skip the annoying scale question?",
             "codes": [
-              { "code": "No", "color": "red" },
-              { "code": "Yes", "color": "green", "makes_irrelevant": "trust" }
+              { "code": "No", "color": "crimson" },
+              {
+                "code": "Yes",
+                "color": "lightgreen",
+                "makes_irrelevant": "annoying_scale_question"
+              }
             ]
           },
           {
-            "name": "trust",
+            "name": "annoying_scale_question",
             "type": "scale",
             "single_row": true,
             "same_size": true,
-            "question": "test",
+            "question": "You didn't skip the annoying scale question? Why?",
             "items": [
-              { "name": "Journalists", "label": "Do you trust journalists?" },
-              { "name": "Government" },
-              { "name": "Police" }
+              { "name": "like", "label": "I like scale questions!" },
+              { "name": "tricked", "label": "I feel like you tricked me..." },
+              { "name": "moveon", "Label": "I'd like to move on now!" }
             ],
 
             "codes": [

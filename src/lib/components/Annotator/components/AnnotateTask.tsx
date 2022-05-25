@@ -7,6 +7,10 @@ import AnnotateTaskManual from "./AnnotateTaskManual";
 import { Annotation, Unit, VariableMap } from "../../../types";
 
 const NEXTDELAY = 500;
+const BODYSTYLE = {
+  paddingTop: "10px",
+  paddingBottom: "10px",
+};
 
 const AnnotateTask = ({ unit, codebook, setUnitIndex, fullScreenNode, blockEvents = false }) => {
   const [annotations, onChangeAnnotations] = useAnnotations(unit);
@@ -54,7 +58,12 @@ const AnnotateTask = ({ unit, codebook, setUnitIndex, fullScreenNode, blockEvent
           <AnnotateTaskManual fullScreenNode={fullScreenNode} />
           <NextUnitButton unit={unit} annotations={annotations} setUnitIndex={setUnitIndex} />
         </Button.Group>
-        <div style={{ height: "calc(100% - 30px)", fontSize: `${settings.textSize}em` }}>
+        <div
+          style={{
+            height: "calc(100% - 30px)",
+            fontSize: `${settings.textSize}em`,
+          }}
+        >
           <Document
             unit={unit}
             settings={codebook?.settings}
@@ -64,6 +73,7 @@ const AnnotateTask = ({ unit, codebook, setUnitIndex, fullScreenNode, blockEvent
             returnVariableMap={setVariableMap}
             blockEvents={blockEvents}
             fullScreenNode={fullScreenNode}
+            bodyStyle={BODYSTYLE}
           />
         </div>
       </Grid.Column>

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { Button } from "semantic-ui-react";
+import { Menu, Segment } from "semantic-ui-react";
 import { Variable, SetState } from "../../../types";
 
 interface SelectVariableProps {
@@ -67,62 +67,60 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
   return (
     <div
       style={{
-        background: "#1277c469",
-        //borderBottomLeftRadius: "10px",
-        //borderBottomRightRadius: "10px",
-        border: "2px solid black",
-        fontSize: "1.2em",
+        //background: "#1277c469",
         textAlign: "center",
+        width: "100%",
       }}
     >
-      <VariableButtons
+      <VariableMenu
         variable={variable}
         setVariable={setVariable}
         variables={variables}
         variableNames={variableNames}
       />
-      <p
+      <Segment
+        attached="bottom"
         style={{
+          background: "#2185d0",
           margin: "0",
-          padding: "2px",
-          minHeight: "24px",
+          padding: "3px",
+          color: "white",
+          fontStyle: "italic",
         }}
       >
         {helpText}
-      </p>
+      </Segment>
     </div>
   );
 };
 
-interface VariableButtonsProps {
+interface VariableMenuProps {
   variable: string;
   setVariable: SetState<string>;
   variables: Variable[];
   variableNames: string[];
 }
 
-const VariableButtons = ({
-  variable,
-  setVariable,
-  variables,
-  variableNames,
-}: VariableButtonsProps) => {
+const VariableMenu = ({ variable, setVariable, variables, variableNames }: VariableMenuProps) => {
   const mapVariables = () => {
     return variableNames.map((name) => {
       return (
-        <Button
+        <Menu.Item
           key={name}
-          primary
           active={name === variable}
           style={{
-            padding: "5px",
-            border: "1px solid",
-            color: name === variable ? "black" : "white",
+            flex: "1 1 auto",
+            padding: "0 3px",
+            wordWrap: "break-word",
+            fontSize: "1.2em",
+            fontWeight: "normal",
+            background: name === variable ? "#2185d0" : "rgb(127, 185, 235)",
+            color: name === variable ? "white" : "black",
           }}
           onClick={() => setVariable(name)}
         >
-          {name}
-        </Button>
+          <span style={{ textAlign: "center", width: "100%" }}>{name}</span>
+        </Menu.Item>
       );
     });
   };
@@ -138,11 +136,15 @@ const VariableButtons = ({
 
   if (variableNames?.length === 1) return null;
   return (
-    <>
-      <Button.Group attached="bottom" fluid>
-        {mapVariables()}
-      </Button.Group>
-    </>
+    <Menu
+      attached="top"
+      tabular
+      compact
+      size="mini"
+      style={{ width: "100%", display: "flex", justifyContent: "space-between" }}
+    >
+      {mapVariables()}
+    </Menu>
   );
 };
 

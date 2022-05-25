@@ -47,6 +47,9 @@ const AnnotatableImage = React.forwardRef(({ image_field }: AnnotatableImageProp
   }, [extraspace, container, img]);
 
   //image_field.style = { maxWidth: "500px" };
+
+  let src = image_field.url || `data:image/jpeg;base64,${image_field.base64}`;
+
   return (
     <figure
       style={{
@@ -63,7 +66,7 @@ const AnnotatableImage = React.forwardRef(({ image_field }: AnnotatableImageProp
         data-imagefieldname={image_field.name}
         key={image_field.name}
         alt={image_field.filename}
-        src={`data:image/jpeg;base64,${image_field.base64}`}
+        src={src}
         style={{
           border: "3px double grey", // DON"T CHANGE BORDER WIDTH WITHOUT ADJUSTING OFFSET IN getImagePosition.js
           flex: "1 1 auto",

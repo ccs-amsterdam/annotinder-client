@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import { Ref } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
 import Meta from "./Meta";
@@ -22,6 +22,7 @@ interface BodyProps {
   image_fields: ImageField[];
   markdown_field: string;
   setReady: SetState<number>;
+  bodyStyle: CSSProperties;
 }
 
 const Body = ({
@@ -31,6 +32,7 @@ const Body = ({
   image_fields,
   markdown_field,
   setReady,
+  bodyStyle = {},
 }: BodyProps) => {
   const [text, setText] = useState<RenderedText>({});
   const [images, setImages] = useState<RenderedImages>({});
@@ -72,6 +74,7 @@ const Body = ({
             flexDirection: "column",
             alignItems: "center",
             overflow: "auto",
+            ...bodyStyle,
           }}
         >
           <Meta meta_fields={meta_fields} />

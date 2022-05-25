@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Dispatch, SetStateAction, ReactElement } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Container, Pagination, Table, Icon, Search } from "semantic-ui-react";
 import { ButtonComponentProps, Column, RowObj, SetState } from "../../../types";
 import Backend from "../classes/Backend";

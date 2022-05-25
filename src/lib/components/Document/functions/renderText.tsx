@@ -99,13 +99,7 @@ const renderField = (
           <span
             key={field + paragraph_key}
             className="noselect"
-            style={textField.style}
-            // style={{
-            //   fontSize: `${textField.size != null ? textField.size : 1}em`,
-            //   fontWeight: textField.bold ? "bold" : "normal",
-            //   fontStyle: textField.italic ? "italic" : "normal",
-            //   textAlign: textField.justify ? "justify" : textField.center ? "center" : "left",
-            // }}
+            style={{ textAlign: "justify", ...(textField.style || {}) }}
           >
             {paragraphs}
           </span>

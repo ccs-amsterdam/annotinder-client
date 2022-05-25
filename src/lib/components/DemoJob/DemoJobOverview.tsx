@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import JobServerDemo from "./classes/JobServerDemo";
 import Annotator from "../Annotator/Annotator";
-import { Button, Grid, Header, Menu, Icon } from "semantic-ui-react";
+import { Button, Grid, Header, Menu, Icon, Segment } from "semantic-ui-react";
 import FullDataTable from "../AnnotatorClient/components/FullDataTable";
+import QRCodeCanvas from "qrcode.react";
+import copyToClipboard from "../../functions/copyToClipboard";
 
 const DemoJobOverview = () => {
   const [job, setJob] = useState(null);
@@ -16,6 +18,25 @@ const DemoJobOverview = () => {
     getJobServer(units, codebook, setJob);
   }, [searchParams]);
 
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      console.log("whaaat the fuck");
+      const msg = "If you leave now, any changes made in the current unit will not be saved."; // most browsers actually show default message
+      e.returnValue = msg;
+      return msg;
+    };
+
+    if (job != null) {
+      window.addEventListener("beforeunload", handleBeforeUnload);
+    } else {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    }
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [job]);
+
   if (job === null) return <DemoSelector />;
   return <Annotator jobServer={job} />;
 };
@@ -26,17 +47,18 @@ const unit_files = [
   { label: "Units with actor annotations", filename: "actor_annotation" },
   { label: "Political images", filename: "images" },
   { label: "State of the union paragraphs with pre-survey", filename: "sotu_par_pre_survey" },
+  { label: "Introduction to the CCS Annotator", filename: "introduction" },
 ];
 const codebook_files = [
   { label: "Annotate sentiment", filename: "sentimentAnnotation" },
   { label: "sentiment questions", filename: "sentimentQuestion" },
   { label: "actor dropdown", filename: "actorQuestion" },
-
   {
     label: "Edit actor annotations (requires units with actor annotations)",
     filename: "actor_annotation",
   },
   { label: "Political Image swiping", filename: "politicalImageSwipe" },
+  { label: "Dummy (only confirm questions)", filename: "dummy" },
 ];
 const unitColumns = [{ name: "label", label: "Select unit set" }];
 const codebookColumns = [{ name: "label", label: "Select codebook" }];
@@ -94,6 +116,7 @@ const DemoSelector = () => {
             <Button primary fluid disabled={!units || !codebook} onClick={onClick}>
               Start Demo Job
             </Button>
+            <DemoJobLink units={units} codebook={codebook} />
           </Grid.Column>
         </Grid.Row>
       </Grid>
@@ -129,6 +152,40 @@ const getFileName = (filename, what) => {
     return filename;
   }
   return `${what}/${filename}.json`;
+};
+
+const DemoJobLink = ({ units, codebook }) => {
+  if (!units || !codebook) return null;
+  const url = `${window.location.origin}/ccs-annotator-client/guest/?units=${units}&jobtoken=${codebook}`;
+
+  return (
+    <Segment
+      style={{
+        minWidth: "50%",
+        zIndex: 1000,
+        background: "#dfeffb",
+        border: "1px solid #136bae",
+      }}
+    >
+      <Header textAlign="center" style={{ fontSize: "1.5em" }}>
+        Demo Job link
+      </Header>
+      <div style={{ textAlign: "center" }}>
+        <QRCodeCanvas value={encodeURI(url)} size={256} />
+      </div>
+      <br />
+
+      <Button
+        fluid
+        secondary
+        onClick={() => {
+          copyToClipboard(url);
+        }}
+      >
+        Copy link
+      </Button>
+    </Segment>
+  );
 };
 
 export default React.memo(DemoJobOverview);

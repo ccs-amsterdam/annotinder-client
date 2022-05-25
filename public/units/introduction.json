@@ -1,0 +1,480 @@
+[
+  {
+    "unit": {
+      "unit_id": "1",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Welcome!",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
+          "name": "text",
+          "value": "This right here is a quick introduction to the CCS Annotator. In fact, what you're seeing right now is actually a codingjob!\n\nA basic codingjob consists of a set of units (what to code) and a codebook (how to code). But you can assign specific codebooks to units to tailor a codingjob to your needs, such as we did for this demo.\n\nBy the way, we are not storing any of your data. In fact, the annotator can run entirely in your own browser without a server involved. This is actually a key feature, but more on that later."
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "welcome",
+            "type": "confirm"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "2",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Annotator with a touch of survey",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
+          "name": "text",
+          "value": "Since we can tailor codingjobs as we like, we can also infuse them with some survey stuff. This is great if you want some background on crowdcoders, and it can also be used for conducting surveys and experiments. Our personal interest in this is that we believe that annotations can also be used as a measurement intrument."
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "fav_animal",
+            "type": "select code",
+            "question": "What's your favourite type of animal?",
+            "codes": [
+              { "code": "Birds" },
+              { "code": "Mammals" },
+              { "code": "Insects" },
+              { "code": "Fish" }
+            ]
+          },
+          {
+            "name": "fav_animal_count",
+            "type": "inputs",
+            "question": "How many {fav_animal} do you have?",
+            "items": [{ "name": "animal count", "type": "number", "min": 0 }]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "3",
+      "text_window_size": "auto",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Branching",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
+          "name": "text",
+          "value": "You can do some simple branching.",
+          "style": {
+            "textAlign": "center"
+          }
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "branching",
+            "type": "select code",
+            "question": "Do you want so skip the annoying scale question?",
+            "codes": [
+              { "code": "No", "color": "crimson" },
+              {
+                "code": "Yes",
+                "color": "lightgreen",
+                "makes_irrelevant": "annoying_scale_question"
+              }
+            ]
+          },
+          {
+            "name": "annoying_scale_question",
+            "type": "scale",
+            "single_row": true,
+            "same_size": true,
+            "question": "You didn't skip the annoying scale question? Why?",
+            "items": [
+              { "name": "like", "label": "I like scale questions!" },
+              { "name": "tricked", "label": "I feel like you tricked me..." },
+              { "name": "moveon", "Label": "I'd like to move on now!" }
+            ],
+
+            "codes": [
+              { "code": "Strongly disagree" },
+              { "code": "Disagree" },
+              { "code": "Somewhat disagree" },
+              { "code": "Neigher agree or disagree" },
+              { "code": "Somewhat agree" },
+              { "code": "Agree" },
+              { "code": "Strongly agree" }
+            ]
+          },
+          {
+            "name": "back",
+            "type": "select code",
+            "question": "You can move back with the buttons just above this question",
+            "codes": [
+              { "code": "Oh wow", "color": "red" },
+              { "code": "Yeah, but why would I?", "color": "yellow" }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "4",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Let's annotate already!",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
+          "name": "text",
+          "value": "Right, so you've probably figured that all those question things can also be used for annotating texts and images. But there are some special annotation features as well.\n\n  One we quite like is the Annotinder function. If you're on mobile, you can swipe this one!"
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "swipe",
+            "question": "Would you date this feature?",
+            "codes": [
+              { "code": "No", "color": "crimson", "swipe": "left" },
+              { "code": "Yes", "color": "lightgreen", "swipe": "right" },
+              { "code": "Don't know", "color": "yellow", "swipe": "up" }
+            ],
+            "type": "annotinder"
+          }
+        ]
+      },
+      "variables": []
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "5",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Serious political headline",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
+          "name": "subtitle",
+          "value": "Poorly chosen subhead",
+          "style": {
+            "fontStyle": "italic"
+          }
+        },
+        {
+          "name": "text",
+          "value": "A long and engaging text about all things happening in the world right now."
+        }
+      ],
+      "meta_fields": [
+        { "name": ["date"], "value": ["1970-01-01"] },
+        { "name": ["source"], "value": ["Newspaper"] }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "swipe",
+            "question": "Is this a political text?",
+            "codes": [
+              { "code": "No", "color": "crimson", "swipe": "left" },
+              { "code": "Yes", "color": "lightgreen", "swipe": "right" },
+              { "code": "Don't know", "color": "yellow", "swipe": "up" }
+            ],
+            "type": "annotinder"
+          }
+        ]
+      },
+      "variables": []
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "6",
+      "image_fields": [
+        {
+          "name": "title",
+          "caption": "Image from cattime.com",
+          "url": "https://cattime.com/assets/uploads/2016/03/cats-politics-political-office-e1550279975235-650x368.jpg"
+        }
+      ],
+
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "swipe",
+            "question": "Is this a political image?",
+            "codes": [
+              { "code": "No", "color": "crimson", "swipe": "left" },
+              { "code": "Yes", "color": "lightgreen", "swipe": "right" },
+              { "code": "Don't know", "color": "yellow", "swipe": "up" }
+            ],
+            "type": "annotinder"
+          }
+        ]
+      },
+      "variables": []
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "7",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Span annotation mode",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
+          "name": "text",
+          "value": "There is also a mode for annotating words or a span of words. This is more of an expert coder task, and can be done most efficiently with mouse or keyboard. With a mouse you just click and hold to select. With keyboard you use the arrows to navigate and hold spacebar to select.\n\nYou can also do this on mobile though. Tap the same word twice to begin a selection, and then tap another word to finish a selection"
+        }
+      ],
+
+      "variables": [],
+      "codebook": {
+        "type": "annotate",
+        "settings": { "no_table": false },
+        "variables": [
+          {
+            "codes": [
+              {
+                "code": "Some label",
+                "color": "red"
+              },
+              {
+                "code": "Another label",
+                "color": "grey"
+              },
+
+              {
+                "code": "Yet another label",
+                "color": "green"
+              }
+            ],
+            "name": "some variable",
+            "instruction": "Short instruction about annotating this variable",
+            "searchBox": false,
+            "buttonMode": "all"
+          },
+          {
+            "codes": [
+              "Some person",
+              "Another person",
+              "There are many people",
+              "So buttons might be a bad idea",
+              "Use searchable dropdown instead"
+            ],
+            "name": "another variable",
+            "instruction": "This variable uses a dropdown menu with buttons for recent codes",
+            "searchBox": true,
+            "buttonMode": "recent"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "8",
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Span annotation edit mode",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
+          "name": "text",
+          "value": "Instead of open annotations, you can also pre-annotate spans and only let coders edit them. You could for instance first use a dictionary and then let coders validate or correct the annotations. Or add empty placeholder and let coders fill in the blanks"
+        }
+      ],
+      "importedAnnotations": [
+        {
+          "field": "text",
+          "variable": "some variable",
+          "value": "Some label",
+          "offset": 16,
+          "length": 11
+        },
+        {
+          "field": "text",
+          "variable": "some variable",
+          "value": "Another label",
+          "offset": 42,
+          "length": 18
+        },
+        {
+          "field": "text",
+          "variable": "some variable",
+          "value": "EMPTY",
+          "offset": 243,
+          "length": 10
+        }
+      ],
+
+      "variables": [],
+      "codebook": {
+        "type": "annotate",
+        "settings": { "no_table": false },
+        "variables": [
+          {
+            "codes": [
+              {
+                "code": "Some label",
+                "color": "red"
+              },
+              {
+                "code": "Another label",
+                "color": "grey"
+              },
+
+              {
+                "code": "Yet another label",
+                "color": "green"
+              }
+            ],
+            "name": "some variable",
+            "instruction": "Edit annotations by selecting them",
+            "searchBox": false,
+            "buttonMode": "all",
+            "editMode": true,
+            "only_edit": true,
+            "multiple": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "9",
+      "markdown_field": "# What about the backend\n\nAs mentioned, the annotator application itself is **purely a frontend gig**. It's a web-application that runs in your browser using javascript. The nice thing about this is that the backend *can* be very simple. It just needs to send coders the units and codebooks, and store their annotations.\n\nWe are currently developing two backends:\n\n* An **R** backend for simple, local codingjobs.\n* A **Python** backend that offers more advanced features like user administration and crowd-coding",
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "swipe",
+            "question": "I'm out of inspiration for mock questions",
+            "codes": [
+              { "code": "Try harder", "color": "crimson", "swipe": "left" },
+              { "code": "That's ok", "color": "lightgreen", "swipe": "right" }
+            ],
+            "type": "annotinder"
+          }
+        ]
+      },
+      "variables": []
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "10",
+      "markdown_field": "# Python: Database and API\n\nThe Python backend offers the most functionalities. It comes with user administration and can host multiple codingjobs. This way, the server only needs to be set up once for multiple users (e.g., a department, research group).\n\nWith this set-up coders can either be registered or anonymous. Also, the backend features different **rule-sets** for how to assign units to coders, like the **crowd-coding** ruleset that ensures an even number of coders per unit, or the **fixed set** ruleset that can randomly assign coders to (experimental) groups.",
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "swipe",
+            "type": "confirm"
+          }
+        ]
+      },
+      "variables": []
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "11",
+      "markdown_field": "# ccsAnnotator R package\n\nThis R package can be used to create codingjobs. It can also interact with the Python based API to upload codingjobs and download annotations.\n\nThe package also includes it's own API to run codingjobs straight from within R. A key feature is that you can directly retrieve annotations and update units from within R, so you use it for a human-in-the-loop design, like active learning. In addition, this makes it easy to develop and test codingjobs locally before sending them to a server.",
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "swipe",
+            "type": "confirm"
+          }
+        ]
+      },
+      "variables": []
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "12",
+      "markdown_field": "# When can we use this?\n\nAlmost! The core features are there, and at the moment we're mainly cleaning up and improving the codebase.\n\nIf you are interested, we'd love to hear your thoughts. The goal of this project is to create an annotator dedicated to the type of annotation tasks that we encounter in our field, and to experiment with different approaches and interfaces to see how they might affect speed and quality of annotations.\n\nWe are sure many of you have had good and bad experiences with annotation tasks, so we'd love to learn from them",
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "swipe",
+            "type": "confirm"
+          }
+        ]
+      },
+      "variables": []
+    }
+  },
+  {
+    "unit": {
+      "unit_id": "13",
+      "markdown_field": "# Any future plans?\n\nQuite something, actually. This tool is a part of the [OPTED](https://opted.eu/) project, where it falls under a workpackage for developing **AmCAT4**, an [infrastructure for storing and sharing texts](https://opted.eu/fileadmin/user_upload/k_opted/OPTED_deliverable_D7.1.pdf).\n\nThe annotator will also be included as a module of this intrastructure. In other words, you will be able to set-up a server to manage the text data infrastructure of a research group, and this infrastructure will play nicely together with the annotator.",
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "swipe",
+            "type": "confirm"
+          }
+        ]
+      },
+      "variables": []
+    }
+  }
+]

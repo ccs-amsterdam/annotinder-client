@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, CSSProperties } from "react";
 import AnnotateNavigation from "./components/AnnotateNavigation";
 import Body from "./components/Body";
 import useCodeSelector from "./components/useCodeSelector";
@@ -42,6 +42,8 @@ interface DocumentProps {
   blockEvents?: boolean;
   /** in fullscreenmode popups require a mountNode */
   fullScreenNode?: FullScreenNode;
+  /** CSSProperties for the body container  */
+  bodyStyle?: CSSProperties;
 }
 
 /**
@@ -58,6 +60,7 @@ const Document = ({
   setReady,
   blockEvents,
   fullScreenNode,
+  bodyStyle,
 }: DocumentProps) => {
   const safetyCheck = useRef(null); // ensures only new annotations for the current unit are passed to onChangeAnnotations
   const [variable, setVariable] = useState(null);
@@ -108,7 +111,6 @@ const Document = ({
         height: "100%",
         maxHeight: "100%",
         flexDirection: "column",
-        cursor: editMode ? "pointer" : null,
       }}
     >
       <>
@@ -119,6 +121,7 @@ const Document = ({
           image_fields={doc.image_fields}
           markdown_field={doc.markdown_field}
           setReady={setTokensReady}
+          bodyStyle={bodyStyle}
         />
 
         <SelectVariable

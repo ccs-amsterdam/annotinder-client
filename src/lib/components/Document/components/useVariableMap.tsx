@@ -35,6 +35,7 @@ export default function useVariableMap(
   useEffect(() => {
     // creates the actually used variableMap from the fullVariableMap
     // this lets us select specific variables without recreating full map
+    // Here we also add imported variables
     if (fullVariableMap === null) {
       setVariableMap(null);
       return;

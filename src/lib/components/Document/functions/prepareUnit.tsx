@@ -2,7 +2,13 @@ import { importTokens, importTokenAnnotations, parseTokens } from "../../../func
 import { importSpanAnnotations } from "../../../functions/annotations";
 import { Doc, SpanAnnotations, Unit } from "../../../types";
 
-export const getDocAndAnnotations = (unit: Unit, codes = {}): [Doc, SpanAnnotations] => {
+/**
+ *
+ * @param unit
+ * @param codes This is
+ * @returns
+ */
+export const getDocAndAnnotations = (unit: Unit): [Doc, SpanAnnotations] => {
   // d is an intermediate object to do some processing on the Unit and extract the document and annotations
   const d: any = { ...unit };
 
@@ -36,7 +42,7 @@ export const getDocAndAnnotations = (unit: Unit, codes = {}): [Doc, SpanAnnotati
   let annotations: SpanAnnotations = {};
   if (d.annotations) annotations = importSpanAnnotations([...d.annotations], d.tokens);
 
-  const tokenAnnotations = importTokenAnnotations(d.tokens, codes); // also fills codes
+  const tokenAnnotations = importTokenAnnotations(d.tokens);
   if (tokenAnnotations.length > 0)
     annotations = importSpanAnnotations(tokenAnnotations, d.tokens, annotations);
 

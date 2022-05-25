@@ -34,8 +34,8 @@ const QuestionForm = ({
 
   useEffect(() => {
     if (!questions?.[questionIndex] || !unit) return null;
-    setQuestionText(prepareQuestion(unit, questions[questionIndex]));
-  }, [unit, questions, questionIndex]);
+    setQuestionText(prepareQuestion(unit, questions[questionIndex], answers));
+  }, [unit, questions, questionIndex, answers]);
 
   if (!questions || !unit || !answers) return null;
   if (!questions?.[questionIndex]) {
@@ -94,7 +94,7 @@ const QuestionForm = ({
         // if there is a next question, postAnnotation immediately and unblock answering after half a second
         // (to prevent accidentally double clicking)
         unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status);
-        setQuestionIndex(newQuestionIndex);
+        setTimeout(() => setQuestionIndex(newQuestionIndex), minDelay);
         setTimeout(() => (blockAnswer.current = false), 500);
       } else {
         // if this was the last question of the unit, wait untill postAnnotation is completed so that the database
@@ -203,7 +203,7 @@ const QuestionForm = ({
           }}
         >
           <AnswerField
-            currentAnswer={answers?.[questionIndex]?.values}
+            answers={answers}
             questions={questions}
             questionIndex={questionIndex}
             onAnswer={onAnswer}
@@ -323,15 +323,26 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
   );
 };
 
-const prepareQuestion = (unit, question) => {
+const prepareQuestion = (unit, question, answers) => {
   if (!question?.question) return <div />;
   let preparedQuestion = question.question;
+
+  const regex = /{(.*?)}/g;
+  const matches = [...preparedQuestion.matchAll(regex)];
+  for (let m of matches) {
+    const answer = answers.find((a) => a.variable === m["1"]);
+    if (answer) {
+      const value = answer.values[0].values.join(", ");
+      preparedQuestion = preparedQuestion.replace(m["0"], "{" + value + "}");
+    }
+  }
+
   if (!unit.variables) return markedString(preparedQuestion);
 
   for (let variable of Object.keys(unit.variables)) {
     if (preparedQuestion.search(`\\[${variable}\\]`) >= 0) {
       let code = unit.variables[variable];
-      const codeTag = `{{lightyellow###${code}}}`; // add optional color from itemquestions
+      const codeTag = `{${code}}`; // add optional color from itemquestions
       preparedQuestion = preparedQuestion.replace(`[${variable}]`, codeTag);
     }
   }
@@ -340,7 +351,7 @@ const prepareQuestion = (unit, question) => {
 };
 
 const markedString = (text) => {
-  const regex = new RegExp(/{{(.*?)}}/); // Match text inside two square brackets
+  const regex = new RegExp(/{(.*?)}/); // Match text inside two square brackets
 
   text = text.replace(/(\r\n|\n|\r)/gm, "");
   return (
@@ -349,10 +360,9 @@ const markedString = (text) => {
         if (i % 2 === 0) {
           prev.push(current);
         } else {
-          const [color, string] = current.split("###");
           prev.push(
-            <mark key={i + current} style={{ backgroundColor: color }}>
-              {string}
+            <mark key={i + current} style={{ color: "lightblue", backgroundColor: "transparent" }}>
+              {current}
             </mark>
           );
         }

@@ -38,6 +38,7 @@ const Inputs = ({
 
   const done =
     itemValues &&
+    itemValues.length > 0 &&
     !itemValues.some((a, i) => (a.values?.[0] == null || a.invalid) && !items?.[i]?.optional);
   if (!itemValues) return null;
 
@@ -203,7 +204,7 @@ const Input = ({ itemValues, onSelect, item, itemIndex }) => {
         type={"number"}
         min={item?.min}
         max={item?.max}
-        value={Number(value) || ""}
+        value={Number(value) != null ? Number(value) : ""}
         style={{
           maxWidth: "150px",
           textAlign: "center",
@@ -214,8 +215,8 @@ const Input = ({ itemValues, onSelect, item, itemIndex }) => {
           let value = e.target.value;
           const invalid =
             isNaN(Number(value)) ||
-            (item?.min && value < item.min) ||
-            (item?.max && value > item.max);
+            (item.min != null && value < item.min) ||
+            (item.max != null && value > item.max);
           onSelect({ value, itemIndex, invalid });
         }}
       />

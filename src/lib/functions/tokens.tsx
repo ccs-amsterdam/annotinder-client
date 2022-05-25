@@ -199,9 +199,8 @@ export const importTokens = (tokens: RawToken[] | RawTokenColumn): Token[] => {
   return preparedTokens;
 };
 
-export const importTokenAnnotations = (tokens: Token[], codes: any) => {
-  // returns annotations, and also modifies the codes object
-  // codes keeps track of annotations to create a codebook
+export const importTokenAnnotations = (tokens: Token[]) => {
+  // returns annotations
   if (tokens.length === 0) return [];
   let annotations: any = [];
   let codeTracker: any = {};
@@ -216,11 +215,6 @@ export const importTokenAnnotations = (tokens: Token[], codes: any) => {
     let annotationDict: any = {};
     for (let annotation of tokens[i].annotations) {
       if (annotation.value === "") continue; // Whether to skip should be a parameter when importing
-
-      if (!codes[annotation.name]) {
-        codes[annotation.name] = new Set();
-      }
-      codes[annotation.name].add(annotation.value);
 
       annotationDict[annotation.name] = annotation.value;
 

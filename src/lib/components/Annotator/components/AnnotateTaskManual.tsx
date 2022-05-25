@@ -7,7 +7,6 @@ const AnnotateTaskManual = ({ fullScreenNode }) => {
   return (
     <Modal
       mountNode={fullScreenNode || undefined}
-      flowing
       open={open}
       onClose={() => setOpen(false)}
       position="bottom left"
