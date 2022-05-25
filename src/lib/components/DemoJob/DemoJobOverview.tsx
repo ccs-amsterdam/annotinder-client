@@ -156,7 +156,7 @@ const getFileName = (filename, what) => {
 
 const DemoJobLink = ({ units, codebook }) => {
   if (!units || !codebook) return null;
-  const url = `${window.location.origin}/ccs-annotator-client/guest/?units=${units}&jobtoken=${codebook}`;
+  const url = `${window.location.origin}/ccs-annotator-client/demo?units=${units}&codebook=${codebook}`;
 
   return (
     <Segment
