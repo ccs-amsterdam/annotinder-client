@@ -228,7 +228,6 @@ const CodeSelectorPopup = React.memo(
           mountNode={fullScreenNode || undefined}
           open={open}
           onClose={(e, d) => {
-            console.log("onclose");
             if (canIClose.current) setOpen(false);
             canIClose.current = true;
           }}

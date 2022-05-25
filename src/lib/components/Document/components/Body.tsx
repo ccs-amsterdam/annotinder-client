@@ -82,10 +82,14 @@ const Body = ({
           <div
             style={{
               flex: "1 1 97%",
+              display: "flex",
               width: "100%",
             }}
           >
-            <div key="content" style={{ paddingTop: "0px", paddingBottom: "0px", width: "100%" }}>
+            <div
+              key="content"
+              style={{ margin: "auto", paddingTop: "0px", paddingBottom: "0px", width: "100%" }}
+            >
               {markdown}
               {text_fields.map((tf) => text[tf.name])}
               {image_fields.map((imf) => images[imf.name])}
