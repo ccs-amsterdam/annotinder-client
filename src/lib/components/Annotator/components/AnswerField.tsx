@@ -18,8 +18,8 @@ const AnswerField = ({
   swipe,
   blockEvents = false,
 }) => {
-  const [question, setQuestion] = useState(questions[questionIndex]);
-  const [itemValues, setItemValues] = useState(answers[questionIndex]);
+  const [question, setQuestion] = useState(null);
+  const [itemValues, setItemValues] = useState(null);
 
   useEffect(() => {
     const currentAnswer = answers?.[questionIndex]?.values;
@@ -98,7 +98,8 @@ const AnswerField = ({
     return newItemValues;
   };
 
-  //if (!itemValues) return null;
+  if (!itemValues) return null;
+  console.log(itemValues);
   // use these props:
   // values         array of values
   // itemValues     object with items as keys and values array as value
