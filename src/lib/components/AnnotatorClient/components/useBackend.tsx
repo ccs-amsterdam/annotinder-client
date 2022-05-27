@@ -226,7 +226,7 @@ const SignIn = ({ recHost, setLogin }: SignInProps) => {
             bottom: "-20px",
           }}
         >
-          Version 0.2.6
+          Version 0.2.7
         </span>
       </Segment>
     </>
