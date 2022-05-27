@@ -166,11 +166,11 @@
         "questions": [
           {
             "name": "swipe",
-            "question": "Would you date this feature?",
+            "question": "Try swiping this!",
             "codes": [
-              { "code": "No", "color": "crimson", "swipe": "left" },
-              { "code": "Yes", "color": "lightgreen", "swipe": "right" },
-              { "code": "Don't know", "color": "yellow", "swipe": "up" }
+              { "code": "Left", "color": "crimson", "swipe": "left" },
+              { "code": "Right", "color": "lightgreen", "swipe": "right" },
+              { "code": "Up", "color": "yellow", "swipe": "up" }
             ],
             "type": "annotinder"
           }

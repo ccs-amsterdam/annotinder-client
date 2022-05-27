@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Button, Grid, Header, Icon } from "semantic-ui-react";
-import DownloadAnnotations from "./DownloadAnnotations";
+import ReactMarkdown from "react-markdown";
+import { QRCodeCanvas } from "qrcode.react";
+import copyToClipboard from "../../../functions/copyToClipboard";
 
 const Finished = ({ jobServer }) => {
   const [debriefing, setDebriefing] = useState(null);
@@ -18,6 +20,7 @@ const Finished = ({ jobServer }) => {
   }, [jobServer]);
 
   if (!jobServer) return null;
+
   if (debriefing) {
     return (
       <Grid
@@ -29,15 +32,11 @@ const Finished = ({ jobServer }) => {
         <Grid.Column textAlign="center">
           <Grid.Row style={{ width: "100%" }}>
             <div>
-              <Icon
-                name="flag checkered"
-                size="huge"
-                style={{ transform: "scale(2)", marginBottom: "50px" }}
-              />
+              <Icon name="flag checkered" size="huge" style={{ marginBottom: "50px" }} />
             </div>
           </Grid.Row>
           <Grid.Row>
-            <Header>{debriefing.message}</Header>
+            <ReactMarkdown linkTarget={"_blank"}>{debriefing.message}</ReactMarkdown>
             {debriefing.link ? (
               <Button
                 as="a"
@@ -47,43 +46,71 @@ const Finished = ({ jobServer }) => {
                 content={debriefing.link_text || "Click here!"}
               />
             ) : null}
+            {debriefing.qr ? (
+              <JobLink jobId={jobServer.job_id} backend={jobServer.backend} />
+            ) : null}
           </Grid.Row>
         </Grid.Column>
-      </Grid>
-    );
-  } else if (!jobServer.getAllAnnotations) {
-    return (
-      <Grid
-        container
-        centered
-        verticalAlign="middle"
-        style={{ margin: "0", padding: "0", height: "100%" }}
-      >
-        <Grid.Column textAlign="center">
-          <Grid.Row style={{ width: "100%" }}>
-            <div>
-              <Icon name="flag checkered" size="huge" style={{ transform: "scale(2)" }} />
-            </div>
-          </Grid.Row>
-        </Grid.Column>
-      </Grid>
-    );
-  } else {
-    return (
-      <Grid container centered verticalAlign="middle" style={{ margin: "0", padding: "0" }}>
-        <Grid.Row style={{ marginTop: "40%", width: "100%", height: "100%" }}>
-          <Grid.Column width={4}>
-            <Icon name="flag checkered" size="huge" />
-          </Grid.Column>
-          <Grid.Column width={8}>
-            <Header>You finished the codingjob!</Header>
-            <p>Please download your results (and send them to whoever gave you this job). </p>
-            <DownloadAnnotations jobServer={jobServer} />
-          </Grid.Column>
-        </Grid.Row>
       </Grid>
     );
   }
+  return (
+    <Grid
+      container
+      centered
+      verticalAlign="middle"
+      style={{ margin: "0", padding: "0", height: "100%" }}
+    >
+      <Grid.Column textAlign="center">
+        <Grid.Row style={{ width: "100%" }}>
+          <div>
+            <Icon name="flag checkered" size="huge" style={{ transform: "scale(2)" }} />
+          </div>
+        </Grid.Row>
+      </Grid.Column>
+    </Grid>
+  );
+};
+
+const JobLink = ({ jobId, backend, style = {} }) => {
+  const [link, setLink] = useState(null);
+
+  useEffect(() => {
+    // to just load this if it's being requested
+    backend
+      .getJobToken(jobId)
+      .then((token: string) => {
+        const qrhost = backend.host.replace(":", "%colon%");
+        setLink({
+          url: `${window.location.origin}/ccs-annotator-client/guest/?host=${backend.host}&jobtoken=${token}`,
+          qrUrl: `${window.location.origin}/ccs-annotator-client/guest/?host=${qrhost}&jobtoken=${token}`,
+        });
+      })
+      .catch((e: Error) => {
+        console.error(e);
+      });
+  }, [backend, jobId]);
+
+  if (!link) return null;
+
+  return (
+    <div style={{ paddingTop: "15px" }}>
+      <Header
+        textAlign="center"
+        onClick={() => {
+          copyToClipboard(link?.url);
+          setTimeout(() => alert("copied link!"), 50);
+        }}
+        style={{ color: "blue", cursor: "copy" }}
+      >
+        Share this job with others!
+      </Header>
+      <div style={{ textAlign: "center" }}>
+        <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
+      </div>
+      <br />
+    </div>
+  );
 };
 
 export default Finished;

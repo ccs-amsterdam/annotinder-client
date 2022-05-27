@@ -73,6 +73,7 @@ const getUnit = async (
     // NOTE THAT THIS RELIES ON REACT 18 FOR BATCHING STATE UPDATES
     if (unit.index && unitIndex !== unit.index) setUnitIndex(unit.index);
 
+    console.log(unit);
     setUnit({
       jobServer,
       unitIndex: unit.index || unitIndex, // unit can (should?) return an index to keep it fully controlled
