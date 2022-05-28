@@ -1,4 +1,4 @@
-const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 160) => {
+const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 110) => {
   if (!question) return {};
   const swipeable = ["annotinder", "confirm"];
   if (!swipeable.includes(question.type)) return {};
