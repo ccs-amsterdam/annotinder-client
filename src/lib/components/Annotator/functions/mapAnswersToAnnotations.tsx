@@ -7,9 +7,23 @@
 // -- questions where multiple codes can be selected correspond to multiple annotations as usual,
 //    and in the question answers this is represented as an array of objects
 
-import { Annotation, Answer, AnswerItem } from "../../../types";
+import {
+  Answer,
+  AnswerItem,
+  Question,
+  SetState,
+  Annotation,
+  Token,
+  Unit,
+  QuestionItem,
+} from "../../../types";
 
-export const getAnswersFromAnnotations = (unit, tokens, questions, setAnswers) => {
+export const getAnswersFromAnnotations = (
+  unit: Unit,
+  tokens: Token[],
+  questions: Question[],
+  setAnswers: SetState<AnswerItem[]>
+) => {
   const answers = [];
   if (!unit.annotations) unit.annotations = [];
   for (let i = 0; i < questions.length; i++) {
@@ -20,7 +34,7 @@ export const getAnswersFromAnnotations = (unit, tokens, questions, setAnswers) =
   setAnswers(answers);
 };
 
-const createAnswer = (tokens, question): Answer => {
+const createAnswer = (tokens: Token[], question: Question): Answer => {
   // creates an object with the variable, field, offset and length of the annotation
   // that corresponds to this answer.
 
@@ -65,8 +79,8 @@ const getAnswerValues = (annotations: Annotation[], answer: Answer, question): A
   // if question doesn't have items, will be an array of length 1 where item is null
 
   question.items = question.items || [""];
-  return question.items.map((item) => {
-    const itemname = item?.name ?? item; // item can be a string or {name, label}
+  return question.items.map((item: QuestionItem) => {
+    const itemname = typeof item === "string" ? item : item?.name; // item can be a string or {name, label}
     const values = [];
     for (let annotation of annotations || []) {
       if (isMatch(annotation, answer, itemname)) {
@@ -77,11 +91,11 @@ const getAnswerValues = (annotations: Annotation[], answer: Answer, question): A
   });
 };
 
-const createVariable = (variable, item) => {
+const createVariable = (variable: string, item: string) => {
   return item === "" || item == null ? variable : variable + "." + item;
 };
 
-const isMatch = (annotation, answer, item = "") => {
+const isMatch = (annotation: Annotation, answer: Answer, item = "") => {
   return (
     annotation.variable === createVariable(answer.variable, item) &&
     annotation.field === answer.field &&
@@ -90,12 +104,15 @@ const isMatch = (annotation, answer, item = "") => {
   );
 };
 
-export const addAnnotationsFromAnswer = (answer, annotations, question) => {
+export const addAnnotationsFromAnswer = (
+  answer: Answer,
+  annotations: Annotation[]
+): Annotation[] => {
   // transforms answers to annotations, and either replaces existing annotations or
   // creates new ones.
   if (!annotations) annotations = [];
 
-  const valueMap = answer.values.reduce((obj, valueObj) => {
+  const valueMap = answer.values.reduce((obj: any, valueObj: AnswerItem) => {
     // create a map of answers[item][value]
     if (obj[valueObj.item] === undefined) obj[valueObj.item] = {};
     for (let value of valueObj.values) obj[valueObj.item][value] = false;
@@ -126,9 +143,11 @@ export const addAnnotationsFromAnswer = (answer, annotations, question) => {
       // case 3
       const variable = createVariable(answer.variable, item);
       annotations.push({
-        ...answer,
         variable,
         value,
+        field: answer.field,
+        offset: answer.offset,
+        length: answer.length,
       });
     }
   }

@@ -1,7 +1,8 @@
-import { Annotation, CodeBook, Progress, SetState, Status } from "../../../types";
+import { importCodebook } from "../../../functions/codebook";
+import { Annotation, CodeBook, JobServer, Progress, SetState, Status } from "../../../types";
 import Backend from "./Backend";
 
-class JobServerAPI {
+class JobServerAPI implements JobServer {
   backend: Backend; // TODO: add interface
   job_id: number;
   setJobServer: SetState<JobServerAPI>;
@@ -22,7 +23,8 @@ class JobServerAPI {
   }
 
   async init() {
-    this.codebook = await this.backend.getCodebook(this.job_id);
+    const rawcodebook = await this.backend.getCodebook(this.job_id);
+    this.codebook = importCodebook(rawcodebook);
     this.progress = await this.backend.getProgress(this.job_id);
   }
 

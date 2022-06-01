@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { codeBookEdgesToMap } from "../../../functions/codebook";
 import { VariableValueMap, Variable, VariableMap } from "../../../types";
 
 export default function useVariableMap(
@@ -20,7 +19,7 @@ export default function useVariableMap(
 
     const vm: any = {};
     for (let variable of variables) {
-      let cm = codeBookEdgesToMap(variable.codes);
+      let cm = variable.codeMap;
       cm = Object.keys(cm).reduce((obj: any, key) => {
         if (!cm[key].active || !cm[key].activeParent) return obj;
         obj[key] = cm[key];

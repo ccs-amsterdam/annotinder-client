@@ -6,6 +6,8 @@ import JobServerAPI from "./classes/JobServerAPI";
 import Home from "./components/Home";
 
 import { useSearchParams } from "react-router-dom";
+import Backend from "./classes/Backend";
+import { JobServer } from "../../types";
 
 // NOTE TO SELF
 // Add option to code without having to log in (needs to happen in backend too)
@@ -38,11 +40,12 @@ const AnnotatorAmcatClient = () => {
   return <Annotator jobServer={jobServer} />;
 };
 
-const useJobServer = (backend) => {
+const useJobServer = (backend: Backend): [JobServer, boolean] => {
   const [jobServer, setJobServer] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [initializing, setInitializing] = useState(true);
   let jobId = backend?.restricted_job || searchParams.get("job_id");
+  jobId = Number(jobId);
 
   useEffect(() => {
     if (!backend) {
@@ -56,7 +59,7 @@ const useJobServer = (backend) => {
     }
     setJobServer(null);
     const returnLink = backend?.restricted_job ? null : "/";
-    const js = new JobServerAPI(backend, jobId, setJobServer, returnLink);
+    const js = new JobServerAPI(backend, jobId as number, setJobServer, returnLink);
     js.init()
       .then(() => setJobServer(js))
       .catch(() => {

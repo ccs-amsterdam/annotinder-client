@@ -1,15 +1,32 @@
-const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 110) => {
+import { SwipeEventData } from "react-swipeable";
+import { Question, SetState, SwipeRefs } from "../../../types";
+
+const swipeControl = (
+  question: Question,
+  refs: SwipeRefs,
+  setSwipe: SetState<string>,
+  alwaysDoVertical: boolean,
+  triggerdist: number = 110
+) => {
   if (!question) return {};
+  if (!refs?.text?.current) return {};
   const swipeable = ["annotinder", "confirm"];
   if (!swipeable.includes(question.type)) return {};
 
   let swipeOptions = question.swipeOptions;
-  if (question.type === "confirm")
-    swipeOptions = {
-      left: { code: question.button || "Continue", color: "#2185d0" },
-      up: { code: question.button || "Continue", color: "#2185d0" },
-      right: { code: question.button || "Continue", color: "#2185d0" },
+  console.log(question.type);
+  if (question.type === "confirm") {
+    // make confirm questions swipeable in any direction
+    const confirmoption = {
+      code: question.button || "Continue",
+      color: "#2185d0",
     };
+    swipeOptions = {
+      left: confirmoption,
+      up: confirmoption,
+      right: confirmoption,
+    };
+  }
 
   const transitionTime = 250;
   const container = refs.text.current.getElementsByClassName("BodyContainer")[0];
@@ -24,7 +41,7 @@ const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 
     rotationAngle: 0, // set a rotation angle
   };
 
-  const getDeltas = (d) => {
+  const getDeltas = (d: SwipeEventData) => {
     let deltaX = d.deltaX;
     let deltaY = d.deltaY;
     if (Math.abs(deltaX) > Math.abs(deltaY) + 10) deltaY = 0;
@@ -41,7 +58,7 @@ const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 
   };
 
   return {
-    onSwiping: (d) => {
+    onSwiping: (d: SwipeEventData) => {
       const [deltaX, deltaY] = getDeltas(d);
       if (deltaX > 0 && !swipeOptions.right) return;
       if (deltaX < 0 && !swipeOptions.left) return;
@@ -70,7 +87,7 @@ const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 
       refs.code.current.style.bottom = bottom;
       refs.code.current.style.textAlign = talign;
     },
-    onSwiped: (d) => {
+    onSwiped: (d: SwipeEventData) => {
       const [deltaX, deltaY] = getDeltas(d);
       if (deltaX > 0 && !swipeOptions.right) return;
       if (deltaX < 0 && !swipeOptions.left) return;
@@ -89,7 +106,7 @@ const swipeControl = (question, refs, setSwipe, alwaysDoVertical, triggerdist = 
           deltaX > 0 ? 100 : deltaX < 0 ? -100 : 0
         }%) translateY(${deltaY > 0 ? 100 : -100}%)`;
         refs.box.current.style.transition = `opacity ${transitionTime}ms ease-out`;
-        refs.box.current.style.opacity = 0;
+        refs.box.current.style.opacity = "0";
 
         let dir = deltaX > 0 ? "right" : "up";
         dir = deltaX < 0 ? "left" : dir;

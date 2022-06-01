@@ -1,4 +1,3 @@
-import React from "react";
 import { SemanticWIDTHS, Table } from "semantic-ui-react";
 import { getColor } from "../../../functions/tokenDesign";
 

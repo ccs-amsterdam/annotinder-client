@@ -52,7 +52,9 @@
   {
     "unit": {
       "unit_id": "email",
-      "text_window_size": "auto",
+      "settings": {
+        "text_window_size": "auto"
+      },
       "text_fields": [
         {
           "name": "title",

@@ -2,13 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import QuestionForm from "./QuestionForm";
 import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
-import { codeBookEdgesToMap, getCodeTreeArray } from "../../../functions/codebook";
 import { Button, Form, Input, Portal, Segment } from "semantic-ui-react";
-import standardizeColor from "../../../functions/standardizeColor";
 import swipeControl from "../functions/swipeControl";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import styled from "styled-components";
-import { AnswerOption, SwipeOptions, Swipes } from "../../../types";
+import { CodeBook, FullScreenNode, SetState, Swipes, Unit } from "../../../types";
 
 const Container = styled.div`
   display: flex;
@@ -53,10 +51,24 @@ const QuestionMenu = styled.div`
   font-size: ${(props) => props.fontSize}em;
 `;
 
-const QuestionTask = ({ unit, codebook, setUnitIndex, fullScreenNode, blockEvents = false }) => {
+interface QuestionTaskProps {
+  unit: Unit;
+  codebook: CodeBook;
+  setUnitIndex: SetState<number>;
+  fullScreenNode: FullScreenNode;
+  blockEvents?: boolean;
+}
+
+const QuestionTask = ({
+  unit,
+  codebook,
+  setUnitIndex,
+  fullScreenNode,
+  blockEvents = false,
+}: QuestionTaskProps) => {
   const [tokens, setTokens] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [questions, setQuestions] = useState(null);
+  //const [questions, setQuestions] = useState(null);
   const refs = {
     text: useRef(),
     box: useRef(),
@@ -69,11 +81,6 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, fullScreenNode, blockEvent
     lowerTextSize: 1,
   });
   const divref = useRef(null);
-
-  useEffect(() => {
-    if (!codebook?.questions) return;
-    setQuestions(prepareQuestions(codebook));
-  }, [codebook]);
 
   useEffect(() => {
     // when new unit arrives, reset style (in case of swipe) and make
@@ -89,19 +96,23 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, fullScreenNode, blockEvent
   // swipe controlls need to be up in the QuestionTask component due to working on the div containing the question screen
   // use separate swipe for text (document) and menu rows, because swiping up in the text is only possible if scrolled all the way down
   const [swipe, setSwipe] = useState<Swipes>(null);
-  const textSwipe = useSwipeable(swipeControl(questions?.[questionIndex], refs, setSwipe, false));
-  const menuSwipe = useSwipeable(swipeControl(questions?.[questionIndex], refs, setSwipe, true));
+  const textSwipe = useSwipeable(
+    swipeControl(codebook?.questions?.[questionIndex], refs, setSwipe, false)
+  );
+  const menuSwipe = useSwipeable(
+    swipeControl(codebook?.questions?.[questionIndex], refs, setSwipe, true)
+  );
 
   if (!unit) return null;
 
   // The size of the text div, in pct compared to the answer div
-  let splitHeight = unit?.text_window_size ?? settings.splitHeight;
+  let splitHeight = unit?.settings?.text_window_size ?? settings.splitHeight;
   const formHeight = splitHeight === "auto" ? "auto" : `${100 - splitHeight}%`;
 
   // if there are only annotinder or confirm questions, minify the answer form
   let minifiedAnswerForm = true;
   const minifiable = ["annotinder", "confirm"];
-  for (let question of questions || [])
+  for (let question of codebook?.questions || [])
     if (!minifiable.includes(question.type)) minifiedAnswerForm = false;
 
   return (
@@ -129,7 +140,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, fullScreenNode, blockEvent
         <QuestionForm
           unit={unit}
           tokens={tokens}
-          questions={questions}
+          questions={codebook?.questions}
           questionIndex={questionIndex}
           setQuestionIndex={setQuestionIndex}
           setUnitIndex={setUnitIndex}
@@ -140,7 +151,7 @@ const QuestionTask = ({ unit, codebook, setUnitIndex, fullScreenNode, blockEvent
             settings={settings}
             setSettings={setSettings}
             fullScreenNode={fullScreenNode}
-            cantChangeSplitHeight={minifiedAnswerForm || unit?.text_window_size != null}
+            cantChangeSplitHeight={minifiedAnswerForm || unit?.settings?.text_window_size != null}
           />
         </QuestionForm>
       </QuestionMenu>
@@ -232,45 +243,6 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitH
       </Segment>
     </Portal>
   );
-};
-
-const prepareQuestions = (codebook) => {
-  const questions = codebook.questions;
-  return questions.map((question) => {
-    const fillMissingColor = !["scale"].includes(question.type);
-    const codeMap = codeBookEdgesToMap(question.codes, fillMissingColor);
-    let cta = getCodeTreeArray(codeMap);
-    const [options, swipeOptions] = getOptions(cta);
-    return { ...question, options, swipeOptions }; // it's important that this deep copies question
-  });
-};
-
-const getOptions = (cta): [AnswerOption[], SwipeOptions] => {
-  const options = [];
-  const swipeOptions: any = {}; // object, for fast lookup in swipeControl
-
-  for (let code of cta) {
-    if (!code.active) continue;
-    if (!code.activeParent) continue;
-    let tree = code.tree.join(" - ");
-    const option: AnswerOption = {
-      code: code.code,
-      tree: tree,
-      makes_irrelevant: code.makes_irrelevant,
-      required_for: code.required_for,
-      color: standardizeColor(code.color, "88"),
-      ref: React.createRef(), // used for keyboard navigation of buttons
-    };
-    if (code.swipe) swipeOptions[code.swipe] = option;
-    options.push(option);
-  }
-  // if swipe options for left and right are not specified, use order.
-  if (!swipeOptions.left && !swipeOptions.right) {
-    swipeOptions.left = options?.[0];
-    swipeOptions.right = options?.[1];
-    swipeOptions.up = options?.[2];
-  }
-  return [options, swipeOptions];
 };
 
 const resetStyle = (text, box) => {

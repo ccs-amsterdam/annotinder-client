@@ -56,11 +56,7 @@ const QuestionForm = ({
         questions[questionIndex].options
       );
 
-      unit.annotations = addAnnotationsFromAnswer(
-        answers[questionIndex],
-        unit.annotations,
-        questions[questionIndex]
-      );
+      unit.annotations = addAnnotationsFromAnswer(answers[questionIndex], unit.annotations);
 
       const irrelevantQuestions = processIrrelevantBranching(
         unit,
@@ -239,7 +235,7 @@ const processIrrelevantBranching = (unit, questions, answers, questionIndex) => 
       irrelevantQuestions[i] = true;
       // gives the value "IRRELEVANT" to targeted questions
       for (let a of answers[i].values) a.values = ["IRRELEVANT"];
-      unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations, questions[i]);
+      unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations);
     } else {
       irrelevantQuestions[i] = false;
       // If a question is marked as IRRELEVANT, double check whether this is still the case
@@ -247,7 +243,7 @@ const processIrrelevantBranching = (unit, questions, answers, questionIndex) => 
       for (let a of answers[i].values) {
         if (a.values[0] === "IRRELEVANT") a.values = [];
       }
-      unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations, questions[i]);
+      unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations);
     }
   }
   return irrelevantQuestions;

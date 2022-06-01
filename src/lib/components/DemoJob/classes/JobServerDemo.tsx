@@ -1,14 +1,24 @@
-import { Annotation, CodeBook, RawUnit, BackendUnit, Status, Progress } from "../../../types";
+import {
+  Annotation,
+  RawCodeBook,
+  CodeBook,
+  RawUnit,
+  BackendUnit,
+  Status,
+  Progress,
+  JobServer,
+} from "../../../types";
+import { importCodebook } from "../../../functions/codebook";
 
-class JobServerDemo {
+class JobServerDemo implements JobServer {
   codebook: CodeBook; // TODO: add codebook interface
   units: BackendUnit[];
   progress: Progress;
   return_link: string;
 
-  constructor(codebook: CodeBook, units: RawUnit[]) {
-    this.codebook = codebook;
-    this.units = units.map((u, i) => ({ ...u, index: i }));
+  constructor(codebook: RawCodeBook, units: RawUnit[]) {
+    this.codebook = importCodebook(codebook);
+    this.units = units.map((u, i) => ({ ...u, index: i, status: null }));
     this.progress = {
       n_total: units.length,
       n_coded: 0,

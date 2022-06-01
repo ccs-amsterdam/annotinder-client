@@ -1,5 +1,82 @@
+import React from "react";
 import randomColor from "randomcolor";
-import { Code, CodeMap, CodeTree } from "../types";
+import {
+  Code,
+  CodeMap,
+  CodeTree,
+  Variable,
+  AnswerOption,
+  SwipeOptions,
+  Question,
+  CodeBook,
+  RawCodeBook,
+} from "../types";
+import standardizeColor from "./standardizeColor";
+
+export function importCodebook(codebook: RawCodeBook): CodeBook {
+  if (codebook.type === "annotate")
+    return {
+      type: "annotate",
+      variables: importVariables(codebook.variables),
+      settings: codebook.settings || {},
+    };
+
+  if (codebook.type === "questions")
+    return {
+      type: "questions",
+      questions: importQuestions(codebook.questions),
+      settings: codebook.settings || {},
+    };
+}
+
+const importVariables = (variables: any): Variable[] => {
+  // checks and preparation of variables
+  return variables.map((variable) => {
+    return {
+      ...variable,
+      codeMap: codeBookEdgesToMap(variable.codes),
+    };
+  });
+};
+
+const importQuestions = (questions: any): Question[] => {
+  // checks and preparation of questions
+  return questions.map((question) => {
+    const fillMissingColor = !["scale"].includes(question.type);
+    const codeMap = codeBookEdgesToMap(question.codes, fillMissingColor);
+    let cta = getCodeTreeArray(codeMap);
+    const [options, swipeOptions] = getOptions(cta);
+    return { ...question, options, swipeOptions }; // it's important that this deep copies question
+  });
+};
+
+const getOptions = (cta: CodeTree[]): [AnswerOption[], SwipeOptions] => {
+  const options = [];
+  const swipeOptions: any = {}; // object, for fast lookup in swipeControl
+
+  for (let code of cta) {
+    if (!code.active) continue;
+    if (!code.activeParent) continue;
+    let tree = code.tree.join(" - ");
+    const option: AnswerOption = {
+      code: code.code,
+      tree: tree,
+      makes_irrelevant: code.makes_irrelevant,
+      required_for: code.required_for,
+      color: standardizeColor(code.color, "88"),
+      ref: React.createRef(), // used for keyboard navigation of buttons
+    };
+    if (code.swipe) swipeOptions[code.swipe] = option;
+    options.push(option);
+  }
+  // if swipe options for left and right are not specified, use order.
+  if (!swipeOptions.left && !swipeOptions.right) {
+    swipeOptions.left = options?.[0];
+    swipeOptions.right = options?.[1];
+    swipeOptions.up = options?.[2];
+  }
+  return [options, swipeOptions];
+};
 
 export const standardizeCodes = (codes: Code[] | string[], fillMissingColor: boolean): Code[] => {
   if (!codes) return [];

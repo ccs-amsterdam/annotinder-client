@@ -21,7 +21,6 @@ const DemoJobOverview = () => {
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       e.preventDefault();
-      console.log("whaaat the fuck");
       const msg = "If you leave now, any changes made in the current unit will not be saved."; // most browsers actually show default message
       e.returnValue = msg;
       return msg;

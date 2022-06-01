@@ -1,7 +1,7 @@
 import Axios, { AxiosInstance } from "axios";
 import { Annotation, Job, JobAnnotation, JobSettings, Status, User } from "../../../types";
 
-export async function passwordLogin(host, email, password) {
+export async function passwordLogin(host: string, email: string, password: string) {
   const d = new FormData();
   d.append("username", email);
   d.append("password", password);
@@ -9,7 +9,7 @@ export async function passwordLogin(host, email, password) {
   return response.data.token;
 }
 
-export async function redeemJobToken(host, token, user_id) {
+export async function redeemJobToken(host: string, token: string, user_id: string) {
   const params = { token, user_id };
   const res = await Axios.get(`${host}/annotator/guest/jobtoken`, { params });
   return res.data;
@@ -30,7 +30,7 @@ class Backend {
   email: string;
   restricted_job: number;
 
-  constructor(host, token) {
+  constructor(host: string, token: string) {
     this.host = host;
     this.token = token;
     this.api = Axios.create({
@@ -62,15 +62,15 @@ class Backend {
     const res = await this.api.get("annotator/users");
     return res.data.users;
   }
-  async getCodebook(job_id) {
+  async getCodebook(job_id: number) {
     const res = await this.api.get(`annotator/codingjob/${job_id}/codebook`);
     return res.data;
   }
-  async getProgress(job_id) {
+  async getProgress(job_id: number) {
     const res = await this.api.get(`annotator/codingjob/${job_id}/progress`);
     return res.data;
   }
-  async getUnit(job_id, i) {
+  async getUnit(job_id: number, i: number) {
     let path = `annotator/codingjob/${job_id}/unit`;
     if (i !== null) path += `?index=${i}`;
     const res = await this.api.get(path);

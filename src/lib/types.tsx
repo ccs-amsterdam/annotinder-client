@@ -59,10 +59,21 @@ export interface SpanAnnotations {
 
 ///// CODEBOOK
 
+/** The codebook after the raw codebook has been processed  */
 export interface CodeBook {
-  type: "annotation" | "questions";
-  variables: Variable[];
-  questions: Question[];
+  type: "annotate" | "questions";
+  variables?: Variable[];
+  questions?: Question[];
+  settings?: {
+    no_table?: boolean;
+  };
+}
+
+/** The codebook in the JSON input format. */
+export interface RawCodeBook {
+  type: "annotate" | "questions";
+  variables?: any;
+  questions?: any;
   settings?: {
     no_table?: boolean;
   };
@@ -79,6 +90,7 @@ export interface Question {
   single_row?: boolean;
   same_size?: boolean;
   button?: string;
+  swipeOptions?: SwipeOptions;
 }
 
 export type QuestionType =
@@ -95,6 +107,7 @@ export interface QuestionItem {
   type?: QuestionItemType;
   min?: number;
   max?: number;
+  optional?: boolean;
 }
 
 export type QuestionItemType = "email" | "number" | "textarea" | "text";
@@ -120,15 +133,15 @@ export interface AnswerOption {
   /** the code string */
   code: string;
   /** If the codebook is hierarchical, an array of all the code parents */
-  tree: string[];
-  /** An array with names of questions (or all "REMAINING" question) that become irrelevant if this options is chosen */
-  makes_irrelevant: string[];
-  /** Like makes_irrelevant, but the questions become irrelevant if this option is NOT chosen */
-  required_for: string[];
   /** The color (e.g., for button display) */
   color: string;
   /** If the options are rendered as buttons, the ref enables navigation */
-  ref: RefObject<HTMLElement>;
+  tree?: string[];
+  /** An array with names of questions (or all "REMAINING" question) that become irrelevant if this options is chosen */
+  makes_irrelevant?: string[];
+  /** Like makes_irrelevant, but the questions become irrelevant if this option is NOT chosen */
+  required_for?: string[];
+  ref?: RefObject<HTMLElement>;
 }
 
 /** An object that maps an AnswerOption to left, right and up swipes */
@@ -137,6 +150,13 @@ export interface SwipeOptions {
   left: AnswerOption;
   right: AnswerOption;
   up: AnswerOption;
+}
+
+/** the refs to html elements used in swipeControl */
+export interface SwipeRefs {
+  text: RefObject<HTMLElement>;
+  box: RefObject<HTMLElement>;
+  code: RefObject<HTMLElement>;
 }
 
 /** Used in AnswerField to manage answers given in the sub components */
@@ -214,6 +234,24 @@ export type TokenSelection = [number, number] | [];
 
 ///// JOBSERVER
 
+export interface JobServer {
+  codebook: CodeBook;
+  progress: Progress;
+  return_link: string;
+  units?: BackendUnit[];
+  job_id?: number;
+  setJobServer?: SetState<JobServer>;
+
+  init: () => void;
+  getUnit: (i: number) => Promise<BackendUnit>;
+  postAnnotations: (
+    unitId: number,
+    unitIndex: number,
+    annotation: Annotation[],
+    status: Status
+  ) => void;
+}
+
 export interface Progress {
   n_total: number;
   n_coded: number;
@@ -235,6 +273,9 @@ export interface Unit {
   meta_fields?: MetaField[];
   image_fields?: ImageField[];
   markdown_field?: string;
+  settings?: {
+    text_window_size: number | string;
+  };
   importedAnnotations?: Annotation[];
   /** A unit can carry its own codebook. This will then be used instead of the codebook at the codingjob level */
   codebook?: CodeBook;
@@ -248,12 +289,13 @@ export interface RawUnit {
   image_fields?: ImageField[];
   markdown_field?: string;
   annotations?: Annotation[];
+  codebook?: RawCodeBook;
 }
 
-/** A unit as it can be served by the backend */
+/** A unit as it can be served by the backend. Basically a rawunit, but with index and status */
 export interface BackendUnit extends RawUnit {
-  index?: number;
-  status?: UnitStatus;
+  index: number;
+  status: UnitStatus;
   annotation?: Annotation[]; // backend calls the annotations array annotation. Should probably change this
 }
 

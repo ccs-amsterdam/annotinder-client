@@ -5,6 +5,7 @@ import Annotator from "../Annotator/Annotator";
 import Backend from "./classes/Backend";
 import JobServerAPI from "./classes/JobServerAPI";
 import { Grid, Header, Icon } from "semantic-ui-react";
+import { JobServer, SetState } from "../../types";
 
 const PORT = 8000;
 const TRY_EVERY = 1000;
@@ -47,7 +48,7 @@ export default function AnnotatorRClient() {
   return <Annotator jobServer={jobServer} />;
 }
 
-const login = async (setJobServer) => {
+const login = async (setJobServer: SetState<JobServer>) => {
   try {
     const backend = new Backend("http://localhost:" + PORT, null);
     await backend.init();

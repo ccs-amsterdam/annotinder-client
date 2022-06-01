@@ -73,7 +73,9 @@
   {
     "unit": {
       "unit_id": "3",
-      "text_window_size": "auto",
+      "settings": {
+        "text_window_size": "auto"
+      },
       "text_fields": [
         {
           "name": "title",

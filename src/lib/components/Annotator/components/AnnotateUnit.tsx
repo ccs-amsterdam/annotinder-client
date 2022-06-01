@@ -1,4 +1,3 @@
-import React from "react";
 import QuestionTask from "./QuestionTask";
 import AnnotateTask from "./AnnotateTask";
 
@@ -10,6 +9,7 @@ const AnnotateUnit = ({ unit, jobServer, unitIndex, setUnitIndex, fullScreenNode
   const codebook = unit?.codebook || jobServer?.codebook;
   if (!codebook || !unit) return null;
 
+  console.log(unit);
   if (!codebook?.type) return null;
 
   if (codebook.type === "questions")

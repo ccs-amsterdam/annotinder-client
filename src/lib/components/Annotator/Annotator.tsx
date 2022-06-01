@@ -5,6 +5,7 @@ import FullScreenWindow from "./components/FullScreenWindow";
 import "./annotatorStyle.css";
 import JobController from "./components/JobController";
 import { Unit } from "../../types";
+import { importCodebook } from "../../functions/codebook";
 
 /**
  * Render an annotator for the provided jobServer class
@@ -73,14 +74,18 @@ const getUnit = async (
     // NOTE THAT THIS RELIES ON REACT 18 FOR BATCHING STATE UPDATES
     if (unit.index && unitIndex !== unit.index) setUnitIndex(unit.index);
 
-    console.log(unit);
     setUnit({
       jobServer,
       unitIndex: unit.index || unitIndex, // unit can (should?) return an index to keep it fully controlled
       unitId: unit.id,
       annotations: unit.annotation,
       status: unit.status,
-      ...unit.unit,
+      text_fields: unit.unit.text_fields,
+      meta_fields: unit.unit.meta_fields,
+      image_fields: unit.unit.image_fields,
+      markdown_field: unit.unit.markdown_field,
+      settings: unit.unit.settings,
+      codebook: unit.unit.codebook ? importCodebook(unit.unit.codebook) : undefined,
     });
   } catch (e) {
     console.log(e);

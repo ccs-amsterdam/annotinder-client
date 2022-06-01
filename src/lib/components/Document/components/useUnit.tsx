@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getDocAndAnnotations } from "../functions/prepareUnit";
+import { getDocAndAnnotations } from "../functions/prepareDocumentContent";
 import {
   Doc,
   CodeHistory,
