@@ -1,20 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, CSSProperties } from "react";
 import { Button, Grid, Header, Icon } from "semantic-ui-react";
 import ReactMarkdown from "react-markdown";
 import { QRCodeCanvas } from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
+import Backend from "../../AnnotatorClient/classes/Backend";
+import { Debriefing, JobServer } from "../../../types";
 
-const Finished = ({ jobServer }) => {
-  const [debriefing, setDebriefing] = useState(null);
+interface FinishedProps {
+  jobServer: JobServer;
+}
+
+const Finished = ({ jobServer }: FinishedProps) => {
+  const [debriefing, setDebriefing] = useState<Debriefing>(null);
 
   useEffect(() => {
     if (!jobServer?.backend) return;
     jobServer.backend
       .getDebriefing(jobServer.job_id)
-      .then((data) => {
+      .then((data: Debriefing) => {
         setDebriefing(data);
       })
-      .catch((e) => {
+      .catch((e: Error) => {
         console.error(e);
       });
   }, [jobServer]);
@@ -72,7 +78,13 @@ const Finished = ({ jobServer }) => {
   );
 };
 
-const JobLink = ({ jobId, backend, style = {} }) => {
+interface JobLinkProps {
+  jobId: number;
+  backend: Backend;
+  style?: CSSProperties;
+}
+
+const JobLink = ({ jobId, backend, style = {} }: JobLinkProps) => {
   const [link, setLink] = useState(null);
 
   useEffect(() => {

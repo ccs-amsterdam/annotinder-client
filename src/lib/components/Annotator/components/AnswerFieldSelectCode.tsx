@@ -42,7 +42,7 @@ const SelectCode = React.memo(
     // render buttons for options (an array of objects with keys 'label' and 'color')
     // On selection perform onSelect function with the button label as input
     // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
-    const [selected, setSelected] = useState(null);
+    const [selected, setSelected] = useState<number>(null);
     const container = useRef<HTMLDivElement>();
     const finishbutton = useRef<HTMLElement>();
 

@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, ReactElement } from "react";
 import { Header, Button, Segment, Icon } from "semantic-ui-react";
+import { Question, Unit, Answer, AnswerItem, SetState, Annotation, Token } from "../../../types";
 import { getMakesIrrelevantArray } from "../functions/irrelevantBranching";
 import {
   addAnnotationsFromAnswer,
@@ -9,6 +10,18 @@ import AnswerField from "./AnswerField";
 
 const ANSWERFIELD_BACKGROUND = "#1B1C1D";
 const ANSWERFIELD_COLOR = "white";
+
+interface QuestionFormProps {
+  children: ReactElement;
+  unit: Unit;
+  tokens: Token[];
+  questions: Question[];
+  questionIndex: number;
+  setQuestionIndex: SetState<number>;
+  setUnitIndex: SetState<number>;
+  swipe: string;
+  blockEvents: boolean;
+}
 
 const QuestionForm = ({
   children,
@@ -20,7 +33,7 @@ const QuestionForm = ({
   setUnitIndex,
   swipe,
   blockEvents,
-}) => {
+}: QuestionFormProps) => {
   const blockAnswer = useRef(false); // to prevent answering double (e.g. with swipe events)
   const [answers, setAnswers] = useState(null);
   const [questionText, setQuestionText] = useState(<div />);
@@ -43,16 +56,16 @@ const QuestionForm = ({
     return null;
   }
 
-  const onAnswer = (itemValues, onlySave = false, minDelay = 0) => {
+  const onAnswer = (items: AnswerItem[], onlySave = false, minDelay = 0): void => {
     // posts results and skips to next question, or next unit if no questions left.
     // If onlySave is true, only write to db without going to next question
     if (blockAnswer.current) return null;
     blockAnswer.current = true;
 
     try {
-      answers[questionIndex].values = itemValues;
+      answers[questionIndex].values = items;
       answers[questionIndex].makes_irrelevant = getMakesIrrelevantArray(
-        itemValues,
+        items,
         questions[questionIndex].options
       );
 
@@ -66,7 +79,7 @@ const QuestionForm = ({
       );
 
       // next (non-irrelevant) question in unit (null if no remaining)
-      let newQuestionIndex = null;
+      let newQuestionIndex: number = null;
       for (let i = questionIndex + 1; i < questions.length; i++) {
         if (irrelevantQuestions[i]) continue;
         newQuestionIndex = i;
@@ -74,9 +87,9 @@ const QuestionForm = ({
       }
 
       const status = newQuestionIndex === null ? "DONE" : "IN_PROGRESS";
-      const cleanAnnotations = unit.annotations.map((u) => {
-        const { field, offset, length, variable, value, meta, makes_irrelevant } = u;
-        return { field, offset, length, variable, value, meta, makes_irrelevant };
+      const cleanAnnotations = unit.annotations.map((a: Annotation) => {
+        const { field, offset, length, variable, value } = a;
+        return { field, offset, length, variable, value };
       });
 
       if (onlySave) {
@@ -100,10 +113,10 @@ const QuestionForm = ({
         const start = new Date();
         unit.jobServer
           .postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status)
-          .then((res) => {
+          .then((res: any) => {
             const delay = new Date().getTime() - start.getTime();
             const extradelay = Math.max(0, minDelay - delay);
-            setTimeout(() => setUnitIndex((state) => state + 1), extradelay);
+            setTimeout(() => setUnitIndex((state: number) => state + 1), extradelay);
           });
       }
     } catch (e) {
@@ -113,9 +126,12 @@ const QuestionForm = ({
     }
   };
 
-  const done = !questions.some(
-    (q, i) => answers[i].values.filter((v) => !!v.value).length !== answers[i].values.length
-  );
+  let done = true;
+  for (let a of answers) {
+    for (let v of a.values) {
+      if (v.values.length === 0) done = false;
+    }
+  }
 
   return (
     <div
@@ -214,17 +230,21 @@ const QuestionForm = ({
   );
 };
 
-const processIrrelevantBranching = (unit, questions, answers, questionIndex) => {
+const processIrrelevantBranching = (
+  unit: any,
+  questions: Question[],
+  answers: Answer[],
+  questionIndex: number
+) => {
   // checks all the branching in the given answers
   const which = new Set();
-  for (let a in Object.keys(unit.annotations)) {
-    const makesIrrelevant = unit.annotations[a].makes_irrelevant;
-    if (makesIrrelevant == null) continue;
-    for (let value of makesIrrelevant) {
+  for (let a of answers) {
+    if (a.makes_irrelevant == null) continue;
+    for (let value of a.makes_irrelevant) {
       if (value === "REMAINING") {
         for (let i = questionIndex + 1; i < questions.length; i++) which.add(i);
       }
-      const i = questions.findIndex((q) => q.name === value);
+      const i = questions.findIndex((q: Question) => q.name === value);
       if (i >= 0) which.add(i);
     }
   }
@@ -249,12 +269,24 @@ const processIrrelevantBranching = (unit, questions, answers, questionIndex) => 
   return irrelevantQuestions;
 };
 
-const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex }) => {
+interface QuestionIndexStepProps {
+  questions: Question[];
+  questionIndex: number;
+  answers: Answer[];
+  setQuestionIndex: SetState<number>;
+}
+
+const QuestionIndexStep = ({
+  questions,
+  questionIndex,
+  answers,
+  setQuestionIndex,
+}: QuestionIndexStepProps) => {
   //if (questions.length === 1) return null;
   const [canSelect, setCanSelect] = useState([]);
 
   useEffect(() => {
-    const cs = answers.map((a) => {
+    const cs = answers.map((a: Answer) => {
       return (
         a.values[0].values != null &&
         a.values[0].values.length !== 0 &&
@@ -274,9 +306,11 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
     });
   }, [questionIndex, setCanSelect]);
 
-  const getColor = (i) => {
+  const getColor = (i: number) => {
     if (!answers[i]) return "grey";
-    const done = !answers[i].values.some((v) => v.values == null || v.values.length === 0);
+    const done = !answers[i].values.some(
+      (v: AnswerItem) => v.values == null || v.values.length === 0
+    );
     const irrelevant = answers[i].values[0].values?.[0] === "IRRELEVANT";
     const selected = questionIndex === i;
 
@@ -293,7 +327,7 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
 
   return (
     <>
-      {questions.map((q, i) => {
+      {questions.map((q: Question, i: number) => {
         if (hide) return null;
         return (
           <Button
@@ -321,12 +355,12 @@ const QuestionIndexStep = ({ questions, questionIndex, answers, setQuestionIndex
   );
 };
 
-const prepareQuestion = (unit, question, answers) => {
+const prepareQuestion = (unit: Unit, question: Question, answers: Answer[]) => {
   if (!question?.question) return <div />;
   let preparedQuestion = question.question;
 
   const regex = /{(.*?)}/g;
-  const matches = [...preparedQuestion.matchAll(regex)];
+  const matches = [...Array.from(preparedQuestion.matchAll(regex))];
   for (let m of matches) {
     const answer = answers.find((a) => a.variable === m["1"]);
     if (answer) {
@@ -348,13 +382,13 @@ const prepareQuestion = (unit, question, answers) => {
   return markedString(preparedQuestion);
 };
 
-const markedString = (text) => {
+const markedString = (text: string) => {
   const regex = new RegExp(/{(.*?)}/); // Match text inside two square brackets
 
   text = text.replace(/(\r\n|\n|\r)/gm, "");
   return (
     <div>
-      {text.split(regex).reduce((prev, current, i) => {
+      {text.split(regex).reduce((prev: (string | ReactElement)[], current: string, i: number) => {
         if (i % 2 === 0) {
           prev.push(current);
         } else {

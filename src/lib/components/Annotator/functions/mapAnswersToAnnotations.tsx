@@ -22,7 +22,7 @@ export const getAnswersFromAnnotations = (
   unit: Unit,
   tokens: Token[],
   questions: Question[],
-  setAnswers: SetState<AnswerItem[]>
+  setAnswers: SetState<Answer[]>
 ) => {
   const answers = [];
   if (!unit.annotations) unit.annotations = [];
@@ -38,10 +38,10 @@ const createAnswer = (tokens: Token[], question: Question): Answer => {
   // creates an object with the variable, field, offset and length of the annotation
   // that corresponds to this answer.
 
-  let answer = { variable: question.name, values: null };
+  let answer: Answer = { variable: question.name, values: null };
   if (tokens.length === 0) return answer;
 
-  const fields = {};
+  const fields: any = {};
   const lastToken = tokens[tokens.length - 1];
 
   const charspan = [0, lastToken.offset + lastToken.length];
@@ -72,13 +72,20 @@ const createAnswer = (tokens: Token[], question: Question): Answer => {
   };
 };
 
-const getAnswerValues = (annotations: Annotation[], answer: Answer, question): AnswerItem[] => {
+const getAnswerValues = (
+  annotations: Annotation[],
+  answer: Answer,
+  question: Question
+): AnswerItem[] => {
   // loops over all annotations (in unit) to find the ones that match the question annotation
   // (i.e. that have the same variable, field, offset and length)
   // return an array of objects {item, values} that should match question.items (also see AnswerField.js)
-  // if question doesn't have items, will be an array of length 1 where item is null
 
-  question.items = question.items || [""];
+  // if question doesn't have items, use an array of length one with an empty string.
+  // this keeps things consistent. note that if name is empty, the answer will be mapped to
+  // an annotation with just the variable. i.e. not [variable].[name]
+  question.items = question.items || [{ name: "" }];
+
   return question.items.map((item: QuestionItem) => {
     const itemname = typeof item === "string" ? item : item?.name; // item can be a string or {name, label}
     const values = [];

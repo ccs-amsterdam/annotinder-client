@@ -1,12 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { Icon, Label, Segment } from "semantic-ui-react";
+import { SetState } from "../../../types";
 
 const sliderColor = "#d3dfe9";
 const progressColor = "#7fb9eb";
 const iconStyle = { cursor: "pointer" };
 const iconStyleHidden = { color: "white" };
 
-const IndexController = ({ n, nCoded, index, setIndex, canGoForward = true, canGoBack = true }) => {
+interface IndexControllerProps {
+  n: number;
+  nCoded: number;
+  index: number;
+  setIndex: SetState<number>;
+  canGoForward: boolean;
+  canGoBack: boolean;
+}
+
+const IndexController = ({
+  n,
+  nCoded,
+  index,
+  setIndex,
+  canGoForward = true,
+  canGoBack = true,
+}: IndexControllerProps) => {
   const [activePage, setActivePage] = useState(1);
   const [delayedActivePage, setDelayedActivePage] = useState(1);
 

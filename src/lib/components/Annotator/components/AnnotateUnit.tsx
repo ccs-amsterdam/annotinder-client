@@ -9,9 +9,6 @@ const AnnotateUnit = ({ unit, jobServer, unitIndex, setUnitIndex, fullScreenNode
   const codebook = unit?.codebook || jobServer?.codebook;
   if (!codebook || !unit) return null;
 
-  console.log(unit);
-  if (!codebook?.type) return null;
-
   if (codebook.type === "questions")
     return (
       <QuestionTask

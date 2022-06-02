@@ -29,7 +29,7 @@ export function importCodebook(codebook: RawCodeBook): CodeBook {
     };
 }
 
-const importVariables = (variables: any): Variable[] => {
+const importVariables = (variables: Variable[]): Variable[] => {
   // checks and preparation of variables
   return variables.map((variable) => {
     return {
@@ -39,7 +39,7 @@ const importVariables = (variables: any): Variable[] => {
   });
 };
 
-const importQuestions = (questions: any): Question[] => {
+const importQuestions = (questions: Question[]): Question[] => {
   // checks and preparation of questions
   return questions.map((question) => {
     const fillMissingColor = !["scale"].includes(question.type);

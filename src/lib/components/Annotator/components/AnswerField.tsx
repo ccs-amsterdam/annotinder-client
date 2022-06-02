@@ -99,7 +99,6 @@ const AnswerField = ({
   };
 
   if (!itemValues) return null;
-  console.log(itemValues);
   // use these props:
   // values         array of values
   // itemValues     object with items as keys and values array as value

@@ -83,6 +83,7 @@
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.2",
     "@types/semantic-ui": "^2.2.7",
+    "@types/styled-components": "^5.1.25",
     "babel-jest": "^28.0.2",
     "gh-pages": "^3.1.0",
     "jest": "^28.0.2",

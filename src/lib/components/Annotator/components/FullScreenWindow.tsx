@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import React, { useState, useEffect, ReactElement } from "react";
+import { FullScreen, FullScreenHandle, useFullScreenHandle } from "react-full-screen";
 import { Modal, Button } from "semantic-ui-react";
+import { FullScreenNode } from "../../../types";
 
-export const FullScreenWindow = ({ children, askFullScreen }) => {
+interface FullSceenWindowProps {
+  children: (fullSceenNode: FullScreenNode, fullSceenButton: ReactElement) => ReactElement;
+  askFullScreen: boolean;
+}
+
+export const FullScreenWindow = ({ children, askFullScreen }: FullSceenWindowProps) => {
   const fsHandle = useFullScreenHandle();
   const fullScreenButton = <FullScreenButton handle={fsHandle} />;
 
@@ -24,7 +30,11 @@ export const FullScreenWindow = ({ children, askFullScreen }) => {
   );
 };
 
-const DOMNodeProvider = ({ children }) => {
+interface DOMNodeProviderProps {
+  children: (fullScreenNode: FullScreenNode) => ReactElement;
+}
+
+const DOMNodeProvider = ({ children }: DOMNodeProviderProps) => {
   // due to a bug in react-full-screen, pass on a 'fullScreenNode', which tells the popup
   // where to mount.
   // https://github.com/Semantic-Org/Semantic-UI-React/issues/4191
@@ -37,7 +47,12 @@ const DOMNodeProvider = ({ children }) => {
   );
 };
 
-const AskFullScreenModal = ({ handle, askFullScreenSetting }) => {
+interface AskFullScreenModalProps {
+  handle: FullScreenHandle;
+  askFullScreenSetting: boolean;
+}
+
+const AskFullScreenModal = ({ handle, askFullScreenSetting }: AskFullScreenModalProps) => {
   let [askFullscreen, setAskFullscreen] = useState(false);
 
   useEffect(() => {
@@ -85,7 +100,11 @@ const AskFullScreenModal = ({ handle, askFullScreenSetting }) => {
   );
 };
 
-const FullScreenButton = ({ handle }) => {
+interface FullScreenButtonProps {
+  handle: FullScreenHandle;
+}
+
+const FullScreenButton = ({ handle }: FullScreenButtonProps) => {
   return (
     <Button
       basic

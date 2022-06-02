@@ -28,7 +28,7 @@ const SearchCode = React.memo(
     }, [onSelect]);
 
     useEffect(() => {
-      const onKeydown = (e) => {
+      const onKeydown = (e: KeyboardEvent) => {
         if (e.keyCode === 9) {
           // tab key
           e.preventDefault();

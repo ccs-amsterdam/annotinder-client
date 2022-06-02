@@ -249,49 +249,69 @@ const Items = ({ itemValues, selectedItem, items, options, selectedButton, onSel
   );
 };
 
-const Item = ({ itemValues, selectedItem, itemIndex, options, selectedButton, onSelect }) => {
+interface ItemProps {
+  itemValues: AnswerItem[];
+  selectedItem: number;
+  itemIndex: number;
+  options: AnswerOption[];
+  selectedButton: number;
+  onSelect: (params: OnSelectParams) => void;
+}
+
+const Item = ({
+  itemValues,
+  selectedItem,
+  itemIndex,
+  options,
+  selectedButton,
+  onSelect,
+}: ItemProps) => {
   const colorstep = 200 / options.length;
-  return options.map((option, buttonIndex) => {
-    let bordercolor = "#ece9e9";
-    const isCurrent = options[buttonIndex].code === itemValues?.[itemIndex]?.values[0];
-    const isSelected = buttonIndex === selectedButton && itemIndex === selectedItem;
-    if (isCurrent) bordercolor = "#2185d0";
-    if (isSelected) bordercolor = "#1B1C1D";
+  return (
+    <>
+      {options.map((option, buttonIndex: number) => {
+        let bordercolor = "#ece9e9";
+        const isCurrent = options[buttonIndex].code === itemValues?.[itemIndex]?.values[0];
+        const isSelected = buttonIndex === selectedButton && itemIndex === selectedItem;
+        if (isCurrent) bordercolor = "#2185d0";
+        if (isSelected) bordercolor = "#1B1C1D";
 
-    const colorint = 255 - buttonIndex * colorstep;
-    const bgcolor = `rgb(${colorint},${colorint},${colorint})`;
-    const color = colorint < 100 ? "white" : "black";
+        const colorint = 255 - buttonIndex * colorstep;
+        const bgcolor = `rgb(${colorint},${colorint},${colorint})`;
+        const color = colorint < 100 ? "white" : "black";
 
-    return (
-      <div key={option.code} style={{ margin: "auto", flex: "1 1 0px" }}>
-        <Ref key={option.code} innerRef={option.ref}>
-          <Button
-            fluid
-            primary
-            className="ripplebutton"
-            style={{
-              padding: "5px 0",
-              backgroundColor: isCurrent ? null : option.color || bgcolor,
-              fontWeight: "bold",
-              fontSize: "1em",
-              textShadow: "0px 0px 5px #ffffff77",
-              borderRadius: "10px",
-              color: isCurrent ? null : option.color ? "#1B1C1D" : color,
-              border: `3px solid ${bordercolor}`,
-            }}
-            key={option.code}
-            value={option.code}
-            compact
-            onClick={(e, d) => {
-              onSelect({ value: options[buttonIndex].code, itemIndex });
-            }}
-          >
-            {buttonIndex + 1}
-          </Button>
-        </Ref>
-      </div>
-    );
-  });
+        return (
+          <div key={option.code} style={{ margin: "auto", flex: "1 1 0px" }}>
+            <Ref key={option.code} innerRef={option.ref}>
+              <Button
+                fluid
+                primary
+                className="ripplebutton"
+                style={{
+                  padding: "5px 0",
+                  backgroundColor: isCurrent ? null : option.color || bgcolor,
+                  fontWeight: "bold",
+                  fontSize: "1em",
+                  textShadow: "0px 0px 5px #ffffff77",
+                  borderRadius: "10px",
+                  color: isCurrent ? null : option.color ? "#1B1C1D" : color,
+                  border: `3px solid ${bordercolor}`,
+                }}
+                key={option.code}
+                value={option.code}
+                compact
+                onClick={(e, d) => {
+                  onSelect({ value: options[buttonIndex].code, itemIndex });
+                }}
+              >
+                {buttonIndex + 1}
+              </Button>
+            </Ref>
+          </div>
+        );
+      })}
+    </>
+  );
 };
 
 export default Scale;

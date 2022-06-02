@@ -1,4 +1,6 @@
-export const addRequiredFor = (cta) => {
+import { AnswerOption, AnswerItem, CodeTree } from "../../../types";
+
+export const addRequiredFor = (cta: CodeTree[]) => {
   // if codebook has a required_for question, check if this code has it. If not, it's the same as this code having
   // a makes_irrelevant for this question. This way we only need to process the makes_irrelevant logic (which is easier)
   const haveRequired = cta.reduce((s, code) => {
@@ -9,10 +11,10 @@ export const addRequiredFor = (cta) => {
       for (let rf of code.required_for) s.add(rf);
     }
     return s;
-  }, new Set());
+  }, new Set<string>());
 
   for (let code of cta) {
-    for (let hasReq of haveRequired) {
+    for (let hasReq of Array.from(haveRequired)) {
       if (
         !code.required_for ||
         (code.required_for !== hasReq && !code.required_for.includes(hasReq))
@@ -25,15 +27,15 @@ export const addRequiredFor = (cta) => {
   return cta;
 };
 
-export const getMakesIrrelevantArray = (itemValues, options) => {
+export const getMakesIrrelevantArray = (items: AnswerItem[], options: AnswerOption[]): string[] => {
   // given the selected values, determine the array of questions to make irrelevant
   // based on the makes_irrelevant and requred_for array of codes.
   // returns an array of questions that should be marked as irrelevant
   if (!options || options.length === 0) return [];
 
-  const makes_irrelevant = {};
-  const required_for = {}; // (note that earlier AddRequiredFor must have been used)
-  const question_has_required_for = {};
+  const makes_irrelevant: { [code: string]: { [question: string]: boolean } } = {};
+  const required_for: { [code: string]: { [question: string]: boolean } } = {}; // (note that earlier AddRequiredFor must have been used)
+  const question_has_required_for: { [question: string]: boolean } = {};
 
   for (let option of options || []) {
     //if (!valueMap[option.code]) continue;
@@ -48,8 +50,8 @@ export const getMakesIrrelevantArray = (itemValues, options) => {
     }
   }
 
-  const answer_makes_irrelevant = {}; // reduce both required for and makes irrelevant
-  for (let item of itemValues) {
+  const answer_makes_irrelevant: { [question: string]: boolean } = {}; // reduce both required for and makes irrelevant
+  for (let item of items) {
     for (let value of item.values) {
       if (makes_irrelevant[value])
         for (let mi of Object.keys(makes_irrelevant[value])) answer_makes_irrelevant[mi] = true;

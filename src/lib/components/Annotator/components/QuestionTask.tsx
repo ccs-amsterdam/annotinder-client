@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, RefObject } from "react";
 import QuestionForm from "./QuestionForm";
 import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
@@ -35,17 +35,21 @@ const SwipeCode = styled.div`
   position: absolute;
 `;
 
-const Text = styled.div`
+const Text = styled.div<{ fontSize: number }>`
   height: 100%;
   width: 100%;
   position: absolute;
   top: 0;
   background-color: white;
-  font-size: ${(props) => props.fontsize}em;
+  font-size: ${(props) => props.fontSize}em;
   box-shadow: 5px 5px 20px 5px;
 `;
 
-const QuestionMenu = styled.div`
+const QuestionMenu = styled.div<{
+  minifiedAnswerForm: boolean;
+  formHeight: string;
+  fontSize: number;
+}>`
   height: ${(props) => (props.minifiedAnswerForm ? null : props.formHeight)};
   min-height: ${(props) => (props.minifiedAnswerForm ? null : "200px")};
   font-size: ${(props) => props.fontSize}em;
@@ -121,7 +125,7 @@ const QuestionTask = ({
         <SwipeableBox ref={refs.box}>
           {/* This div moves around behind the div containing the document to show the swipe code  */}
           <SwipeCode ref={refs.code} />
-          <Text ref={refs.text} fontsize={settings.upperTextSize}>
+          <Text ref={refs.text} fontSize={settings.upperTextSize}>
             <Document
               unit={unit}
               setReady={setTextReady}
@@ -159,7 +163,19 @@ const QuestionTask = ({
   );
 };
 
-const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitHeight }) => {
+interface SettingsPopupProps {
+  settings: { [key: string]: number | string };
+  setSettings: SetState<{ [key: string]: number | string }>;
+  fullScreenNode: FullScreenNode;
+  cantChangeSplitHeight: boolean;
+}
+
+const SettingsPopup = ({
+  settings,
+  setSettings,
+  fullScreenNode,
+  cantChangeSplitHeight,
+}: SettingsPopupProps) => {
   return (
     <Portal
       mountNode={fullScreenNode || undefined}
@@ -204,7 +220,9 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitH
                   max={80}
                   type="range"
                   value={settings.splitHeight}
-                  onChange={(e, d) => setSettings((state) => ({ ...state, splitHeight: d.value }))}
+                  onChange={(e, d) =>
+                    setSettings((state: any) => ({ ...state, splitHeight: d.value }))
+                  }
                 />
               </Form.Field>
             )}
@@ -220,7 +238,9 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitH
                 max={1.6}
                 type="range"
                 value={settings.upperTextSize}
-                onChange={(e, d) => setSettings((state) => ({ ...state, upperTextSize: d.value }))}
+                onChange={(e, d) =>
+                  setSettings((state: any) => ({ ...state, upperTextSize: d.value }))
+                }
               />
             </Form.Field>
             <Form.Field>
@@ -235,7 +255,9 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitH
                 max={1.6}
                 type="range"
                 value={settings.lowerTextSize}
-                onChange={(e, d) => setSettings((state) => ({ ...state, lowerTextSize: d.value }))}
+                onChange={(e, d) =>
+                  setSettings((state: any) => ({ ...state, lowerTextSize: d.value }))
+                }
               />
             </Form.Field>
           </Form.Group>
@@ -245,19 +267,19 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode, cantChangeSplitH
   );
 };
 
-const resetStyle = (text, box) => {
+const resetStyle = (text: RefObject<HTMLElement>, box: RefObject<HTMLElement>): void => {
   if (!text.current) return null;
   box.current.style.backgroundColor = "white";
   text.current.style.transition = ``;
   box.current.style.transition = ``;
-  box.current.style.opacity = 0;
+  box.current.style.opacity = "0";
   text.current.style.transform = "translateX(0%) translateY(0%)";
 };
 
-const fadeIn = (text, box) => {
+const fadeIn = (text: RefObject<HTMLElement>, box: RefObject<HTMLElement>): void => {
   if (!text.current) return null;
   box.current.style.transition = `opacity 200ms ease-out`;
-  box.current.style.opacity = 1;
+  box.current.style.opacity = "1";
 };
 
 export default React.memo(QuestionTask);

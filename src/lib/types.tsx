@@ -91,6 +91,7 @@ export interface Question {
   same_size?: boolean;
   button?: string;
   swipeOptions?: SwipeOptions;
+  options?: AnswerOption[];
 }
 
 export type QuestionType =
@@ -119,6 +120,7 @@ export interface Answer {
   length?: number;
   field?: string;
   offset?: number;
+  makes_irrelevant?: string[];
 }
 
 export interface AnswerItem {
@@ -241,6 +243,7 @@ export interface JobServer {
   units?: BackendUnit[];
   job_id?: number;
   setJobServer?: SetState<JobServer>;
+  backend?: Backend;
 
   init: () => void;
   getUnit: (i: number) => Promise<BackendUnit>;
@@ -279,6 +282,7 @@ export interface Unit {
   importedAnnotations?: Annotation[];
   /** A unit can carry its own codebook. This will then be used instead of the codebook at the codingjob level */
   codebook?: CodeBook;
+  variables?: UnitVariables;
 }
 
 /** A unit in the raw JSON structure. This is also the same structure in which it should be uploaded to the backend  */
@@ -290,6 +294,14 @@ export interface RawUnit {
   markdown_field?: string;
   annotations?: Annotation[];
   codebook?: RawCodeBook;
+  variables?: UnitVariables;
+}
+
+/** Units can have an object of variables, where keys are the variable names and values are pieces of text.
+ *  These can be used in questions like: "is this text about [variable]"?.
+ */
+export interface UnitVariables {
+  [key: string]: string;
 }
 
 /** A unit as it can be served by the backend. Basically a rawunit, but with index and status */
@@ -530,4 +542,18 @@ export interface JobAnnotation {
   coder: string;
   annotation: Annotation[];
   status: Status;
+}
+
+///// OTHER
+
+export interface Debriefing {
+  message?: string;
+  link?: string;
+  link_text?: string;
+  /** The link can contain {user_id}, which will be replaced by the user_id from the backend
+   *  This is mainly usefull for redirecting coders to a panel company, which can need their ID to pay them
+   */
+  user_id?: string;
+  /** If True, show QR code for sharing the job with other people */
+  qr?: boolean;
 }

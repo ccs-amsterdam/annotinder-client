@@ -1,10 +1,20 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { Popup, Button } from "semantic-ui-react";
 
 import { useNavigate } from "react-router-dom";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import IndexController from "./IndexController";
 import Finished from "./Finished";
+import { FullScreenNode, JobServer, SetState } from "../../../types";
+
+interface JobControllerProps {
+  children: ReactElement;
+  jobServer: JobServer;
+  fullScreenButton: ReactElement;
+  fullScreenNode: FullScreenNode;
+  unitIndex: number;
+  setUnitIndex: SetState<number>;
+}
 
 /**
  * Render an annotator for the provided jobServer class
@@ -18,7 +28,7 @@ const JobController = ({
   fullScreenNode,
   unitIndex,
   setUnitIndex,
-}) => {
+}: JobControllerProps) => {
   const [maxHeight, maxWidth] = getWindowSize(jobServer);
 
   return (
@@ -74,7 +84,12 @@ const JobController = ({
   );
 };
 
-const UserButton = ({ fullScreenNode, jobServer }) => {
+interface UserButtonProps {
+  fullScreenNode: FullScreenNode;
+  jobServer: JobServer;
+}
+
+const UserButton = ({ fullScreenNode, jobServer }: UserButtonProps) => {
   const [auth, setAuth] = useLocalStorage("auth", {});
   const loggedIn = auth?.host && auth?.[auth?.host + "__token__"];
 
@@ -114,7 +129,11 @@ const UserButton = ({ fullScreenNode, jobServer }) => {
   );
 };
 
-const BackToOverview = ({ jobServer }) => {
+interface BackToOverviewProps {
+  jobServer: JobServer;
+}
+
+const BackToOverview = ({ jobServer }: BackToOverviewProps) => {
   const navigate = useNavigate();
   if (!jobServer?.return_link) return null;
   return (
@@ -127,7 +146,7 @@ const BackToOverview = ({ jobServer }) => {
   );
 };
 
-const getWindowSize = (jobServer) => {
+const getWindowSize = (jobServer: JobServer) => {
   switch (jobServer?.codebook?.type) {
     case "questions":
       return ["1200px", "1000px"];
