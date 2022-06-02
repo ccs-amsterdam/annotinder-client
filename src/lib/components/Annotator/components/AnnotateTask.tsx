@@ -4,7 +4,7 @@ import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import AnnotateTaskManual from "./AnnotateTaskManual";
-import { Annotation, Unit, VariableMap } from "../../../types";
+import { Annotation, FullScreenNode, Unit, VariableMap, SetState, CodeBook } from "../../../types";
 
 const NEXTDELAY = 500;
 const BODYSTYLE = {
@@ -12,7 +12,21 @@ const BODYSTYLE = {
   paddingBottom: "10px",
 };
 
-const AnnotateTask = ({ unit, codebook, setUnitIndex, fullScreenNode, blockEvents = false }) => {
+interface AnnotateTaskProps {
+  unit: Unit;
+  codebook: CodeBook;
+  setUnitIndex: SetState<number>;
+  fullScreenNode: FullScreenNode;
+  blockEvents?: boolean;
+}
+
+const AnnotateTask = ({
+  unit,
+  codebook,
+  setUnitIndex,
+  fullScreenNode,
+  blockEvents = false,
+}: AnnotateTaskProps) => {
   const [annotations, onChangeAnnotations] = useAnnotations(unit);
   const [variableMap, setVariableMap] = useState<VariableMap>(null);
   const [settings, setSettings] = useLocalStorage("annotateTaskSettings", { textSize: 1 });
@@ -115,18 +129,19 @@ const useAnnotations = (unit: Unit): [Annotation[], (value: Annotation[]) => voi
   return [annotations, onChangeAnnotations];
 };
 
-const annotationsHaveChanged = (old, current) => {
+const annotationsHaveChanged = (old: Annotation[], current: Annotation[]) => {
   if (old.length !== current.length) return true;
   const compareOn = ["variable", "value", "field", "offset", "length"];
   for (let i = 0; i < old.length; i++) {
     for (let field of compareOn) {
-      if (old[i]?.[field] !== current[i]?.[field]) return true;
+      if (old[i]?.[field as keyof Annotation] !== current[i]?.[field as keyof Annotation])
+        return true;
     }
   }
   return false;
 };
 
-const getCleanAnnotations = (annotations) => {
+const getCleanAnnotations = (annotations: Annotation[]) => {
   return annotations.map((na) => {
     return {
       variable: na.variable,
@@ -139,7 +154,13 @@ const getCleanAnnotations = (annotations) => {
   });
 };
 
-const NextUnitButton = ({ unit, annotations, setUnitIndex }) => {
+interface NextUnitButtonProps {
+  unit: Unit;
+  annotations: Annotation[];
+  setUnitIndex: SetState<number>;
+}
+
+const NextUnitButton = ({ unit, annotations, setUnitIndex }: NextUnitButtonProps) => {
   const [tempDisable, setTempDisable] = useState("ready");
 
   const onNext = () => {
@@ -149,22 +170,22 @@ const NextUnitButton = ({ unit, annotations, setUnitIndex }) => {
     setTempDisable("loading");
     unit.jobServer
       .postAnnotations(unit.unitId, unit.unitIndex, getCleanAnnotations(annotations), "DONE")
-      .then((res) => {
+      .then((res: any) => {
         // wait until post succeeds before moving to next unit, because backend
         // needs to know this unit is done.
-        setUnitIndex((state) => state + 1);
+        setUnitIndex((state: number) => state + 1);
         setTempDisable("cooldown");
         setTimeout(() => {
           setTempDisable("ready");
         }, NEXTDELAY);
       })
-      .catch((e) => {
+      .catch((e: Error) => {
         console.error(e);
         setTempDisable("ready");
       });
   };
 
-  const onKeyDown = (e) => {
+  const onKeyDown = (e: KeyboardEvent) => {
     if ((e.ctrlKey || e.altKey) && e.keyCode === 13) {
       e.preventDefault();
       onNext();
@@ -193,7 +214,13 @@ const NextUnitButton = ({ unit, annotations, setUnitIndex }) => {
   );
 };
 
-const SettingsPopup = ({ settings, setSettings, fullScreenNode }) => {
+interface SettingsPopupProps {
+  settings: Record<string, string | number>;
+  setSettings: SetState<Record<string, string | number>>;
+  fullScreenNode: FullScreenNode;
+}
+
+const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupProps) => {
   return (
     <Popup
       on="click"
@@ -224,7 +251,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }) => {
               max={1.6}
               type="range"
               value={settings.textSize}
-              onChange={(e, d) => setSettings((state) => ({ ...state, textSize: d.value }))}
+              onChange={(e, d) => setSettings((state: any) => ({ ...state, textSize: d.value }))}
             />
           </Form.Field>
         </Form.Group>

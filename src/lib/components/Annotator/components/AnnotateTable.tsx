@@ -1,9 +1,16 @@
 import { SemanticWIDTHS, Table } from "semantic-ui-react";
 import { getColor } from "../../../functions/tokenDesign";
+import { Annotation, VariableMap, Span, Token } from "../../../types";
 
 const COLWIDTHS = [4, 4, 2, 2]; // for offset and text
 
-const AnnotateTable = ({ tokens, variableMap, annotations }) => {
+interface AnnotateTableProps {
+  tokens: Token[];
+  variableMap: VariableMap;
+  annotations: Annotation[];
+}
+
+const AnnotateTable = ({ tokens, variableMap, annotations }: AnnotateTableProps) => {
   if (!variableMap || Object.keys(variableMap).length === 0) return null;
 
   return (
@@ -62,11 +69,11 @@ const AnnotateTable = ({ tokens, variableMap, annotations }) => {
   );
 };
 
-const annotationRows = (tokens, variableMap, annotations) => {
+const annotationRows = (tokens: Token[], variableMap: VariableMap, annotations: Annotation[]) => {
   const rows = [];
   let i = 0;
 
-  const onClick = (span) => {
+  const onClick = (span: Span) => {
     if (!span) return;
     const token = tokens?.[span[0]];
     if (token?.select) token.select(span);
@@ -91,7 +98,21 @@ const annotationRows = (tokens, variableMap, annotations) => {
   return rows;
 };
 
-const AnnotationRow = ({ variable, variableMap, annotation, onClick, text }) => {
+interface AnnotationRowProps {
+  variable: string;
+  variableMap: VariableMap;
+  annotation: Annotation;
+  onClick: (span: Span) => void;
+  text: string;
+}
+
+const AnnotationRow = ({
+  variable,
+  variableMap,
+  annotation,
+  onClick,
+  text,
+}: AnnotationRowProps) => {
   if (!variableMap?.[annotation.variable]?.codeMap) return null;
 
   const codeMap = variableMap[variable].codeMap;
@@ -118,7 +139,7 @@ const AnnotationRow = ({ variable, variableMap, annotation, onClick, text }) => 
         width={COLWIDTHS[1] as SemanticWIDTHS}
         style={color ? { background: color } : null}
       >
-        <span title={label}>{label}</span>
+        <span title={String(label)}>{label}</span>
       </Table.Cell>
       <Table.Cell title={annotation.field} width={COLWIDTHS[2] as SemanticWIDTHS}>
         {annotation.field}

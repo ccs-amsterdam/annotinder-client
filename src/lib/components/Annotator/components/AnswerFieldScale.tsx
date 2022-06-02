@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, createRef } from "react";
 import { Button, Ref, Icon, Label } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
-import { OnSelectParams, AnswerOption, AnswerItem } from "../../../types";
+import { OnSelectParams, AnswerOption, AnswerItem, QuestionItem } from "../../../types";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
 interface ScaleProps {
   /** The item array of the current question. Contains al settings for items */
-  items: any[];
+  items: QuestionItem[];
   /** An array of answer items (matching the items array in length and order)  */
   itemValues: AnswerItem[];
   /** The options the user can choose from */
@@ -184,7 +184,23 @@ const Scale = React.memo(
   }
 );
 
-const Items = ({ itemValues, selectedItem, items, options, selectedButton, onSelect }) => {
+interface ItemsProps {
+  itemValues: AnswerItem[];
+  selectedItem: number;
+  items: QuestionItem[];
+  options: AnswerOption[];
+  selectedButton: number;
+  onSelect: (params: OnSelectParams) => void;
+}
+
+const Items = ({
+  itemValues,
+  selectedItem,
+  items,
+  options,
+  selectedButton,
+  onSelect,
+}: ItemsProps) => {
   const containerRef = useRef(null);
   const rowRefs = useRef([]);
 
@@ -207,7 +223,7 @@ const Items = ({ itemValues, selectedItem, items, options, selectedButton, onSel
         flexDirection: "column",
       }}
     >
-      {items.map((itemObj, itemIndex) => {
+      {items.map((itemObj, itemIndex: number) => {
         const itemlabel = itemObj.label || itemObj.name || itemObj;
         let margin = "10px";
         if (itemIndex === 0) margin = "auto 10px 10px 10px";

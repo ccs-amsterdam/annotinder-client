@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { Button, Container, Modal, Table, List, ListItem } from "semantic-ui-react";
+import { FullScreenNode } from "../../../types";
 
-const AnnotateTaskManual = ({ fullScreenNode }) => {
+interface AnnotateTaskManualProps {
+  fullScreenNode: FullScreenNode;
+}
+
+const AnnotateTaskManual = ({ fullScreenNode }: AnnotateTaskManualProps) => {
   const [open, setOpen] = useState(false);
 
   return (

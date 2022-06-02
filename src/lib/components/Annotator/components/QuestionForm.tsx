@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useRef, ReactElement } from "react";
 import { Header, Button, Segment, Icon } from "semantic-ui-react";
-import { Question, Unit, Answer, AnswerItem, SetState, Annotation, Token } from "../../../types";
+import {
+  Question,
+  Unit,
+  Answer,
+  AnswerItem,
+  SetState,
+  Annotation,
+  Token,
+  Swipes,
+} from "../../../types";
 import { getMakesIrrelevantArray } from "../functions/irrelevantBranching";
 import {
   addAnnotationsFromAnswer,
@@ -19,7 +28,7 @@ interface QuestionFormProps {
   questionIndex: number;
   setQuestionIndex: SetState<number>;
   setUnitIndex: SetState<number>;
-  swipe: string;
+  swipe: Swipes;
   blockEvents: boolean;
 }
 

@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, RefObject } from "react";
 import { Button, Form } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
-import { OnSelectParams, AnswerItem } from "../../../types";
+import { OnSelectParams, AnswerItem, QuestionItem, SetState } from "../../../types";
 
 interface InputsProps {
   /** The item array of the current question. Contains al settings for items */
@@ -90,6 +90,17 @@ const Inputs = ({
   );
 };
 
+interface ItemsProps {
+  itemValues: AnswerItem[];
+  done: boolean;
+  items: QuestionItem[];
+  onSelect: (params: OnSelectParams) => void;
+  onFinish: () => void;
+  selectedItem: number;
+  setSelectedItem: SetState<number>;
+  blockEvents: boolean;
+}
+
 const Items = ({
   itemValues,
   done,
@@ -99,18 +110,18 @@ const Items = ({
   selectedItem,
   setSelectedItem,
   blockEvents,
-}) => {
+}: ItemsProps) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    const onKeydown = (e) => {
+    const onKeydown = (e: KeyboardEvent) => {
       if (e.keyCode === 9) {
         // tab key
         e.preventDefault();
         e.stopPropagation();
 
         // go to next item (including continue button) or go to first when none left
-        setSelectedItem((selectedItem) => {
+        setSelectedItem((selectedItem: number) => {
           let newselecteditem;
           if (e.shiftKey) {
             newselecteditem = selectedItem <= 0 ? items.length : selectedItem - 1;
@@ -159,7 +170,7 @@ const Items = ({
         background: "rgb(211, 223, 233)",
       }}
     >
-      {items.map((itemObj, itemIndex) => {
+      {items.map((itemObj, itemIndex: number) => {
         let itemlabel = itemObj.label ?? itemObj.name ?? itemObj;
         let margin = "0px 0px";
         if (itemIndex === 0) margin = "auto 0px 0px 0px";
@@ -169,7 +180,7 @@ const Items = ({
             key={itemIndex + "_" + itemObj.label}
             style={{ padding: "10px", width: "100%", textAlign: "center", margin }}
           >
-            <Form onSubmit={(e, d) => setSelectedItem((current) => current + 1)}>
+            <Form onSubmit={(e, d) => setSelectedItem((current: number) => current + 1)}>
               <Form.Field>
                 <label style={{ color: "black" }}>
                   {itemlabel}
@@ -191,7 +202,14 @@ const Items = ({
   );
 };
 
-const Input = ({ itemValues, onSelect, item, itemIndex }) => {
+interface InputProps {
+  itemValues: AnswerItem[];
+  onSelect: (params: OnSelectParams) => void;
+  item: QuestionItem;
+  itemIndex: number;
+}
+
+const Input = ({ itemValues, onSelect, item, itemIndex }: InputProps) => {
   //const ref = useRef();
   item.ref = useRef();
   const value = itemValues?.[itemIndex]?.values?.[0]; // for all non-multiple forms
@@ -200,7 +218,7 @@ const Input = ({ itemValues, onSelect, item, itemIndex }) => {
     return (
       <input
         key={item.name}
-        ref={item.ref}
+        ref={item.ref as RefObject<HTMLInputElement>}
         type={"number"}
         min={item?.min}
         max={item?.max}
@@ -215,8 +233,8 @@ const Input = ({ itemValues, onSelect, item, itemIndex }) => {
           let value = e.target.value;
           const invalid =
             isNaN(Number(value)) ||
-            (item.min != null && value < item.min) ||
-            (item.max != null && value > item.max);
+            (item.min != null && Number(value) < item.min) ||
+            (item.max != null && Number(value) > item.max);
           onSelect({ value, itemIndex, invalid });
         }}
       />
@@ -227,7 +245,7 @@ const Input = ({ itemValues, onSelect, item, itemIndex }) => {
     return (
       <textarea
         key={item.name}
-        ref={item.ref}
+        ref={item.ref as RefObject<HTMLTextAreaElement>}
         rows={item?.rows || 5}
         value={value || ""}
         onChange={(e) => {
@@ -245,7 +263,7 @@ const Input = ({ itemValues, onSelect, item, itemIndex }) => {
         type="email"
         name="email"
         key={item.name}
-        ref={item.ref}
+        ref={item.ref as RefObject<HTMLInputElement>}
         autoComplete={"email"}
         value={value || ""}
         style={{
@@ -265,7 +283,7 @@ const Input = ({ itemValues, onSelect, item, itemIndex }) => {
   return (
     <input
       key={item.name}
-      ref={item.ref}
+      ref={item.ref as RefObject<HTMLInputElement>}
       autoComplete={item?.autocomplete}
       value={value || ""}
       style={{ maxWidth: "300px", textAlign: "center" }}

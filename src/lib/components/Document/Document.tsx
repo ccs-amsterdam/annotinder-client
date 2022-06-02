@@ -27,7 +27,8 @@ interface DocumentProps {
   variables?: Variable[];
   /** An object with settings. Supports "editAll" (and probably more to come) */
   settings?: {
-    editAll: boolean;
+    [key: string]: any;
+    editAll?: boolean;
   };
   /** for getting acces to annotations from the parent component
    *  If not given, Document is automatically in read only mode (i.e. cannot make annotations) */

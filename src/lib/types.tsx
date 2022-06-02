@@ -108,7 +108,10 @@ export interface QuestionItem {
   type?: QuestionItemType;
   min?: number;
   max?: number;
+  rows?: number;
   optional?: boolean;
+  autocomplete?: string;
+  ref?: RefObject<HTMLInputElement | HTMLTextAreaElement>;
 }
 
 export type QuestionItemType = "email" | "number" | "textarea" | "text";

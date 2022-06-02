@@ -5,10 +5,19 @@ import Scale from "./AnswerFieldScale";
 import SearchCode from "./AnswerFieldSearchCode";
 import SelectCode from "./AnswerFieldSelectCode";
 import Inputs from "./AnswerFieldInputs";
-import { OnSelectParams } from "../../../types";
+import { AnswerItem, OnSelectParams, Swipes, Question, Answer } from "../../../types";
 
 const MIN_DELAY = 200;
 // TODO: using questionindex for resetting states is bad, because it doesn't update for consequtive codebooks with 1 question
+
+interface AnswerFieldProps {
+  answers: Answer[];
+  questions: Question[];
+  questionIndex: number;
+  onAnswer: (items: AnswerItem[], onlySave: boolean, minDelay: number) => void;
+  swipe: Swipes;
+  blockEvents?: boolean;
+}
 
 const AnswerField = ({
   answers,
@@ -17,7 +26,7 @@ const AnswerField = ({
   onAnswer,
   swipe,
   blockEvents = false,
-}) => {
+}: AnswerFieldProps) => {
   const [question, setQuestion] = useState(null);
   const [itemValues, setItemValues] = useState(null);
 
@@ -32,7 +41,7 @@ const AnswerField = ({
 
   useEffect(() => {
     // if answer changed but has not been saved, warn users when they try to close the app
-    const handleBeforeUnload = (e) => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       const msg = "If you leave now, any changes made in the current unit will not be saved."; // most browsers actually show default message
       e.returnValue = msg;
@@ -74,7 +83,9 @@ const AnswerField = ({
     } else {
       // if a single value, check whether it should be treated as multiple, or add as array of length 1
       if (multiple) {
-        const valueIndex = itemValues[itemIndex].values.findIndex((v) => v === value);
+        const valueIndex = itemValues[itemIndex].values.findIndex(
+          (v: string | number) => v === value
+        );
         if (valueIndex < 0) {
           // if value doesn't exist yet, add it
           itemValues[itemIndex].values.push(value);
