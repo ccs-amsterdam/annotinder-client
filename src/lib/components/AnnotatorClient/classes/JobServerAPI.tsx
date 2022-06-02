@@ -1,5 +1,13 @@
 import { importCodebook } from "../../../functions/codebook";
-import { Annotation, CodeBook, JobServer, Progress, SetState, Status } from "../../../types";
+import {
+  Annotation,
+  BackendUnit,
+  CodeBook,
+  JobServer,
+  Progress,
+  SetState,
+  Status,
+} from "../../../types";
 import Backend from "./Backend";
 
 class JobServerAPI implements JobServer {
@@ -28,7 +36,7 @@ class JobServerAPI implements JobServer {
     this.progress = await this.backend.getProgress(this.job_id);
   }
 
-  async getUnit(i: number) {
+  async getUnit(i: number): Promise<BackendUnit> {
     const getNext = i >= this.progress.n_coded && !this.progress.seek_forwards;
     const unit = await this.backend.getUnit(this.job_id, getNext ? null : i);
     //this.progress.n_coded = Math.max(unit?.index ?? i, this.progress.n_coded);

@@ -7,7 +7,7 @@ interface InputsProps {
   /** The item array of the current question. Contains al settings for items */
   items: any[];
   /** An array of answer items (matching the items array in length and order)  */
-  itemValues: AnswerItem[];
+  answerItems: AnswerItem[];
   /** The function used to update the values */
   onSelect: (params: OnSelectParams) => void;
   /** Like onSelect, but for finishing the question/unit with the current values */
@@ -24,7 +24,7 @@ interface InputsProps {
  */
 const Inputs = ({
   items,
-  itemValues,
+  answerItems,
   onSelect,
   onFinish,
   blockEvents,
@@ -37,10 +37,10 @@ const Inputs = ({
   }, [questionIndex]);
 
   const done =
-    itemValues &&
-    itemValues.length > 0 &&
-    !itemValues.some((a, i) => (a.values?.[0] == null || a.invalid) && !items?.[i]?.optional);
-  if (!itemValues) return null;
+    answerItems &&
+    answerItems.length > 0 &&
+    !answerItems.some((a, i) => (a.values?.[0] == null || a.invalid) && !items?.[i]?.optional);
+  if (!answerItems) return null;
 
   return (
     <div
@@ -53,7 +53,7 @@ const Inputs = ({
       }}
     >
       <Items
-        itemValues={itemValues}
+        answerItems={answerItems}
         done={done}
         items={items}
         onSelect={onSelect}
@@ -91,7 +91,7 @@ const Inputs = ({
 };
 
 interface ItemsProps {
-  itemValues: AnswerItem[];
+  answerItems: AnswerItem[];
   done: boolean;
   items: QuestionItem[];
   onSelect: (params: OnSelectParams) => void;
@@ -102,7 +102,7 @@ interface ItemsProps {
 }
 
 const Items = ({
-  itemValues,
+  answerItems,
   done,
   items,
   onSelect,
@@ -144,7 +144,7 @@ const Items = ({
     return () => {
       window.removeEventListener("keydown", onKeydown);
     };
-  }, [blockEvents, done, items, onSelect, onFinish, itemValues, selectedItem, setSelectedItem]);
+  }, [blockEvents, done, items, onSelect, onFinish, answerItems, selectedItem, setSelectedItem]);
 
   useEffect(() => {
     scrollToMiddle(containerRef?.current, items?.[selectedItem]?.ref?.current, 0.5);
@@ -188,7 +188,7 @@ const Items = ({
                 </label>
 
                 <Input
-                  itemValues={itemValues}
+                  answerItems={answerItems}
                   onSelect={onSelect}
                   item={itemObj}
                   itemIndex={itemIndex}
@@ -203,16 +203,16 @@ const Items = ({
 };
 
 interface InputProps {
-  itemValues: AnswerItem[];
+  answerItems: AnswerItem[];
   onSelect: (params: OnSelectParams) => void;
   item: QuestionItem;
   itemIndex: number;
 }
 
-const Input = ({ itemValues, onSelect, item, itemIndex }: InputProps) => {
+const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
   //const ref = useRef();
   item.ref = useRef();
-  const value = itemValues?.[itemIndex]?.values?.[0]; // for all non-multiple forms
+  const value = answerItems?.[itemIndex]?.values?.[0]; // for all non-multiple forms
 
   if (item?.type === "number") {
     return (
@@ -222,14 +222,14 @@ const Input = ({ itemValues, onSelect, item, itemIndex }: InputProps) => {
         type={"number"}
         min={item?.min}
         max={item?.max}
-        value={Number(value) != null ? Number(value) : ""}
+        value={Number(value) || ""}
         style={{
           maxWidth: "150px",
           textAlign: "center",
-          background: itemValues[itemIndex]?.invalid ? "#ff000088" : "white",
+          background: answerItems[itemIndex]?.invalid ? "#ff000088" : "white",
         }}
         onChange={(e) => {
-          if (!itemValues?.[itemIndex]) return;
+          if (!answerItems?.[itemIndex]) return;
           let value = e.target.value;
           const invalid =
             isNaN(Number(value)) ||
@@ -249,7 +249,7 @@ const Input = ({ itemValues, onSelect, item, itemIndex }: InputProps) => {
         rows={item?.rows || 5}
         value={value || ""}
         onChange={(e) => {
-          if (!itemValues?.[itemIndex]) return;
+          if (!answerItems?.[itemIndex]) return;
           const value = e.target.value === "" ? null : e.target.value;
           onSelect({ value, itemIndex });
         }}
@@ -269,10 +269,10 @@ const Input = ({ itemValues, onSelect, item, itemIndex }: InputProps) => {
         style={{
           maxWidth: "300px",
           textAlign: "center",
-          background: itemValues[itemIndex].invalid ? "#ff000088" : "white",
+          background: answerItems[itemIndex].invalid ? "#ff000088" : "white",
         }}
         onChange={(e) => {
-          if (!itemValues?.[itemIndex]) return;
+          if (!answerItems?.[itemIndex]) return;
           const value = e.target.value === "" ? null : e.target.value;
           const invalid = !!e.target.validationMessage;
           onSelect({ value, itemIndex, invalid });
@@ -288,7 +288,7 @@ const Input = ({ itemValues, onSelect, item, itemIndex }: InputProps) => {
       value={value || ""}
       style={{ maxWidth: "300px", textAlign: "center" }}
       onChange={(e) => {
-        if (!itemValues?.[itemIndex]) return;
+        if (!answerItems?.[itemIndex]) return;
         const value = e.target.value === "" ? null : e.target.value;
         onSelect({ value, itemIndex });
       }}

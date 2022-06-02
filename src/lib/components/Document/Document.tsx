@@ -74,6 +74,7 @@ const Document = ({
     returnTokens,
     setCodeHistory
   );
+
   const [variableMap, editMode] = useVariableMap(variables, variable, importedCodes);
   const [codeSelector, triggerCodeSelector, codeSelectorOpen] = useCodeSelector(
     doc.tokens,

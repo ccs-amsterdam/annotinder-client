@@ -44,7 +44,7 @@ const QuestionForm = ({
   blockEvents,
 }: QuestionFormProps) => {
   const blockAnswer = useRef(false); // to prevent answering double (e.g. with swipe events)
-  const [answers, setAnswers] = useState(null);
+  const [answers, setAnswers] = useState<Answer[]>(null);
   const [questionText, setQuestionText] = useState(<div />);
 
   useEffect(() => {
@@ -72,12 +72,13 @@ const QuestionForm = ({
     blockAnswer.current = true;
 
     try {
-      answers[questionIndex].values = items;
+      answers[questionIndex].items = items;
       answers[questionIndex].makes_irrelevant = getMakesIrrelevantArray(
         items,
         questions[questionIndex].options
       );
 
+      console.log(answers[questionIndex]);
       unit.annotations = addAnnotationsFromAnswer(answers[questionIndex], unit.annotations);
 
       const irrelevantQuestions = processIrrelevantBranching(
@@ -137,8 +138,8 @@ const QuestionForm = ({
 
   let done = true;
   for (let a of answers) {
-    for (let v of a.values) {
-      if (v.values.length === 0) done = false;
+    for (let item of a.items) {
+      if (item.values.length === 0) done = false;
     }
   }
 
@@ -263,13 +264,13 @@ const processIrrelevantBranching = (
     if (which.has(i)) {
       irrelevantQuestions[i] = true;
       // gives the value "IRRELEVANT" to targeted questions
-      for (let a of answers[i].values) a.values = ["IRRELEVANT"];
+      for (let a of answers[i].items) a.values = ["IRRELEVANT"];
       unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations);
     } else {
       irrelevantQuestions[i] = false;
       // If a question is marked as IRRELEVANT, double check whether this is still the case
       // (a coder might have changed a previous answer)
-      for (let a of answers[i].values) {
+      for (let a of answers[i].items) {
         if (a.values[0] === "IRRELEVANT") a.values = [];
       }
       unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations);
@@ -297,9 +298,9 @@ const QuestionIndexStep = ({
   useEffect(() => {
     const cs = answers.map((a: Answer) => {
       return (
-        a.values[0].values != null &&
-        a.values[0].values.length !== 0 &&
-        a.values[0].values[0] !== "IRRELEVANT"
+        a.items[0].values != null &&
+        a.items[0].values.length !== 0 &&
+        a.items[0].values[0] !== "IRRELEVANT"
       );
     });
     cs[0] = true;
@@ -317,10 +318,10 @@ const QuestionIndexStep = ({
 
   const getColor = (i: number) => {
     if (!answers[i]) return "grey";
-    const done = !answers[i].values.some(
+    const done = !answers[i].items.some(
       (v: AnswerItem) => v.values == null || v.values.length === 0
     );
-    const irrelevant = answers[i].values[0].values?.[0] === "IRRELEVANT";
+    const irrelevant = answers[i].items[0].values?.[0] === "IRRELEVANT";
     const selected = questionIndex === i;
 
     if (irrelevant) return "crimson";
@@ -353,7 +354,7 @@ const QuestionIndexStep = ({
             }}
             onClick={() => {
               if (canSelect?.[i]) {
-                const irrelevant = answers[i].values[0].values?.[0] === "IRRELEVANT";
+                const irrelevant = answers[i].items[0].values?.[0] === "IRRELEVANT";
                 if (!irrelevant) setQuestionIndex(i);
               }
             }}
@@ -373,7 +374,7 @@ const prepareQuestion = (unit: Unit, question: Question, answers: Answer[]) => {
   for (let m of matches) {
     const answer = answers.find((a) => a.variable === m["1"]);
     if (answer) {
-      const value = answer.values[0].values.join(", ");
+      const value = answer.items[0].values.join(", ");
       preparedQuestion = preparedQuestion.replace(m["0"], "{" + value + "}");
     }
   }

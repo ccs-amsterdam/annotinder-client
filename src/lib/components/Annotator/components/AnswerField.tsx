@@ -28,14 +28,14 @@ const AnswerField = ({
   blockEvents = false,
 }: AnswerFieldProps) => {
   const [question, setQuestion] = useState(null);
-  const [itemValues, setItemValues] = useState(null);
+  const [answerItems, setAnswerItems] = useState(null);
 
   useEffect(() => {
-    const currentAnswer = answers?.[questionIndex]?.values;
+    const currentAnswer = answers?.[questionIndex]?.items;
     // Note that currentAnswer:
     // is an array of objects: [{item: 'string of item name', values: [array of unique answer values]}]
     // order and length mathces question.items. If question doesn't have items, it must be an array of length 1
-    setItemValues(currentAnswer);
+    setAnswerItems(currentAnswer);
     setQuestion(questions[questionIndex]);
   }, [answers, questions, questionIndex]);
 
@@ -48,7 +48,7 @@ const AnswerField = ({
       return msg;
     };
 
-    if (answers?.[questionIndex]?.values !== itemValues) {
+    if (answers?.[questionIndex]?.items !== answerItems) {
       window.addEventListener("beforeunload", handleBeforeUnload);
     } else {
       window.removeEventListener("beforeunload", handleBeforeUnload);
@@ -56,10 +56,11 @@ const AnswerField = ({
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [answers, questionIndex, itemValues]);
+  }, [answers, questionIndex, answerItems]);
 
   const onFinish = () => {
-    onAnswer(itemValues, false, MIN_DELAY);
+    console.log(answerItems);
+    onAnswer(answerItems, false, MIN_DELAY);
   };
 
   const onSelect = ({
@@ -72,53 +73,53 @@ const AnswerField = ({
   }: OnSelectParams = {}) => {
     // this bad boy is used in all of the AnswerField sub-components to write values.
     // it's a bit complicated here, but it makes the code within the sub-components easier
-    // itemValues is an array of objects, where each object is an item.
+    // answerItems is an array of objects, where each object is an item.
     //    if a question has no items, it is still an array of length 1 for consistency
     // each item object has a .value, which is an array of multiple values
     //    if an item can only have 1 value, it is still an array of length 1 for consistency
 
     if (Array.isArray(value)) {
       // if value is an array, write exact array to answer
-      itemValues[itemIndex] = { ...itemValues[itemIndex], values: value };
+      answerItems[itemIndex] = { ...answerItems[itemIndex], values: value };
     } else {
       // if a single value, check whether it should be treated as multiple, or add as array of length 1
       if (multiple) {
-        const valueIndex = itemValues[itemIndex].values.findIndex(
+        const valueIndex = answerItems[itemIndex].values.findIndex(
           (v: string | number) => v === value
         );
         if (valueIndex < 0) {
           // if value doesn't exist yet, add it
-          itemValues[itemIndex].values.push(value);
+          answerItems[itemIndex].values.push(value);
         } else {
           // if it does exist, remove it
-          itemValues[itemIndex].values.splice(valueIndex, 1);
+          answerItems[itemIndex].values.splice(valueIndex, 1);
         }
       } else {
-        itemValues[itemIndex] = { ...itemValues[itemIndex], values: [value] };
+        answerItems[itemIndex] = { ...answerItems[itemIndex], values: [value] };
       }
     }
 
-    const newItemValues = [...itemValues];
-    newItemValues[itemIndex].invalid = invalid;
-    setItemValues(newItemValues);
+    const newAnswerItems = [...answerItems];
+    newAnswerItems[itemIndex].invalid = invalid;
+    setAnswerItems(newAnswerItems);
     if (finish) {
-      onAnswer(newItemValues, false, MIN_DELAY);
+      onAnswer(newAnswerItems, false, MIN_DELAY);
     } else {
-      if (save) onAnswer(newItemValues, true, MIN_DELAY);
+      if (save) onAnswer(newAnswerItems, true, MIN_DELAY);
     }
-    return newItemValues;
+    return newAnswerItems;
   };
 
-  if (!itemValues) return null;
+  if (!answerItems) return null;
   // use these props:
   // values         array of values
-  // itemValues     object with items as keys and values array as value
+  // answerItems     object with items as keys and values array as value
 
   if (question.type === "select code")
     return (
       <SelectCode
         options={question.options}
-        values={itemValues[0].values} // only use first because selectCode doesn't support items
+        values={answerItems[0].values} // only use first because selectCode doesn't support items
         multiple={question.multiple}
         singleRow={question.single_row}
         sameSize={question.same_size}
@@ -133,7 +134,7 @@ const AnswerField = ({
     return (
       <SearchCode
         options={question.options}
-        values={itemValues[0].values}
+        values={answerItems[0].values}
         multiple={question.multiple}
         onSelect={onSelect}
         onFinish={onFinish}
@@ -144,7 +145,7 @@ const AnswerField = ({
   if (question.type === "scale")
     return (
       <Scale
-        itemValues={itemValues}
+        answerItems={answerItems}
         items={question.items || [""]}
         options={question.options}
         onSelect={onSelect}
@@ -157,7 +158,7 @@ const AnswerField = ({
   if (question.type === "annotinder")
     return (
       <Annotinder
-        itemValues={itemValues}
+        answerItems={answerItems}
         swipeOptions={question.swipeOptions}
         onSelect={onSelect}
         swipe={swipe}
@@ -179,7 +180,7 @@ const AnswerField = ({
     return (
       <Inputs
         items={question.items || [null]}
-        itemValues={itemValues}
+        answerItems={answerItems}
         onSelect={onSelect}
         onFinish={onFinish}
         blockEvents={blockEvents}

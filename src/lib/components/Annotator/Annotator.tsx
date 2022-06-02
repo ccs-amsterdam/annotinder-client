@@ -89,6 +89,7 @@ const getUnit = async (
       meta_fields: unit.unit.meta_fields,
       image_fields: unit.unit.image_fields,
       markdown_field: unit.unit.markdown_field,
+      importedAnnotations: unit.unit.importedAnnotations,
       settings: unit.unit.settings,
       codebook: unit.unit.codebook ? importCodebook(unit.unit.codebook) : undefined,
     });

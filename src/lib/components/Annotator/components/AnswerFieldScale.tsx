@@ -9,7 +9,7 @@ interface ScaleProps {
   /** The item array of the current question. Contains al settings for items */
   items: QuestionItem[];
   /** An array of answer items (matching the items array in length and order)  */
-  itemValues: AnswerItem[];
+  answerItems: AnswerItem[];
   /** The options the user can choose from */
   options: AnswerOption[];
   /** The function used to update the values */
@@ -23,7 +23,7 @@ interface ScaleProps {
 }
 
 const Scale = React.memo(
-  ({ items, itemValues, options, onSelect, onFinish, blockEvents, questionIndex }: ScaleProps) => {
+  ({ items, answerItems, options, onSelect, onFinish, blockEvents, questionIndex }: ScaleProps) => {
     // render buttons for options (an array of objects with keys 'label' and 'color')
     // On selection perform onSelect function with the button label as input
     // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
@@ -71,13 +71,13 @@ const Scale = React.memo(
           event.preventDefault();
           event.stopPropagation();
           if (selectedItem === -1) {
-            if (!itemValues.some((a) => a.values?.[0] == null)) onFinish();
+            if (!answerItems.some((a) => a.values?.[0] == null)) onFinish();
           } else {
             onSelect({ value: options[selectedButton].code, itemIndex: selectedItem });
           }
         }
       },
-      [selectedButton, selectedItem, itemValues, onSelect, onFinish, options, items]
+      [selectedButton, selectedItem, answerItems, onSelect, onFinish, options, items]
     );
 
     useEffect(() => {
@@ -97,9 +97,9 @@ const Scale = React.memo(
 
     const left = options[0];
     const right = options[options.length - 1];
-    if (itemValues == null) return null;
-    const nAnswered = itemValues.filter((iv) => iv.values?.[0] != null).length;
-    const done = nAnswered === itemValues.length;
+    if (answerItems == null) return null;
+    const nAnswered = answerItems.filter((iv) => iv.values?.[0] != null).length;
+    const done = nAnswered === answerItems.length;
 
     return (
       <div
@@ -150,7 +150,7 @@ const Scale = React.memo(
         </div>
 
         <Items
-          itemValues={itemValues}
+          answerItems={answerItems}
           selectedItem={selectedItem}
           items={items}
           options={options}
@@ -165,7 +165,7 @@ const Scale = React.memo(
             size="mini"
             disabled={!done}
             icon={done ? "play" : null}
-            content={done ? "Continue" : `${nAnswered} / ${itemValues.length}`}
+            content={done ? "Continue" : `${nAnswered} / ${answerItems.length}`}
             style={{
               flex: "1 1 0px",
               textAlign: "center",
@@ -185,7 +185,7 @@ const Scale = React.memo(
 );
 
 interface ItemsProps {
-  itemValues: AnswerItem[];
+  answerItems: AnswerItem[];
   selectedItem: number;
   items: QuestionItem[];
   options: AnswerOption[];
@@ -194,7 +194,7 @@ interface ItemsProps {
 }
 
 const Items = ({
-  itemValues,
+  answerItems,
   selectedItem,
   items,
   options,
@@ -236,7 +236,9 @@ const Items = ({
               </div>
               <div style={{ width: "100%", textAlign: "center", color: "#1678c2" }}>
                 <i>
-                  {itemValues?.[itemIndex]?.values?.[0] ? itemValues[itemIndex].values?.[0] : "..."}
+                  {answerItems?.[itemIndex]?.values?.[0]
+                    ? answerItems[itemIndex].values?.[0]
+                    : "..."}
                 </i>
               </div>
             </div>
@@ -250,7 +252,7 @@ const Items = ({
               }}
             >
               <Item
-                itemValues={itemValues}
+                answerItems={answerItems}
                 selectedItem={selectedItem}
                 itemIndex={itemIndex}
                 options={options}
@@ -266,7 +268,7 @@ const Items = ({
 };
 
 interface ItemProps {
-  itemValues: AnswerItem[];
+  answerItems: AnswerItem[];
   selectedItem: number;
   itemIndex: number;
   options: AnswerOption[];
@@ -275,7 +277,7 @@ interface ItemProps {
 }
 
 const Item = ({
-  itemValues,
+  answerItems,
   selectedItem,
   itemIndex,
   options,
@@ -287,7 +289,7 @@ const Item = ({
     <>
       {options.map((option, buttonIndex: number) => {
         let bordercolor = "#ece9e9";
-        const isCurrent = options[buttonIndex].code === itemValues?.[itemIndex]?.values[0];
+        const isCurrent = options[buttonIndex].code === answerItems?.[itemIndex]?.values[0];
         const isSelected = buttonIndex === selectedButton && itemIndex === selectedItem;
         if (isCurrent) bordercolor = "#2185d0";
         if (isSelected) bordercolor = "#1B1C1D";

@@ -6,7 +6,7 @@ const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
 interface AnnotinderProps {
   /** An array of answer items (matching the items array in length and order)  */
-  itemValues: AnswerItem[];
+  answerItems: AnswerItem[];
   /** The options the user can choose from */
   swipeOptions: SwipeOptions;
   /** The function used to update the values */
@@ -18,7 +18,7 @@ interface AnnotinderProps {
 }
 
 const Annotinder = React.memo(
-  ({ itemValues, swipeOptions, onSelect, swipe, blockEvents }: AnnotinderProps) => {
+  ({ answerItems, swipeOptions, onSelect, swipe, blockEvents }: AnnotinderProps) => {
     // const left = options.find(option => option.swipe === "left");
     // const up = options.find(option => option.swipe === "up");
     // const right = options.find(option => option.swipe === "right");
@@ -61,7 +61,7 @@ const Annotinder = React.memo(
       };
     }, [onKeydown, blockEvents]);
 
-    const value = itemValues?.[0]?.values?.[0];
+    const value = answerItems?.[0]?.values?.[0];
 
     return (
       <Button.Group

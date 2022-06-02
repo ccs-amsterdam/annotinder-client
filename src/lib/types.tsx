@@ -119,7 +119,7 @@ export type QuestionItemType = "email" | "number" | "textarea" | "text";
 // an intermediate format that maps annotations to questions in 'questions' mode
 export interface Answer {
   variable: string;
-  values: AnswerItem[];
+  items: AnswerItem[];
   length?: number;
   field?: string;
   offset?: number;
@@ -296,6 +296,7 @@ export interface RawUnit {
   image_fields?: ImageField[];
   markdown_field?: string;
   annotations?: Annotation[];
+  importedAnnotations?: Annotation[];
   codebook?: RawCodeBook;
   variables?: UnitVariables;
 }

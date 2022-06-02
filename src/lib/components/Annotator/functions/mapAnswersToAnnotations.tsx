@@ -28,7 +28,7 @@ export const getAnswersFromAnnotations = (
   if (!unit.annotations) unit.annotations = [];
   for (let i = 0; i < questions.length; i++) {
     const answer = createAnswer(tokens, questions[i]);
-    answer.values = getAnswerValues(unit.annotations, answer, questions[i]);
+    answer.items = getAnswerValues(unit.annotations, answer, questions[i]);
     answers.push(answer);
   }
   setAnswers(answers);
@@ -38,7 +38,7 @@ const createAnswer = (tokens: Token[], question: Question): Answer => {
   // creates an object with the variable, field, offset and length of the annotation
   // that corresponds to this answer.
 
-  let answer: Answer = { variable: question.name, values: null };
+  let answer: Answer = { variable: question.name, items: null };
   if (tokens.length === 0) return answer;
 
   const fields: any = {};
@@ -119,7 +119,7 @@ export const addAnnotationsFromAnswer = (
   // creates new ones.
   if (!annotations) annotations = [];
 
-  const valueMap = answer.values.reduce((obj: any, valueObj: AnswerItem) => {
+  const valueMap = answer.items.reduce((obj: any, valueObj: AnswerItem) => {
     // create a map of answers[item][value]
     if (obj[valueObj.item] === undefined) obj[valueObj.item] = {};
     for (let value of valueObj.values) obj[valueObj.item][value] = false;
