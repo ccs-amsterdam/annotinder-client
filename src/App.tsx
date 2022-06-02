@@ -6,8 +6,14 @@ import AnnotatorAmcatClient from "./lib/components/AnnotatorClient/AnnotatorAmca
 import AnnotatorRClient from "./lib/components/AnnotatorClient/AnnotatorRClient";
 import DemoJobOverview from "./lib/components/DemoJob/DemoJobOverview";
 import GuestCoder from "./lib/components/GuestCoder/GuestCoder";
-import "./appStyle.css";
 import useWindowSize from "./lib/hooks/useWindowSize";
+import styled from "styled-components";
+import "./appStyle.css";
+
+const ResponsiveContainer = styled.div<{ height: number; width: number }>`
+  height: ${(props) => props.height}px;
+  width: ${(props) => props.width}px;
+`;
 
 // just for quick testing
 const App = () => {
@@ -15,14 +21,14 @@ const App = () => {
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
-      <div style={{ height: `${size.height - 1}px`, width: `${size.width - 1}px` }}>
+      <ResponsiveContainer height={size.height - 1} width={size.width - 1}>
         <Routes>
           <Route path="/" exact element={<AnnotatorAmcatClient />} />
           <Route path="/demo" exact element={<DemoJobOverview />} />
           <Route path="/guest" exact element={<GuestCoder />} />
           <Route path="/r" exact element={<AnnotatorRClient />} />
         </Routes>
-      </div>
+      </ResponsiveContainer>
     </Router>
   );
 };

@@ -239,10 +239,14 @@ export type TokenSelection = [number, number] | [];
 
 ///// JOBSERVER
 
+/**
+ * A class providing everthing needed to run the Annotator component.
+ * In particular, it needs to have a codebook and progress
+ */
 export interface JobServer {
   codebook: CodeBook;
   progress: Progress;
-  return_link: string;
+  return_link?: string;
   units?: BackendUnit[];
   job_id?: number;
   setJobServer?: SetState<JobServer>;
@@ -258,10 +262,17 @@ export interface JobServer {
   ) => void;
 }
 
+/**
+ * An object containing information relevant for codingjob navigation
+ */
 export interface Progress {
+  /** Total number of items a coder can coder in this job */
   n_total: number;
+  /** Number of items already coded */
   n_coded: number;
+  /** Should the coder be able to go back to already coded units? */
   seek_backwards?: boolean;
+  /** Should the coder be able to move forward beyond currently coded units? */
   seek_forwards?: boolean;
 }
 

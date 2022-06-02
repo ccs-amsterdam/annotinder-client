@@ -7,16 +7,14 @@ import JobController from "./components/JobController";
 import { JobServer, Unit } from "../../types";
 import { importCodebook } from "../../functions/codebook";
 
+/**
+ * Render an annotator for the provided jobServer class
+ */
 interface AnnotatorProps {
   jobServer: JobServer;
   askFullScreen?: boolean;
 }
 
-/**
- * Render an annotator for the provided jobServer class
- *
- * @param {*} jobServer  A jobServer class
- */
 const Annotator = ({ jobServer, askFullScreen = false }: AnnotatorProps) => {
   const [unitIndex, setUnitIndex] = useState(-1);
   const [unit, setUnit] = useState(null);

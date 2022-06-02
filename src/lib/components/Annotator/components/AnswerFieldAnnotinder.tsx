@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { Button, Ref, Icon } from "semantic-ui-react";
-import { SwipeOptions, Swipes, AnswerItem, OnSelectParams } from "../../../types";
+import { Button, Ref, Icon, SemanticICONS } from "semantic-ui-react";
+import { SwipeOptions, Swipes, AnswerItem, OnSelectParams, AnswerOption } from "../../../types";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -74,68 +74,62 @@ const Annotinder = React.memo(
           margin: "0",
         }}
       >
-        <Ref key={swipeOptions.left?.code} innerRef={swipeOptions.left?.ref}>
-          <Button
-            className="ripplebutton"
-            disabled={swipeOptions.left == null}
-            onClick={(e, d) => onSelect({ value: swipeOptions.left.code, finish: true })}
-            style={{
-              fontSize: "inherit",
-              borderRadius: "10px",
-              border: `4px solid ${value === swipeOptions.left?.code ? "#0c4f83" : "white"}`,
-              background: swipeOptions.left?.color || "white",
-            }}
-          >
-            <div style={{ color: "black", fontWeight: "bold" }}>
-              <Icon name={swipeOptions.left?.code ? "arrow left" : null} />
-              <span>{swipeOptions.left?.code || ""}</span>
-            </div>
-          </Button>
-        </Ref>
-
-        {swipeOptions.up == null ? null : (
-          <Ref key={swipeOptions.up?.code} innerRef={swipeOptions.up?.ref}>
-            <Button
-              className="ripplebutton"
-              disabled={swipeOptions.up == null}
-              onClick={(e, d) => onSelect({ value: swipeOptions.up.code, finish: true })}
-              style={{
-                fontSize: "inherit",
-
-                borderRadius: "10px",
-                border: `4px solid ${value === swipeOptions.up?.code ? "#0c4f83" : "white"}`,
-                background: swipeOptions.up?.color || "white",
-              }}
-            >
-              <div style={{ color: "black", fontWeight: "bold" }}>
-                <Icon name={swipeOptions.up?.code ? "arrow up" : null} />
-                <span>{swipeOptions.up?.code || ""}</span>
-              </div>
-            </Button>
-          </Ref>
-        )}
-        <Ref key={swipeOptions.right?.code} innerRef={swipeOptions.right?.ref}>
-          <Button
-            className="ripplebutton"
-            disabled={swipeOptions.right == null}
-            onClick={(e, d) => onSelect({ value: swipeOptions.right.code, finish: true })}
-            style={{
-              fontSize: "inherit",
-
-              borderRadius: "10px",
-              border: `4px solid ${value === swipeOptions.right?.code ? "#0c4f83" : "white"}`,
-              background: swipeOptions.right?.color || "white",
-            }}
-          >
-            <div style={{ color: "black", fontWeight: "bold" }}>
-              <span>{swipeOptions.right?.code || ""}</span>
-              <Icon name={swipeOptions.right?.code ? "arrow right" : null} />
-            </div>
-          </Button>
-        </Ref>
+        {["left", "up", "right"].map((direction) => {
+          return (
+            <AnnotinderButton
+              swipeOptions={swipeOptions}
+              direction={direction}
+              value={value}
+              onSelect={onSelect}
+            />
+          );
+        })}
       </Button.Group>
     );
   }
 );
+
+interface AnnotinderButtonProps {
+  swipeOptions: SwipeOptions;
+  direction: string;
+  value: string | number;
+  onSelect: (params: OnSelectParams) => void;
+}
+
+const AnnotinderButton = ({ swipeOptions, direction, value, onSelect }: AnnotinderButtonProps) => {
+  let icon: SemanticICONS = "arrow left";
+  let option: AnswerOption = swipeOptions.left;
+  if (direction === "up") {
+    icon = "arrow up";
+    option = swipeOptions.up;
+  }
+  if (direction === "right") {
+    icon = "arrow right";
+    option = swipeOptions.right;
+  }
+  if (!option) return null;
+
+  return (
+    <Ref key={option.code} innerRef={option.ref}>
+      <Button
+        className="ripplebutton"
+        disabled={option == null}
+        onClick={(e, d) => onSelect({ value: option?.code, finish: true })}
+        style={{
+          fontSize: "inherit",
+          borderRadius: "10px",
+          border: `4px solid ${value === option?.code ? "#0c4f83" : "white"}`,
+          background: option?.color || "white",
+        }}
+      >
+        <div style={{ color: "black", fontWeight: "bold" }}>
+          <Icon name={option?.code ? (icon as SemanticICONS) : null} />
+          <br />
+          <span>{option?.code || ""}</span>
+        </div>
+      </Button>
+    </Ref>
+  );
+};
 
 export default Annotinder;

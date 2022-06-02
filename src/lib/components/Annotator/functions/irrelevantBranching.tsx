@@ -1,4 +1,45 @@
 import { AnswerOption, AnswerItem, CodeTree } from "../../../types";
+import { addAnnotationsFromAnswer } from "./mapAnswersToAnnotations";
+import { Question, Answer } from "../../../types";
+
+export function processIrrelevantBranching(
+  unit: any,
+  questions: Question[],
+  answers: Answer[],
+  questionIndex: number
+) {
+  // checks all the branching in the given answers
+  const which = new Set();
+  for (let a of answers) {
+    if (a.makes_irrelevant == null) continue;
+    for (let value of a.makes_irrelevant) {
+      if (value === "REMAINING") {
+        for (let i = questionIndex + 1; i < questions.length; i++) which.add(i);
+      }
+      const i = questions.findIndex((q: Question) => q.name === value);
+      if (i >= 0) which.add(i);
+    }
+  }
+  const irrelevantQuestions = new Array(questions.length).fill(false);
+
+  for (let i = 0; i < questions.length; i++) {
+    if (which.has(i)) {
+      irrelevantQuestions[i] = true;
+      // gives the value "IRRELEVANT" to targeted questions
+      for (let a of answers[i].items) a.values = ["IRRELEVANT"];
+      unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations);
+    } else {
+      irrelevantQuestions[i] = false;
+      // If a question is marked as IRRELEVANT, double check whether this is still the case
+      // (a coder might have changed a previous answer)
+      for (let a of answers[i].items) {
+        if (a.values[0] === "IRRELEVANT") a.values = [];
+      }
+      unit.annotations = addAnnotationsFromAnswer(answers[i], unit.annotations);
+    }
+  }
+  return irrelevantQuestions;
+}
 
 export const addRequiredFor = (cta: CodeTree[]) => {
   // if codebook has a required_for question, check if this code has it. If not, it's the same as this code having
