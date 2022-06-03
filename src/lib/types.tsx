@@ -65,6 +65,8 @@ export interface CodeBook {
   variables?: Variable[];
   questions?: Question[];
   settings?: {
+    instruction?: string;
+    auto_instruction?: boolean;
     no_table?: boolean;
   };
 }

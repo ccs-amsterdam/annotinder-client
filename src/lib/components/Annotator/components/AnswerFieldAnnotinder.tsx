@@ -77,6 +77,7 @@ const Annotinder = React.memo(
         {["left", "up", "right"].map((direction) => {
           return (
             <AnnotinderButton
+              key={direction}
               swipeOptions={swipeOptions}
               direction={direction}
               value={value}

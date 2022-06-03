@@ -23,7 +23,6 @@ const useUnit = (
 
   useEffect(() => {
     if (!unit.annotations) unit.annotations = [];
-    console.log(unit);
     if (unit.importedAnnotations) {
       if (unit.annotations.length === 0 && unit.status !== "DONE") {
         unit.annotations = unit.importedAnnotations;

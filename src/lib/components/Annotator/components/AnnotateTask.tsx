@@ -5,6 +5,7 @@ import Document from "../../Document/Document";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import AnnotateTaskManual from "./AnnotateTaskManual";
 import { Annotation, FullScreenNode, Unit, VariableMap, SetState, CodeBook } from "../../../types";
+import Instructions from "./Instructions";
 
 const NEXTDELAY = 500;
 const BODYSTYLE = {
@@ -63,18 +64,9 @@ const AnnotateTask = ({
         width={10}
         style={{ paddingRight: "0em", paddingTop: "0", paddingBottom: "0", height: "100%" }}
       >
-        <Button.Group fluid style={{ padding: "0", height: "30px" }}>
-          <SettingsPopup
-            settings={settings}
-            setSettings={setSettings}
-            fullScreenNode={fullScreenNode}
-          />
-          <AnnotateTaskManual fullScreenNode={fullScreenNode} />
-          <NextUnitButton unit={unit} annotations={annotations} setUnitIndex={setUnitIndex} />
-        </Button.Group>
         <div
           style={{
-            height: "calc(100% - 30px)",
+            height: "calc(100% - 35px)",
             fontSize: `${settings.textSize}em`,
           }}
         >
@@ -90,6 +82,24 @@ const AnnotateTask = ({
             bodyStyle={BODYSTYLE}
           />
         </div>
+        <Button.Group
+          fluid
+          style={{
+            padding: "0",
+            height: "35px",
+            background: "#27292a",
+            borderRadius: "5px",
+          }}
+        >
+          <SettingsPopup
+            settings={settings}
+            setSettings={setSettings}
+            fullScreenNode={fullScreenNode}
+          />
+          <Instructions codebook={codebook} fullScreenNode={fullScreenNode} />
+          <AnnotateTaskManual fullScreenNode={fullScreenNode} />
+          <NextUnitButton unit={unit} annotations={annotations} setUnitIndex={setUnitIndex} />
+        </Button.Group>
       </Grid.Column>
       {renderAnnotateTable()}
     </Grid>
@@ -205,7 +215,7 @@ const NextUnitButton = ({ unit, annotations, setUnitIndex }: NextUnitButtonProps
       loading={tempDisable === "loading"}
       primary
       size="tiny"
-      style={{ padding: "5px" }}
+      style={{ padding: "5px", marginLeft: "30px" }}
       onClick={onNext}
     >
       <Icon name="play" />
@@ -227,13 +237,16 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
       mountNode={fullScreenNode || undefined}
       trigger={
         <Button
-          secondary
           width={1}
+          size="huge"
           icon="setting"
           style={{
-            padding: "7px",
+            background: "transparent",
+            cursor: "pointer",
             color: "white",
-            maxWidth: "50px",
+            padding: "4px 5px 4px 5px",
+            maxWidth: "30px",
+            zIndex: 1000,
           }}
         />
       }

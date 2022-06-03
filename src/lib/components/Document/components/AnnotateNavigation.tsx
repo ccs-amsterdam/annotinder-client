@@ -123,22 +123,6 @@ const showAnnotations = (
   }
 };
 
-// in the current design imported span annotations are always expanded
-// because this is also more efficient in toggling on/off
-//
-// const expandAnnotations = (annotations) => {
-//   for (let index of Object.keys(annotations)) {
-//     for (let variable of Object.keys(annotations[index])) {
-//       const span = annotations[index][variable].span;
-//       for (let spanI = span[0]; spanI <= span[1]; spanI++) {
-//         if (!annotations[spanI]) annotations[spanI] = {};
-//         annotations[spanI][variable] = { ...annotations[index][variable], index: spanI };
-//       }
-//     }
-//   }
-//   return annotations;
-// };
-
 const allowedAnnotations = (annotations: TokenAnnotations, variableMap: VariableMap) => {
   // get all annotations that are currently 'allowed', meaning that the variable is selected
   // and the codes are valid and active codes in the codebook

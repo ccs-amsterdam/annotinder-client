@@ -40,7 +40,6 @@ function updateSize(setSize) {
   const width = document.documentElement.clientWidth;
   setSize((size) => {
     if (size.height === height && size.width === width) return size;
-    console.log("performed resize");
     return { height, width };
   });
 }

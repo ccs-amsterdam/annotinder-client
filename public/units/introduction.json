@@ -48,9 +48,14 @@
       ],
       "codebook": {
         "type": "questions",
+        "settings": {
+          "instruction": "# Codebook instruction\n\nYou can add instructions to a codebook. These are provided as a markdown string, so you can do some simple formatting like this:\n\n### Favourite type of animal\nThe first question is about your favourite animal\n\n### How many animals of this type do you have?\nVery important to know",
+          "auto_instruction": true
+        },
         "questions": [
           {
             "name": "fav_animal",
+            "instruction": "questions can have individual instructions",
             "type": "select code",
             "question": "What's your favourite type of animal?",
             "codes": [
@@ -63,6 +68,7 @@
           {
             "name": "fav_animal_count",
             "type": "inputs",
+            "instruction": "blabla instruction blabla",
             "question": "How many {fav_animal} do you have?",
             "items": [{ "name": "animal count", "type": "number", "min": 0 }]
           }
@@ -279,7 +285,11 @@
       "variables": [],
       "codebook": {
         "type": "annotate",
-        "settings": { "no_table": false },
+        "settings": {
+          "instruction": "# Annotate task instruction\n\nAnnotate tasks can also have codebook instructions",
+          "no_table": false
+        },
+
         "variables": [
           {
             "codes": [

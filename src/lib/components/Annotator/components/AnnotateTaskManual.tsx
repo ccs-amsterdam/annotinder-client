@@ -18,21 +18,29 @@ const AnnotateTaskManual = ({ fullScreenNode }: AnnotateTaskManualProps) => {
       trigger={
         <Button
           secondary
-          icon="question"
-          size="tiny"
+          icon="keyboard"
+          size="huge"
           onClick={() => setOpen(!open)}
-          style={{ padding: "5px", maxWidth: "50px" }}
+          style={{
+            background: "transparent",
+            cursor: "pointer",
+            color: "white",
+            padding: "4px 5px 4px 5px",
+            maxWidth: "30px",
+            zIndex: 1000,
+          }}
         />
       }
     >
       <Modal.Header>Controls</Modal.Header>
-      <Modal.Content>
+      <Modal.Content scrolling>
         <Container
           style={{
             overflow: "auto",
             paddingTop: "2em",
             width: "100%",
             maxWidth: "700px",
+            fontSize: "12px",
           }}
         >
           <Table celled structured unstackable>

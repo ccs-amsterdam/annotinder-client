@@ -14,7 +14,6 @@ const swipeControl = (
   if (!swipeable.includes(question.type)) return {};
 
   let swipeOptions = question.swipeOptions;
-  console.log(question.type);
   if (question.type === "confirm") {
     // make confirm questions swipeable in any direction
     const confirmoption = {

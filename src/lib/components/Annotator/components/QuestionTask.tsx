@@ -7,6 +7,7 @@ import swipeControl from "../functions/swipeControl";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import styled from "styled-components";
 import { CodeBook, FullScreenNode, SetState, Swipes, Unit } from "../../../types";
+import Instructions from "./Instructions";
 
 const Container = styled.div`
   display: flex;
@@ -157,6 +158,7 @@ const QuestionTask = ({
             fullScreenNode={fullScreenNode}
             cantChangeSplitHeight={minifiedAnswerForm || unit?.settings?.text_window_size != null}
           />
+          <Instructions codebook={codebook} fullScreenNode={fullScreenNode} />
         </QuestionForm>
       </QuestionMenu>
     </Container>
@@ -178,19 +180,21 @@ const SettingsPopup = ({
 }: SettingsPopupProps) => {
   return (
     <Portal
+      closeOnTriggerClick
       mountNode={fullScreenNode || undefined}
       on="click"
       trigger={
         <Button
-          size="large"
+          size="huge"
           icon="setting"
           style={{
             background: "transparent",
             cursor: "pointer",
             color: "white",
-            padding: "10px 10px",
-            paddingBottom: "2px",
-            zIndex: 9000,
+            padding: "4px 5px 4px 5px",
+            margin: "0",
+            width: "30px",
+            zIndex: 1000,
           }}
         />
       }
@@ -200,7 +204,7 @@ const SettingsPopup = ({
           bottom: "0",
           position: "fixed",
           width: "50%",
-          zIndex: 1000,
+          zIndex: 10000,
           background: "#dfeffb",
           border: "1px solid #136bae",
         }}

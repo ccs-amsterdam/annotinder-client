@@ -36,6 +36,7 @@ const Inputs = ({
     setSelectedItem(0);
   }, [questionIndex]);
 
+  console.log(answerItems);
   const done =
     answerItems &&
     answerItems.length > 0 &&
@@ -166,19 +167,17 @@ const Items = ({
         flex: "1 1 auto",
         overflow: "auto",
         display: "flex",
-        flexDirection: "column",
+        //flexDirection: "column",
+        flexWrap: "wrap",
         background: "rgb(211, 223, 233)",
       }}
     >
       {items.map((itemObj, itemIndex: number) => {
         let itemlabel = itemObj.label ?? itemObj.name ?? itemObj;
-        let margin = "0px 0px";
-        if (itemIndex === 0) margin = "auto 0px 0px 0px";
-        if (itemIndex === items.length - 1) margin = "0px 0px auto 0px";
         return (
           <div
             key={itemIndex + "_" + itemObj.label}
-            style={{ padding: "10px", width: "100%", textAlign: "center", margin }}
+            style={{ padding: "10px", textAlign: "center", flex: "1 1 auto", margin: "auto" }}
           >
             <Form onSubmit={(e, d) => setSelectedItem((current: number) => current + 1)}>
               <Form.Field>
@@ -222,7 +221,7 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
         type={"number"}
         min={item?.min}
         max={item?.max}
-        value={Number(value) || ""}
+        value={isNaN(Number(value)) ? "" : Number(value)}
         style={{
           maxWidth: "150px",
           textAlign: "center",
@@ -257,6 +256,7 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
     );
   }
 
+  // text input, but with validation and autocomplete
   if (item?.type === "email")
     return (
       <input
@@ -280,6 +280,7 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
       />
     );
 
+  // regular text input
   return (
     <input
       key={item.name}

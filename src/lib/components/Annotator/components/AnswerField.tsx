@@ -59,7 +59,6 @@ const AnswerField = ({
   }, [answers, questionIndex, answerItems]);
 
   const onFinish = () => {
-    console.log(answerItems);
     onAnswer(answerItems, false, MIN_DELAY);
   };
 

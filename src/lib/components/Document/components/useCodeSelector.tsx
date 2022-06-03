@@ -222,10 +222,11 @@ const CodeSelectorPopup = React.memo(
 
     if (smallscreen) {
       return (
-        // A transitionableportal would look cool, but for some reason a mouseclick to trigger the popup/portal
-        // propagates to immediately close it (hence the silly canIClose check).
+        // A transitionableportal would look cool, but a mouseclick to trigger the popup/portal
+        // propagates to the document and immediately closes it and I somehow can't stopt it (hence the silly canIClose check).
         <Portal
           mountNode={fullScreenNode || undefined}
+          mountOnShow={false}
           open={open}
           onClose={(e, d) => {
             if (canIClose.current) setOpen(false);

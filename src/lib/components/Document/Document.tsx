@@ -116,6 +116,12 @@ const Document = ({
       }}
     >
       <>
+        <SelectVariable
+          variables={variables}
+          variable={variable}
+          setVariable={setVariable}
+          editAll={settings?.editAll}
+        />
         <Body
           tokens={doc.tokens}
           text_fields={doc.text_fields}
@@ -124,13 +130,6 @@ const Document = ({
           markdown_field={doc.markdown_field}
           setReady={setTokensReady}
           bodyStyle={bodyStyle}
-        />
-
-        <SelectVariable
-          variables={variables}
-          variable={variable}
-          setVariable={setVariable}
-          editAll={settings?.editAll}
         />
 
         <AnnotateNavigation

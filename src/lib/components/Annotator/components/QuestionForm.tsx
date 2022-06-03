@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, ReactElement } from "react";
+import React, { useState, useEffect, useRef, ReactElement, useCallback } from "react";
 import { Header, Segment, Icon } from "semantic-ui-react";
 import styled from "styled-components";
 import {
@@ -81,7 +81,7 @@ const segmentStyle = {
 };
 
 interface QuestionFormProps {
-  children: ReactElement;
+  children: ReactElement | ReactElement[];
   unit: Unit;
   tokens: Token[];
   questions: Question[];
@@ -110,37 +110,40 @@ const QuestionForm = ({
   useEffect(() => {
     if (!questions) return;
     getAnswersFromAnnotations(unit, tokens, questions, setAnswers);
-    blockAnswer.current = false;
     setQuestionIndex(0);
   }, [unit, tokens, setAnswers, setQuestionIndex, questions]);
 
   useEffect(() => {
-    if (!questions?.[questionIndex] || !unit) return null;
+    if (!questions?.[questionIndex] || !unit) {
+      setQuestionIndex(0);
+      return;
+    }
     setQuestionText(prepareQuestion(unit, questions[questionIndex], answers));
-  }, [unit, questions, questionIndex, answers]);
+    blockAnswer.current = false;
+  }, [unit, questions, questionIndex, answers, setQuestionIndex]);
+
+  const onAnswer = useCallback(
+    (items: AnswerItem[], onlySave = false, minDelay = 0): void => {
+      // posts results and skips to next question, or next unit if no questions left.
+      // If onlySave is true, only write to db without going to next question
+      processAnswer(
+        items,
+        onlySave,
+        minDelay,
+        unit,
+        questions,
+        answers,
+        questionIndex,
+        setUnitIndex,
+        setQuestionIndex,
+        blockAnswer
+      );
+    },
+    [answers, questionIndex, questions, setQuestionIndex, setUnitIndex, unit]
+  );
 
   if (!questions || !unit || !answers) return null;
-  if (!questions?.[questionIndex]) {
-    setQuestionIndex(0);
-    return null;
-  }
-
-  const onAnswer = (items: AnswerItem[], onlySave = false, minDelay = 0): void => {
-    // posts results and skips to next question, or next unit if no questions left.
-    // If onlySave is true, only write to db without going to next question
-    processAnswer(
-      items,
-      onlySave,
-      minDelay,
-      unit,
-      questions,
-      answers,
-      questionIndex,
-      setUnitIndex,
-      setQuestionIndex,
-      blockAnswer
-    );
-  };
+  if (!questions?.[questionIndex]) return null;
 
   let done = true;
   for (let a of answers) {
@@ -152,7 +155,7 @@ const QuestionForm = ({
   return (
     <QuestionDiv>
       <MenuDiv>
-        <div>{children}</div>
+        <div style={{ display: "flex", width: "60px" }}>{children}</div>
         <div style={{ width: "100%", textAlign: "center" }}>
           <QuestionIndexStep
             questions={questions}
@@ -161,7 +164,7 @@ const QuestionForm = ({
             setQuestionIndex={setQuestionIndex}
           />
         </div>
-        <div style={{ position: "relative", width: "43px" }}>
+        <div style={{ position: "relative", width: "60px" }}>
           {done ? <Icon size="big" name="check square outline" style={iconStyle} /> : null}
         </div>
       </MenuDiv>
@@ -236,7 +239,7 @@ const markedString = (text: string) => {
   );
 };
 
-const processAnswer = (
+const processAnswer = async (
   items: AnswerItem[],
   onlySave = false,
   minDelay = 0,
@@ -247,7 +250,7 @@ const processAnswer = (
   setUnitIndex: SetState<number>,
   setQuestionIndex: SetState<number>,
   blockAnswer: any
-): void => {
+): Promise<void> => {
   if (blockAnswer.current) return null;
   blockAnswer.current = true;
 
@@ -258,7 +261,6 @@ const processAnswer = (
       questions[questionIndex].options
     );
 
-    console.log(answers[questionIndex]);
     unit.annotations = addAnnotationsFromAnswer(answers[questionIndex], unit.annotations);
 
     const irrelevantQuestions = processIrrelevantBranching(unit, questions, answers, questionIndex);
@@ -285,11 +287,11 @@ const processAnswer = (
     }
 
     if (newQuestionIndex !== null) {
-      // if there is a next question, postAnnotation immediately and unblock answering after half a second
-      // (to prevent accidentally double clicking)
+      // if there is a next question, postAnnotation immediately, then wait a little bit
+      // before moving on to prevent accidentally annotating next item by double clicking
       unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status);
       setTimeout(() => setQuestionIndex(newQuestionIndex), minDelay);
-      setTimeout(() => (blockAnswer.current = false), 500);
+      //setTimeout(() => (blockAnswer.current = false), 500);
     } else {
       // if this was the last question of the unit, wait untill postAnnotation is completed so that the database
       // has registered that the unit is done (otherwise it won't give the next unit)

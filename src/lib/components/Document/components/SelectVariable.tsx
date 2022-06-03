@@ -85,7 +85,6 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
           margin: "0",
           padding: "3px",
           color: "white",
-          fontStyle: "italic",
         }}
       >
         {helpText}
@@ -113,7 +112,7 @@ const VariableMenu = ({ variable, setVariable, variables, variableNames }: Varia
             padding: "0 3px",
             wordWrap: "break-word",
             fontSize: "1.2em",
-            fontWeight: "normal",
+            fontWeight: "bold",
             background: name === variable ? "#2185d0" : "rgb(127, 185, 235)",
             color: name === variable ? "white" : "black",
           }}
