@@ -1,10 +1,10 @@
 import React, { useState, useEffect, CSSProperties } from "react";
 import { Button, Grid, Header, Icon } from "semantic-ui-react";
-import ReactMarkdown from "react-markdown";
 import { QRCodeCanvas } from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
 import Backend from "../../AnnotatorClient/classes/Backend";
 import { Debriefing, JobServer } from "../../../types";
+import Markdown from "../../Common/Markdown";
 
 interface FinishedProps {
   jobServer: JobServer;
@@ -42,7 +42,7 @@ const Finished = ({ jobServer }: FinishedProps) => {
             </div>
           </Grid.Row>
           <Grid.Row>
-            <ReactMarkdown linkTarget={"_blank"}>{debriefing.message}</ReactMarkdown>
+            <Markdown>{debriefing.message}</Markdown>
             {debriefing.link ? (
               <Button
                 as="a"

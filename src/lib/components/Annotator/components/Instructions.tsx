@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Modal, Button, TransitionablePortal } from "semantic-ui-react";
 import { FullScreenNode, CodeBook } from "../../../types";
-import ReactMarkdown from "react-markdown";
+import Markdown from "../../Common/Markdown";
 
 interface InstructionsProps {
   codebook: CodeBook;
@@ -63,7 +63,7 @@ const Instructions = ({ codebook, fullScreenNode }: InstructionsProps) => {
         style={{ zIndex: 10000 }}
       >
         <Modal.Content scrolling style={{ zIndex: 10000 }}>
-          <ReactMarkdown linkTarget={"_blank"}>{instruction}</ReactMarkdown>
+          <Markdown>{instruction}</Markdown>
         </Modal.Content>
       </Modal>
     </TransitionablePortal>

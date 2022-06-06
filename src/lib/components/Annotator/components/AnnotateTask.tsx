@@ -62,7 +62,11 @@ const AnnotateTask = ({
     >
       <Grid.Column
         width={10}
-        style={{ paddingRight: "0em", paddingTop: "0", paddingBottom: "0", height: "100%" }}
+        style={{
+          padding: "0",
+          height: "100%",
+          //margin: "0",
+        }}
       >
         <div
           style={{
