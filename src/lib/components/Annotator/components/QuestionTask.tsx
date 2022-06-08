@@ -6,7 +6,15 @@ import { Button, Form, Input, Portal, Segment } from "semantic-ui-react";
 import swipeControl from "../functions/swipeControl";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import styled from "styled-components";
-import { CodeBook, FullScreenNode, SetState, Swipes, Unit } from "../../../types";
+import {
+  CodeBook,
+  FullScreenNode,
+  GoldFeedback,
+  SessionData,
+  SetState,
+  Swipes,
+  Unit,
+} from "../../../types";
 import Instructions from "./Instructions";
 
 const Container = styled.div`
@@ -60,7 +68,9 @@ interface QuestionTaskProps {
   unit: Unit;
   codebook: CodeBook;
   setUnitIndex: SetState<number>;
+  setGoldFeedback: SetState<GoldFeedback[]>;
   fullScreenNode: FullScreenNode;
+  sessionData: SessionData;
   blockEvents?: boolean;
 }
 
@@ -68,7 +78,9 @@ const QuestionTask = ({
   unit,
   codebook,
   setUnitIndex,
+  setGoldFeedback,
   fullScreenNode,
+  sessionData,
   blockEvents = false,
 }: QuestionTaskProps) => {
   const [tokens, setTokens] = useState([]);
@@ -149,6 +161,7 @@ const QuestionTask = ({
           questionIndex={questionIndex}
           setQuestionIndex={setQuestionIndex}
           setUnitIndex={setUnitIndex}
+          setGoldFeedback={setGoldFeedback}
           swipe={swipe}
           blockEvents={blockEvents}
         >
@@ -158,7 +171,11 @@ const QuestionTask = ({
             fullScreenNode={fullScreenNode}
             cantChangeSplitHeight={minifiedAnswerForm || unit?.settings?.text_window_size != null}
           />
-          <Instructions codebook={codebook} fullScreenNode={fullScreenNode} />
+          <Instructions
+            codebook={codebook}
+            sessionData={sessionData}
+            fullScreenNode={fullScreenNode}
+          />
         </QuestionForm>
       </QuestionMenu>
     </Container>

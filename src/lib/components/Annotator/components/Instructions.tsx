@@ -1,20 +1,17 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Button, TransitionablePortal } from "semantic-ui-react";
-import { FullScreenNode, CodeBook } from "../../../types";
+import { FullScreenNode, CodeBook, SessionData } from "../../../types";
 import Markdown from "../../Common/Markdown";
 
 interface InstructionsProps {
   codebook: CodeBook;
+  sessionData: SessionData;
   fullScreenNode: FullScreenNode;
 }
 
-const Instructions = ({ codebook, fullScreenNode }: InstructionsProps) => {
+const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsProps) => {
   const [open, setOpen] = useState(false);
   const [instruction, setInstruction] = useState(null);
-
-  // keep track of instructions that have been seen in the current session,
-  // so that we only auto-open them the first time
-  const seenInstructions = useRef<Record<string, boolean>>({});
 
   useEffect(() => {
     const inst = codebook?.settings?.instruction;
@@ -25,16 +22,17 @@ const Instructions = ({ codebook, fullScreenNode }: InstructionsProps) => {
     }
     setInstruction(inst);
     if (codebook?.settings?.auto_instruction) {
-      if (!seenInstructions.current[inst]) setOpen(true);
-      seenInstructions.current[inst] = true;
+      if (!sessionData.seenInstructions[inst]) setOpen(true);
+      sessionData.seenInstructions[inst] = true;
     }
-  }, [codebook, seenInstructions]);
+  }, [codebook, sessionData]);
 
   if (!instruction) return null;
 
   return (
     <TransitionablePortal
       closeOnTriggerClick
+      transition={{ duration: 200 }}
       mountNode={fullScreenNode || undefined}
       onClose={() => setOpen(false)}
       open={open}

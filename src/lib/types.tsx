@@ -239,6 +239,40 @@ export interface CodeSelectorDropdownOption {
 
 export type TokenSelection = [number, number] | [];
 
+///// GOLD
+
+/** Specified the correct answer to an annotation.  */
+export interface Gold {
+  matches: {
+    variable: string;
+    /** The value to compare the annotation value to. See 'operator' for comparison */
+    value: string | number;
+    /** The damage to the coder's health if this gold is not matched. A coder has 100 health per job */
+    damage?: number;
+    /** A markdown string for a message to display when if_wrong is "retry" or "explain" */
+    message?: string;
+    /** The operator to compare the annotation value to the gold value. Default is == */
+    operator?: "==" | "<=" | "<" | ">=" | ">" | "!=";
+    /** If given, annotation needs to have this field */
+    field: string;
+    /** If given, annotation needs to have this offset */
+    offset?: number;
+    /** If given, annotation needs to have this length */
+    length?: number;
+  }[];
+
+  /** What to do if gold is not matched. Pass silently (default) or make coder retry */
+  if_wrong?: "silent" | "retry";
+  /** Should the damage be undone if the answer is corrected? Default is true */
+  redemption?: boolean;
+}
+
+export interface GoldFeedback {
+  variable: string;
+  answer?: string | number;
+  message?: string;
+}
+
 ///// JOBSERVER
 
 /**
@@ -249,10 +283,10 @@ export interface JobServer {
   codebook: CodeBook;
   progress: Progress;
   return_link?: string;
-  units?: BackendUnit[];
   job_id?: number;
   setJobServer?: SetState<JobServer>;
   backend?: Backend;
+  demodata?: DemoData;
 
   init: () => void;
   getUnit: (i: number) => Promise<BackendUnit>;
@@ -261,7 +295,12 @@ export interface JobServer {
     unitIndex: number,
     annotation: Annotation[],
     status: Status
-  ) => void;
+  ) => Promise<GoldFeedback[]>;
+  getDebriefing?: () => Promise<Debriefing>;
+}
+
+export interface DemoData {
+  units?: BackendUnit[];
 }
 
 /**
@@ -303,15 +342,18 @@ export interface Unit {
 
 /** A unit in the raw JSON structure. This is also the same structure in which it should be uploaded to the backend  */
 export interface RawUnit {
-  unit_id: string; // The external id. A unique id provided when creating the codingjob
-  text_fields?: TextField[];
-  meta_fields?: MetaField[];
-  image_fields?: ImageField[];
-  markdown_field?: string;
-  annotations?: Annotation[];
-  importedAnnotations?: Annotation[];
-  codebook?: RawCodeBook;
-  variables?: UnitVariables;
+  id: string; // The external id. A unique id provided when creating the codingjob
+  gold: Gold;
+  unit: {
+    text_fields?: TextField[];
+    meta_fields?: MetaField[];
+    image_fields?: ImageField[];
+    markdown_field?: string;
+    annotations?: Annotation[];
+    importedAnnotations?: Annotation[];
+    codebook?: RawCodeBook;
+    variables?: UnitVariables;
+  };
 }
 
 /** Units can have an object of variables, where keys are the variable names and values are pieces of text.
@@ -321,10 +363,26 @@ export interface UnitVariables {
   [key: string]: string;
 }
 
-/** A unit as it can be served by the backend. Basically a rawunit, but with index and status */
-export interface BackendUnit extends RawUnit {
+/** A unit as it can be served by the backend. Basically extends rawunit (but not exactly), adding index and status.
+ * Note that some parts (gold, damage) will normally not be visible to the frontend, but are included
+ * here for jobserverdemo
+ */
+export interface BackendUnit {
   index: number;
   status: UnitStatus;
+  external_id?: string;
+  unit: {
+    text_fields?: TextField[];
+    meta_fields?: MetaField[];
+    image_fields?: ImageField[];
+    markdown_field?: string;
+    annotations?: Annotation[];
+    importedAnnotations?: Annotation[];
+    codebook?: RawCodeBook;
+    variables?: UnitVariables;
+  };
+  gold?: Gold;
+  damage?: number;
   annotation?: Annotation[]; // backend calls the annotations array annotation. Should probably change this
 }
 
@@ -573,4 +631,8 @@ export interface Debriefing {
   user_id?: string;
   /** If True, show QR code for sharing the job with other people */
   qr?: boolean;
+}
+
+export interface SessionData {
+  seenInstructions: Record<string, boolean>;
 }

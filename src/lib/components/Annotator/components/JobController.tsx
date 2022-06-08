@@ -47,7 +47,7 @@ const JobController = ({
         style={{
           height: "45px",
           width: "100%",
-          padding: "5px 5px 0px 5px",
+          padding: "0px 5px 0px 5px",
           display: "flex",
           justifyContent: "space-between",
         }}
@@ -55,7 +55,7 @@ const JobController = ({
         <div
           style={{
             flex: "1 1 auto",
-            paddingTop: "3px",
+            paddingTop: "4px",
             paddingRight: "10px",
           }}
         >

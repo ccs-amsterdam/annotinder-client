@@ -1,5 +1,14 @@
 import Axios, { AxiosInstance } from "axios";
-import { Annotation, Job, JobAnnotation, JobSettings, Status, User } from "../../../types";
+import {
+  Annotation,
+  Debriefing,
+  GoldFeedback,
+  Job,
+  JobAnnotation,
+  JobSettings,
+  Status,
+  User,
+} from "../../../types";
 
 export async function passwordLogin(host: string, email: string, password: string) {
   const d = new FormData();
@@ -97,7 +106,7 @@ class Backend {
     const res = await this.api.get(path);
     return res.data.jobs;
   }
-  async getDebriefing(job_id: number) {
+  async getDebriefing(job_id: number): Promise<Debriefing> {
     const path = `annotator/codingjob/${job_id}/debriefing`;
     const res = await this.api.get(path);
     return res.data;
@@ -113,7 +122,12 @@ class Backend {
       users,
     });
   }
-  postAnnotation(job_id: number, unit_id: number, annotation: Annotation[], status: Status) {
+  postAnnotation(
+    job_id: number,
+    unit_id: number,
+    annotation: Annotation[],
+    status: Status
+  ): Promise<GoldFeedback[]> {
     const data = { annotation, status };
     return this.api.post(`annotator/codingjob/${job_id}/unit/${unit_id}/annotation`, data);
   }

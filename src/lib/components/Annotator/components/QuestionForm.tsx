@@ -10,6 +10,7 @@ import {
   Annotation,
   Token,
   Swipes,
+  GoldFeedback,
 } from "../../../types";
 import {
   getMakesIrrelevantArray,
@@ -88,6 +89,7 @@ interface QuestionFormProps {
   questionIndex: number;
   setQuestionIndex: SetState<number>;
   setUnitIndex: SetState<number>;
+  setGoldFeedback: SetState<GoldFeedback[]>;
   swipe: Swipes;
   blockEvents: boolean;
 }
@@ -100,6 +102,7 @@ const QuestionForm = ({
   questionIndex,
   setQuestionIndex,
   setUnitIndex,
+  setGoldFeedback,
   swipe,
   blockEvents,
 }: QuestionFormProps) => {
@@ -136,10 +139,11 @@ const QuestionForm = ({
         questionIndex,
         setUnitIndex,
         setQuestionIndex,
+        setGoldFeedback,
         blockAnswer
       );
     },
-    [answers, questionIndex, questions, setQuestionIndex, setUnitIndex, unit]
+    [answers, questionIndex, questions, setQuestionIndex, setUnitIndex, setGoldFeedback, unit]
   );
 
   if (!questions || !unit || !answers) return null;
@@ -249,6 +253,7 @@ const processAnswer = async (
   questionIndex: number,
   setUnitIndex: SetState<number>,
   setQuestionIndex: SetState<number>,
+  setGoldFeedback: SetState<GoldFeedback[]>,
   blockAnswer: any
 ): Promise<void> => {
   if (blockAnswer.current) return null;
@@ -286,25 +291,26 @@ const processAnswer = async (
       return;
     }
 
-    if (newQuestionIndex !== null) {
-      // if there is a next question, postAnnotation immediately, then wait a little bit
-      // before moving on to prevent accidentally annotating next item by double clicking
-      unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status);
-      setTimeout(() => setQuestionIndex(newQuestionIndex), minDelay);
-      //setTimeout(() => (blockAnswer.current = false), 500);
+    const start = new Date();
+    const goldfeedback: GoldFeedback[] = await unit.jobServer.postAnnotations(
+      unit.unitId,
+      unit.unitIndex,
+      cleanAnnotations,
+      status
+    );
+    if (goldfeedback.length > 0) {
+      setGoldFeedback(goldfeedback);
+      blockAnswer.current = false;
     } else {
-      // if this was the last question of the unit, wait untill postAnnotation is completed so that the database
-      // has registered that the unit is done (otherwise it won't give the next unit)
-      // don't need to unblock answering, because this happens automatically when the unit state is updated with the new unit
-
-      const start = new Date();
-      unit.jobServer
-        .postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status)
-        .then((res: any) => {
-          const delay = new Date().getTime() - start.getTime();
-          const extradelay = Math.max(0, minDelay - delay);
-          setTimeout(() => setUnitIndex((state: number) => state + 1), extradelay);
-        });
+      const delay = new Date().getTime() - start.getTime();
+      const extradelay = Math.max(0, minDelay - delay);
+      await new Promise((resolve) => setTimeout(resolve, extradelay));
+      if (newQuestionIndex !== null) {
+        setQuestionIndex(newQuestionIndex);
+      } else {
+        setUnitIndex((state: number) => state + 1);
+      }
+      blockAnswer.current = false;
     }
   } catch (e) {
     console.log(e);

@@ -42,10 +42,10 @@ const DemoJobOverview = () => {
 
 const unit_files = [
   { label: "State of the union speeches", filename: "sotu" },
-  { label: "State of the union paragraphs", filename: "sotu_par" },
-  { label: "Units with actor annotations", filename: "actor_annotation" },
+  //{ label: "State of the union paragraphs", filename: "sotu_par" },
+  //{ label: "Units with actor annotations", filename: "actor_annotation" },
   { label: "Political images", filename: "images" },
-  { label: "State of the union paragraphs with pre-survey", filename: "sotu_par_pre_survey" },
+  //{ label: "State of the union paragraphs with pre-survey", filename: "sotu_par_pre_survey" },
   { label: "Introduction to the CCS Annotator", filename: "introduction" },
 ];
 const codebook_files = [

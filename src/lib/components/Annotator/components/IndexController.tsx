@@ -124,7 +124,7 @@ const IndexController = ({
       <input
         style={{
           flex: "1 1 0px",
-          marginTop: "3px",
+          marginTop: "0px",
           minWidth: "1px",
           //maxWidth: "500px",
           background: `linear-gradient(to right, ${progressColor} ${progress}%, ${sliderColor} ${progress}% 100%, ${sliderColor} 100%)`,

@@ -11,7 +11,7 @@ import {
 import Backend from "./Backend";
 
 class JobServerAPI implements JobServer {
-  backend: Backend; // TODO: add interface
+  backend: Backend;
   job_id: number;
   setJobServer: SetState<JobServerAPI>;
   progress: Progress;
@@ -50,11 +50,22 @@ class JobServerAPI implements JobServer {
     status: Status
   ) {
     try {
-      await this.backend.postAnnotation(this.job_id, unitId, annotation, status);
-      this.progress.n_coded = Math.max(unitIndex + 1, this.progress.n_coded);
+      const goldfeedback = await this.backend.postAnnotation(
+        this.job_id,
+        unitId,
+        annotation,
+        status
+      );
+      if (goldfeedback.length === 0)
+        this.progress.n_coded = Math.max(unitIndex + 1, this.progress.n_coded);
+      return goldfeedback;
     } catch (e) {
       if (this.setJobServer) this.setJobServer(null);
     }
+  }
+
+  async getDebriefing() {
+    return this.backend.getDebriefing(this.job_id);
   }
 }
 

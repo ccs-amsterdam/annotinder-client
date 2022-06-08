@@ -4,7 +4,16 @@ import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import AnnotateTaskManual from "./AnnotateTaskManual";
-import { Annotation, FullScreenNode, Unit, VariableMap, SetState, CodeBook } from "../../../types";
+import {
+  Annotation,
+  FullScreenNode,
+  Unit,
+  VariableMap,
+  SetState,
+  CodeBook,
+  SessionData,
+  GoldFeedback,
+} from "../../../types";
 import Instructions from "./Instructions";
 
 const NEXTDELAY = 500;
@@ -17,7 +26,9 @@ interface AnnotateTaskProps {
   unit: Unit;
   codebook: CodeBook;
   setUnitIndex: SetState<number>;
+  setGoldFeedback: SetState<GoldFeedback[]>;
   fullScreenNode: FullScreenNode;
+  sessionData?: SessionData;
   blockEvents?: boolean;
 }
 
@@ -25,7 +36,9 @@ const AnnotateTask = ({
   unit,
   codebook,
   setUnitIndex,
+  setGoldFeedback,
   fullScreenNode,
+  sessionData,
   blockEvents = false,
 }: AnnotateTaskProps) => {
   const [annotations, onChangeAnnotations] = useAnnotations(unit);
@@ -100,7 +113,11 @@ const AnnotateTask = ({
             setSettings={setSettings}
             fullScreenNode={fullScreenNode}
           />
-          <Instructions codebook={codebook} fullScreenNode={fullScreenNode} />
+          <Instructions
+            codebook={codebook}
+            sessionData={sessionData}
+            fullScreenNode={fullScreenNode}
+          />
           <AnnotateTaskManual fullScreenNode={fullScreenNode} />
           <NextUnitButton unit={unit} annotations={annotations} setUnitIndex={setUnitIndex} />
         </Button.Group>

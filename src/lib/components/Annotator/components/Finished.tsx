@@ -15,8 +15,8 @@ const Finished = ({ jobServer }: FinishedProps) => {
 
   useEffect(() => {
     if (!jobServer?.backend) return;
-    jobServer.backend
-      .getDebriefing(jobServer.job_id)
+    jobServer
+      .getDebriefing()
       .then((data: Debriefing) => {
         setDebriefing(data);
       })
