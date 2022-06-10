@@ -122,6 +122,9 @@ function checkGold(units: BackendUnit[], unitIndex: number): GoldFeedback[] {
     );
   }
 
+  if (goldfeedback.length > 0) units[unitIndex].status = "IN_PROGRESS";
+  units[unitIndex].goldFeedback = goldfeedback;
+
   return goldfeedback;
 }
 

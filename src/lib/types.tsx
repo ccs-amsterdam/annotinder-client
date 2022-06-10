@@ -326,6 +326,7 @@ export interface Unit {
   unitId: number | string; // this is the backend id, not the external id
   annotations: Annotation[];
   status: UnitStatus;
+  goldFeedback: GoldFeedback[];
   tokens?: RawToken[];
   text_fields?: TextField[];
   meta_fields?: MetaField[];
@@ -382,6 +383,7 @@ export interface BackendUnit {
     variables?: UnitVariables;
   };
   gold?: Gold;
+  goldFeedback?: GoldFeedback[];
   damage?: number;
   annotation?: Annotation[]; // backend calls the annotations array annotation. Should probably change this
 }

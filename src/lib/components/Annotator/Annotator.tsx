@@ -4,9 +4,8 @@ import AnnotateUnit from "./components/AnnotateUnit";
 import FullScreenWindow from "./components/FullScreenWindow";
 import "./annotatorStyle.css";
 import JobController from "./components/JobController";
-import { JobServer, Unit, GoldFeedback } from "../../types";
+import { JobServer, Unit } from "../../types";
 import { importCodebook } from "../../functions/codebook";
-import GoldFeedbackPortal from "./components/GoldFeedbackPortal";
 
 /**
  * Render an annotator for the provided jobServer class
@@ -18,11 +17,8 @@ interface AnnotatorProps {
 
 const Annotator = ({ jobServer, askFullScreen = false }: AnnotatorProps) => {
   const [unitIndex, setUnitIndex] = useState(-1);
-  const [goldFeedback, setGoldFeedback] = useState<GoldFeedback[]>([]);
   const [unit, setUnit] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  console.log(goldFeedback);
 
   useEffect(() => {
     // on start (or jobserver changes), unitIndex based on progress
@@ -56,12 +52,6 @@ const Annotator = ({ jobServer, askFullScreen = false }: AnnotatorProps) => {
               jobServer={jobServer}
               unitIndex={unitIndex}
               setUnitIndex={setUnitIndex}
-              setGoldFeedback={setGoldFeedback}
-              fullScreenNode={fullScreenNode}
-            />
-            <GoldFeedbackPortal
-              goldFeedback={goldFeedback}
-              setGoldFeedback={setGoldFeedback}
               fullScreenNode={fullScreenNode}
             />
           </Segment>
@@ -93,6 +83,7 @@ const getUnit = async (
       unitId: unit.id,
       annotations: unit.annotation,
       status: unit.status,
+      goldFeedback: unit.goldFeedback || [],
       text_fields: unit.unit.text_fields,
       meta_fields: unit.unit.meta_fields,
       image_fields: unit.unit.image_fields,

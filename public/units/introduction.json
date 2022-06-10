@@ -1,6 +1,6 @@
 [
   {
-    "id": "0",
+    "id": "0.1",
     "gold": {
       "if_wrong": "retry",
       "retry_message": "This unit is intended for training, and the answer you provided is incorrect according to our codebook",
@@ -33,7 +33,47 @@
               { "code": "Wrong", "color": "crimson", "swipe": "left" },
               { "code": "Correct", "color": "lightgreen", "swipe": "right" }
             ],
-            "type": "annotinder"
+            "type": "select code"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "0.2",
+    "gold": {
+      "if_wrong": "silent",
+      "retry_message": "This unit is intended for training, and the answer you provided is incorrect according to our codebook",
+      "redemption": false,
+      "matches": [{ "variable": "swipe", "value": "Correct", "damage": 10 }]
+    },
+    "unit": {
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Gold questions",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
+          "name": "text",
+          "value": "This is a gold question. If you give the wrong answer, it will deduct some points from the coder's health.\n\nThis specific question also has the setting to force coders to retry untill they get the right answer, which is mainly usefull for training purposes at the start of a job."
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "swipe",
+            "question": "Try giving the wrong answer",
+            "codes": [
+              { "code": "Wrong", "color": "crimson", "swipe": "left" },
+              { "code": "Correct", "color": "lightgreen", "swipe": "right" }
+            ],
+            "type": "select code"
           }
         ]
       }

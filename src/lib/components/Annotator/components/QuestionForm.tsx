@@ -82,8 +82,12 @@ const segmentStyle = {
 };
 
 interface QuestionFormProps {
+  /** Buttons can be passed as children, that will be shown on the topleft of the question form */
   children: ReactElement | ReactElement[];
+  /** The unit */
   unit: Unit;
+  /** The tokens of the unit. Used to include span offset and length in the annotation
+   * (this allows questions about a part of a document, like a sentence, to be made into document annotations) */
   tokens: Token[];
   questions: Question[];
   questionIndex: number;
@@ -149,12 +153,7 @@ const QuestionForm = ({
   if (!questions || !unit || !answers) return null;
   if (!questions?.[questionIndex]) return null;
 
-  let done = true;
-  for (let a of answers) {
-    for (let item of a.items) {
-      if (item.values.length === 0) done = false;
-    }
-  }
+  const done = unit.status === "DONE";
 
   return (
     <QuestionDiv>
@@ -300,6 +299,11 @@ const processAnswer = async (
     );
     if (goldfeedback.length > 0) {
       setGoldFeedback(goldfeedback);
+
+      // navigate to first questionindex that has goldfeedback
+      const questionname = goldfeedback[0].variable.split(".")[0];
+      const questionIndex = questions.findIndex((q) => q.name === questionname);
+      if (questionIndex >= 0) setQuestionIndex(questionIndex);
       blockAnswer.current = false;
     } else {
       const delay = new Date().getTime() - start.getTime();
