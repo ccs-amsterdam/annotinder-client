@@ -241,30 +241,33 @@ export type TokenSelection = [number, number] | [];
 
 ///// GOLD
 
+export interface GoldMatch {
+  variable: string;
+  /** The value to compare the annotation value to. See 'operator' for comparison */
+  value: string | number;
+  /** The damage to the coder's health if this gold is not matched. A coder has 100 health per job */
+  damage?: number;
+  /** A markdown string for a message to display action is "retry" or "explain" */
+  message?: string;
+  /** The operator to compare the annotation value to the gold value. Default is == */
+  operator?: "==" | "<=" | "<" | ">=" | ">" | "!=";
+  /** If given, annotation needs to have this field */
+  field: string;
+  /** If given, annotation needs to have this offset */
+  offset?: number;
+  /** If given, annotation needs to have this length */
+  length?: number;
+}
+
 /** Specified the correct answer to an annotation.  */
 export interface Gold {
-  matches: {
-    variable: string;
-    /** The value to compare the annotation value to. See 'operator' for comparison */
-    value: string | number;
-    /** The damage to the coder's health if this gold is not matched. A coder has 100 health per job */
-    damage?: number;
-    /** A markdown string for a message to display when if_wrong is "retry" or "explain" */
-    message?: string;
-    /** The operator to compare the annotation value to the gold value. Default is == */
-    operator?: "==" | "<=" | "<" | ">=" | ">" | "!=";
-    /** If given, annotation needs to have this field */
-    field: string;
-    /** If given, annotation needs to have this offset */
-    offset?: number;
-    /** If given, annotation needs to have this length */
-    length?: number;
-  }[];
-
+  matches: GoldMatch[];
   /** What to do if gold is not matched. Pass silently (default) or make coder retry */
-  if_wrong?: "silent" | "retry";
+  action?: "silent" | "retry";
   /** Should the damage be undone if the answer is corrected? Default is true */
   redemption?: boolean;
+  /** How much damage for getting at least one match wrong? */
+  damage?: number;
 }
 
 export interface GoldFeedback {
@@ -319,6 +322,8 @@ export interface Progress {
 
 ///// UNIT DATA
 
+export type UnitType = "pre" | "train" | "test" | "unit" | "post";
+
 /** A unit after it has been prepared by the jobServer. This is for internal use */
 export interface Unit {
   jobServer: any;
@@ -344,7 +349,8 @@ export interface Unit {
 /** A unit in the raw JSON structure. This is also the same structure in which it should be uploaded to the backend  */
 export interface RawUnit {
   id: string; // The external id. A unique id provided when creating the codingjob
-  gold: Gold;
+  type: UnitType;
+  gold: GoldMatch[];
   unit: {
     text_fields?: TextField[];
     meta_fields?: MetaField[];
@@ -382,7 +388,8 @@ export interface BackendUnit {
     codebook?: RawCodeBook;
     variables?: UnitVariables;
   };
-  gold?: Gold;
+  type: UnitType;
+  gold?: GoldMatch[];
   goldFeedback?: GoldFeedback[];
   damage?: number;
   annotation?: Annotation[]; // backend calls the annotations array annotation. Should probably change this

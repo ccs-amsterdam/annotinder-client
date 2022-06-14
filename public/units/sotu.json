@@ -1,6 +1,8 @@
 [
   {
     "id": "Obama2009",
+    "type": "unit",
+
     "unit": {
       "text_fields": [
         {
@@ -27,6 +29,8 @@
   },
   {
     "id": "Obama2013",
+    "type": "unit",
+
     "unit": {
       "text_fields": [
         {
@@ -49,6 +53,8 @@
   },
   {
     "id": "trump2017",
+    "type": "unit",
+
     "unit": {
       "text_fields": [
         {
@@ -71,6 +77,8 @@
   },
   {
     "id": "biden2021",
+    "type": "unit",
+
     "unit": {
       "text_fields": [
         {

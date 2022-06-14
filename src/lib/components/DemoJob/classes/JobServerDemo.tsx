@@ -22,13 +22,16 @@ class JobServerDemo implements JobServer {
   constructor(codebook: RawCodeBook, units: RawUnit[]) {
     this.codebook = importCodebook(codebook);
     this.demodata = {
-      units: units.map((u, i) => ({
-        external_id: u.id,
-        unit: u.unit,
-        gold: u.gold,
-        index: i,
-        status: null,
-      })),
+      units: units.map((u, i) => {
+        return {
+          external_id: u.id,
+          unit: u.unit,
+          type: u.type,
+          gold: u.gold,
+          index: i,
+          status: null,
+        };
+      }),
     };
     this.progress = {
       n_total: units.length,
@@ -74,10 +77,16 @@ class JobServerDemo implements JobServer {
 }
 
 function checkGold(units: BackendUnit[], unitIndex: number): GoldFeedback[] {
+  const type = units[unitIndex].type;
+  if (type !== "train" && type !== "test") return [];
+  const gold: Gold = {
+    action: type === "train" ? "retry" : "silent",
+    damage: type === "train" ? 0 : 10,
+    matches: units[unitIndex].gold,
+  };
   const annotation: Annotation[] = units[unitIndex].annotation;
-  const gold: Gold = units[unitIndex].gold;
   const status: Status = units[unitIndex].status;
-  if (!gold) return [];
+  if (!gold.matches) return [];
 
   const goldfeedback: GoldFeedback[] = [];
   let damage = 0;
@@ -105,12 +114,15 @@ function checkGold(units: BackendUnit[], unitIndex: number): GoldFeedback[] {
     // being here means none of the annotations matched the gold
     damage += g.damage || 0;
 
-    if (gold.if_wrong === "retry") {
+    if (gold.action === "retry") {
       const feedback: GoldFeedback = { variable: g.variable };
       if (g.message) feedback.message = g.message;
       goldfeedback.push(feedback);
     }
   }
+
+  // damage can occur on both the level of specific matches and the gold in general
+  damage += gold.damage || 0;
 
   units[unitIndex].damage = gold.redemption
     ? damage

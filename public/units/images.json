@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "type": "unit",
     "unit": {
       "text_fields": [{ "name": "text", "value": "lalalala" }],
       "image_fields": [
@@ -16,6 +17,7 @@
   },
   {
     "id": 2,
+    "type": "unit",
     "unit": {
       "text_fields": [],
       "meta_fields": [],
