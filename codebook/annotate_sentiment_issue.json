@@ -1,0 +1,63 @@
+{
+  "type": "annotate",
+  "settings": { "no_table": false },
+  "variables": [
+    {
+      "codes": [
+        {
+          "code": "Negative",
+          "color": "red"
+        },
+        {
+          "code": "Neutral",
+          "color": "grey"
+        },
+        {
+          "code": "Positive",
+          "color": "green"
+        }
+      ],
+      "name": "sentiment",
+      "instruction": "Select a word or span of words to assign a sentiment label",
+      "searchBox": false,
+      "buttonMode": "all",
+      "only_edit": false,
+      "only_imported": false,
+      "multiple": false,
+      "editMode": false
+    },
+    {
+      "codes": [
+        "Domestic mactro-economic Issues",
+        "Civil Rights, Minority Issues, and Civil Liberties",
+        "Health",
+        "Agriculture",
+        "Labor and Employment",
+        "Education",
+        "Environment",
+        "Energy",
+        "Immigration and Refugee Issues",
+        "Transportation",
+        "Law, Crime and Family Issues",
+        "Social Welfare",
+        "Community, Development and Housing Issues",
+        "Banking, Finance, and Domestic Commerce",
+        "Defense",
+        "Space, Science, Technology, and Communications",
+        "Foreign Trade",
+        "International Affairs and Foreign Aid",
+        "Government Operations",
+        "Public Lands, Water Management, and Territorial Issues",
+        "Cultural Policy Issues"
+      ],
+      "name": "issue",
+      "instruction": "Select an issue from the CAP codebook",
+      "searchBox": true,
+      "buttonMode": "recent",
+      "only_edit": false,
+      "only_imported": false,
+      "multiple": false,
+      "editMode": false
+    }
+  ]
+}

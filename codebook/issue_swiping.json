@@ -1,0 +1,19 @@
+{
+  "type": "questions",
+  "settings": {
+    "instruction": "# Issue annotinder\n\nYou will be shown several sentences, and will be asked to indicate whether these sentences are about the topic **taxes**\n\n* If you are on mobile phone, you can answer by **swiping left, right or up**.\n* Alternatively, you can use the buttons at the bottom\n* If you are using a keyboard, you can also use the **arrow keys**.",
+    "auto_instruction": true
+  },
+  "questions": [
+    {
+      "name": "taxes",
+      "question": "Is this sentence about taxes?",
+      "codes": [
+        { "code": "No", "color": "crimson", "swipe": "left" },
+        { "code": "Skip", "color": "yellow", "swipe": "up" },
+        { "code": "Yes", "color": "lightgreen", "swipe": "right" }
+      ],
+      "type": "annotinder"
+    }
+  ]
+}

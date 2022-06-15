@@ -1,0 +1,32 @@
+{
+  "type": "annotate",
+  "settings": {
+    "instruction": "# Computer assisted actor identification\n\nIn the following texts, we want to identify all references to the mentioned actors. To make this task easier on mobile phone, we have used a simple dictionary to mark the actors that we are interested in, and marked all terms that are potential references.\n\nThe coder then only has to tab on the highlighted words to add or correct actor references",
+    "auto_instruction": true
+  },
+  "settings": { "no_table": false },
+  "variables": [
+    {
+      "codes": [
+        {
+          "code": "Mary"
+        },
+        {
+          "code": "Lamb"
+        },
+        {
+          "code": "Hannibal Lecter"
+        }
+      ],
+      "name": "actor",
+      "instruction": "Add and correct all references to the actors highlighted in this text.",
+      "searchBox": false,
+      "buttonMode": "all",
+      "only_edit": true,
+      "only_imported": true,
+      "multiple": false,
+      "editMode": true,
+      "onlyImported": true
+    }
+  ]
+}
