@@ -1,0 +1,16 @@
+{
+  "type": "questions",
+
+  "questions": [
+    {
+      "name": "taxes",
+      "question": "What stance does {actor} express regarding {issue}?",
+      "codes": [
+        { "code": "Against", "color": "crimson", "swipe": "left" },
+        { "code": "No stance", "color": "yellow", "swipe": "up" },
+        { "code": "Supports", "color": "lightgreen", "swipe": "right" }
+      ],
+      "type": "annotinder"
+    }
+  ]
+}
