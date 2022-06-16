@@ -76,7 +76,6 @@ const getUnit = async (
     // (in case the frontend accidentally asks for a unitIndex it doesn't yet have access to)
     // NOTE THAT THIS RELIES ON REACT 18 FOR BATCHING STATE UPDATES
     if (unit.index && unitIndex !== unit.index) setUnitIndex(unit.index);
-
     if (!unit.unit.variables) unit.unit.variables = {};
     for (let a of unit.unit.importedAnnotations || []) {
       if (!unit.unit.variables[a.variable]) {

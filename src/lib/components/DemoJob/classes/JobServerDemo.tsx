@@ -47,7 +47,7 @@ class JobServerDemo implements JobServer {
 
   async getUnit(i: number) {
     this.progress.n_coded = Math.max(i, this.progress.n_coded);
-    return structuredClone(this.demodata.units[i]);
+    return { ...this.demodata.units[i], unit: { ...this.demodata.units[i].unit } };
   }
 
   async postAnnotations(
