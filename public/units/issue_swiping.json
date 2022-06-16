@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1",
+    "type": "unit",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "text",
+          "value": "This sentence is clearly about taxes!",
+          "style": {
+            "textAlign": "center"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "1",
+    "type": "unit",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "text",
+          "context_before": "In some cases you might have a paragraph or document that is all about taxes. ",
+          "value": "However, the sentence might not mention this topic explicitly. ",
+          "context_after": "Depending on the task, it might then be good to include the context of a sentence",
+          "style": {
+            "textAlign": "center"
+          }
+        }
+      ]
+    }
+  }
+]

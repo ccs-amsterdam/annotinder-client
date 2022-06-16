@@ -8,8 +8,8 @@ import useLocalStorage from "../../../hooks/useLocalStorage";
 import styled from "styled-components";
 import {
   CodeBook,
+  ConditionReport,
   FullScreenNode,
-  GoldFeedback,
   SessionData,
   SetState,
   Swipes,
@@ -68,7 +68,7 @@ interface QuestionTaskProps {
   unit: Unit;
   codebook: CodeBook;
   setUnitIndex: SetState<number>;
-  setGoldFeedback: SetState<GoldFeedback[]>;
+  setConditionReport: SetState<ConditionReport>;
   fullScreenNode: FullScreenNode;
   sessionData: SessionData;
   blockEvents?: boolean;
@@ -78,7 +78,7 @@ const QuestionTask = ({
   unit,
   codebook,
   setUnitIndex,
-  setGoldFeedback,
+  setConditionReport,
   fullScreenNode,
   sessionData,
   blockEvents = false,
@@ -161,7 +161,7 @@ const QuestionTask = ({
           questionIndex={questionIndex}
           setQuestionIndex={setQuestionIndex}
           setUnitIndex={setUnitIndex}
-          setGoldFeedback={setGoldFeedback}
+          setConditionReport={setConditionReport}
           swipe={swipe}
           blockEvents={blockEvents}
         >

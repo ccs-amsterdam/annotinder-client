@@ -1,78 +1,5 @@
 [
   {
-    "id": "0.1",
-    "type": "train",
-    "gold": [{ "variable": "swipe", "value": "Correct" }],
-
-    "unit": {
-      "text_fields": [
-        {
-          "name": "title",
-          "value": "Gold questions",
-          "style": {
-            "fontWeight": "bold",
-            "fontSize": "1.2em",
-            "textAlign": "center"
-          }
-        },
-        {
-          "name": "text",
-          "value": "This is a gold question. If you give the wrong answer, it will deduct some points from the coder's health.\n\nThis specific question also has the setting to force coders to retry untill they get the right answer, which is mainly usefull for training purposes at the start of a job."
-        }
-      ],
-      "codebook": {
-        "type": "questions",
-        "questions": [
-          {
-            "name": "swipe",
-            "question": "Try giving the wrong answer",
-            "codes": [
-              { "code": "Wrong", "color": "crimson", "swipe": "left" },
-              { "code": "Correct", "color": "lightgreen", "swipe": "right" }
-            ],
-            "type": "select code"
-          }
-        ]
-      }
-    }
-  },
-  {
-    "id": "0.2",
-    "type": "test",
-    "gold": [{ "variable": "swipe", "value": "Correct" }],
-    "unit": {
-      "text_fields": [
-        {
-          "name": "title",
-          "value": "Gold questions",
-          "style": {
-            "fontWeight": "bold",
-            "fontSize": "1.2em",
-            "textAlign": "center"
-          }
-        },
-        {
-          "name": "text",
-          "value": "Here's another gold question, but this time the coder won't be informed if the answer is wrong."
-        }
-      ],
-      "codebook": {
-        "type": "questions",
-        "questions": [
-          {
-            "name": "swipe",
-            "question": "Try giving the wrong answer",
-            "codes": [
-              { "code": "Wrong", "color": "crimson", "swipe": "left" },
-              { "code": "Correct", "color": "lightgreen", "swipe": "right" }
-            ],
-            "type": "select code"
-          }
-        ]
-      }
-    }
-  },
-  {
     "id": "1",
     "type": "unit",
     "unit": {
@@ -201,7 +128,7 @@
             "items": [
               { "name": "like", "label": "I like scale questions!" },
               { "name": "tricked", "label": "I feel like you tricked me..." },
-              { "name": "moveon", "Label": "I'd like to move on now!" }
+              { "name": "moveon", "label": "I'd like to move on now!" }
             ],
 
             "codes": [
@@ -340,6 +267,80 @@
         ]
       },
       "variables": []
+    }
+  },
+  {
+    "id": "6.2",
+    "type": "train",
+    "conditions": [{ "variable": "train", "value": "Correct" }],
+
+    "unit": {
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Training questions",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
+          "name": "text",
+          "value": "This is a training unit that you can add at the start of a codingjob. The difference from normal units is that the coder will be "
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "train",
+            "question": "Try giving the wrong answer",
+            "codes": [
+              { "code": "Wrong", "color": "crimson", "swipe": "left" },
+              { "code": "Correct", "color": "lightgreen", "swipe": "right" }
+            ],
+            "type": "select code"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "6.3",
+    "type": "test",
+    "conditions": [{ "variable": "test", "value": "Correct" }],
+
+    "unit": {
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Gold questions",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
+          "name": "text",
+          "value": "This is a test unit. If the coder gives the wrong answer, a specified amount of damage is received. Bad coders can then be disqualified. Receiving damage (by default) happens silently, so that the coder doesn't know which questions were gold questions."
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "test",
+            "question": "Try giving the wrong answer",
+            "codes": [
+              { "code": "Wrong", "color": "crimson", "swipe": "left" },
+              { "code": "Correct", "color": "lightgreen", "swipe": "right" }
+            ],
+            "type": "select code"
+          }
+        ]
+      }
     }
   },
   {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import JobServerDemo from "./classes/JobServerDemo";
 import Annotator from "../Annotator/Annotator";
-import { Button, Grid, Header, Menu, Icon, Segment, Portal } from "semantic-ui-react";
+import { Button, Grid, Header, Menu, Icon } from "semantic-ui-react";
 import FullDataTable from "../AnnotatorClient/components/FullDataTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../functions/copyToClipboard";
@@ -40,37 +40,35 @@ const DemoJobOverview = () => {
   return <Annotator jobServer={job} />;
 };
 
-const unit_files = [
-  { label: "State of the union speeches", filename: "sotu" },
-  //{ label: "State of the union paragraphs", filename: "sotu_par" },
-  //{ label: "Units with actor annotations", filename: "actor_annotation" },
-  { label: "Political images", filename: "images" },
-  //{ label: "State of the union paragraphs with pre-survey", filename: "sotu_par_pre_survey" },
-  { label: "Introduction to the CCS Annotator", filename: "introduction" },
-];
-const codebook_files = [
-  { label: "Annotate sentiment", filename: "sentimentAnnotation" },
-  { label: "sentiment questions", filename: "sentimentQuestion" },
-  { label: "actor dropdown", filename: "actorQuestion" },
+const demo_files = [
   {
-    label: "Edit actor annotations (requires units with actor annotations)",
-    filename: "actor_annotation",
+    label: "Annotate sentiment and issues in SOTU",
+    units: "sotu",
+    codebook: "annotate_sentiment_issue",
   },
-  { label: "Political Image swiping", filename: "politicalImageSwipe" },
-  { label: "Dummy (only confirm questions)", filename: "dummy" },
+  { label: "Introduction to the CCS Annotator", units: "introduction", codebook: "dummy" },
+  {
+    label: "Assisted actor identification",
+    units: "actor_identification",
+    codebook: "actor_identification",
+  },
+  {
+    label: "Issue annotinder",
+    units: "issue_swiping",
+    codebook: "issue_swiping",
+  },
+  {
+    label: "Stance annotinder",
+    units: "stance_swiping",
+    codebook: "stance_swiping",
+  },
 ];
-const unitColumns = [{ name: "label", label: "Select unit set" }];
-const codebookColumns = [{ name: "label", label: "Select codebook" }];
+
+const columns = [{ name: "label", label: "Select unit set" }];
 
 const DemoSelector = () => {
-  const [, setSearchParams] = useSearchParams();
-  const [units, setUnits] = useState(unit_files[0].filename);
-  const [codebook, setCodebook] = useState(codebook_files[0].filename);
+  const [demo, setDemo] = useState(demo_files[0]);
   const navigate = useNavigate();
-
-  const onClick = () => {
-    setSearchParams({ units, codebook });
-  };
 
   return (
     <div>
@@ -81,41 +79,28 @@ const DemoSelector = () => {
       </Menu>
       <Grid stackable centered container style={{ marginTop: "30px" }}>
         <Grid.Row>
-          <Grid.Column textAlign="center" width="6">
-            <Header as="h2">Select a demo job</Header>
+          <Grid.Column textAlign="center" width="8">
+            <Header as="h2">Demo jobs</Header>
             <p>
-              Pick a unit set and codebook, and click start to fire up a demo job. Note that your
-              annotations will not be stored, and will be lost when closing or refreshing the
-              application.
+              This is a list of demo jobs to get a gist of the annotator features. Your annotations
+              will not be stored, and will be lost when closing or refreshing the application.
             </p>
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
           <Grid.Column width="8">
-            <Header textAlign="center">Units</Header>
+            <Header textAlign="center">Select a demo</Header>
             <FullDataTable
-              fullData={unit_files}
-              columns={unitColumns}
-              onClick={(row) => setUnits(row.filename)}
-              isActive={(row) => row.filename === units}
+              fullData={demo_files}
+              columns={columns}
+              onClick={(row) => setDemo(row)}
+              isActive={(row) => row.label === demo.label}
             />
           </Grid.Column>
           <Grid.Column width="8">
-            <Header textAlign="center">Codebook</Header>
-            <FullDataTable
-              fullData={codebook_files}
-              columns={codebookColumns}
-              onClick={(row) => setCodebook(row.filename)}
-              isActive={(row) => row.filename === codebook}
-            />{" "}
-          </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Column width="12">
-            <Button primary fluid disabled={!units || !codebook} onClick={onClick}>
-              Start Demo Job
-            </Button>
-            <DemoJobLink units={units} codebook={codebook} />
+            <Header textAlign="center">Start demo</Header>
+
+            <DemoJobLink units={demo.units} codebook={demo.codebook} />
           </Grid.Column>
         </Grid.Row>
       </Grid>
@@ -154,32 +139,21 @@ const getFileName = (filename, what) => {
 };
 
 const DemoJobLink = ({ units, codebook }) => {
+  const [, setSearchParams] = useSearchParams();
   if (!units || !codebook) return null;
   const url = `${window.location.origin}/ccs-annotator-client/demo?units=${units}&codebook=${codebook}`;
 
-  return (
-    <Portal on="click" trigger={<Button fluid secondary content="Show link" />}>
-      <Segment
-        style={{
-          bottom: "25%",
-          left: "25%",
-          position: "fixed",
-          minWidth: "50%",
-          zIndex: 1000,
-          background: "#dfeffb",
-          border: "1px solid #136bae",
-        }}
-      >
-        <Header textAlign="center" style={{ fontSize: "1.5em" }}>
-          Demo Job link
-        </Header>
-        <div style={{ textAlign: "center" }}>
-          <QRCodeCanvas value={encodeURI(url)} size={256} />
-        </div>
-        <br />
+  const onClick = () => {
+    setSearchParams({ units, codebook });
+  };
 
+  return (
+    <div>
+      <Button.Group fluid>
+        <Button primary disabled={!units || !codebook} onClick={onClick}>
+          Start Demo
+        </Button>
         <Button
-          fluid
           secondary
           onClick={() => {
             copyToClipboard(url);
@@ -187,8 +161,13 @@ const DemoJobLink = ({ units, codebook }) => {
         >
           Copy link
         </Button>
-      </Segment>
-    </Portal>
+      </Button.Group>
+      <br />
+      <div style={{ textAlign: "center", width: "100%", marginTop: "10px" }}>
+        <QRCodeCanvas value={encodeURI(url)} size={300} />
+      </div>
+      <br />
+    </div>
   );
 };
 

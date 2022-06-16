@@ -2,12 +2,12 @@ import Axios, { AxiosInstance } from "axios";
 import {
   Annotation,
   Debriefing,
-  GoldFeedback,
   Job,
   JobAnnotation,
   JobSettings,
   Status,
   User,
+  ConditionReport,
 } from "../../../types";
 
 export async function passwordLogin(host: string, email: string, password: string) {
@@ -127,7 +127,7 @@ class Backend {
     unit_id: number,
     annotation: Annotation[],
     status: Status
-  ): Promise<GoldFeedback[]> {
+  ): Promise<ConditionReport> {
     const data = { annotation, status };
     return this.api.post(`annotator/codingjob/${job_id}/unit/${unit_id}/annotation`, data);
   }

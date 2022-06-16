@@ -12,7 +12,7 @@ import {
   SetState,
   CodeBook,
   SessionData,
-  GoldFeedback,
+  ConditionReport,
 } from "../../../types";
 import Instructions from "./Instructions";
 
@@ -26,7 +26,7 @@ interface AnnotateTaskProps {
   unit: Unit;
   codebook: CodeBook;
   setUnitIndex: SetState<number>;
-  setGoldFeedback: SetState<GoldFeedback[]>;
+  setConditionReport: SetState<ConditionReport>;
   fullScreenNode: FullScreenNode;
   sessionData?: SessionData;
   blockEvents?: boolean;
@@ -36,7 +36,7 @@ const AnnotateTask = ({
   unit,
   codebook,
   setUnitIndex,
-  setGoldFeedback,
+  setConditionReport,
   fullScreenNode,
   sessionData,
   blockEvents = false,

@@ -6,11 +6,11 @@ import {
   SetState,
   Unit,
   SessionData,
-  GoldFeedback,
+  ConditionReport,
   CodeBook,
 } from "../../../types";
 import { useState, useMemo, useEffect } from "react";
-import GoldFeedbackPortal from "../components/GoldFeedbackPortal";
+import FeedbackPortal from "./FeedbackPortal";
 
 interface AnnotateUnitProps {
   unit: Unit;
@@ -27,17 +27,16 @@ const AnnotateUnit = ({
   setUnitIndex,
   fullScreenNode,
 }: AnnotateUnitProps) => {
-  const [goldFeedback, setGoldFeedback] = useState<GoldFeedback[]>([]);
+  const [conditionReport, setConditionReport] = useState<ConditionReport>(null);
 
   const sessionData: SessionData = useMemo(() => {
     return { seenInstructions: {} };
   }, []);
 
   useEffect(() => {
-    setGoldFeedback(unit?.goldFeedback || []);
+    setConditionReport(null);
   }, [unit]);
 
-  console.log(goldFeedback);
   // Both the unit and the codingjob can have a codebook
   // codebook is the default codebook applied to all units
   // unit.codebook is a unit specific codebook that overrides the default
@@ -51,14 +50,14 @@ const AnnotateUnit = ({
         unit={unit}
         codebook={codebook}
         setUnitIndex={setUnitIndex}
-        setGoldFeedback={setGoldFeedback}
+        setConditionReport={setConditionReport}
         sessionData={sessionData}
         fullScreenNode={fullScreenNode}
       />
-      <GoldFeedbackPortal
+      <FeedbackPortal
         codebook={codebook}
-        goldFeedback={goldFeedback}
-        setGoldFeedback={setGoldFeedback}
+        conditionReport={conditionReport}
+        setConditionReport={setConditionReport}
         fullScreenNode={fullScreenNode}
       />
     </>
@@ -69,7 +68,7 @@ interface TaskProps {
   unit: Unit;
   codebook: CodeBook;
   setUnitIndex: SetState<number>;
-  setGoldFeedback: SetState<GoldFeedback[]>;
+  setConditionReport: SetState<ConditionReport>;
   sessionData: SessionData;
   fullScreenNode: FullScreenNode;
 }
@@ -78,7 +77,7 @@ const Task = ({
   unit,
   codebook,
   setUnitIndex,
-  setGoldFeedback,
+  setConditionReport,
   sessionData,
   fullScreenNode,
 }: TaskProps) => {
@@ -88,7 +87,7 @@ const Task = ({
         unit={unit}
         codebook={codebook}
         setUnitIndex={setUnitIndex}
-        setGoldFeedback={setGoldFeedback}
+        setConditionReport={setConditionReport}
         fullScreenNode={fullScreenNode}
         sessionData={sessionData}
       />
@@ -100,7 +99,7 @@ const Task = ({
         unit={unit}
         codebook={codebook}
         setUnitIndex={setUnitIndex}
-        setGoldFeedback={setGoldFeedback}
+        setConditionReport={setConditionReport}
         fullScreenNode={fullScreenNode}
         sessionData={sessionData}
       />

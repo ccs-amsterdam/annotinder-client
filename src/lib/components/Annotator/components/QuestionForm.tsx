@@ -10,7 +10,7 @@ import {
   Annotation,
   Token,
   Swipes,
-  GoldFeedback,
+  ConditionReport,
 } from "../../../types";
 import {
   getMakesIrrelevantArray,
@@ -93,7 +93,7 @@ interface QuestionFormProps {
   questionIndex: number;
   setQuestionIndex: SetState<number>;
   setUnitIndex: SetState<number>;
-  setGoldFeedback: SetState<GoldFeedback[]>;
+  setConditionReport: SetState<ConditionReport>;
   swipe: Swipes;
   blockEvents: boolean;
 }
@@ -106,7 +106,7 @@ const QuestionForm = ({
   questionIndex,
   setQuestionIndex,
   setUnitIndex,
-  setGoldFeedback,
+  setConditionReport,
   swipe,
   blockEvents,
 }: QuestionFormProps) => {
@@ -143,11 +143,11 @@ const QuestionForm = ({
         questionIndex,
         setUnitIndex,
         setQuestionIndex,
-        setGoldFeedback,
+        setConditionReport,
         blockAnswer
       );
     },
-    [answers, questionIndex, questions, setQuestionIndex, setUnitIndex, setGoldFeedback, unit]
+    [answers, questionIndex, questions, setQuestionIndex, setUnitIndex, setConditionReport, unit]
   );
 
   if (!questions || !unit || !answers) return null;
@@ -199,21 +199,19 @@ const prepareQuestion = (unit: Unit, question: Question, answers: Answer[]) => {
 
   const regex = /{(.*?)}/g;
   const matches = [...Array.from(preparedQuestion.matchAll(regex))];
-  for (let m of matches) {
-    const answer = answers.find((a) => a.variable === m["1"]);
-    if (answer) {
-      const value = answer.items[0].values.join(", ");
-      preparedQuestion = preparedQuestion.replace(m["0"], "{" + value + "}");
-    }
-  }
-
-  if (!unit.variables) return markedString(preparedQuestion);
-
-  for (let variable of Object.keys(unit.variables)) {
-    if (preparedQuestion.search(`\\[${variable}\\]`) >= 0) {
-      let code = unit.variables[variable];
-      const codeTag = `{${code}}`; // add optional color from itemquestions
-      preparedQuestion = preparedQuestion.replace(`[${variable}]`, codeTag);
+  if (answers) {
+    for (let m of matches) {
+      let answer;
+      if (answers) {
+        answer = answers.find((a) => a.variable === m["1"]);
+      }
+      if (unit.variables) {
+        answer = { variable: m["1"], items: [{ values: [unit.variables[m["1"]]] }] };
+      }
+      if (answer) {
+        const value = answer.items[0].values.join(", ");
+        preparedQuestion = preparedQuestion.replace(m["0"], "{" + value + "}");
+      }
     }
   }
 
@@ -252,7 +250,7 @@ const processAnswer = async (
   questionIndex: number,
   setUnitIndex: SetState<number>,
   setQuestionIndex: SetState<number>,
-  setGoldFeedback: SetState<GoldFeedback[]>,
+  setConditionReport: SetState<ConditionReport>,
   blockAnswer: any
 ): Promise<void> => {
   if (blockAnswer.current) return null;
@@ -291,17 +289,16 @@ const processAnswer = async (
     }
 
     const start = new Date();
-    const goldfeedback: GoldFeedback[] = await unit.jobServer.postAnnotations(
+    const conditionReport: ConditionReport = await unit.jobServer.postAnnotations(
       unit.unitId,
       unit.unitIndex,
       cleanAnnotations,
       status
     );
-    if (goldfeedback.length > 0) {
-      setGoldFeedback(goldfeedback);
-
+    setConditionReport(conditionReport);
+    if (conditionReport.action === "retry") {
       // navigate to first questionindex that has goldfeedback
-      const questionname = goldfeedback[0].variable.split(".")[0];
+      const questionname = conditionReport.feedback[0].variable.split(".")[0];
       const questionIndex = questions.findIndex((q) => q.name === questionname);
       if (questionIndex >= 0) setQuestionIndex(questionIndex);
       blockAnswer.current = false;

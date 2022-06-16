@@ -83,13 +83,13 @@ const getUnit = async (
       unitId: unit.id,
       annotations: unit.annotation,
       status: unit.status,
-      goldFeedback: unit.goldFeedback || [],
       text_fields: unit.unit.text_fields,
       meta_fields: unit.unit.meta_fields,
       image_fields: unit.unit.image_fields,
       markdown_field: unit.unit.markdown_field,
       importedAnnotations: unit.unit.importedAnnotations,
       settings: unit.unit.settings,
+      variables: unit.unit.variables,
       codebook: unit.unit.codebook ? importCodebook(unit.unit.codebook) : undefined,
     });
   } catch (e) {

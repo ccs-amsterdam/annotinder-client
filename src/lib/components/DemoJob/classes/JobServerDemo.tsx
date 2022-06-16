@@ -7,9 +7,10 @@ import {
   Status,
   Progress,
   JobServer,
-  Gold,
-  GoldFeedback,
+  Feedback,
   DemoData,
+  ConditionReport,
+  ConditionAction,
 } from "../../../types";
 import { importCodebook } from "../../../functions/codebook";
 
@@ -27,7 +28,7 @@ class JobServerDemo implements JobServer {
           external_id: u.id,
           unit: u.unit,
           type: u.type,
-          gold: u.gold,
+          conditions: u.conditions,
           index: i,
           status: null,
         };
@@ -54,16 +55,16 @@ class JobServerDemo implements JobServer {
     unit_index: number,
     annotation: Annotation[],
     status: Status
-  ) {
+  ): Promise<ConditionReport> {
     try {
       this.demodata.units[unit_index].annotation = annotation;
       this.demodata.units[unit_index].status =
         this.demodata.units[unit_index].status === "DONE" ? "DONE" : status;
       this.progress.n_coded = Math.max(unit_index + 1, this.progress.n_coded);
-      return checkGold(this.demodata.units, unit_index);
+      return checkConditions(this.demodata.units, unit_index);
     } catch (e) {
       console.error(e);
-      return [];
+      return null;
     }
   }
 
@@ -76,68 +77,73 @@ class JobServerDemo implements JobServer {
   }
 }
 
-function checkGold(units: BackendUnit[], unitIndex: number): GoldFeedback[] {
+function checkConditions(units: BackendUnit[], unitIndex: number): ConditionReport {
   const type = units[unitIndex].type;
-  if (type !== "train" && type !== "test") return [];
-  const gold: Gold = {
-    action: type === "train" ? "retry" : "silent",
-    damage: type === "train" ? 0 : 10,
-    matches: units[unitIndex].gold,
-  };
+  if (type !== "train" && type !== "test" && type !== "screening")
+    return { action: "pass", feedback: [] };
+  if (!units[unitIndex].conditions) return { action: "pass", feedback: [] };
+
   const annotation: Annotation[] = units[unitIndex].annotation;
   const status: Status = units[unitIndex].status;
-  if (!gold.matches) return [];
 
-  const goldfeedback: GoldFeedback[] = [];
+  const feedback: Feedback[] = [];
   let damage = 0;
-  goldloop: for (let g of gold.matches) {
+  let pass = true;
+  outerloop: for (let c of units[unitIndex].conditions) {
     // only check gold matches for variables that have been coded
     // (if unit is done, all variables are assumed to have been coded)
     let variableCoded = status === "DONE";
     for (let a of annotation) {
-      if (g.variable !== a.variable) continue;
+      if (c.variable !== a.variable) continue;
       variableCoded = true;
-      if (g.field && g.field !== a.field) continue;
-      if (g.offset && g.offset !== a.offset) continue;
-      if (g.length && g.length !== a.length) continue;
+      if (c.field && c.field !== a.field) continue;
+      if (c.offset && c.offset !== a.offset) continue;
+      if (c.length && c.length !== a.length) continue;
 
-      const op = g.operator || "==";
-      if (op === "==" && a.value === g.value) continue goldloop;
-      if (op === "<=" && a.value <= g.value) continue goldloop;
-      if (op === "<" && a.value < g.value) continue goldloop;
-      if (op === ">=" && a.value >= g.value) continue goldloop;
-      if (op === ">" && a.value > g.value) continue goldloop;
-      if (op === "!=" && a.value !== g.value) continue goldloop;
+      const op = c.operator || "==";
+      if (op === "==" && a.value === c.value) continue outerloop;
+      if (op === "<=" && a.value <= c.value) continue outerloop;
+      if (op === "<" && a.value < c.value) continue outerloop;
+      if (op === ">=" && a.value >= c.value) continue outerloop;
+      if (op === ">" && a.value > c.value) continue outerloop;
+      if (op === "!=" && a.value !== c.value) continue outerloop;
     }
     if (!variableCoded) continue;
+    pass = false;
 
     // being here means none of the annotations matched the gold
-    damage += g.damage || 0;
+    if (type === "test") damage += c.damage != null ? c.damage : 10;
 
-    if (gold.action === "retry") {
-      const feedback: GoldFeedback = { variable: g.variable };
-      if (g.message) feedback.message = g.message;
-      goldfeedback.push(feedback);
+    if (type === "train" || type === "screening") {
+      const f: Feedback = { variable: c.variable };
+      if (c.message) f.message = c.message;
+      feedback.push(f);
     }
   }
 
-  // damage can occur on both the level of specific matches and the gold in general
-  damage += gold.damage || 0;
+  if (pass) {
+    if (type === "train") return { action: "applaud", feedback: [] };
+    return { action: "pass", feedback: [] };
+  }
 
-  units[unitIndex].damage = gold.redemption
-    ? damage
-    : Math.max(damage, units[unitIndex].damage || 0);
+  units[unitIndex].damage = damage;
+  // const redemption = type === 'test'
+  // units[unitIndex].damage = redemption
+  //   ? damage
+  //   : Math.max(damage, units[unitIndex].damage || 0);
 
-  if (damage && goldfeedback.length === 0) {
+  if (damage && feedback.length === 0) {
     alert(
       `This answer silently gave you ${units[unitIndex].damage} damage!\n(coders normally don't see this message)`
     );
   }
 
-  if (goldfeedback.length > 0) units[unitIndex].status = "IN_PROGRESS";
-  units[unitIndex].goldFeedback = goldfeedback;
+  let action: ConditionAction = "silent";
+  if (type === "train") action = "retry";
+  if (type === "screening") action = "stop";
+  if (action !== "silent") units[unitIndex].status = "IN_PROGRESS";
 
-  return goldfeedback;
+  return { action, feedback };
 }
 
 export default JobServerDemo;

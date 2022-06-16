@@ -34,10 +34,10 @@ export const parseTokens = (text_fields: TextField[]): Token[] => {
     text = text_field.value;
     if (text_field.context_before != null) {
       text = text_field.context_before + text;
-      text_field.unit_start = text_field.context_before.length;
+      text_field.unit_start = text_field.context_before.length - 1;
     }
     if (text_field.context_after != null) {
-      text_field.unit_end = text.length;
+      text_field.unit_end = text.length - 1;
       text = text + text_field.context_after;
     }
 

@@ -1,0 +1,83 @@
+[
+  {
+    "id": "1",
+    "type": "unit",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Mary had a little lamb",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
+          "name": "text",
+          "value": "Mary had a little lamb, its fleece was white as snow. Everywhere that she went, the lamb was sure to go.\n\nIn other words, they went everywhere together"
+        }
+      ],
+      "importedAnnotations": [
+        {
+          "field": "title",
+          "variable": "actor",
+          "value": "Mary",
+          "offset": 0,
+          "length": 4
+        },
+        {
+          "field": "title",
+          "variable": "actor",
+          "value": "Lamb",
+          "offset": 18,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Mary",
+          "offset": 0,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Lamb",
+          "offset": 18,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 24,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 70,
+          "length": 3
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "Hannibal Lecter",
+          "offset": 84,
+          "length": 4
+        },
+        {
+          "field": "text",
+          "variable": "actor",
+          "value": "EMPTY",
+          "offset": 122,
+          "length": 4
+        }
+      ],
+
+      "variables": []
+    }
+  }
+]

@@ -239,15 +239,15 @@ export interface CodeSelectorDropdownOption {
 
 export type TokenSelection = [number, number] | [];
 
-///// GOLD
+///// CONDITIONS
 
-export interface GoldMatch {
+export interface Condition {
   variable: string;
   /** The value to compare the annotation value to. See 'operator' for comparison */
   value: string | number;
   /** The damage to the coder's health if this gold is not matched. A coder has 100 health per job */
   damage?: number;
-  /** A markdown string for a message to display action is "retry" or "explain" */
+  /** A markdown string for a message to display if this condition is not met" */
   message?: string;
   /** The operator to compare the annotation value to the gold value. Default is == */
   operator?: "==" | "<=" | "<" | ">=" | ">" | "!=";
@@ -259,18 +259,14 @@ export interface GoldMatch {
   length?: number;
 }
 
-/** Specified the correct answer to an annotation.  */
-export interface Gold {
-  matches: GoldMatch[];
-  /** What to do if gold is not matched. Pass silently (default) or make coder retry */
-  action?: "silent" | "retry";
-  /** Should the damage be undone if the answer is corrected? Default is true */
-  redemption?: boolean;
-  /** How much damage for getting at least one match wrong? */
-  damage?: number;
+export interface ConditionReport {
+  action: ConditionAction;
+  feedback: Feedback[];
 }
 
-export interface GoldFeedback {
+export type ConditionAction = "pass" | "retry" | "stop" | "silent" | "applaud";
+
+export interface Feedback {
   variable: string;
   answer?: string | number;
   message?: string;
@@ -298,7 +294,7 @@ export interface JobServer {
     unitIndex: number,
     annotation: Annotation[],
     status: Status
-  ) => Promise<GoldFeedback[]>;
+  ) => Promise<ConditionReport>;
   getDebriefing?: () => Promise<Debriefing>;
 }
 
@@ -322,7 +318,7 @@ export interface Progress {
 
 ///// UNIT DATA
 
-export type UnitType = "pre" | "train" | "test" | "unit" | "post";
+export type UnitType = "pre" | "train" | "test" | "unit" | "post" | "screening";
 
 /** A unit after it has been prepared by the jobServer. This is for internal use */
 export interface Unit {
@@ -331,7 +327,6 @@ export interface Unit {
   unitId: number | string; // this is the backend id, not the external id
   annotations: Annotation[];
   status: UnitStatus;
-  goldFeedback: GoldFeedback[];
   tokens?: RawToken[];
   text_fields?: TextField[];
   meta_fields?: MetaField[];
@@ -350,7 +345,7 @@ export interface Unit {
 export interface RawUnit {
   id: string; // The external id. A unique id provided when creating the codingjob
   type: UnitType;
-  gold: GoldMatch[];
+  conditions: Condition[];
   unit: {
     text_fields?: TextField[];
     meta_fields?: MetaField[];
@@ -389,8 +384,7 @@ export interface BackendUnit {
     variables?: UnitVariables;
   };
   type: UnitType;
-  gold?: GoldMatch[];
-  goldFeedback?: GoldFeedback[];
+  conditions?: Condition[];
   damage?: number;
   annotation?: Annotation[]; // backend calls the annotations array annotation. Should probably change this
 }

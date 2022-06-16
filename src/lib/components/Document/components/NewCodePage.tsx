@@ -101,6 +101,7 @@ const NewCodePage = ({
     }
     updateAnnotations(tokens, value, setAnnotations, setCodeHistory, editMode);
 
+    console.log(variableMap?.[variable]?.multiple);
     if (!variableMap?.[variable]?.multiple && !ctrlKey) setOpen(false);
   };
 
