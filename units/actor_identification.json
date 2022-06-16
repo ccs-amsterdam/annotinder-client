@@ -79,5 +79,154 @@
 
       "variables": []
     }
+  },
+  {
+    "id": "2",
+    "type": "unit",
+
+    "unit": {
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Barack Obama",
+          "style": { "textAlign": "center", "fontSize": "1.5em", "fontWeight": "bold" }
+        },
+        {
+          "name": "text",
+          "value": "My fellow citizens:\n\nI stand here today humbled by the task before us, grateful for the trust you have bestowed, mindful of the sacrifices borne by our ancestors. I thank President Bush for his service to our nation, as well as the generosity and cooperation he has shown throughout this transition.\n\nForty-four Americans have now taken the presidential oath. The words have been spoken during rising tides of prosperity and the still waters of peace. Yet, every so often the oath is taken amidst gathering clouds and raging storms. At these moments, America has carried on not simply because of the skill or vision of those in high office, but because We the People have remained faithful to the ideals of our forbearers, and true to our founding documents.\n\nSo it has been. So it must be with this generation of Americans."
+        }
+      ],
+
+      "importedAnnotations": [
+        {
+          "variable": "actor",
+          "value": "Barack Obama",
+          "field": "title",
+          "offset": 0,
+          "length": 12
+        },
+
+        {
+          "variable": "actor",
+          "value": "EMPTY",
+          "field": "text",
+          "offset": 0,
+          "length": 2
+        },
+        {
+          "variable": "actor",
+          "value": "America / Americans",
+          "field": "text",
+          "offset": 10,
+          "length": 8
+        },
+        {
+          "variable": "actor",
+          "value": "EMPTY",
+          "field": "text",
+          "offset": 21,
+          "length": 1
+        },
+        {
+          "variable": "actor",
+          "value": "EMPTY",
+          "field": "text",
+          "offset": 67,
+          "length": 2
+        },
+        {
+          "variable": "actor",
+          "value": "EMPTY",
+          "field": "text",
+          "offset": 94,
+          "length": 3
+        },
+        {
+          "variable": "actor",
+          "value": "EMPTY",
+          "field": "text",
+          "offset": 148,
+          "length": 3
+        },
+        {
+          "variable": "actor",
+          "value": "George Bush",
+          "field": "text",
+          "offset": 171,
+          "length": 14
+        },
+        {
+          "variable": "actor",
+          "value": "EMPTY",
+          "field": "text",
+          "offset": 190,
+          "length": 3
+        },
+        {
+          "variable": "actor",
+          "value": "EMPTY",
+          "field": "text",
+          "offset": 259,
+          "length": 2
+        },
+        {
+          "variable": "actor",
+          "value": "America / Americans",
+          "field": "text",
+          "offset": 312,
+          "length": 9
+        },
+        {
+          "variable": "actor",
+          "value": "America / Americans",
+          "field": "text",
+          "offset": 551,
+          "length": 7
+        },
+        {
+          "variable": "actor",
+          "value": "EMPTY",
+          "field": "text",
+          "offset": 619,
+          "length": 5
+        },
+        {
+          "variable": "actor",
+          "value": "EMPTY",
+          "field": "text",
+          "offset": 653,
+          "length": 2
+        },
+        {
+          "variable": "actor",
+          "value": "EMPTY",
+          "field": "text",
+          "offset": 656,
+          "length": 10
+        },
+        {
+          "variable": "actor",
+          "value": "EMPTY",
+          "field": "text",
+          "offset": 707,
+          "length": 3
+        },
+        {
+          "variable": "actor",
+          "value": "EMPTY",
+          "field": "text",
+          "offset": 735,
+          "length": 3
+        },
+        {
+          "variable": "actor",
+          "value": "America / Americans",
+          "field": "text",
+          "offset": 814,
+          "length": 9
+        }
+      ],
+      "variables": []
+    }
   }
 ]

@@ -21,8 +21,6 @@
       "instruction": "Select a word or span of words to assign a sentiment label",
       "searchBox": false,
       "buttonMode": "all",
-      "only_edit": false,
-      "only_imported": false,
       "multiple": false,
       "editMode": false
     },
@@ -54,8 +52,6 @@
       "instruction": "Select an issue from the CAP codebook",
       "searchBox": true,
       "buttonMode": "recent",
-      "only_edit": false,
-      "only_imported": false,
       "multiple": false,
       "editMode": false
     }
