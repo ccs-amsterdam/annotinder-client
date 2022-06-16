@@ -479,7 +479,6 @@
             "searchBox": false,
             "buttonMode": "all",
             "editMode": true,
-            "only_edit": true,
             "multiple": true
           }
         ]

@@ -166,6 +166,9 @@ const prepareSpanAnnotations = (annotations: Annotation[]): SpanAnnotations => {
   // value is an array that tells which ids (variable|value) start and end there
   // used in Tokens for matching to token indices
   return annotations.reduce((obj, ann) => {
+    // annotations are only span annotations if they have a field, offset and length
+    if (ann.field == null || ann.offset == null || ann.length == null) return obj;
+
     if (!obj[ann.field]) obj[ann.field] = {};
     if (!obj[ann.field][ann.offset]) obj[ann.field][ann.offset] = { start: [], end: [] };
     if (!obj[ann.field][ann.offset + ann.length - 1])

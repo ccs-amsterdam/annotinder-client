@@ -202,12 +202,13 @@ const prepareQuestion = (unit: Unit, question: Question, answers: Answer[]) => {
   if (answers) {
     for (let m of matches) {
       let answer;
-      if (answers) {
-        answer = answers.find((a) => a.variable === m["1"]);
-      }
       if (unit.variables) {
         answer = { variable: m["1"], items: [{ values: [unit.variables[m["1"]]] }] };
       }
+      if (answers) {
+        answer = answers.find((a) => a.variable === m["1"]) || answer;
+      }
+
       if (answer) {
         const value = answer.items[0].values.join(", ");
         preparedQuestion = preparedQuestion.replace(m["0"], "{" + value + "}");

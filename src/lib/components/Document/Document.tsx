@@ -43,6 +43,8 @@ interface DocumentProps {
   blockEvents?: boolean;
   /** in fullscreenmode popups require a mountNode */
   fullScreenNode?: FullScreenNode;
+  /** An array of variable names, to indicate that annotations of this variable should be highlighted */
+  showAnnotations?: string[];
   /** CSSProperties for the body container  */
   bodyStyle?: CSSProperties;
 }
@@ -61,6 +63,7 @@ const Document = ({
   setReady,
   blockEvents,
   fullScreenNode,
+  showAnnotations,
   bodyStyle,
 }: DocumentProps) => {
   const safetyCheck = useRef(null); // ensures only new annotations for the current unit are passed to onChangeAnnotations
@@ -140,6 +143,7 @@ const Document = ({
           editMode={editMode}
           triggerCodeSelector={triggerCodeSelector}
           eventsBlocked={codeSelectorOpen || blockEvents}
+          showAnnotations={showAnnotations}
           fullScreenNode={fullScreenNode}
         />
         {codeSelector || null}

@@ -63,7 +63,6 @@ export const AnnotationEvents = ({
   const [mover, setMover] = useState(null);
   const [holdSpace, setHoldSpace] = useState(false);
   const [holdArrow, setHoldArrow] = useState<Arrowkeys>(null);
-
   useEffect(() => {
     if (eventsBlocked) {
       setHoldArrow(null);
@@ -294,7 +293,6 @@ const TokenMouseEvents = ({
   const onTouchUp = useCallback(
     (e) => {
       if (!touch.current?.time) return;
-      console.log("7");
       const now = new Date();
       const timepassed = now.getTime() - touch.current.time.getTime();
       if (timepassed > 150) return;

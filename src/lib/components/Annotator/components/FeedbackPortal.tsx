@@ -18,8 +18,6 @@ const FeedbackPortal = ({
   setConditionReport,
   fullScreenNode,
 }: FeedbackPortalProps) => {
-  console.log(conditionReport);
-
   return (
     <>
       <RetryPortal

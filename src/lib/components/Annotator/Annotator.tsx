@@ -77,6 +77,15 @@ const getUnit = async (
     // NOTE THAT THIS RELIES ON REACT 18 FOR BATCHING STATE UPDATES
     if (unit.index && unitIndex !== unit.index) setUnitIndex(unit.index);
 
+    if (!unit.unit.variables) unit.unit.variables = {};
+    for (let a of unit.unit.importedAnnotations || []) {
+      if (!unit.unit.variables[a.variable]) {
+        unit.unit.variables[a.variable] = a.value;
+      } else {
+        unit.unit.variables[a.variable] += `, ${a.value}`;
+      }
+    }
+
     setUnit({
       jobServer,
       unitIndex: unit.index || unitIndex, // unit can (should?) return an index to keep it fully controlled

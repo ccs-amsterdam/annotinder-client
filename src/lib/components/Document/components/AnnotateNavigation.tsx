@@ -21,6 +21,7 @@ interface AnnotateNavigationProps {
   editMode: boolean;
   triggerCodeSelector: TriggerCodePopup;
   eventsBlocked: boolean;
+  showAnnotations?: string[];
   fullScreenNode: FullScreenNode;
 }
 
@@ -36,6 +37,7 @@ const AnnotateNavigation = ({
   disableAnnotations,
   editMode,
   triggerCodeSelector,
+  showAnnotations,
   eventsBlocked,
   fullScreenNode,
 }: AnnotateNavigationProps) => {
@@ -43,9 +45,8 @@ const AnnotateNavigation = ({
   const [tokenSelection, setTokenSelection] = useState<TokenSelection>([]);
 
   useEffect(() => {
-    if (!variableMap) return null;
-    showAnnotations(tokens, annotations, variableMap, editMode);
-  }, [tokens, annotations, variableMap, editMode]);
+    highlightAnnotations(tokens, annotations, variableMap, editMode, showAnnotations);
+  }, [tokens, annotations, variableMap, editMode, showAnnotations]);
 
   useEffect(() => {
     showSelection(tokens, tokenSelection);
@@ -87,11 +88,12 @@ const AnnotateNavigation = ({
   );
 };
 
-const showAnnotations = (
+const highlightAnnotations = (
   tokens: Token[],
   annotations: SpanAnnotations,
   variableMap: VariableMap,
-  editMode: boolean
+  editMode: boolean,
+  showAnnotations: string[]
 ) => {
   // loop over tokens. Do some styling. Then get the (allowed) annotations for this token,
   // and apply styling to annotated tokens
@@ -105,7 +107,11 @@ const showAnnotations = (
       if (token.ref.current.style.cursor !== "text") token.ref.current.style.cursor = "text";
     }
 
-    let tokenAnnotations = allowedAnnotations(annotations?.[token.index], variableMap);
+    let tokenAnnotations = allowedAnnotations(
+      annotations?.[token.index],
+      variableMap,
+      showAnnotations
+    );
     if (!tokenAnnotations || Object.keys(tokenAnnotations).length === 0) {
       if (token.ref.current.classList.contains("annotated")) {
         token.ref.current.classList.remove("annotated");
@@ -123,16 +129,21 @@ const showAnnotations = (
   }
 };
 
-const allowedAnnotations = (annotations: TokenAnnotations, variableMap: VariableMap) => {
+const allowedAnnotations = (
+  annotations: TokenAnnotations,
+  variableMap: VariableMap,
+  showAnnotations: string[]
+) => {
   // get all annotations that are currently 'allowed', meaning that the variable is selected
   // and the codes are valid and active codes in the codebook
   if (!annotations) return null;
-
-  if (annotations && variableMap) {
+  if (annotations) {
     annotations = { ...annotations };
     for (let id of Object.keys(annotations)) {
       const variable = annotations[id].variable;
-      if (!variableMap[variable]) {
+      if (showAnnotations && showAnnotations.find((v) => v === variable)) continue;
+
+      if (!variableMap?.[variable]) {
         delete annotations[id];
         continue;
       }
@@ -154,8 +165,8 @@ const annotateToken = (token: Token, annotations: TokenAnnotations, variableMap:
 
   for (let id of Object.keys(annotations)) {
     const annotation = annotations[id];
-    const codeMap = variableMap[annotation.variable].codeMap;
-    const color = getColor(annotation.value, codeMap);
+    const codeMap = variableMap?.[annotation.variable]?.codeMap || {};
+    const color = annotation.color || getColor(annotation.value, codeMap);
 
     colors.text.push(color);
     if (annotation.span[0] === annotation.index) {
@@ -245,11 +256,7 @@ const AnnotationPopup = React.memo(
     const [refresh, setRefresh] = useState(0);
 
     useEffect(() => {
-      if (
-        !tokens?.[currentToken.i]?.ref ||
-        !annotations?.[tokens[currentToken.i].index] ||
-        !variableMap
-      ) {
+      if (!tokens?.[currentToken.i]?.ref || !annotations?.[tokens[currentToken.i].index]) {
         setContent(null);
         setRefresh(0);
         return null;
@@ -260,15 +267,14 @@ const AnnotationPopup = React.memo(
       const list = ids.reduce((arr, id, i) => {
         const variable = tokenAnnotations[id].variable;
         const value = tokenAnnotations[id].value;
-        if (!variableMap[variable]) return arr;
-        const codeMap = variableMap[variable].codeMap;
-        if (!codeMap[value]) return arr;
+        const codeMap = variableMap?.[variable]?.codeMap || {};
+        const color = tokenAnnotations[id].color || getColor(value, codeMap);
 
         arr.push(
           <List.Item
             key={i}
             style={{
-              backgroundColor: getColor(value, codeMap),
+              backgroundColor: color,
               padding: "0.3em",
             }}
             onMouseOver={() => setCurrentToken({ i: null })}

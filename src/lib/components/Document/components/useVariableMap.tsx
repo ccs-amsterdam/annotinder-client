@@ -47,6 +47,8 @@ export default function useVariableMap(
       vmap = { [selectedVariable]: fullVariableMap[selectedVariable] };
     }
 
+    // if there are importedCodes, add them to variablemap
+
     // !! be carefull when changing to not break copying (otherwise fullVariableMap gets affected)
     vmap = { ...vmap };
     for (let variable of Object.keys(vmap)) {

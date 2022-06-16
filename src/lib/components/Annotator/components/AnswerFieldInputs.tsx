@@ -36,7 +36,6 @@ const Inputs = ({
     setSelectedItem(0);
   }, [questionIndex]);
 
-  console.log(answerItems);
   const done =
     answerItems &&
     answerItems.length > 0 &&

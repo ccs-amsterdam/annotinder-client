@@ -35,14 +35,15 @@ export type Status = "DONE" | "IN_PROGRESS";
 
 export interface Annotation {
   variable: string;
-  length: number;
   value: string | number;
-  field: string;
-  offset: number;
+  field?: string;
+  offset?: number;
+  length?: number;
   index?: number;
   text?: string;
   span?: Span;
   token_span?: Span;
+  color?: string;
 }
 
 /** An object with all annotations linked to a token, quickly accessible by their (unique) variable + '.' + value
@@ -94,6 +95,7 @@ export interface Question {
   button?: string;
   swipeOptions?: SwipeOptions;
   options?: AnswerOption[];
+  showAnnotations?: string[];
 }
 
 export type QuestionType =
@@ -193,8 +195,6 @@ export interface Variable {
   instruction: string;
   searchBox: boolean;
   buttonMode: "all" | "recent";
-  only_edit: boolean;
-  only_imported: boolean;
   multiple: boolean;
   editMode: boolean;
   onlyImported: boolean;

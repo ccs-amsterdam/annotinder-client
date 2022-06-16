@@ -68,14 +68,10 @@ const AnnotateTaskManual = ({ fullScreenNode }: AnnotateTaskManualProps) => {
                   <strong>Select words</strong>
                 </Table.Cell>
                 <Table.Cell>
-                  <i>spacebar</i>
-                  <br />
-                  Hold to select mutiple
+                  <i>spacebar.</i> Hold to select mutiple
                 </Table.Cell>
                 <Table.Cell>
-                  <i>Left-click</i>
-                  <br />
-                  Hold to select multiple
+                  <i>Left-click.</i> Hold to select multiple
                 </Table.Cell>
                 <Table.Cell>
                   <i>tab</i> twice to begin, then once to close

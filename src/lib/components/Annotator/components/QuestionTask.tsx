@@ -142,6 +142,7 @@ const QuestionTask = ({
             <Document
               unit={unit}
               setReady={setTextReady}
+              showAnnotations={codebook?.questions?.[questionIndex]?.showAnnotations || []}
               returnTokens={setTokens}
               fullScreenNode={fullScreenNode}
             />
