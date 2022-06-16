@@ -26,5 +26,24 @@
         }
       ]
     }
+  },
+  {
+    "id": "2",
+    "type": "unit",
+    "unit": {
+      "variables": {
+        "actor": "Sarah",
+        "issue": "stance detection"
+      },
+      "text_fields": [
+        {
+          "name": "text",
+          "value": "Sarah is pretty ambiguous about stance detection.",
+          "style": {
+            "textAlign": "center"
+          }
+        }
+      ]
+    }
   }
 ]
