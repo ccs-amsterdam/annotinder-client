@@ -77,8 +77,6 @@ const Body = ({
             ...bodyStyle,
           }}
         >
-          <Meta meta_fields={meta_fields} />
-
           <div
             style={{
               flex: "1 1 97%",
@@ -90,6 +88,7 @@ const Body = ({
               key="content"
               style={{ margin: "auto", paddingTop: "0px", paddingBottom: "0px", width: "100%" }}
             >
+              <Meta meta_fields={meta_fields} />
               {markdown}
               {text_fields.map((tf) => text[tf.name])}
               {image_fields.map((imf) => images[imf.name])}

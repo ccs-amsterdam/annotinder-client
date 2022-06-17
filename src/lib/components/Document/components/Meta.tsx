@@ -9,16 +9,24 @@ interface MetaProps {
 const Meta = ({ meta_fields }: MetaProps) => {
   const rows = () => {
     return meta_fields.map((row) => {
+      const label = row.label ?? row.name;
       return (
         <Table.Row
-          key={row.label || row.name}
+          key={label}
           style={{
             lineHeight: "1.2",
-            fontSize: `1.3em`,
+            fontSize: `1.2em`,
           }}
         >
-          <Table.Cell width={1} style={{ borderTop: "none" }}>
-            <b>{row.label || row.name}</b>
+          <Table.Cell
+            width={1}
+            style={{
+              borderTop: "none",
+              textAlign: "right",
+              color: "#1768a6",
+            }}
+          >
+            <b>{label.toUpperCase()}</b>
           </Table.Cell>
           <Table.Cell style={row.style}>{row.value}</Table.Cell>
         </Table.Row>
@@ -32,25 +40,31 @@ const Meta = ({ meta_fields }: MetaProps) => {
     <div
       key="meta"
       style={{
-        width: "100%",
-        textAlign: "right",
-        padding: "10px 30px",
+        width: "calc(100% - 20px)",
+        display: "flex",
+        marginTop: "5px",
+        marginBottom: "30px",
+        fontFamily: "Garamond, serif",
+        //boxShadow: "3px 4px 10px grey",
       }}
     >
-      <Table
-        basic="very"
-        unstackable
-        compact
-        style={{
-          lineHeight: "0.8",
-          padding: "10px",
-          paddingLeft: "10px",
-          background: "#ffffff",
-          color: "black",
-        }}
-      >
-        <Table.Body>{rows()}</Table.Body>
-      </Table>
+      <div style={{ margin: "auto" }}>
+        <Table
+          basic="very"
+          compact
+          unstackable
+          style={{
+            width: "100%",
+            lineHeight: "0.8",
+            padding: "10px",
+            paddingLeft: "10px",
+            background: "#ffffff",
+            color: "black",
+          }}
+        >
+          <Table.Body>{rows()}</Table.Body>
+        </Table>
+      </div>
     </div>
   );
 };
