@@ -45,5 +45,51 @@
         }
       ]
     }
+  },
+  {
+    "id": "3",
+    "type": "unit",
+    "unit": {
+      "variables": {
+        "actor": "Joe Biden",
+        "issue": "Labour/Trade Unions"
+      },
+      "meta_fields": [
+        { "name": "source", "value": "Twitter", "style": { "fontWeight": "bold" } },
+        { "name": "user", "value": "Joe Biden (@JoeBiden)", "style": { "fontWeight": "bold" } }
+      ],
+      "text_fields": [
+        {
+          "name": "text",
+          "value": "I continue to call on Congress to pass the PRO Act, which will make it easier for workers to organize.\n\nI’m not just saying that to be pro-union. I’m saying that because I’m pro-American.",
+          "style": {
+            "textAlign": "center"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "4",
+    "type": "unit",
+    "unit": {
+      "variables": {
+        "actor": "Donald Trump",
+        "issue": "hanging Mike Pence"
+      },
+      "meta_fields": [
+        { "name": "source", "value": "New York Times", "style": { "fontWeight": "bold" } },
+        { "name": "date", "value": "May 25, 2022", "style": { "fontWeight": "bold" } }
+      ],
+      "text_fields": [
+        {
+          "name": "text",
+          "value": "Mr. Meadows, according to an account provided to the House committee investigating Jan. 6, then told the colleagues that Mr. Trump had said something to the effect of, maybe Mr. Pence should be hanged.",
+          "style": {
+            "textAlign": "center"
+          }
+        }
+      ]
+    }
   }
 ]
