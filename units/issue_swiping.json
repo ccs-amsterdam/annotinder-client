@@ -3,6 +3,9 @@
     "id": "1",
     "type": "unit",
     "unit": {
+      "variables": {
+        "issue": "Taxes"
+      },
       "text_fields": [
         {
           "name": "text",
@@ -18,12 +21,69 @@
     "id": "2",
     "type": "unit",
     "unit": {
+      "variables": {
+        "issue": "Taxes"
+      },
       "text_fields": [
         {
           "name": "text",
           "context_before": "In some cases you might have a paragraph or document that is all about taxes. ",
           "value": "However, the sentence might not mention this topic explicitly. ",
           "context_after": "Depending on the task, it might then be good to include the context of a sentence",
+          "style": {
+            "textAlign": "center"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "3",
+    "type": "unit",
+    "unit": {
+      "variables": {
+        "issue": "some other issue?"
+      },
+      "text_fields": [
+        {
+          "name": "text",
+          "value": "It's possible to ask this question about different issues",
+          "style": {
+            "textAlign": "center"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "4",
+    "type": "unit",
+    "unit": {
+      "variables": {
+        "issue": "Taxes"
+      },
+      "text_fields": [
+        {
+          "name": "text",
+          "value": "But it's much easier on the cognitive of poor coders to always ask about the same issue",
+          "style": {
+            "textAlign": "center"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "5",
+    "type": "unit",
+    "unit": {
+      "variables": {
+        "issue": "Taxes"
+      },
+      "text_fields": [
+        {
+          "name": "text",
+          "value": "So let's just do one more unit about taxes.",
           "style": {
             "textAlign": "center"
           }
