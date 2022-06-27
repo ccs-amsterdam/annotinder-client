@@ -9,7 +9,8 @@ interface MetaProps {
 const Meta = ({ meta_fields }: MetaProps) => {
   const rows = () => {
     return meta_fields.map((row) => {
-      const label = row.label ?? row.name;
+      let label = row.label ?? row.name ?? "";
+      label = String(label);
       return (
         <Table.Row
           key={label}

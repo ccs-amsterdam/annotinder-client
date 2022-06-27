@@ -287,7 +287,7 @@
         },
         {
           "name": "text",
-          "value": "This is a training unit that you can add at the start of a codingjob. The difference from normal units is that the coder will be "
+          "value": "This is a training unit that you can add at the start of a codingjob. The difference from normal units is that the coder will be shown whether an answer is correct. If the answer was wrong, the coder needs to retry the question"
         }
       ],
       "codebook": {
@@ -426,7 +426,7 @@
         },
         {
           "name": "text",
-          "value": "Instead of open annotations, you can also pre-annotate spans and only let coders edit them. You could for instance first use a dictionary and then let coders validate or correct the annotations. Or add empty placeholder and let coders fill in the blanks"
+          "value": "Instead of open annotations, you can also pre-annotate spans and only let coders edit them. You could for instance first use a dictionary and then let coders validate or correct the annotations. Or add empty placeholder and let coders fill in the blanks.\n\nThis way, span annotations tasks can be made more mobile friendly"
         }
       ],
       "importedAnnotations": [

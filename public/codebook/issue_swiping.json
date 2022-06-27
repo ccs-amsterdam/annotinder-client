@@ -6,8 +6,8 @@
   },
   "questions": [
     {
-      "name": "taxes",
-      "question": "Is this sentence about taxes?",
+      "name": "about_issue",
+      "question": "Is this sentence about {issue}?",
       "codes": [
         { "code": "No", "color": "crimson", "swipe": "left" },
         { "code": "Skip", "color": "yellow", "swipe": "up" },

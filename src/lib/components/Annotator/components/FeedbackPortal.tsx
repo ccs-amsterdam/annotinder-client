@@ -102,7 +102,7 @@ const ApplaudPortal = ({
     <TransitionablePortal
       key="applaud"
       closeOnDocumentClick={false}
-      transition={{ duration: 200 }}
+      transition={{ duration: 200, animation: "scale" }}
       mountNode={fullScreenNode || undefined}
       onClose={() => {
         setConditionReport({ action: "pass", feedback: [] });
@@ -111,7 +111,7 @@ const ApplaudPortal = ({
       style={{ zIndex: 10000 }}
     >
       <Icon
-        name="check"
+        name="check square"
         style={{
           top: "25%",
           left: "25%",
@@ -119,9 +119,9 @@ const ApplaudPortal = ({
           width: "50%",
           margin: "0",
           zIndex: 1000,
-          color: "green",
+          color: "#90ee90cf",
           textAlign: "center",
-          fontSize: "10em",
+          fontSize: "min(50vw, 30em)",
         }}
       />
     </TransitionablePortal>

@@ -79,7 +79,7 @@ class JobServerDemo implements JobServer {
 
 function checkConditions(units: BackendUnit[], unitIndex: number): ConditionReport {
   const type = units[unitIndex].type;
-  if (type !== "train" && type !== "test" && type !== "screening")
+  if (type !== "train" && type !== "test" && type !== "pre")
     return { action: "pass", feedback: [] };
   if (!units[unitIndex].conditions) return { action: "pass", feedback: [] };
 
@@ -114,7 +114,7 @@ function checkConditions(units: BackendUnit[], unitIndex: number): ConditionRepo
     // being here means none of the annotations matched the gold
     if (type === "test") damage += c.damage != null ? c.damage : 10;
 
-    if (type === "train" || type === "screening") {
+    if (type === "train" || type === "pre") {
       const f: Feedback = { variable: c.variable };
       if (c.message) f.message = c.message;
       feedback.push(f);
@@ -140,7 +140,7 @@ function checkConditions(units: BackendUnit[], unitIndex: number): ConditionRepo
 
   let action: ConditionAction = "silent";
   if (type === "train") action = "retry";
-  if (type === "screening") action = "stop";
+  if (type === "pre") action = "stop";
   if (action !== "silent") units[unitIndex].status = "IN_PROGRESS";
 
   return { action, feedback };
