@@ -44,7 +44,7 @@ const Meta = ({ meta_fields }: MetaProps) => {
         width: "calc(100% - 20px)",
         display: "flex",
         marginTop: "5px",
-        marginBottom: "30px",
+        marginBottom: "10px",
         fontFamily: "Garamond, serif",
         //boxShadow: "3px 4px 10px grey",
       }}

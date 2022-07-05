@@ -318,7 +318,7 @@ export interface Progress {
 
 ///// UNIT DATA
 
-export type UnitType = "pre" | "train" | "test" | "unit" | "post" ;
+export type UnitType = "pre" | "train" | "test" | "unit" | "post";
 
 /** A unit after it has been prepared by the jobServer. This is for internal use */
 export interface Unit {

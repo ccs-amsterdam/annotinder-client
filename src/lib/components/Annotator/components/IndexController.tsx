@@ -9,7 +9,7 @@ const iconStyleHidden = { color: "white" };
 
 interface IndexControllerProps {
   n: number;
-  nCoded: number;
+  maxN: number;
   index: number;
   setIndex: SetState<number>;
   canGoForward: boolean;
@@ -18,7 +18,7 @@ interface IndexControllerProps {
 
 const IndexController = ({
   n,
-  nCoded,
+  maxN,
   index,
   setIndex,
   canGoForward = true,
@@ -40,7 +40,7 @@ const IndexController = ({
   }, [n, setIndex, activePage]);
 
   if (!n) return null;
-  let progress = (100 * Math.max(0, nCoded)) / n;
+  let progress = (100 * Math.max(0, maxN)) / n;
   if (canGoForward) progress = 0; // linear progress is useless in this case.
 
   const digits = Math.floor(Math.log10(n)) + 1;
@@ -100,22 +100,22 @@ const IndexController = ({
                 if (canGoForward) {
                   setActivePage(activePage + 1);
                 } else {
-                  setActivePage(Math.min(nCoded + 1, activePage + 1));
+                  setActivePage(Math.min(maxN + 1, activePage + 1));
                 }
               }}
-              disabled={!canGoForward && activePage >= nCoded + 1}
+              disabled={!canGoForward && activePage >= maxN + 1}
               style={iconStyle}
             />
             <Icon
               name="fast forward"
               onClick={() => {
                 if (canGoForward) {
-                  setActivePage(Math.max(nCoded + 1, activePage + 1));
+                  setActivePage(Math.max(maxN + 1, activePage + 1));
                 } else {
-                  setActivePage(nCoded + 1);
+                  setActivePage(maxN + 1);
                 }
               }}
-              disabled={!canGoForward && activePage >= nCoded + 1}
+              disabled={!canGoForward && activePage >= maxN + 1}
               style={canGoForward ? iconStyleHidden : iconStyle}
             />
           </>
@@ -138,7 +138,7 @@ const IndexController = ({
             if (canGoForward) {
               setDelayedActivePage(Number(e.target.value));
             } else {
-              setDelayedActivePage(Math.min(nCoded + 1, Number(e.target.value)));
+              setDelayedActivePage(Math.min(maxN + 1, Number(e.target.value)));
             }
           }
           if (canGoBack && Number(e.target.value) < delayedActivePage)

@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { Popup, Button } from "semantic-ui-react";
 
 import { useNavigate } from "react-router-dom";
@@ -30,6 +30,14 @@ const JobController = ({
   setUnitIndex,
 }: JobControllerProps) => {
   const [maxHeight, maxWidth] = getWindowSize(jobServer);
+  const [maxN, setMaxN] = useState(0);
+
+  useEffect(() => {
+    setMaxN((maxN: number) => {
+      const nCoded = jobServer?.progress?.n_coded || 0;
+      return Math.max(maxN, unitIndex, nCoded);
+    });
+  }, [unitIndex, jobServer]);
 
   return (
     <div
@@ -61,7 +69,7 @@ const JobController = ({
         >
           <IndexController
             n={jobServer?.progress?.n_total}
-            nCoded={jobServer?.progress?.n_coded || 0}
+            maxN={maxN}
             index={unitIndex}
             setIndex={setUnitIndex}
             canGoBack={jobServer?.progress?.seek_backwards}
