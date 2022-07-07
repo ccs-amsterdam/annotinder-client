@@ -5,6 +5,7 @@ import Backend from "../classes/Backend";
 import CoderView from "./CoderView";
 import ManageJobs from "./ManageJobs";
 import ManageUsers from "./ManageUsers";
+import DemoJobOverview from "../../DemoJob/DemoJobOverview";
 
 interface HomeProps {
   backend: Backend;

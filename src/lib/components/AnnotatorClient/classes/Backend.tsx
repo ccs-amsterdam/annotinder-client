@@ -122,14 +122,18 @@ class Backend {
       users,
     });
   }
-  postAnnotation(
+  async postAnnotation(
     job_id: number,
     unit_id: number,
     annotation: Annotation[],
     status: Status
   ): Promise<ConditionReport> {
     const data = { annotation, status };
-    return this.api.post(`annotator/codingjob/${job_id}/unit/${unit_id}/annotation`, data);
+    const res = await this.api.post(
+      `annotator/codingjob/${job_id}/unit/${unit_id}/annotation`,
+      data
+    );
+    return res.data;
   }
   async setJobSettings(job_id: number, settingsObj: JobSettings): Promise<void> {
     return await this.api.post(`annotator/codingjob/${job_id}/settings`, settingsObj);

@@ -19,7 +19,7 @@ export const getDocAndAnnotations = (unit: Unit): [Doc, SpanAnnotations] => {
     d.image_fields = d.image ? [{ name: "image", value: d.image }] : [];
   }
   if (!d.meta_fields) d.meta_fields = [];
-  if (!d.markdown_field) d.markdown_field = null;
+  if (!d.markdown_fields) d.markdown_fields = [];
 
   if (d.tokens) {
     d.importedTokens = true;
@@ -34,7 +34,7 @@ export const getDocAndAnnotations = (unit: Unit): [Doc, SpanAnnotations] => {
     text_fields: d.text_fields,
     meta_fields: d.meta_fields,
     image_fields: d.image_fields,
-    markdown_field: d.markdown_field,
+    markdown_fields: d.markdown_fields,
   };
 
   // ImportSpanAnnotations transforms the array format annotations to an object format.

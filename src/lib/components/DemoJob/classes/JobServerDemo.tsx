@@ -7,10 +7,9 @@ import {
   Status,
   Progress,
   JobServer,
-  Feedback,
   DemoData,
   ConditionReport,
-  ConditionAction,
+  ConditionalAction,
 } from "../../../types";
 import { importCodebook } from "../../../functions/codebook";
 
@@ -28,7 +27,7 @@ class JobServerDemo implements JobServer {
           external_id: u.id,
           unit: u.unit,
           type: u.type,
-          conditions: u.conditions,
+          conditionals: u.conditionals,
           index: i,
           status: null,
         };
@@ -79,71 +78,114 @@ class JobServerDemo implements JobServer {
 
 function checkConditions(units: BackendUnit[], unitIndex: number): ConditionReport {
   const type = units[unitIndex].type;
-  if (type !== "train" && type !== "test" && type !== "pre")
-    return { action: "pass", feedback: [] };
-  if (!units[unitIndex].conditions) return { action: "pass", feedback: [] };
+  if (type !== "train" && type !== "test" && type !== "pre") return {};
+
+  if (!units[unitIndex].conditionals) return {};
 
   const annotation: Annotation[] = units[unitIndex].annotation;
   const status: Status = units[unitIndex].status;
 
-  const feedback: Feedback[] = [];
   let damage = 0;
-  let pass = true;
-  outerloop: for (let c of units[unitIndex].conditions) {
-    // only check gold matches for variables that have been coded
+  const cr: ConditionReport = {};
+
+  // Default actions are determined by unit type
+  let defaultSuccessAction: ConditionalAction = null;
+  let defaultFailAction: ConditionalAction = null;
+  let defaultMessage = null;
+  let defaultDamage = 0;
+  if (type === "train") {
+    defaultSuccessAction = "applaud";
+    defaultFailAction = "retry";
+    defaultMessage =
+      "### Please retry.\n\nThis is a **training** unit, and the answer you gave was incorrect. \nPlease have another look, and select a different answer";
+  }
+  if (type === "pre") {
+    defaultFailAction = "block";
+    defaultMessage =
+      "### Thank you for participating.\n\nBased on your answer for this question we determined that you do not meet the qualifications for this coding job.\nWe sincerely thank you for your time.";
+  }
+  if (type === "test") {
+    defaultDamage = 10;
+  }
+
+  for (let conditional of units[unitIndex].conditionals) {
+    // only check conditions for variables that have been coded
     // (if unit is done, all variables are assumed to have been coded)
+    if (!cr[conditional.variable])
+      cr[conditional.variable] = {
+        action: conditional.onSuccess || defaultSuccessAction,
+        message: conditional.message || defaultMessage,
+      };
     let variableCoded = status === "DONE";
-    for (let a of annotation) {
-      if (c.variable !== a.variable) continue;
-      variableCoded = true;
-      if (c.field && c.field !== a.field) continue;
-      if (c.offset && c.offset !== a.offset) continue;
-      if (c.length && c.length !== a.length) continue;
+    let success = true;
+    let submessages: string[] = [];
 
-      const op = c.operator || "==";
-      if (op === "==" && a.value === c.value) continue outerloop;
-      if (op === "<=" && a.value <= c.value) continue outerloop;
-      if (op === "<" && a.value < c.value) continue outerloop;
-      if (op === ">=" && a.value >= c.value) continue outerloop;
-      if (op === ">" && a.value > c.value) continue outerloop;
-      if (op === "!=" && a.value !== c.value) continue outerloop;
+    // Next to whether all conditions are met, we need to check whether all annotations
+    // match a condition. We only do this for variables for which conditions have been specified
+    let validAnnotation: { [annotationI: number]: boolean } = {};
+
+    conditionloop: for (let c of conditional.conditions) {
+      for (let i = 0; i < annotation.length; i++) {
+        const a = annotation[i];
+        if (conditional.variable !== a.variable) continue;
+        if (!validAnnotation[i]) validAnnotation[i] = false;
+        variableCoded = true;
+        if (c.field != null && c.field !== a.field) continue;
+        if (c.offset != null && c.offset !== a.offset) continue;
+        if (c.length != null && c.length !== a.length) continue;
+
+        const op = c.operator || "==";
+
+        let hasMatch = false;
+        if (op === "==" && a.value === c.value) hasMatch = true;
+        if (op === "<=" && a.value <= c.value) hasMatch = true;
+        if (op === "<" && a.value < c.value) hasMatch = true;
+        if (op === ">=" && a.value >= c.value) hasMatch = true;
+        if (op === ">" && a.value > c.value) hasMatch = true;
+        if (op === "!=" && a.value !== c.value) hasMatch = true;
+        if (hasMatch) {
+          validAnnotation[i] = true;
+          continue conditionloop;
+        }
+      }
+      if (!variableCoded) continue;
+
+      // arriving here indicates that condition failed
+      success = false;
+      damage += c.damage ?? 0;
+      if (c.submessage) submessages.push(c.submessage);
     }
-    if (!variableCoded) continue;
-    pass = false;
 
-    // being here means none of the annotations matched the gold
-    if (type === "test") damage += c.damage != null ? c.damage : 10;
-
-    if (type === "train" || type === "pre") {
-      const f: Feedback = { variable: c.variable };
-      if (c.message) f.message = c.message;
-      feedback.push(f);
-    }
-  }
-
-  if (pass) {
-    if (type === "train") return { action: "applaud", feedback: [] };
-    return { action: "pass", feedback: [] };
-  }
-
-  units[unitIndex].damage = damage;
-  // const redemption = type === 'test'
-  // units[unitIndex].damage = redemption
-  //   ? damage
-  //   : Math.max(damage, units[unitIndex].damage || 0);
-
-  if (damage && feedback.length === 0) {
-    alert(
-      `This answer silently gave you ${units[unitIndex].damage} damage!\n(coders normally don't see this message)`
+    // This means that there were annotations that did not match a condition
+    const validAnnotationI = Object.keys(validAnnotation).filter(
+      (i: string) => validAnnotation[Number(i)]
     );
+    const invalidAnnotationI = Object.keys(validAnnotation).filter(
+      (i: string) => !validAnnotation[Number(i)]
+    );
+    if (invalidAnnotationI.length > 0) success = false;
+
+    if (success) {
+      cr[conditional.variable].action = conditional.onSuccess || defaultSuccessAction;
+    } else {
+      cr[conditional.variable].action = conditional.onFail || defaultFailAction;
+      cr[conditional.variable].message = conditional.message || defaultMessage;
+      cr[conditional.variable].submessages = submessages;
+
+      // add correct and incorrect annotations
+      cr[conditional.variable].correct = validAnnotationI.map((i: string) => annotation[Number(i)]);
+      cr[conditional.variable].incorrect = invalidAnnotationI.map(
+        (i: string) => annotation[Number(i)]
+      );
+
+      damage += conditional.damage ?? defaultDamage;
+    }
+  }
+  if (damage) {
+    alert(`This answer gave you ${damage} damage!\n(coders normally don't see this message)`);
   }
 
-  let action: ConditionAction = "silent";
-  if (type === "train") action = "retry";
-  if (type === "pre") action = "stop";
-  if (action !== "silent") units[unitIndex].status = "IN_PROGRESS";
-
-  return { action, feedback };
+  return cr;
 }
 
 export default JobServerDemo;

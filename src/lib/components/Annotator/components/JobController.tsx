@@ -35,7 +35,9 @@ const JobController = ({
   useEffect(() => {
     setMaxN((maxN: number) => {
       const nCoded = jobServer?.progress?.n_coded || 0;
-      return Math.max(maxN, unitIndex, nCoded);
+      const max = Math.max(maxN, unitIndex, nCoded);
+      if (jobServer?.progress?.n_coded != null) jobServer.progress.n_coded = max;
+      return max;
     });
   }, [unitIndex, jobServer]);
 

@@ -50,15 +50,7 @@ class JobServerAPI implements JobServer {
     status: Status
   ) {
     try {
-      const conditionReport = await this.backend.postAnnotation(
-        this.job_id,
-        unitId,
-        annotation,
-        status
-      );
-      if (!conditionReport || conditionReport.action === "silent")
-        this.progress.n_coded = Math.max(unitIndex + 1, this.progress.n_coded);
-      return conditionReport;
+      return await this.backend.postAnnotation(this.job_id, unitId, annotation, status);
     } catch (e) {
       if (this.setJobServer) this.setJobServer(null);
     }

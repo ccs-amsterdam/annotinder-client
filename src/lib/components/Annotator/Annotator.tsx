@@ -75,7 +75,10 @@ const getUnit = async (
     // if backend gives the unit index, ensure that connection to unitIndex is fully controlled
     // (in case the frontend accidentally asks for a unitIndex it doesn't yet have access to)
     // NOTE THAT THIS RELIES ON REACT 18 FOR BATCHING STATE UPDATES
-    if (unit.index && unitIndex !== unit.index) setUnitIndex(unit.index);
+    if (unit.index != null && unitIndex !== unit.index) {
+      setUnitIndex(unit.index);
+      return;
+    }
     if (!unit.unit.variables) unit.unit.variables = {};
     for (let a of unit.unit.importedAnnotations || []) {
       if (!unit.unit.variables[a.variable]) {
@@ -94,7 +97,7 @@ const getUnit = async (
       text_fields: unit.unit.text_fields,
       meta_fields: unit.unit.meta_fields,
       image_fields: unit.unit.image_fields,
-      markdown_field: unit.unit.markdown_field,
+      markdown_fields: unit.unit.markdown_fields,
       importedAnnotations: unit.unit.importedAnnotations,
       settings: unit.unit.settings,
       variables: unit.unit.variables,

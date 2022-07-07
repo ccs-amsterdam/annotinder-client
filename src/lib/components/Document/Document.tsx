@@ -130,7 +130,7 @@ const Document = ({
           text_fields={doc.text_fields}
           meta_fields={doc.meta_fields}
           image_fields={doc.image_fields}
-          markdown_field={doc.markdown_field}
+          markdown_fields={doc.markdown_fields}
           setReady={setTokensReady}
           bodyStyle={bodyStyle}
         />

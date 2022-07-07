@@ -26,7 +26,6 @@ interface AnnotateTaskProps {
   unit: Unit;
   codebook: CodeBook;
   setUnitIndex: SetState<number>;
-  setConditionReport: SetState<ConditionReport>;
   fullScreenNode: FullScreenNode;
   sessionData?: SessionData;
   blockEvents?: boolean;
@@ -36,7 +35,6 @@ const AnnotateTask = ({
   unit,
   codebook,
   setUnitIndex,
-  setConditionReport,
   fullScreenNode,
   sessionData,
   blockEvents = false,

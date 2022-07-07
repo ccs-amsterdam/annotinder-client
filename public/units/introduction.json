@@ -272,7 +272,16 @@
   {
     "id": "6.2",
     "type": "train",
-    "conditions": [{ "variable": "train", "value": "Correct" }],
+    "conditionals": [
+      {
+        "variable": "train",
+        "conditions": [
+          {
+            "value": "Correct"
+          }
+        ]
+      }
+    ],
 
     "unit": {
       "text_fields": [
@@ -307,9 +316,81 @@
     }
   },
   {
+    "id": "6.2.2",
+    "type": "train",
+    "conditionals": [
+      {
+        "variable": "train1",
+        "conditions": [
+          {
+            "value": "Correct"
+          }
+        ]
+      },
+      {
+        "variable": "train2",
+        "conditions": [
+          {
+            "value": "Correct"
+          }
+        ]
+      }
+    ],
+
+    "unit": {
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Training questions",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
+          "name": "text",
+          "value": "Training units, but with multiple questions per unit"
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "train1",
+            "question": "Try giving the wrong answer",
+            "codes": [
+              { "code": "Wrong", "color": "crimson", "swipe": "left" },
+              { "code": "Correct", "color": "lightgreen", "swipe": "right" }
+            ],
+            "type": "select code"
+          },
+          {
+            "name": "train2",
+            "question": "Try giving the wrong answer",
+            "codes": [
+              { "code": "Wrong", "color": "crimson", "swipe": "left" },
+              { "code": "Correct", "color": "lightgreen", "swipe": "right" }
+            ],
+            "type": "select code"
+          }
+        ]
+      }
+    }
+  },
+  {
     "id": "6.3",
     "type": "test",
-    "conditions": [{ "variable": "test", "value": "Correct" }],
+    "conditionals": [
+      {
+        "variable": "test",
+        "conditions": [
+          {
+            "value": "Correct"
+          }
+        ]
+      }
+    ],
 
     "unit": {
       "text_fields": [

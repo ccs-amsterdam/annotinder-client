@@ -6,8 +6,9 @@ import { Button, Grid, Header, Menu, Icon } from "semantic-ui-react";
 import FullDataTable from "../AnnotatorClient/components/FullDataTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../functions/copyToClipboard";
+import { CodeBook, SetState, Unit } from "../../types";
 
-const DemoJobOverview = () => {
+const DemoJobOverview = ({}) => {
   const [job, setJob] = useState(null);
   const [searchParams] = useSearchParams();
 
@@ -19,7 +20,7 @@ const DemoJobOverview = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    const handleBeforeUnload = (e) => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       const msg = "If you leave now, any changes made in the current unit will not be saved."; // most browsers actually show default message
       e.returnValue = msg;
@@ -40,7 +41,13 @@ const DemoJobOverview = () => {
   return <Annotator jobServer={job} />;
 };
 
-const demo_files = [
+interface DemoFile {
+  label: string;
+  units: string;
+  codebook: string;
+}
+
+const demo_files: DemoFile[] = [
   {
     label: "Annotate sentiment and issues in SOTU",
     units: "sotu",
@@ -66,8 +73,10 @@ const demo_files = [
 
 const columns = [{ name: "label", label: "Select unit set" }];
 
-const DemoSelector = () => {
-  const [demo, setDemo] = useState(demo_files[0]);
+interface DemoSelectorProps {}
+
+const DemoSelector = ({}: DemoSelectorProps) => {
+  const [demo, setDemo] = useState<DemoFile>(demo_files[0]);
   const navigate = useNavigate();
 
   return (
@@ -77,6 +86,7 @@ const DemoSelector = () => {
           <Icon name="user" style={{ cursor: "pointer" }} />
         </Menu.Item>
       </Menu>
+
       <Grid stackable centered container style={{ marginTop: "30px" }}>
         <Grid.Row>
           <Grid.Column textAlign="center" width="8">
@@ -93,7 +103,7 @@ const DemoSelector = () => {
             <FullDataTable
               fullData={demo_files}
               columns={columns}
-              onClick={(row) => setDemo(row)}
+              onClick={(row: DemoFile) => setDemo(row)}
               isActive={(row) => row.label === demo.label}
             />
           </Grid.Column>
@@ -113,7 +123,11 @@ const headers = {
   Accept: "application/json",
 };
 
-const getJobServer = async (units_file, codebook_file, setJob) => {
+const getJobServer = async (
+  units_file: string,
+  codebook_file: string,
+  setJob: SetState<JobServerDemo>
+) => {
   try {
     const units_res = await fetch(getFileName(units_file, "units"), { headers });
     let units = await units_res.json();
@@ -130,7 +144,7 @@ const getJobServer = async (units_file, codebook_file, setJob) => {
   }
 };
 
-const getFileName = (filename, what) => {
+const getFileName = (filename: string, what: string) => {
   if (filename.toLowerCase().includes(".json")) {
     // if .json in name, assume its a full path
     return filename;
@@ -138,7 +152,12 @@ const getFileName = (filename, what) => {
   return `${what}/${filename}.json`;
 };
 
-const DemoJobLink = ({ units, codebook }) => {
+interface DemoJobLinkProps {
+  units: string;
+  codebook: string;
+}
+
+const DemoJobLink = ({ units, codebook }: DemoJobLinkProps) => {
   const [, setSearchParams] = useSearchParams();
   if (!units || !codebook) return null;
   const url = `${window.location.origin}/ccs-annotator-client/demo?units=${units}&codebook=${codebook}`;

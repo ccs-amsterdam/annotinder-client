@@ -1,46 +1,42 @@
-import { TransitionablePortal, Segment, Button, Icon } from "semantic-ui-react";
-import { FullScreenNode, SetState, ConditionReport, CodeBook } from "../../../types";
+import { useEffect, useMemo, useState } from "react";
+import { TransitionablePortal, Segment, Button, Icon, List } from "semantic-ui-react";
+import { FullScreenNode, SetState, ConditionReport, Action } from "../../../types";
 import Markdown from "../../Common/Markdown";
 
 interface FeedbackPortalProps {
-  codebook: CodeBook;
+  variable: string;
   conditionReport: ConditionReport;
   setConditionReport: SetState<ConditionReport>;
   fullScreenNode: FullScreenNode;
 }
 
-const defaultMessage =
-  "### You gave an incorrect answer.\n\nThis is a **training** unit. \nPlease have another look, and select a different answer";
-
 const FeedbackPortal = ({
-  codebook,
+  variable,
   conditionReport,
   setConditionReport,
   fullScreenNode,
 }: FeedbackPortalProps) => {
+  const action = useMemo(() => conditionReport?.[variable], [conditionReport, variable]);
+
   return (
     <>
       <RetryPortal
-        conditionReport={conditionReport}
+        action={action}
         setConditionReport={setConditionReport}
         fullScreenNode={fullScreenNode}
       />
-      <ApplaudPortal
-        conditionReport={conditionReport}
-        setConditionReport={setConditionReport}
-        fullScreenNode={fullScreenNode}
-      />
+      <ApplaudPortal action={action} fullScreenNode={fullScreenNode} />
     </>
   );
 };
 
 interface RetryPortalProps {
-  conditionReport: ConditionReport;
+  action: Action;
   setConditionReport: SetState<ConditionReport>;
   fullScreenNode: FullScreenNode;
 }
 
-const RetryPortal = ({ conditionReport, setConditionReport, fullScreenNode }: RetryPortalProps) => {
+const RetryPortal = ({ action, setConditionReport, fullScreenNode }: RetryPortalProps) => {
   return (
     <TransitionablePortal
       key="retry"
@@ -48,9 +44,9 @@ const RetryPortal = ({ conditionReport, setConditionReport, fullScreenNode }: Re
       transition={{ animation: "fly down", duration: 600 }}
       mountNode={fullScreenNode || undefined}
       onClose={() => {
-        setConditionReport({ action: "pass", feedback: [] });
+        setConditionReport({});
       }}
-      open={conditionReport?.action === "retry"}
+      open={action?.action === "retry"}
       style={{ zIndex: 10000 }}
     >
       <Segment
@@ -60,18 +56,18 @@ const RetryPortal = ({ conditionReport, setConditionReport, fullScreenNode }: Re
           position: "fixed",
           width: "100%",
           margin: "0",
-          minHeight: "25%",
+          //minHeight: "10%",
           maxHeight: "50%",
           overflow: "auto",
           zIndex: 1000,
-          background: "rgb(223, 239, 251, 0.95)",
+          background: "#f7b5c2",
           border: "1px solid #136bae",
           textAlign: "center",
           fontSize: "1em",
-          paddingBottom: "25px",
+          paddingBottom: "35px",
         }}
       >
-        <CloseButton onClick={() => setConditionReport({ action: "pass", feedback: [] })} />
+        <CloseButton onClick={() => setConditionReport({})} />
         <div
           style={{
             width: "100%",
@@ -79,35 +75,45 @@ const RetryPortal = ({ conditionReport, setConditionReport, fullScreenNode }: Re
             fontSize: "30px",
           }}
         >
-          <Icon name="exclamation circle" color="blue" />
+          <Icon name="exclamation" style={{ color: "crimson" }} />
         </div>
-        <Markdown>{defaultMessage}</Markdown>
+        <Markdown>{action?.message}</Markdown>
+        <List>
+          {(action?.submessages || []).map((sm: string, i) => {
+            return (
+              <List.Item key={i}>
+                <List.Content>
+                  <Markdown>{sm}</Markdown>
+                </List.Content>
+              </List.Item>
+            );
+          })}
+        </List>
       </Segment>
     </TransitionablePortal>
   );
 };
 
 interface ApplaudPortalProps {
-  conditionReport: ConditionReport;
-  setConditionReport: SetState<ConditionReport>;
+  action: Action;
   fullScreenNode: FullScreenNode;
 }
 
-const ApplaudPortal = ({
-  conditionReport,
-  setConditionReport,
-  fullScreenNode,
-}: ApplaudPortalProps) => {
+const ApplaudPortal = ({ action, fullScreenNode }: ApplaudPortalProps) => {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (action?.action === "applaud") setOpen(true);
+    setTimeout(() => setOpen(false), 300);
+  }, [action]);
+
   return (
     <TransitionablePortal
       key="applaud"
       closeOnDocumentClick={false}
       transition={{ duration: 200, animation: "scale" }}
       mountNode={fullScreenNode || undefined}
-      onClose={() => {
-        setConditionReport({ action: "pass", feedback: [] });
-      }}
-      open={conditionReport?.action === "applaud"}
+      open={open}
       style={{ zIndex: 10000 }}
     >
       <Icon
@@ -136,10 +142,10 @@ const CloseButton = ({ onClick }: CloseButtonProps) => {
   return (
     <Button
       fluid
-      primary
       icon="close"
       size="huge"
       style={{
+        background: "crimson",
         height: "25px",
         padding: "0px",
         color: "white",

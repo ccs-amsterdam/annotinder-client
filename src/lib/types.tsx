@@ -239,38 +239,58 @@ export interface CodeSelectorDropdownOption {
 
 export type TokenSelection = [number, number] | [];
 
-///// CONDITIONS
+///// CONDITIONALS
+
+export interface Conditional {
+  /** The variable name */
+  variable: string;
+  /** Annotation values and (optionally) positions */
+  conditions: Condition[];
+  /** Action if conditions are successful */
+  onSuccess?: "applaud";
+  /** Action if conditions failed */
+  onFail?: "retry" | "block";
+  /** The damage to the coder's health if conditions failed. */
+  damage?: number;
+  /** A markdown string for a message to display if conditions failed */
+  message?: string;
+}
 
 export interface Condition {
-  variable: string;
   /** The value to compare the annotation value to. See 'operator' for comparison */
   value: string | number;
-  /** The damage to the coder's health if this gold is not matched. A coder has 100 health per job */
-  damage?: number;
-  /** A markdown string for a message to display if this condition is not met" */
-  message?: string;
   /** The operator to compare the annotation value to the gold value. Default is == */
   operator?: "==" | "<=" | "<" | ">=" | ">" | "!=";
   /** If given, annotation needs to have this field */
-  field: string;
+  field?: string;
   /** If given, annotation needs to have this offset */
   offset?: number;
   /** If given, annotation needs to have this length */
   length?: number;
+  /** The damage to the coder's health if this specific condition failed. (adds to damage specified in Conditional) */
+  damage?: number;
+  /** An additional markdown string for a message to display if this specific condition failed.
+   * These are below the Conditional message.
+   */
+  submessage?: string;
 }
 
 export interface ConditionReport {
-  action: ConditionAction;
-  feedback: Feedback[];
+  // A record where keys are variables and values are objects with results of conditions
+  [key: string]: Action;
 }
 
-export type ConditionAction = "pass" | "retry" | "stop" | "silent" | "applaud";
-
-export interface Feedback {
-  variable: string;
-  answer?: string | number;
+export interface Action {
+  /** action to perform. This is determined based on the unit type and whether condition is satisfied.     */
+  action?: ConditionalAction;
+  /** Message to display */
   message?: string;
+  submessages?: string[];
+  correct?: Annotation[];
+  incorrect?: Annotation[];
 }
+
+export type ConditionalAction = "retry" | "block" | "applaud";
 
 ///// JOBSERVER
 
@@ -331,7 +351,7 @@ export interface Unit {
   text_fields?: TextField[];
   meta_fields?: MetaField[];
   image_fields?: ImageField[];
-  markdown_field?: string;
+  markdown_fields?: MarkdownField[];
   settings?: {
     text_window_size: number | string;
   };
@@ -345,12 +365,12 @@ export interface Unit {
 export interface RawUnit {
   id: string; // The external id. A unique id provided when creating the codingjob
   type: UnitType;
-  conditions: Condition[];
+  conditionals: Conditional[];
   unit: {
     text_fields?: TextField[];
     meta_fields?: MetaField[];
     image_fields?: ImageField[];
-    markdown_field?: string;
+    markdown_field?: MarkdownField[];
     annotations?: Annotation[];
     importedAnnotations?: Annotation[];
     codebook?: RawCodeBook;
@@ -377,14 +397,14 @@ export interface BackendUnit {
     text_fields?: TextField[];
     meta_fields?: MetaField[];
     image_fields?: ImageField[];
-    markdown_field?: string;
+    markdown_field?: MarkdownField[];
     annotations?: Annotation[];
     importedAnnotations?: Annotation[];
     codebook?: RawCodeBook;
     variables?: UnitVariables;
   };
   type: UnitType;
-  conditions?: Condition[];
+  conditionals?: Conditional[];
   damage?: number;
   annotation?: Annotation[]; // backend calls the annotations array annotation. Should probably change this
 }
@@ -410,14 +430,24 @@ export interface RenderedText {
 
 export interface ImageField {
   name: string;
-  filename?: string;
-  base64?: string;
+  value: string;
+  alt?: string;
+  base64?: boolean;
   caption?: string;
   style?: CSSProperties;
-  url?: string;
 }
 
 export interface RenderedImages {
+  [key: string]: ReactElement;
+}
+
+export interface MarkdownField {
+  name: string;
+  value: string;
+  style?: CSSProperties;
+}
+
+export interface RenderedMarkdown {
   [key: string]: ReactElement;
 }
 
@@ -513,7 +543,7 @@ export interface Doc {
   text_fields?: TextField[];
   meta_fields?: MetaField[];
   image_fields?: ImageField[];
-  markdown_field?: string;
+  markdown_fields?: MarkdownField[];
 }
 
 export interface DocumentSettings {

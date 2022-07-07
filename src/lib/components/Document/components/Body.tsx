@@ -7,8 +7,10 @@ import renderImages from "../functions/renderImages";
 import renderMarkdown from "../functions/renderMarkdown";
 import {
   ImageField,
+  MarkdownField,
   MetaField,
   RenderedImages,
+  RenderedMarkdown,
   RenderedText,
   SetState,
   TextField,
@@ -20,7 +22,7 @@ interface BodyProps {
   text_fields: TextField[];
   meta_fields: MetaField[];
   image_fields: ImageField[];
-  markdown_field: string;
+  markdown_fields: MarkdownField[];
   setReady: SetState<number>;
   bodyStyle: CSSProperties;
 }
@@ -30,13 +32,13 @@ const Body = ({
   text_fields,
   meta_fields,
   image_fields,
-  markdown_field,
+  markdown_fields,
   setReady,
   bodyStyle = {},
 }: BodyProps) => {
   const [text, setText] = useState<RenderedText>({});
   const [images, setImages] = useState<RenderedImages>({});
-  const [markdown, setMarkdown] = useState(null);
+  const [markdown, setMarkdown] = useState<RenderedMarkdown>({});
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -56,12 +58,11 @@ const Body = ({
     if (!tokens) return null;
     setText(renderText(tokens, text_fields, containerRef));
     setImages(renderImages(image_fields, containerRef));
-    setMarkdown(renderMarkdown(markdown_field));
+    setMarkdown(renderMarkdown(markdown_fields));
     if (setReady) setReady((current) => current + 1); // setReady is an optional property used to let parents know the text is ready.
-  }, [tokens, text_fields, image_fields, markdown_field, setReady]);
+  }, [tokens, text_fields, image_fields, markdown_fields, setReady]);
 
   if (tokens === null) return null;
-
   return (
     <>
       <Ref innerRef={containerRef}>
@@ -89,9 +90,9 @@ const Body = ({
               key="content"
               style={{ margin: "auto", paddingTop: "0px", paddingBottom: "0px", width: "100%" }}
             >
-              {markdown}
               {text_fields.map((tf) => text[tf.name])}
               {image_fields.map((imf) => images[imf.name])}
+              {markdown_fields.map((md) => markdown[md.name])}
             </div>
           </div>
         </div>

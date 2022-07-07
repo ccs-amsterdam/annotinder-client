@@ -27,15 +27,9 @@ const AnnotateUnit = ({
   setUnitIndex,
   fullScreenNode,
 }: AnnotateUnitProps) => {
-  const [conditionReport, setConditionReport] = useState<ConditionReport>(null);
-
   const sessionData: SessionData = useMemo(() => {
     return { seenInstructions: {} };
   }, []);
-
-  useEffect(() => {
-    setConditionReport(null);
-  }, [unit]);
 
   // Both the unit and the codingjob can have a codebook
   // codebook is the default codebook applied to all units
@@ -45,22 +39,13 @@ const AnnotateUnit = ({
   if (!codebook || !unit) return null;
 
   return (
-    <>
-      <Task
-        unit={unit}
-        codebook={codebook}
-        setUnitIndex={setUnitIndex}
-        setConditionReport={setConditionReport}
-        sessionData={sessionData}
-        fullScreenNode={fullScreenNode}
-      />
-      <FeedbackPortal
-        codebook={codebook}
-        conditionReport={conditionReport}
-        setConditionReport={setConditionReport}
-        fullScreenNode={fullScreenNode}
-      />
-    </>
+    <Task
+      unit={unit}
+      codebook={codebook}
+      setUnitIndex={setUnitIndex}
+      sessionData={sessionData}
+      fullScreenNode={fullScreenNode}
+    />
   );
 };
 
@@ -68,26 +53,17 @@ interface TaskProps {
   unit: Unit;
   codebook: CodeBook;
   setUnitIndex: SetState<number>;
-  setConditionReport: SetState<ConditionReport>;
   sessionData: SessionData;
   fullScreenNode: FullScreenNode;
 }
 
-const Task = ({
-  unit,
-  codebook,
-  setUnitIndex,
-  setConditionReport,
-  sessionData,
-  fullScreenNode,
-}: TaskProps) => {
+const Task = ({ unit, codebook, setUnitIndex, sessionData, fullScreenNode }: TaskProps) => {
   if (codebook.type === "questions")
     return (
       <QuestionTask
         unit={unit}
         codebook={codebook}
         setUnitIndex={setUnitIndex}
-        setConditionReport={setConditionReport}
         fullScreenNode={fullScreenNode}
         sessionData={sessionData}
       />
@@ -99,7 +75,6 @@ const Task = ({
         unit={unit}
         codebook={codebook}
         setUnitIndex={setUnitIndex}
-        setConditionReport={setConditionReport}
         fullScreenNode={fullScreenNode}
         sessionData={sessionData}
       />

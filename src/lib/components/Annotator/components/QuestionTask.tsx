@@ -16,6 +16,7 @@ import {
   Unit,
 } from "../../../types";
 import Instructions from "./Instructions";
+import FeedbackPortal from "./FeedbackPortal";
 
 const Container = styled.div`
   display: flex;
@@ -68,7 +69,6 @@ interface QuestionTaskProps {
   unit: Unit;
   codebook: CodeBook;
   setUnitIndex: SetState<number>;
-  setConditionReport: SetState<ConditionReport>;
   fullScreenNode: FullScreenNode;
   sessionData: SessionData;
   blockEvents?: boolean;
@@ -78,14 +78,11 @@ const QuestionTask = ({
   unit,
   codebook,
   setUnitIndex,
-  setConditionReport,
   fullScreenNode,
   sessionData,
   blockEvents = false,
 }: QuestionTaskProps) => {
-  const [tokens, setTokens] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
-  //const [questions, setQuestions] = useState(null);
   const refs = {
     text: useRef(),
     box: useRef(),
@@ -98,6 +95,7 @@ const QuestionTask = ({
     lowerTextSize: 1,
   });
   const divref = useRef(null);
+  const [conditionReport, setConditionReport] = useState<ConditionReport>(null);
 
   useEffect(() => {
     // when new unit arrives, reset style (in case of swipe) and make
@@ -109,6 +107,10 @@ const QuestionTask = ({
     // fade in text when the text is ready (which Document tells us)
     fadeIn(refs.text, refs.box);
   }, [textReady, refs.text, refs.box, questionIndex]);
+
+  useEffect(() => {
+    setConditionReport({});
+  }, [unit]);
 
   // swipe controlls need to be up in the QuestionTask component due to working on the div containing the question screen
   // use separate swipe for text (document) and menu rows, because swiping up in the text is only possible if scrolled all the way down
@@ -134,6 +136,12 @@ const QuestionTask = ({
 
   return (
     <Container ref={divref}>
+      <FeedbackPortal
+        variable={codebook?.questions?.[questionIndex]?.name}
+        conditionReport={conditionReport}
+        setConditionReport={setConditionReport}
+        fullScreenNode={fullScreenNode}
+      />
       <TextWindow {...textSwipe}>
         <SwipeableBox ref={refs.box}>
           {/* This div moves around behind the div containing the document to show the swipe code  */}
@@ -143,7 +151,6 @@ const QuestionTask = ({
               unit={unit}
               setReady={setTextReady}
               showAnnotations={codebook?.questions?.[questionIndex]?.showAnnotations || []}
-              returnTokens={setTokens}
               fullScreenNode={fullScreenNode}
             />
           </Text>
@@ -157,7 +164,6 @@ const QuestionTask = ({
       >
         <QuestionForm
           unit={unit}
-          tokens={tokens}
           questions={codebook?.questions}
           questionIndex={questionIndex}
           setQuestionIndex={setQuestionIndex}

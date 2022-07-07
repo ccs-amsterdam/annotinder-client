@@ -8,7 +8,6 @@ import {
   AnswerItem,
   SetState,
   Annotation,
-  Token,
   Swipes,
   ConditionReport,
 } from "../../../types";
@@ -88,7 +87,6 @@ interface QuestionFormProps {
   unit: Unit;
   /** The tokens of the unit. Used to include span offset and length in the annotation
    * (this allows questions about a part of a document, like a sentence, to be made into document annotations) */
-  tokens: Token[];
   questions: Question[];
   questionIndex: number;
   setQuestionIndex: SetState<number>;
@@ -101,7 +99,6 @@ interface QuestionFormProps {
 const QuestionForm = ({
   children,
   unit,
-  tokens,
   questions,
   questionIndex,
   setQuestionIndex,
@@ -116,9 +113,9 @@ const QuestionForm = ({
 
   useEffect(() => {
     if (!questions) return;
-    getAnswersFromAnnotations(unit, tokens, questions, setAnswers);
+    getAnswersFromAnnotations(unit, questions, setAnswers);
     setQuestionIndex(0);
-  }, [unit, tokens, setAnswers, setQuestionIndex, questions]);
+  }, [unit, setAnswers, setQuestionIndex, questions]);
 
   useEffect(() => {
     if (!questions?.[questionIndex] || !unit) {
@@ -296,17 +293,24 @@ const processAnswer = async (
       cleanAnnotations,
       status
     );
+
     setConditionReport(conditionReport);
-    if (conditionReport.action === "retry") {
-      // navigate to first questionindex that has goldfeedback
-      const questionname = conditionReport.feedback[0].variable.split(".")[0];
-      const questionIndex = questions.findIndex((q) => q.name === questionname);
-      if (questionIndex >= 0) setQuestionIndex(questionIndex);
+    const action = conditionReport?.[questions[questionIndex].name]?.action;
+    if (action === "block") {
+      // pass
+    } else if (action === "retry") {
       blockAnswer.current = false;
     } else {
       const delay = new Date().getTime() - start.getTime();
       const extradelay = Math.max(0, minDelay - delay);
       await new Promise((resolve) => setTimeout(resolve, extradelay));
+
+      // check if there are other variables in the current unit that have an action
+      for (let i = 0; i < questions.length; i++) {
+        const action = conditionReport[questions[i].name]?.action;
+        if (action === "block" || action === "retry") newQuestionIndex = i;
+      }
+
       if (newQuestionIndex !== null) {
         setQuestionIndex(newQuestionIndex);
       } else {
