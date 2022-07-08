@@ -150,6 +150,7 @@ const QuestionForm = ({
   if (!questions || !unit || !answers) return null;
   if (!questions?.[questionIndex]) return null;
 
+  console.log(unit.status);
   const done = unit.status === "DONE";
 
   return (

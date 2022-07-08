@@ -328,7 +328,7 @@ export interface DemoData {
 export interface Progress {
   /** Total number of items a coder can coder in this job */
   n_total: number;
-  /** Number of items already coded */
+  /** Number of items that have been coded.  */
   n_coded: number;
   /** Should the coder be able to go back to already coded units? */
   seek_backwards?: boolean;
@@ -347,6 +347,7 @@ export interface Unit {
   unitId: number | string; // this is the backend id, not the external id
   annotations: Annotation[];
   status: UnitStatus;
+  report?: ConditionReport;
   tokens?: RawToken[];
   text_fields?: TextField[];
   meta_fields?: MetaField[];
@@ -406,6 +407,7 @@ export interface BackendUnit {
   type: UnitType;
   conditionals?: Conditional[];
   damage?: number;
+  report?: ConditionReport;
   annotation?: Annotation[]; // backend calls the annotations array annotation. Should probably change this
 }
 

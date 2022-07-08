@@ -109,7 +109,7 @@ const QuestionTask = ({
   }, [textReady, refs.text, refs.box, questionIndex]);
 
   useEffect(() => {
-    setConditionReport({});
+    setConditionReport(unit.report || {});
   }, [unit]);
 
   // swipe controlls need to be up in the QuestionTask component due to working on the div containing the question screen

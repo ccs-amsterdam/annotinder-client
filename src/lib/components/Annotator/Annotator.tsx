@@ -22,7 +22,8 @@ const Annotator = ({ jobServer, askFullScreen = false }: AnnotatorProps) => {
 
   useEffect(() => {
     // on start (or jobserver changes), unitIndex based on progress
-    setUnitIndex(jobServer?.progress?.n_coded);
+    //setUnitIndex(jobServer?.progress?.n_coded);
+    setUnitIndex(-1);
   }, [jobServer, setUnitIndex]);
 
   useEffect(() => {
@@ -67,7 +68,9 @@ const getUnit = async (
   setUnit: (value: Unit) => void,
   setUnitIndex: (value: number) => void
 ) => {
-  if (unitIndex < 0 || unitIndex >= jobServer.progress.n_total) return;
+  if (unitIndex >= jobServer.progress.n_total) return;
+
+  //if (unitIndex < 0 || unitIndex >= jobServer.progress.n_total) return;
 
   try {
     const unit = await jobServer.getUnit(unitIndex);
@@ -77,8 +80,14 @@ const getUnit = async (
     // NOTE THAT THIS RELIES ON REACT 18 FOR BATCHING STATE UPDATES
     if (unit.index != null && unitIndex !== unit.index) {
       setUnitIndex(unit.index);
+      //return;
+    }
+
+    if (unit.id == null) {
+      setUnit(null);
       return;
     }
+
     if (!unit.unit.variables) unit.unit.variables = {};
     for (let a of unit.unit.importedAnnotations || []) {
       if (!unit.unit.variables[a.variable]) {
@@ -94,6 +103,7 @@ const getUnit = async (
       unitId: unit.id,
       annotations: unit.annotation,
       status: unit.status,
+      report: unit.report,
       text_fields: unit.unit.text_fields,
       meta_fields: unit.unit.meta_fields,
       image_fields: unit.unit.image_fields,
