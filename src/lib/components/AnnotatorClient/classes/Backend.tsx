@@ -71,6 +71,17 @@ class Backend {
     const res = await this.api.get("annotator/users");
     return res.data.users;
   }
+  async getUsers2(page: number, pagesize: number): Promise<any> {
+    // changing to API handling pagination
+    const options = {
+      params: {
+        offset: page * pagesize,
+        n: pagesize,
+      },
+    };
+    const res = await this.api.get("annotator/users", options);
+    return res.data;
+  }
   async getCodebook(job_id: number) {
     const res = await this.api.get(`annotator/codingjob/${job_id}/codebook`);
     return res.data;
@@ -81,8 +92,8 @@ class Backend {
   }
   async getUnit(job_id: number, i: number) {
     let path = `annotator/codingjob/${job_id}/unit`;
-    if (i !== null) path += `?index=${i}`;
-    const res = await this.api.get(path);
+    const options = i != null ? { params: { index: i } } : {};
+    const res = await this.api.get(path, options);
     return res.data;
   }
   async getCodingjob(job_id: number): Promise<Job> {

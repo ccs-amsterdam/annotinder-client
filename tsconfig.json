@@ -1,5 +1,5 @@
 {
-  "files": ["src/lib/index.tsx"],
+  "files": ["src/lib/index.tsx", "src/lib/types.tsx"],
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,

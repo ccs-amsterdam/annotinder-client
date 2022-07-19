@@ -1,19 +1,19 @@
-# ccs-annotator-client
+# AnnoTinder
 
-This repository contains the app for the CCS Annotator client.
+This repository contains the app for the AnnoTinder client.
 
-Several components are also published as an [NPM module](https://www.npmjs.com/package/ccs-annotator-client). There are used by the CCS_Annotator client for managing and deploying jobs, and the ccsAnnotator R package.
+Several components are also published as an [NPM module](https://www.npmjs.com/package/annotinder). There are used by the CCS_Annotator client for managing and deploying jobs, and the annotinder R package.
 
-## CCS annotator client App
+## AnnoTinder client App
 
-The App can be used to log in to any CCS annotator backend. Users therefore never really have to install this App themselves.
-For now we're hosting it on [Github pages](https://ccs-amsterdam.github.io/ccs-annotator-client).
+The App can be used to log in to any AnnoTinder backend. Users therefore never really have to install this App themselves.
+For now we're hosting it on [Github pages](https://ccs-amsterdam.github.io/annotinder).
 
 Install the app, and run locally for development
 
 ```bash
-git clone https://github.com/ccs-amsterdam/ccs-annotator-client
-cd ccs-annotator-client
+git clone https://github.com/ccs-amsterdam/annotinder
+cd annotinder
 npm install
 npm start
 ```
@@ -28,8 +28,8 @@ npm run deploy
 
 ## As an NPM module
 
-The NPM module exposes the Annotator component, as well as some other stuff more under the hood (see src/lib/index.js).
-This is primarily intended for the CCS Annotator Manager.
+The NPM module doesn't cover the entire client, but exposes some components (see src/lib/index.js).
+This is primarily intended for the annotinder-r-client and annotinder-manager (forthcoming).
 
 To build and publish, increment version and run:
 

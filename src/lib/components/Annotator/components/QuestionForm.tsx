@@ -282,7 +282,7 @@ const processAnswer = async (
 
     if (onlySave) {
       // if just saving (for multivalue questions)
-      unit.jobServer.postAnnotations(unit.unitId, unit.unitIndex, cleanAnnotations, status);
+      unit.jobServer.postAnnotations(unit.unitId,  cleanAnnotations, status);
       blockAnswer.current = false;
       return;
     }
@@ -290,7 +290,6 @@ const processAnswer = async (
     const start = new Date();
     const conditionReport: ConditionReport = await unit.jobServer.postAnnotations(
       unit.unitId,
-      unit.unitIndex,
       cleanAnnotations,
       status
     );

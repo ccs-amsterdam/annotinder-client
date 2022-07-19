@@ -45,12 +45,7 @@ class JobServerAPI implements JobServer {
     return unit;
   }
 
-  async postAnnotations(
-    unitId: number,
-    unitIndex: number,
-    annotation: Annotation[],
-    status: Status
-  ) {
+  async postAnnotations(unitId: number, annotation: Annotation[], status: Status) {
     try {
       return await this.backend.postAnnotation(this.job_id, unitId, annotation, status);
     } catch (e) {

@@ -46,16 +46,17 @@ class JobServerDemo implements JobServer {
 
   async getUnit(i: number) {
     this.progress.n_coded = Math.max(i, this.progress.n_coded);
-    return { ...this.demodata.units[i], unit: { ...this.demodata.units[i].unit } };
+    if (i < 0) i = this.progress.n_coded;
+    return { id: i, ...this.demodata.units[i], unit: { ...this.demodata.units[i].unit } };
   }
 
   async postAnnotations(
     unit_id: number,
-    unit_index: number,
     annotation: Annotation[],
     status: Status
   ): Promise<ConditionReport> {
     try {
+      let unit_index = Number(unit_id); // in demo job, we use the index as id
       this.demodata.units[unit_index].annotation = annotation;
       this.demodata.units[unit_index].status =
         this.demodata.units[unit_index].status === "DONE" ? "DONE" : status;

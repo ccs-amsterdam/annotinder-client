@@ -33,6 +33,7 @@ const Annotator = ({ jobServer, askFullScreen = false }: AnnotatorProps) => {
     getUnit(jobServer, unitIndex, setUnit, setUnitIndex).then(() => setLoading(false));
   }, [unitIndex, jobServer, setUnitIndex, setUnit, setLoading]);
 
+  console.log(unit);
   return (
     <FullScreenWindow askFullScreen={askFullScreen}>
       {(fullScreenNode, fullScreenButton) => (
@@ -74,13 +75,12 @@ const getUnit = async (
 
   try {
     const unit = await jobServer.getUnit(unitIndex);
-
     // if backend gives the unit index, ensure that connection to unitIndex is fully controlled
     // (in case the frontend accidentally asks for a unitIndex it doesn't yet have access to)
     // NOTE THAT THIS RELIES ON REACT 18 FOR BATCHING STATE UPDATES
     if (unit.index != null && unitIndex !== unit.index) {
       setUnitIndex(unit.index);
-      //return;
+      return;
     }
 
     if (unit.id == null) {

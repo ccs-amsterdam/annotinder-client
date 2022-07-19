@@ -1,7 +1,7 @@
 {
-  "name": "ccs-annotator-client",
-  "homepage": "https://ccs-amsterdam.github.io/ccs-annotator-client",
-  "description": "The main workhorse behind the CCS Annotator",
+  "name": "annotinder",
+  "homepage": "https://ccs-amsterdam.github.io/annotinder",
+  "description": "The AnnoTinder React Client",
   "author": "Kasper Welbers",
   "keywords": [
     "react",
@@ -10,7 +10,7 @@
   "version": "0.2.7",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ccs-amsterdam/ccs-annotator-client"
+    "url": "https://github.com/ccs-amsterdam/AnnoTinder"
   },
   "license": "MIT",
   "main": "dist/index.js",

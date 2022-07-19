@@ -311,7 +311,6 @@ export interface JobServer {
   getUnit: (i: number) => Promise<BackendUnit>;
   postAnnotations: (
     unitId: number,
-    unitIndex: number,
     annotation: Annotation[],
     status: Status
   ) => Promise<ConditionReport>;
@@ -576,6 +575,12 @@ export interface TriggerCodePopup {
 }
 
 ///// FULLDATATABLE
+
+export interface TableData {
+  rows: RowObj[];
+  page: number;
+  pages: number;
+}
 
 /** An object where keys are column names and values their value for this particular row */
 export interface RowObj {

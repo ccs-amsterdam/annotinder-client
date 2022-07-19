@@ -10,12 +10,12 @@ export default function useWindowSize() {
     const onResize = () => updateSize(setSize);
     // Listen for changes to screen size and orientation
     // (this would have been so much easier if Safari would support window.screen.orientation)
-    window.addEventListener("resize", onResize);
+    window.visualViewport.addEventListener("resize", onResize);
     if (window?.screen?.orientation) {
       window.screen.orientation?.addEventListener("change", onResize);
     } else if (window?.orientation) window.orientation.addEventListener("change", onResize);
     return () => {
-      window.removeEventListener("resize", onResize);
+      window.visualViewport.removeEventListener("resize", onResize);
       if (window?.screen?.orientation) {
         window.screen.orientation.removeEventListener("change", onResize);
       } else if (window?.orientation) window.orientation.removeEventListener("change", onResize);
@@ -25,8 +25,7 @@ export default function useWindowSize() {
   useEffect(() => {
     // listening for orientation and size changes doesn't always work and on some devices
     // size isn't properly set on mount. Therefore also just check the size repeatedly
-    // (which should not be costly)
-    const interval = setInterval(() => updateSize(setSize), 2000);
+    const interval = setInterval(() => updateSize(setSize), 1000);
     return () => clearInterval(interval);
   }, [setSize]);
 

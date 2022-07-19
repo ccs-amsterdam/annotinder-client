@@ -7,7 +7,10 @@ import { RowObj, Job } from "../../../types";
 
 const columns = [
   { name: "title", title: true },
-  { name: "progress", f: (row: RowObj) => `${row.n_coded || 0} / ${row.n_total}` },
+  {
+    name: "progress",
+    f: (row: RowObj) => (row.n_total ? `${row.n_coded || 0} / ${row.n_total}` : ""),
+  },
   { name: "modified", title: true, date: true },
   { name: "created", title: true, date: true },
   { name: "creator", title: true },
@@ -38,6 +41,7 @@ const CoderJobsTable = ({ backend }: { backend: Backend }) => {
     backend
       .getUserJobs()
       .then((jobs: Job[]) => {
+        console.log(jobs);
         setJobs(jobs || []);
       })
       .catch((e: Error) => {
@@ -50,8 +54,8 @@ const CoderJobsTable = ({ backend }: { backend: Backend }) => {
     setSearchParams({ host: backend.host, job_id: rowObj.id });
   };
 
-  const started = jobs ? jobs.filter((j) => j.modified !== "NEW") : [];
-  const newjobs = jobs ? jobs.filter((j) => j.modified === "NEW") : [];
+  const started = jobs ? jobs.filter((j) => j.modified != null) : [];
+  const newjobs = jobs ? jobs.filter((j) => j.modified == null) : [];
   return (
     <FullDataTable
       fullData={[...started, ...newjobs]}

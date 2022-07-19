@@ -25,6 +25,19 @@ export default function UsersTable({ backend, users, setUsers }: UsersTableProps
       .catch((e) => setUsers([]));
   }, [backend, setUsers]);
 
+  // changing to API handling pagination
+  // const getData = useCallback(
+  //   async (page: number, pagesize: number, query?: string) => {
+  //     const data = await backend.getUsers2(page, pagesize);
+  //     return {
+  //       rows: data.users,
+  //       page,
+  //       pages: Math.floor(data.total / pagesize),
+  //     };
+  //   },
+  //   [backend]
+  // );
+
   return (
     <FullDataTable fullData={users} columns={columns} buttons={LoginLinkButton} backend={backend} />
   );

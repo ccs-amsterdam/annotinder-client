@@ -117,7 +117,7 @@ const ApplaudPortal = ({ action, fullScreenNode }: ApplaudPortalProps) => {
       style={{ zIndex: 10000 }}
     >
       <Icon
-        name="check square"
+        name="check"
         style={{
           top: "25%",
           left: "25%",
