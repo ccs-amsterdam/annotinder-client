@@ -12,7 +12,6 @@ import {
   SetState,
   CodeBook,
   SessionData,
-  ConditionReport,
 } from "../../../types";
 import Instructions from "./Instructions";
 
@@ -25,7 +24,7 @@ const BODYSTYLE = {
 interface AnnotateTaskProps {
   unit: Unit;
   codebook: CodeBook;
-  setUnitIndex: SetState<number>;
+  nextUnit: () => void;
   fullScreenNode: FullScreenNode;
   sessionData?: SessionData;
   blockEvents?: boolean;
@@ -34,7 +33,7 @@ interface AnnotateTaskProps {
 const AnnotateTask = ({
   unit,
   codebook,
-  setUnitIndex,
+  nextUnit,
   fullScreenNode,
   sessionData,
   blockEvents = false,
@@ -117,7 +116,7 @@ const AnnotateTask = ({
             fullScreenNode={fullScreenNode}
           />
           <AnnotateTaskManual fullScreenNode={fullScreenNode} />
-          <NextUnitButton unit={unit} annotations={annotations} setUnitIndex={setUnitIndex} />
+          <NextUnitButton unit={unit} annotations={annotations} nextUnit={nextUnit} />
         </Button.Group>
       </Grid.Column>
       {renderAnnotateTable()}
@@ -150,7 +149,7 @@ const useAnnotations = (unit: Unit): [Annotation[], (value: Annotation[]) => voi
       const cleanAnnotations = getCleanAnnotations(newAnnotations);
       if (!annotationsHaveChanged(unit.annotations, cleanAnnotations)) return;
       const newStatus = unit?.status === "DONE" ? "DONE" : "IN_PROGRESS";
-      unit.jobServer.postAnnotations(unit.unitId,  cleanAnnotations, newStatus);
+      unit.jobServer.postAnnotations(unit.unitId, cleanAnnotations, newStatus);
     },
     [unit]
   );
@@ -186,10 +185,10 @@ const getCleanAnnotations = (annotations: Annotation[]) => {
 interface NextUnitButtonProps {
   unit: Unit;
   annotations: Annotation[];
-  setUnitIndex: SetState<number>;
+  nextUnit: () => void;
 }
 
-const NextUnitButton = ({ unit, annotations, setUnitIndex }: NextUnitButtonProps) => {
+const NextUnitButton = ({ unit, annotations, nextUnit }: NextUnitButtonProps) => {
   const [tempDisable, setTempDisable] = useState("ready");
 
   const onNext = () => {
@@ -202,7 +201,7 @@ const NextUnitButton = ({ unit, annotations, setUnitIndex }: NextUnitButtonProps
       .then((res: any) => {
         // wait until post succeeds before moving to next unit, because backend
         // needs to know this unit is done.
-        setUnitIndex((state: number) => state + 1);
+        nextUnit();
         setTempDisable("cooldown");
         setTimeout(() => {
           setTempDisable("ready");

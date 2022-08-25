@@ -41,7 +41,6 @@ const CoderJobsTable = ({ backend }: { backend: Backend }) => {
     backend
       .getUserJobs()
       .then((jobs: Job[]) => {
-        console.log(jobs);
         setJobs(jobs || []);
       })
       .catch((e: Error) => {

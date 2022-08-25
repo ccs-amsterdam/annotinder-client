@@ -9,7 +9,9 @@ import { useSearchParams } from "react-router-dom";
 import Backend from "./classes/Backend";
 import { JobServer } from "../../types";
 
-const AnnotatorAmcatClient = () => {
+const background: string = null;
+
+const AnnotatorPythonClient = () => {
   const [backend, authForm, initBackend] = useBackend();
   const [jobServer, initJobServer] = useJobServer(backend);
 
@@ -18,7 +20,16 @@ const AnnotatorAmcatClient = () => {
   if (!backend) {
     // If backend isn't connected
     return (
-      <Grid inverted textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
+      <Grid
+        inverted
+        textAlign="center"
+        style={{
+          height: "100vh",
+          backgroundImage: background ? `url(${background})` : "none",
+          backgroundSize: `100vw 100vh`,
+        }}
+        verticalAlign="middle"
+      >
         <Grid.Column style={{ maxWidth: "500px" }}>{authForm}</Grid.Column>
       </Grid>
     );
@@ -67,4 +78,4 @@ const useJobServer = (backend: Backend): [JobServer, boolean] => {
   return [jobServer, initializing];
 };
 
-export default React.memo(AnnotatorAmcatClient);
+export default React.memo(AnnotatorPythonClient);

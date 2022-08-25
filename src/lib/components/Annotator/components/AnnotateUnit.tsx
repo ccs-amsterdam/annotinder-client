@@ -3,20 +3,19 @@ import AnnotateTask from "./AnnotateTask";
 import {
   FullScreenNode,
   JobServer,
-  SetState,
+  SetUnitIndex,
   Unit,
   SessionData,
-  ConditionReport,
   CodeBook,
 } from "../../../types";
-import { useState, useMemo, useEffect } from "react";
-import FeedbackPortal from "./FeedbackPortal";
+import { useMemo } from "react";
+import { useCallback } from "react";
 
 interface AnnotateUnitProps {
   unit: Unit;
   jobServer: JobServer;
   unitIndex: number;
-  setUnitIndex: SetState<number>;
+  setUnitIndex: SetUnitIndex;
   fullScreenNode: FullScreenNode;
 }
 
@@ -31,6 +30,10 @@ const AnnotateUnit = ({
     return { seenInstructions: {} };
   }, []);
 
+  const nextUnit = useCallback(() => {
+    setUnitIndex(unitIndex + 1);
+  }, [unitIndex, setUnitIndex]);
+
   // Both the unit and the codingjob can have a codebook
   // codebook is the default codebook applied to all units
   // unit.codebook is a unit specific codebook that overrides the default
@@ -42,7 +45,7 @@ const AnnotateUnit = ({
     <Task
       unit={unit}
       codebook={codebook}
-      setUnitIndex={setUnitIndex}
+      nextUnit={nextUnit}
       sessionData={sessionData}
       fullScreenNode={fullScreenNode}
     />
@@ -52,18 +55,18 @@ const AnnotateUnit = ({
 interface TaskProps {
   unit: Unit;
   codebook: CodeBook;
-  setUnitIndex: SetState<number>;
+  nextUnit: () => void;
   sessionData: SessionData;
   fullScreenNode: FullScreenNode;
 }
 
-const Task = ({ unit, codebook, setUnitIndex, sessionData, fullScreenNode }: TaskProps) => {
+const Task = ({ unit, codebook, nextUnit, sessionData, fullScreenNode }: TaskProps) => {
   if (codebook.type === "questions")
     return (
       <QuestionTask
         unit={unit}
         codebook={codebook}
-        setUnitIndex={setUnitIndex}
+        nextUnit={nextUnit}
         fullScreenNode={fullScreenNode}
         sessionData={sessionData}
       />
@@ -74,7 +77,7 @@ const Task = ({ unit, codebook, setUnitIndex, sessionData, fullScreenNode }: Tas
       <AnnotateTask
         unit={unit}
         codebook={codebook}
-        setUnitIndex={setUnitIndex}
+        nextUnit={nextUnit}
         fullScreenNode={fullScreenNode}
         sessionData={sessionData}
       />

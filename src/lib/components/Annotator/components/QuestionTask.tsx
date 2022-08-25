@@ -68,7 +68,7 @@ const QuestionMenu = styled.div<{
 interface QuestionTaskProps {
   unit: Unit;
   codebook: CodeBook;
-  setUnitIndex: SetState<number>;
+  nextUnit: () => void;
   fullScreenNode: FullScreenNode;
   sessionData: SessionData;
   blockEvents?: boolean;
@@ -77,7 +77,7 @@ interface QuestionTaskProps {
 const QuestionTask = ({
   unit,
   codebook,
-  setUnitIndex,
+  nextUnit,
   fullScreenNode,
   sessionData,
   blockEvents = false,
@@ -167,7 +167,7 @@ const QuestionTask = ({
           questions={codebook?.questions}
           questionIndex={questionIndex}
           setQuestionIndex={setQuestionIndex}
-          setUnitIndex={setUnitIndex}
+          nextUnit={nextUnit}
           setConditionReport={setConditionReport}
           swipe={swipe}
           blockEvents={blockEvents}

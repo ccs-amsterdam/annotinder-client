@@ -90,7 +90,7 @@ interface QuestionFormProps {
   questions: Question[];
   questionIndex: number;
   setQuestionIndex: SetState<number>;
-  setUnitIndex: SetState<number>;
+  nextUnit: () => void;
   setConditionReport: SetState<ConditionReport>;
   swipe: Swipes;
   blockEvents: boolean;
@@ -102,7 +102,7 @@ const QuestionForm = ({
   questions,
   questionIndex,
   setQuestionIndex,
-  setUnitIndex,
+  nextUnit,
   setConditionReport,
   swipe,
   blockEvents,
@@ -138,19 +138,18 @@ const QuestionForm = ({
         questions,
         answers,
         questionIndex,
-        setUnitIndex,
+        nextUnit,
         setQuestionIndex,
         setConditionReport,
         blockAnswer
       );
     },
-    [answers, questionIndex, questions, setQuestionIndex, setUnitIndex, setConditionReport, unit]
+    [answers, questionIndex, questions, setQuestionIndex, nextUnit, setConditionReport, unit]
   );
 
   if (!questions || !unit || !answers) return null;
   if (!questions?.[questionIndex]) return null;
 
-  console.log(unit.status);
   const done = unit.status === "DONE";
 
   return (
@@ -247,7 +246,7 @@ const processAnswer = async (
   questions: Question[],
   answers: Answer[],
   questionIndex: number,
-  setUnitIndex: SetState<number>,
+  nextUnit: () => void,
   setQuestionIndex: SetState<number>,
   setConditionReport: SetState<ConditionReport>,
   blockAnswer: any
@@ -282,7 +281,7 @@ const processAnswer = async (
 
     if (onlySave) {
       // if just saving (for multivalue questions)
-      unit.jobServer.postAnnotations(unit.unitId,  cleanAnnotations, status);
+      unit.jobServer.postAnnotations(unit.unitId, cleanAnnotations, status);
       blockAnswer.current = false;
       return;
     }
@@ -314,7 +313,7 @@ const processAnswer = async (
       if (newQuestionIndex !== null) {
         setQuestionIndex(newQuestionIndex);
       } else {
-        setUnitIndex((state: number) => state + 1);
+        nextUnit();
       }
       blockAnswer.current = false;
     }

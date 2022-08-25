@@ -342,7 +342,7 @@ export type UnitType = "pre" | "train" | "test" | "unit" | "post";
 /** A unit after it has been prepared by the jobServer. This is for internal use */
 export interface Unit {
   jobServer: any;
-  unitIndex: number;
+  //unitIndex: number;
   unitId: number | string; // this is the backend id, not the external id
   annotations: Annotation[];
   status: UnitStatus;
@@ -360,6 +360,11 @@ export interface Unit {
   codebook?: CodeBook;
   variables?: UnitVariables;
 }
+
+/**
+ * This function gets a unit from the server.
+ * Use index -1 to tell the backend to decide what unit comes next  */
+export type SetUnitIndex = (index: number) => void;
 
 /** A unit in the raw JSON structure. This is also the same structure in which it should be uploaded to the backend  */
 export interface RawUnit {

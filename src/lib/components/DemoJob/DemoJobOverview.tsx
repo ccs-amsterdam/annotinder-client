@@ -160,7 +160,7 @@ interface DemoJobLinkProps {
 const DemoJobLink = ({ units, codebook }: DemoJobLinkProps) => {
   const [, setSearchParams] = useSearchParams();
   if (!units || !codebook) return null;
-  const url = `${window.location.origin}/ccs-annotator-client/demo?units=${units}&codebook=${codebook}`;
+  const url = `${window.location.origin}/annotinder/demo?units=${units}&codebook=${codebook}`;
 
   const onClick = () => {
     setSearchParams({ units, codebook });

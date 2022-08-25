@@ -25,19 +25,21 @@ const IndexController = ({
   canGoBack = true,
 }: IndexControllerProps) => {
   const [activePage, setActivePage] = useState(1);
-  const [delayedActivePage, setDelayedActivePage] = useState(1);
+  const [sliderPage, setSliderPage] = useState(1);
 
   useEffect(() => {
+    // if index changes on the outside, update the active page shown in the controller
     if (index < 0) return;
-    if (index !== null) setActivePage(Math.min(index + 1, n + 1));
-    if (index === null) setActivePage(n + 1);
+    const page = index === null ? n + 1 : Math.min(index + 1, n + 1);
+    setActivePage(page);
+    setSliderPage(page);
   }, [index, n, setActivePage]);
 
-  useEffect(() => {
-    if (!n) return null;
-    setIndex(activePage - 1);
-    setDelayedActivePage(activePage);
-  }, [n, setIndex, activePage]);
+  const updatePage = (page: number) => {
+    setIndex(page - 1);
+    setActivePage(page);
+    setSliderPage(page);
+  };
 
   if (!n) return null;
   let progress = (100 * Math.max(0, maxN)) / n;
@@ -54,8 +56,6 @@ const IndexController = ({
         boxShadow: "none",
         padding: "0",
         leftMargin: "0px",
-        //width: "100%",
-        //flex: "1 1 0px",
         height: "35px",
         borderRadius: "0",
         fontSize: "1em",
@@ -66,13 +66,13 @@ const IndexController = ({
           <>
             <Icon
               name="fast backward"
-              onClick={() => setActivePage(1)}
+              onClick={() => updatePage(1)}
               style={iconStyle}
               disabled={!canGoBack || activePage === 1}
             />
             <Icon
               name="step backward"
-              onClick={() => setActivePage(Math.max(1, activePage - 1))}
+              onClick={() => updatePage(Math.max(1, activePage - 1))}
               disabled={!canGoBack || activePage === 1}
               style={iconStyle}
             />
@@ -90,7 +90,7 @@ const IndexController = ({
             borderRadius: "2px",
           }}
         >
-          {delayedActivePage <= n ? `${delayedActivePage} / ${n}` : `done`}
+          {sliderPage <= n ? `${sliderPage} / ${n}` : `done`}
         </Label>
         {canGoForward || canGoBack ? (
           <>
@@ -98,9 +98,9 @@ const IndexController = ({
               name="step forward"
               onClick={() => {
                 if (canGoForward) {
-                  setActivePage(activePage + 1);
+                  updatePage(activePage + 1);
                 } else {
-                  setActivePage(Math.min(maxN + 1, activePage + 1));
+                  updatePage(Math.min(maxN + 1, activePage + 1));
                 }
               }}
               disabled={!canGoForward && activePage >= maxN + 1}
@@ -110,9 +110,9 @@ const IndexController = ({
               name="fast forward"
               onClick={() => {
                 if (canGoForward) {
-                  setActivePage(Math.max(maxN + 1, activePage + 1));
+                  updatePage(Math.max(maxN + 1, activePage + 1));
                 } else {
-                  setActivePage(maxN + 1);
+                  updatePage(maxN + 1);
                 }
               }}
               disabled={!canGoForward && activePage >= maxN + 1}
@@ -132,26 +132,26 @@ const IndexController = ({
         min={1}
         max={n + 1}
         onChange={(e) => {
-          // Changing the range slider directly only updates delayedActivePage, which shows the value on the slider.
+          // Changing the range slider directly only updates sliderPage, which shows the value on the slider.
           // Below, the onMouseUp event then process the change
-          if (Number(e.target.value) > delayedActivePage) {
+          if (Number(e.target.value) > sliderPage) {
             if (canGoForward) {
-              setDelayedActivePage(Number(e.target.value));
+              setSliderPage(Number(e.target.value));
             } else {
-              setDelayedActivePage(Math.min(maxN + 1, Number(e.target.value)));
+              setSliderPage(Math.min(maxN + 1, Number(e.target.value)));
             }
           }
-          if (canGoBack && Number(e.target.value) < delayedActivePage)
-            setDelayedActivePage(Number(e.target.value));
+          if (canGoBack && Number(e.target.value) < sliderPage)
+            setSliderPage(Number(e.target.value));
         }}
         onMouseUp={(e) => {
-          setActivePage(delayedActivePage);
+          updatePage(sliderPage);
         }}
         onTouchEnd={(e) => {
-          setActivePage(delayedActivePage);
+          updatePage(sliderPage);
         }}
         type="range"
-        value={delayedActivePage}
+        value={sliderPage}
       />
     </Segment>
   );

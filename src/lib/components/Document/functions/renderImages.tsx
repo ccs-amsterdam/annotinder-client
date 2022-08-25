@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ImageField, RenderedImages } from "../../../types";
 
+/** Simple interface for image size */
 interface Size {
   height: string;
   width: string;
 }
 
+/** Returns a record where keys are image field names and values are react elements that render the image */
 export default function renderImages(
   image_fields: ImageField[],
   containerRef: any

@@ -15,13 +15,13 @@ const headerStyle = {
 const headerStyleLeft = {
   ...headerStyle,
   borderTopLeftRadius: "5px",
-  borderBottomLeftRadius: "5px",
+  borderBottomLeftRadius: "0px",
   borderLeft: "1px solid black",
 };
 const headerStyleRight = {
   ...headerStyle,
   borderTopRightRadius: "5px",
-  borderBottomRightRadius: "5px",
+  borderBottomRightRadius: "0px",
   borderRight: "1px solid black",
 };
 const rowStyle = {
@@ -35,7 +35,7 @@ const footerStyle = {
   //borderTop: "2px solid black",
   borderTop: "0px",
   borderRadius: "0px",
-  padding: "10px 0px 5px 0px",
+  padding: "10px 5px 10px 5px",
   textAlign: "center",
 };
 
@@ -145,7 +145,13 @@ const PaginationTable = ({
 
   return (
     <Container>
-      <Table unstackable selectable fixed compact="very" size="small" style={{ border: "none" }}>
+      <Table
+        unstackable
+        fixed
+        compact="very"
+        size="small"
+        style={{ border: "none", background: "transparent", backdropFilter: "blur(3px)" }}
+      >
         <Table.Header>
           <Table.Row>
             {buttons ? (

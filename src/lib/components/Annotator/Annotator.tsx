@@ -1,11 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { Dimmer, Loader, Segment } from "semantic-ui-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { Segment } from "semantic-ui-react";
 import AnnotateUnit from "./components/AnnotateUnit";
 import FullScreenWindow from "./components/FullScreenWindow";
 import "./annotatorStyle.css";
 import JobController from "./components/JobController";
-import { JobServer, Unit } from "../../types";
+import { JobServer, Unit, SetUnitIndex } from "../../types";
 import { importCodebook } from "../../functions/codebook";
+
+/**
+ * Keep unit and index in same state to guaranteer that they're synchronized
+ */
+interface IndexedUnit {
+  unit: Unit;
+  index: number;
+  error?: boolean;
+}
 
 /**
  * Render an annotator for the provided jobServer class
@@ -16,43 +25,46 @@ interface AnnotatorProps {
 }
 
 const Annotator = ({ jobServer, askFullScreen = false }: AnnotatorProps) => {
-  const [unitIndex, setUnitIndex] = useState(-1);
-  const [unit, setUnit] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [indexedUnit, setIndexedUnit] = useState<IndexedUnit>({ unit: null, index: -1 });
+
+  const setUnitIndex: SetUnitIndex = useCallback(
+    (index) => {
+      if (!jobServer || index === null) return;
+      getIndexedUnit(jobServer, index)
+        .then((indexedUnit) => {
+          console.log(indexedUnit);
+          setIndexedUnit(indexedUnit);
+        })
+        .catch((e) => {
+          console.error(e);
+          setIndexedUnit({ unit: null, index: -1, error: true });
+        });
+    },
+    [jobServer]
+  );
 
   useEffect(() => {
-    // on start (or jobserver changes), unitIndex based on progress
-    //setUnitIndex(jobServer?.progress?.n_coded);
+    // reset index when jobServer changes.
+    // -1 tells backend to determine what the next unit is.
     setUnitIndex(-1);
   }, [jobServer, setUnitIndex]);
 
-  useEffect(() => {
-    // When unitIndex changes, get the unit
-    if (!jobServer || unitIndex === null) return;
-    setLoading(true);
-    getUnit(jobServer, unitIndex, setUnit, setUnitIndex).then(() => setLoading(false));
-  }, [unitIndex, jobServer, setUnitIndex, setUnit, setLoading]);
-
-  console.log(unit);
   return (
     <FullScreenWindow askFullScreen={askFullScreen}>
       {(fullScreenNode, fullScreenButton) => (
         // FullScreenWindow passes on the fullScreenNode needed to mount popups, and a fullScreenButton to handle on/off
         <JobController
           jobServer={jobServer}
-          unitIndex={unitIndex}
+          unitIndex={indexedUnit?.index}
           setUnitIndex={setUnitIndex}
           fullScreenButton={fullScreenButton}
           fullScreenNode={fullScreenNode}
         >
           <Segment basic style={{ height: "100%", padding: "0", margin: "0" }}>
-            <Dimmer inverted active={loading}>
-              <Loader />
-            </Dimmer>
             <AnnotateUnit
-              unit={unit}
               jobServer={jobServer}
-              unitIndex={unitIndex}
+              unit={indexedUnit?.unit}
+              unitIndex={indexedUnit?.index}
               setUnitIndex={setUnitIndex}
               fullScreenNode={fullScreenNode}
             />
@@ -63,60 +75,38 @@ const Annotator = ({ jobServer, askFullScreen = false }: AnnotatorProps) => {
   );
 };
 
-const getUnit = async (
-  jobServer: any,
-  unitIndex: number,
-  setUnit: (value: Unit) => void,
-  setUnitIndex: (value: number) => void
-) => {
-  if (unitIndex >= jobServer.progress.n_total) return;
+const getIndexedUnit = async (jobServer: any, unitIndex: number): Promise<IndexedUnit> => {
+  if (unitIndex >= jobServer.progress.n_total) return { unit: null, index: unitIndex };
 
-  //if (unitIndex < 0 || unitIndex >= jobServer.progress.n_total) return;
+  const unit = await jobServer.getUnit(unitIndex);
+  if (unit.id == null) return { unit: null, index: unit?.index || unitIndex };
 
-  try {
-    const unit = await jobServer.getUnit(unitIndex);
-    // if backend gives the unit index, ensure that connection to unitIndex is fully controlled
-    // (in case the frontend accidentally asks for a unitIndex it doesn't yet have access to)
-    // NOTE THAT THIS RELIES ON REACT 18 FOR BATCHING STATE UPDATES
-    if (unit.index != null && unitIndex !== unit.index) {
-      setUnitIndex(unit.index);
-      return;
+  if (!unit.unit.variables) unit.unit.variables = {};
+  for (let a of unit.unit.importedAnnotations || []) {
+    if (!unit.unit.variables[a.variable]) {
+      unit.unit.variables[a.variable] = a.value;
+    } else {
+      unit.unit.variables[a.variable] += `, ${a.value}`;
     }
-
-    if (unit.id == null) {
-      setUnit(null);
-      return;
-    }
-
-    if (!unit.unit.variables) unit.unit.variables = {};
-    for (let a of unit.unit.importedAnnotations || []) {
-      if (!unit.unit.variables[a.variable]) {
-        unit.unit.variables[a.variable] = a.value;
-      } else {
-        unit.unit.variables[a.variable] += `, ${a.value}`;
-      }
-    }
-
-    setUnit({
-      jobServer,
-      unitIndex: unit.index || unitIndex, // unit can (should?) return an index to keep it fully controlled
-      unitId: unit.id,
-      annotations: unit.annotation,
-      status: unit.status,
-      report: unit.report,
-      text_fields: unit.unit.text_fields,
-      meta_fields: unit.unit.meta_fields,
-      image_fields: unit.unit.image_fields,
-      markdown_fields: unit.unit.markdown_fields,
-      importedAnnotations: unit.unit.importedAnnotations,
-      settings: unit.unit.settings,
-      variables: unit.unit.variables,
-      codebook: unit.unit.codebook ? importCodebook(unit.unit.codebook) : undefined,
-    });
-  } catch (e) {
-    console.log(e);
-    setUnit(null);
   }
+
+  const u = {
+    jobServer,
+    //unitIndex: unit.index || unitIndex, // unit can (should?) return an index to keep it fully controlled
+    unitId: unit.id,
+    annotations: unit.annotation,
+    status: unit.status,
+    report: unit.report,
+    text_fields: unit.unit.text_fields,
+    meta_fields: unit.unit.meta_fields,
+    image_fields: unit.unit.image_fields,
+    markdown_fields: unit.unit.markdown_fields,
+    importedAnnotations: unit.unit.importedAnnotations,
+    settings: unit.unit.settings,
+    variables: unit.unit.variables,
+    codebook: unit.unit.codebook ? importCodebook(unit.unit.codebook) : undefined,
+  };
+  return { unit: u, index: unit.index || unitIndex };
 };
 
 export default React.memo(Annotator);

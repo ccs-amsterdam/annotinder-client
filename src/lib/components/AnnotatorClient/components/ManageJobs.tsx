@@ -68,7 +68,7 @@ const leftColStyle = { fontWeight: "bold", textAlign: "right", paddingRight: "15
 
 interface AnnotationData {
   data: any;
-  progress: { [key: string]: number };
+  progress: Record<string, Record<string, number>>;
   totalProgress: number;
 }
 
@@ -91,11 +91,12 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
   const getAnnotations = async () => {
     const units = await backend.getCodingjobAnnotations(job.id);
     const uniqueUnits: Record<string, boolean> = {};
-    const progress: Record<string, number> = {};
+    const progress: Record<string, Record<string, number>> = {};
     const data = [];
     for (let unit of units) {
-      if (!progress[unit.coder]) progress[unit.coder] = 0;
-      if (unit.status === "DONE") progress[unit.coder]++;
+      if (!progress[unit.jobset]) progress[unit.jobset] = {};
+      if (!progress[unit.jobset][unit.coder]) progress[unit.jobset][unit.coder] = 0;
+      if (unit.status === "DONE") progress[unit.jobset][unit.coder]++;
       uniqueUnits[unit.unit_id] = true;
 
       for (let ann of unit.annotation) {
@@ -153,7 +154,7 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
                   {i === 0 ? "Job sets" : ""}
                 </Table.Cell>
                 <Table.Cell key="value">
-                  {js.name} <i>({js.n_units} units</i>)
+                  {js.name} <i>({js.n_units}</i>)
                 </Table.Cell>
               </Table.Row>
             );
@@ -304,6 +305,17 @@ interface AnnotationProgressProps {
 
 const AnnotationProgress = ({ job, annotations }: AnnotationProgressProps) => {
   if (!annotations?.progress) return null;
+
+  const data: Record<string, { total: number; n: number }> = {};
+  for (const jobset of Object.keys(annotations.progress)) {
+    const details = job.jobset_details.find((jd: any) => jd.name === jobset);
+    const total = details?.n_units || 0;
+    for (const coder of Object.keys(annotations.progress[jobset])) {
+      if (!data[coder]) data[coder] = { total, n: 0 };
+      data[coder].n += annotations.progress[jobset][coder];
+    }
+  }
+
   return (
     <div style={{ marginTop: "20px", height: "100%" }}>
       <LabeledProgress
@@ -314,8 +326,8 @@ const AnnotationProgress = ({ job, annotations }: AnnotationProgressProps) => {
         bold={true}
       />
       <br />
-      {Object.entries(annotations.progress).map(([key, value]) => {
-        return <LabeledProgress key={key} label={key} value={value} total={job.n_total} />;
+      {Object.entries(data).map(([coder, values]) => {
+        return <LabeledProgress key={coder} label={coder} value={values.n} total={values.total} />;
       })}
     </div>
   );
@@ -334,7 +346,7 @@ const LabeledProgress = ({ label, value, total, bold = false }: LabeledProgressP
       <span
         title={label}
         style={{
-          width: "40%",
+          width: "60%",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           overflow: "hidden",
@@ -342,7 +354,7 @@ const LabeledProgress = ({ label, value, total, bold = false }: LabeledProgressP
       >
         {label}
       </span>{" "}
-      <div style={{ width: "40%" }}>
+      <div style={{ width: "20%" }}>
         <progress value={value} max={total} style={{ width: "100%" }} />
       </div>
       <span style={{ textAlign: "right", width: "20%", fontSize: "0.8em" }}>
@@ -370,8 +382,8 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
       .then((token: string) => {
         const qrhost = backend.host.replace(":", "%colon%");
         setLink({
-          url: `${window.location.origin}/ccs-annotator-client/guest/?host=${backend.host}&jobtoken=${token}`,
-          qrUrl: `${window.location.origin}/ccs-annotator-client/guest/?host=${qrhost}&jobtoken=${token}`,
+          url: `${window.location.origin}/annotinder/guest/?host=${backend.host}&jobtoken=${token}`,
+          qrUrl: `${window.location.origin}/annotinder/guest/?host=${qrhost}&jobtoken=${token}`,
         });
       })
       .catch((e: Error) => {

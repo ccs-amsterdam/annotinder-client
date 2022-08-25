@@ -94,8 +94,8 @@ const JobLink = ({ jobId, backend, style = {} }: JobLinkProps) => {
       .then((token: string) => {
         const qrhost = backend.host.replace(":", "%colon%");
         setLink({
-          url: `${window.location.origin}/ccs-annotator-client/guest/?host=${backend.host}&jobtoken=${token}`,
-          qrUrl: `${window.location.origin}/ccs-annotator-client/guest/?host=${qrhost}&jobtoken=${token}`,
+          url: `${window.location.origin}/annotinder/guest/?host=${backend.host}&jobtoken=${token}`,
+          qrUrl: `${window.location.origin}/annotinder/guest/?host=${qrhost}&jobtoken=${token}`,
         });
       })
       .catch((e: Error) => {

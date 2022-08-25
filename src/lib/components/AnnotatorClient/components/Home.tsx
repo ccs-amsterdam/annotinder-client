@@ -5,12 +5,13 @@ import Backend from "../classes/Backend";
 import CoderView from "./CoderView";
 import ManageJobs from "./ManageJobs";
 import ManageUsers from "./ManageUsers";
-import DemoJobOverview from "../../DemoJob/DemoJobOverview";
 
 interface HomeProps {
   backend: Backend;
   authForm: ReactElement;
 }
+
+const background: string = null;
 
 export default function Home({ backend, authForm }: HomeProps) {
   const [menuItem, setMenuItem] = useState("coderView");
@@ -30,7 +31,14 @@ export default function Home({ backend, authForm }: HomeProps) {
   };
 
   return (
-    <div style={{ height: "100%", width: "100%" }}>
+    <div
+      style={{
+        height: "100%",
+        width: "100%",
+        backgroundImage: background ? `url(${background})` : "none",
+        backgroundSize: `100vw 100vh`,
+      }}
+    >
       <MenuBar
         backend={backend}
         authForm={authForm}

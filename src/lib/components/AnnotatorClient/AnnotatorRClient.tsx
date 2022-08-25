@@ -10,9 +10,6 @@ import { JobServer, SetState } from "../../types";
 const PORT = 8000;
 const TRY_EVERY = 1000;
 
-// This is mainly included here for development.
-// The actual version used by R is in ccs-annotator-client-r
-
 export default function AnnotatorRClient() {
   // A simple client that just looks for a backend on the host
   // Assumes only 1 job (with job_id = 0 or just ignored in backend)

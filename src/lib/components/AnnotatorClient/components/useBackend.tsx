@@ -102,15 +102,13 @@ interface SignOutProps {
 
 const SignOut = ({ setLogout }: SignOutProps) => {
   return (
-    <>
-      <Grid textAlign="center">
-        <Grid.Column>
-          <Button secondary onClick={setLogout}>
-            Sign out
-          </Button>
-        </Grid.Column>
-      </Grid>
-    </>
+    <Grid textAlign="center">
+      <Grid.Column>
+        <Button secondary onClick={setLogout}>
+          Sign out
+        </Button>
+      </Grid.Column>
+    </Grid>
   );
 };
 
@@ -156,15 +154,28 @@ const SignIn = ({ recHost, setLogin }: SignInProps) => {
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Header icon="user" content="Sign in" />
         <Button
-          basic
-          style={{ padding: "0px 10px", marginBottom: "5px" }}
+          style={{
+            padding: "0px 10px",
+            marginBottom: "5px",
+            color: "white",
+            background: "#888888aa",
+          }}
           onClick={() => navigate("demo")}
         >
           View demo
         </Button>
       </div>
 
-      <Segment placeholder attached="bottom" style={{ borderRadius: "10px", position: "relative" }}>
+      <Segment
+        placeholder
+        attached="bottom"
+        style={{
+          backdropFilter: "blur(3px)",
+          background: "#aaaaaaaa",
+          borderRadius: "10px",
+          position: "relative",
+        }}
+      >
         <Grid stackable textAlign="center">
           <Grid.Row>
             <Grid.Column>

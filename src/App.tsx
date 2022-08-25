@@ -2,7 +2,7 @@ import React from "react";
 
 // Main pages. Use below in items to include in header menu
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AnnotatorAmcatClient from "./lib/components/AnnotatorClient/AnnotatorAmcatClient";
+import AnnotatorPythonClient from "./lib/components/AnnotatorClient/AnnotatorPythonClient";
 import AnnotatorRClient from "./lib/components/AnnotatorClient/AnnotatorRClient";
 import DemoJobOverview from "./lib/components/DemoJob/DemoJobOverview";
 import GuestCoder from "./lib/components/GuestCoder/GuestCoder";
@@ -23,7 +23,7 @@ const App = () => {
     <Router basename={process.env.PUBLIC_URL}>
       <ResponsiveContainer height={size.height - 1} width={size.width - 1}>
         <Routes>
-          <Route path="/" exact element={<AnnotatorAmcatClient />} />
+          <Route path="/" exact element={<AnnotatorPythonClient />} />
           <Route path="/demo" exact element={<DemoJobOverview />} />
           <Route path="/guest" exact element={<GuestCoder />} />
           <Route path="/r" exact element={<AnnotatorRClient />} />
