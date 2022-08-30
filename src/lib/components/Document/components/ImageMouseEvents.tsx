@@ -161,10 +161,6 @@ const ImageMouseEvents = ({ triggerCodePopup, editMode }) => {
       // so this way a click can still be used to open
       if (event.which !== 1 && event.which !== 0) return null;
 
-      // can these be disabled? Does this solve the mac issue? (slider getting stuck on click)
-      //event.preventDefault();
-      //event.stopPropagation();
-
       const currentNode = storeMouseTokenSelection(getToken(tokens, event));
       window.getSelection().empty();
       //setHoldMouseLeft(false);

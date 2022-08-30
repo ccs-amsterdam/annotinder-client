@@ -1,5 +1,52 @@
 [
   {
+    "id": "4",
+    "type": "unit",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Let's annotate already!",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
+          "name": "text",
+          "value": "Right, so you've probably figured that all those question things can also be used for annotating texts and images. But there are some special annotation features as well.\n\n  One we quite like is the Annotinder function. If you're on mobile, you can swipe this one!"
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "swipe",
+            "question": "Try swiping this!",
+            "codes": [
+              { "code": "Left", "color": "crimson", "swipe": "left" },
+              { "code": "Right", "color": "lightgreen", "swipe": "right" },
+              { "code": "Up", "color": "yellow", "swipe": "up" }
+            ],
+            "type": "annotinder"
+          },
+          {
+            "name": "swipe2",
+            "question": "Try swiping this!",
+            "codes": [
+              { "code": "Left", "color": "crimson", "swipe": "left" },
+              { "code": "Right", "color": "lightgreen", "swipe": "right" },
+              { "code": "Up", "color": "yellow", "swipe": "up" }
+            ],
+            "type": "annotinder"
+          }
+        ]
+      },
+      "variables": []
+    }
+  },
+  {
     "id": "1",
     "type": "unit",
     "unit": {
@@ -14,8 +61,88 @@
           }
         },
         {
+          "name": "text1",
+          "value": "This is a quick introduction to the CCS Annotator. This very introduction in itself is actually a codingjob!\n\nA basic codingjob consists of a set of units (what to code) and a codebook (how to code). But you can also combine different codebooks to tailor codingjobs to particular purposes, which this introduction serves to demonstrate.\n\nBy the way, we are not storing any of your data. In fact, the annotator can run entirely in your own browser without a server involved. This is actually a key feature, but more on that later."
+        },
+        {
+          "name": "text2",
+          "value": "This is a quick introduction to the CCS Annotator. This very introduction in itself is actually a codingjob!\n\nA basic codingjob consists of a set of units (what to code) and a codebook (how to code). But you can also combine different codebooks to tailor codingjobs to particular purposes, which this introduction serves to demonstrate.\n\nBy the way, we are not storing any of your data. In fact, the annotator can run entirely in your own browser without a server involved. This is actually a key feature, but more on that later."
+        },
+        {
+          "name": "text3",
+          "value": "This is a quick introduction to the CCS Annotator. This very introduction in itself is actually a codingjob!\n\nA basic codingjob consists of a set of units (what to code) and a codebook (how to code). But you can also combine different codebooks to tailor codingjobs to particular purposes, which this introduction serves to demonstrate.\n\nBy the way, we are not storing any of your data. In fact, the annotator can run entirely in your own browser without a server involved. This is actually a key feature, but more on that later."
+        },
+        {
+          "name": "text4",
+          "value": "This is a quick introduction to the CCS Annotator. This very introduction in itself is actually a codingjob!\n\nA basic codingjob consists of a set of units (what to code) and a codebook (how to code). But you can also combine different codebooks to tailor codingjobs to particular purposes, which this introduction serves to demonstrate.\n\nBy the way, we are not storing any of your data. In fact, the annotator can run entirely in your own browser without a server involved. This is actually a key feature, but more on that later."
+        }
+      ],
+      "importedAnnotations": [
+        {
+          "field": "text1",
+          "variable": "some variable",
+          "value": "Some label"
+        },
+        {
+          "field": "text2",
+          "variable": "some variable",
+          "value": "Another label"
+        },
+        {
+          "field": "text3",
+          "variable": "some variable",
+          "value": "EMPTY"
+        }
+      ],
+
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "fav_animal",
+            "instruction": "questions can have individual instructions",
+            "type": "select code",
+            "question": "What's your favourite type of animal?",
+            "codes": [
+              { "code": "Birds" },
+              { "code": "Mammals" },
+              { "code": "Insects" },
+              { "code": "Fish" }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "1",
+    "type": "unit",
+    "unit": {
+      "grid": {
+        "columns": "2fr",
+        "areas": ["title", ["text"]]
+      },
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Welcome!",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": "1.2em",
+            "textAlign": "center"
+          }
+        },
+        {
           "name": "text",
           "value": "This is a quick introduction to the CCS Annotator. This very introduction in itself is actually a codingjob!\n\nA basic codingjob consists of a set of units (what to code) and a codebook (how to code). But you can also combine different codebooks to tailor codingjobs to particular purposes, which this introduction serves to demonstrate.\n\nBy the way, we are not storing any of your data. In fact, the annotator can run entirely in your own browser without a server involved. This is actually a key feature, but more on that later."
+        }
+      ],
+      "image_fields": [
+        {
+          "name": "img",
+          "caption": "Image from cattime.com",
+          "value": "https://cattime.com/assets/uploads/2016/03/cats-politics-political-office-e1550279975235-650x368.jpg",
+          "style": { "margin": "5px" }
         }
       ],
       "codebook": {
@@ -247,7 +374,7 @@
         {
           "name": "title",
           "caption": "Image from cattime.com",
-          "url": "https://cattime.com/assets/uploads/2016/03/cats-politics-political-office-e1550279975235-650x368.jpg"
+          "value": "https://cattime.com/assets/uploads/2016/03/cats-politics-political-office-e1550279975235-650x368.jpg"
         }
       ],
 
@@ -570,7 +697,12 @@
     "id": "9",
     "type": "unit",
     "unit": {
-      "markdown_field": "# What about the backend\n\nAs mentioned, the annotator application itself is **purely a frontend gig**. It's a web-application that runs in your browser using javascript. The nice thing about this is that the backend *can* be very simple. It just needs to send coders the units and codebooks, and store their annotations.\n\nWe are currently developing two backends:\n\n* An **R** backend for simple, local codingjobs.\n* A **Python** backend that offers more advanced features like user administration and crowd-coding",
+      "markdown_fields": [
+        {
+          "name": "markdown",
+          "value": "# What about the backend\n\nAs mentioned, the annotator application itself is **purely a frontend gig**. It's a web-application that runs in your browser using javascript. The nice thing about this is that the backend *can* be very simple. It just needs to send coders the units and codebooks, and store their annotations.\n\nWe are currently developing two backends:\n\n* An **R** backend for simple, local codingjobs.\n* A **Python** backend that offers more advanced features like user administration and crowd-coding"
+        }
+      ],
       "codebook": {
         "type": "questions",
         "questions": [
@@ -592,7 +724,12 @@
     "id": "10",
     "type": "unit",
     "unit": {
-      "markdown_field": "# Python: Database and API\n\nThe Python backend offers the most functionalities. It comes with user administration and can host multiple codingjobs. This way, the server only needs to be set up once for multiple users (e.g., a department, research group).\n\nWith this set-up coders can either be registered or anonymous. Also, the backend features different **rule-sets** for how to assign units to coders, like the **crowd-coding** ruleset that ensures an even number of coders per unit, or the **fixed set** ruleset that can randomly assign coders to (experimental) groups.",
+      "markdown_fields": [
+        {
+          "name": "markdown",
+          "value": "# Python: Database and API\n\nThe Python backend offers the most functionalities. It comes with user administration and can host multiple codingjobs. This way, the server only needs to be set up once for multiple users (e.g., a department, research group).\n\nWith this set-up coders can either be registered or anonymous. Also, the backend features different **rule-sets** for how to assign units to coders, like the **crowd-coding** ruleset that ensures an even number of coders per unit, or the **fixed set** ruleset that can randomly assign coders to (experimental) groups."
+        }
+      ],
       "codebook": {
         "type": "questions",
         "questions": [
@@ -609,7 +746,12 @@
     "id": "11",
     "type": "unit",
     "unit": {
-      "markdown_field": "# ccsAnnotator R package\n\nThis R package can be used to create codingjobs. It can also interact with the Python based API to upload codingjobs and download annotations.\n\nThe package also includes it's own API to run codingjobs straight from within R. A key feature is that you can directly retrieve annotations and update units from within R, so you use it for a human-in-the-loop design, like active learning. In addition, this makes it easy to develop and test codingjobs locally before sending them to a server.",
+      "markdown_fields": [
+        {
+          "name": "markdown",
+          "value": "# ccsAnnotator R package\n\nThis R package can be used to create codingjobs. It can also interact with the Python based API to upload codingjobs and download annotations.\n\nThe package also includes it's own API to run codingjobs straight from within R. A key feature is that you can directly retrieve annotations and update units from within R, so you use it for a human-in-the-loop design, like active learning. In addition, this makes it easy to develop and test codingjobs locally before sending them to a server."
+        }
+      ],
       "codebook": {
         "type": "questions",
         "questions": [
@@ -626,7 +768,12 @@
     "id": "12",
     "type": "unit",
     "unit": {
-      "markdown_field": "# When can we use this?\n\nAlmost! The core features are there, and at the moment we're mainly cleaning up and improving the codebase.\n\nIf you are interested, we'd love to hear your thoughts. The goal of this project is to create an annotator dedicated to the type of annotation tasks that we encounter in our field, and to experiment with different approaches and interfaces to see how they might affect speed and quality of annotations.\n\nWe are sure many of you have had good and bad experiences with annotation tasks, so we'd love to learn from them",
+      "markdown_fields": [
+        {
+          "name": "markdown",
+          "value": "# When can we use this?\n\nAlmost! The core features are there, and at the moment we're mainly cleaning up and improving the codebase.\n\nIf you are interested, we'd love to hear your thoughts. The goal of this project is to create an annotator dedicated to the type of annotation tasks that we encounter in our field, and to experiment with different approaches and interfaces to see how they might affect speed and quality of annotations.\n\nWe are sure many of you have had good and bad experiences with annotation tasks, so we'd love to learn from them"
+        }
+      ],
       "codebook": {
         "type": "questions",
         "questions": [
@@ -643,7 +790,12 @@
     "id": "13",
     "type": "unit",
     "unit": {
-      "markdown_field": "# Any future plans?\n\nQuite something, actually. This tool is a part of the [OPTED](https://opted.eu/) project, where it falls under a workpackage for developing **AmCAT4**, an [infrastructure for storing and sharing texts](https://opted.eu/fileadmin/user_upload/k_opted/OPTED_deliverable_D7.1.pdf).\n\nThe annotator will also be included as a module of this intrastructure. In other words, you will be able to set-up a server to manage the text data infrastructure of a research group, and this infrastructure will play nicely together with the annotator.",
+      "markdown_fields": [
+        {
+          "name": "markdown",
+          "value": "# Any future plans?\n\nQuite something, actually. This tool is a part of the [OPTED](https://opted.eu/) project, where it falls under a workpackage for developing **AmCAT4**, an [infrastructure for storing and sharing texts](https://opted.eu/fileadmin/user_upload/k_opted/OPTED_deliverable_D7.1.pdf).\n\nThe annotator will also be included as a module of this intrastructure. In other words, you will be able to set-up a server to manage the text data infrastructure of a research group, and this infrastructure will play nicely together with the annotator."
+        }
+      ],
       "codebook": {
         "type": "questions",
         "questions": [

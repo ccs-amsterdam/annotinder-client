@@ -39,26 +39,26 @@ const AnnotatableImage = React.forwardRef(({ image_field }: AnnotatableImageProp
     window.addEventListener("resize", onResize);
     if (window?.screen?.orientation) {
       window.screen.orientation?.addEventListener("change", onResize);
-    } //else if (window?.orientation) window.orientation?.addEventListener("change", onResize);
+    }
     return () => {
       window.removeEventListener("resize", onResize);
       if (window?.screen?.orientation) {
         window.screen.orientation.removeEventListener("change", onResize);
-      } //else if (window?.orientation) window.orientation?.removeEventListener("change", onResize);
+      }
     };
   }, [extraspace, container, img]);
-
-  //image_field.style = { maxWidth: "500px" };
 
   let src = image_field.base64 ? `data:image/jpeg;base64,${image_field.value}` : image_field.value;
 
   return (
     <figure
       style={{
+        gridArea: image_field.name,
         display: "block",
         flexDirection: "column",
         textAlign: "center",
         margin: "0",
+        ...image_field?.style,
       }}
     >
       <img
@@ -70,12 +70,12 @@ const AnnotatableImage = React.forwardRef(({ image_field }: AnnotatableImageProp
         alt={image_field.alt}
         src={src}
         style={{
-          border: "3px double grey", // DON"T CHANGE BORDER WIDTH WITHOUT ADJUSTING OFFSET IN getImagePosition.js
+          border: "2px solid grey", // DON"T CHANGE BORDER WIDTH WITHOUT ADJUSTING OFFSET IN getImagePosition.js
           flex: "1 1 auto",
           background: "white",
+          maxWidth: "100%",
           width: size.width,
           height: size.height,
-          ...image_field?.style,
         }}
       />
       <figcaption

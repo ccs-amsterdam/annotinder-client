@@ -6,9 +6,9 @@ import { Button, Grid, Header, Menu, Icon } from "semantic-ui-react";
 import FullDataTable from "../AnnotatorClient/components/FullDataTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../functions/copyToClipboard";
-import { CodeBook, SetState, Unit } from "../../types";
+import { SetState } from "../../types";
 
-const DemoJobOverview = ({}) => {
+const DemoJobOverview = () => {
   const [job, setJob] = useState(null);
   const [searchParams] = useSearchParams();
 
@@ -73,9 +73,7 @@ const demo_files: DemoFile[] = [
 
 const columns = [{ name: "label", label: "Select unit set" }];
 
-interface DemoSelectorProps {}
-
-const DemoSelector = ({}: DemoSelectorProps) => {
+const DemoSelector = () => {
   const [demo, setDemo] = useState<DemoFile>(demo_files[0]);
   const navigate = useNavigate();
 

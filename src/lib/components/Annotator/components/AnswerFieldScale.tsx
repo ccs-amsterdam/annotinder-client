@@ -295,8 +295,8 @@ const Item = ({
         if (isSelected) bordercolor = "#1B1C1D";
 
         const colorint = 255 - buttonIndex * colorstep;
-        const bgcolor = `rgb(${colorint},${colorint},${colorint})`;
-        const color = colorint < 100 ? "white" : "black";
+        const bgcolor = `rgb(${colorint / 1.6},${colorint / 1.2},${colorint})`;
+        const color = colorint < 150 ? "white" : "black";
 
         return (
           <div key={option.code} style={{ margin: "auto", flex: "1 1 0px" }}>

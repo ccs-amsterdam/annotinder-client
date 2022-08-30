@@ -6,6 +6,8 @@ import renderText from "../functions/renderText";
 import renderImages from "../functions/renderImages";
 import renderMarkdown from "../functions/renderMarkdown";
 import {
+  FieldGrid,
+  FieldRefs,
   ImageField,
   MarkdownField,
   MetaField,
@@ -23,7 +25,9 @@ interface BodyProps {
   meta_fields: MetaField[];
   image_fields: ImageField[];
   markdown_fields: MarkdownField[];
+  grid?: FieldGrid;
   setReady: SetState<number>;
+  fieldRefs: FieldRefs;
   bodyStyle: CSSProperties;
 }
 
@@ -33,7 +37,9 @@ const Body = ({
   meta_fields,
   image_fields,
   markdown_fields,
+  grid,
   setReady,
+  fieldRefs,
   bodyStyle = {},
 }: BodyProps) => {
   const [text, setText] = useState<RenderedText>({});
@@ -56,11 +62,11 @@ const Body = ({
 
   useEffect(() => {
     if (!tokens) return null;
-    setText(renderText(tokens, text_fields, containerRef));
+    setText(renderText(tokens, text_fields, containerRef, fieldRefs));
     setImages(renderImages(image_fields, containerRef));
     setMarkdown(renderMarkdown(markdown_fields));
     if (setReady) setReady((current) => current + 1); // setReady is an optional property used to let parents know the text is ready.
-  }, [tokens, text_fields, image_fields, markdown_fields, setReady]);
+  }, [tokens, text_fields, image_fields, markdown_fields, setReady, fieldRefs]);
 
   if (tokens === null) return null;
   return (
@@ -88,7 +94,16 @@ const Body = ({
           >
             <div
               key="content"
-              style={{ margin: "auto", paddingTop: "0px", paddingBottom: "0px", width: "100%" }}
+              style={{
+                display: grid?.areas ? "grid" : null,
+                gridTemplateRows: grid?.rows,
+                gridTemplateColumns: grid?.columns,
+                gridTemplateAreas: grid?.areas,
+                margin: "auto",
+                paddingTop: "0px",
+                paddingBottom: "0px",
+                width: "100%",
+              }}
             >
               {text_fields.map((tf) => text[tf.name])}
               {image_fields.map((imf) => images[imf.name])}

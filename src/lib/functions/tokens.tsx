@@ -60,6 +60,8 @@ export const parseTokens = (text_fields: TextField[]): Token[] => {
             if (text_field.unit_end != null && token.offset.start + offset > text_field.unit_end)
               unit_ended = true;
 
+            console.log(text_field.unit_end);
+
             const tokenobj: Token = {
               field: field,
               offset: token.offset.start + offset,
@@ -81,6 +83,8 @@ export const parseTokens = (text_fields: TextField[]): Token[] => {
       }
       paragraph++;
     }
+
+    if (text_field.unit_end != null) unit_ended = true;
   }
   return tokens;
 };

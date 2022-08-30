@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, RefObject } from "react";
+import React, { useState, useEffect, useRef, RefObject, useCallback, useMemo } from "react";
 import QuestionForm from "./QuestionForm";
 import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
@@ -12,8 +12,10 @@ import {
   FullScreenNode,
   SessionData,
   SetState,
+  SwipeRefs,
   Swipes,
   Unit,
+  Transition,
 } from "../../../types";
 import Instructions from "./Instructions";
 import FeedbackPortal from "./FeedbackPortal";
@@ -24,7 +26,7 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const TextWindow = styled.div`
+const ContentWindow = styled.div`
   flex: 1 1 auto;
   position: relative;
 `;
@@ -45,7 +47,7 @@ const SwipeCode = styled.div`
   position: absolute;
 `;
 
-const Text = styled.div<{ fontSize: number }>`
+const Content = styled.div<{ fontSize: number }>`
   height: 100%;
   width: 100%;
   position: absolute;
@@ -83,11 +85,13 @@ const QuestionTask = ({
   blockEvents = false,
 }: QuestionTaskProps) => {
   const [questionIndex, setQuestionIndex] = useState(0);
-  const refs = {
-    text: useRef(),
-    box: useRef(),
-    code: useRef(),
-  };
+  const textref = useRef();
+  const boxref = useRef();
+  const coderef = useRef();
+  const refs = useMemo(() => {
+    return { text: textref, box: boxref, code: coderef };
+  }, []);
+
   const [textReady, setTextReady] = useState(0);
   const [settings, setSettings] = useLocalStorage("questionTaskSettings", {
     splitHeight: 70,
@@ -109,8 +113,29 @@ const QuestionTask = ({
   }, [textReady, refs.text, refs.box, questionIndex]);
 
   useEffect(() => {
+    // When unit changes, refresh condition report
+    // (the backend can also return a condition report for a new unit)
     setConditionReport(unit.report || {});
   }, [unit]);
+
+  const startTransition = useCallback(
+    (trans: Transition) => {
+      const direction = trans?.direction || "up";
+      const color = trans?.color || "white";
+      const r: SwipeRefs = refs;
+      if (r?.box?.current?.style != null && r?.text?.current != null) {
+        r.code.current.innerText = "";
+        r.text.current.style.transition = `transform 250ms ease-out, opacity 250ms ease-out`;
+        r.text.current.style.transform = `translateX(${
+          direction === "right" ? 100 : direction === "left" ? -100 : 0
+        }%) translateY(-100%)`;
+        r.box.current.style.background = color || "white";
+        r.box.current.style.transition = `opacity 250ms ease-out`;
+        r.box.current.style.opacity = "0";
+      }
+    },
+    [refs]
+  );
 
   // swipe controlls need to be up in the QuestionTask component due to working on the div containing the question screen
   // use separate swipe for text (document) and menu rows, because swiping up in the text is only possible if scrolled all the way down
@@ -142,20 +167,20 @@ const QuestionTask = ({
         setConditionReport={setConditionReport}
         fullScreenNode={fullScreenNode}
       />
-      <TextWindow {...textSwipe}>
+      <ContentWindow {...textSwipe}>
         <SwipeableBox ref={refs.box}>
           {/* This div moves around behind the div containing the document to show the swipe code  */}
           <SwipeCode ref={refs.code} />
-          <Text ref={refs.text} fontSize={settings.upperTextSize}>
+          <Content ref={refs.text} fontSize={settings.upperTextSize}>
             <Document
               unit={unit}
               setReady={setTextReady}
               showAnnotations={codebook?.questions?.[questionIndex]?.showAnnotations || []}
               fullScreenNode={fullScreenNode}
             />
-          </Text>
+          </Content>
         </SwipeableBox>
-      </TextWindow>
+      </ContentWindow>
       <QuestionMenu
         {...menuSwipe}
         minifiedAnswerForm={minifiedAnswerForm}
@@ -170,6 +195,7 @@ const QuestionTask = ({
           nextUnit={nextUnit}
           setConditionReport={setConditionReport}
           swipe={swipe}
+          startTransition={startTransition}
           blockEvents={blockEvents}
         >
           <SettingsPopup

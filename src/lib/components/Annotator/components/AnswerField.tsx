@@ -5,7 +5,7 @@ import Scale from "./AnswerFieldScale";
 import SearchCode from "./AnswerFieldSearchCode";
 import SelectCode from "./AnswerFieldSelectCode";
 import Inputs from "./AnswerFieldInputs";
-import { AnswerItem, OnSelectParams, Swipes, Question, Answer } from "../../../types";
+import { AnswerItem, OnSelectParams, Swipes, Question, Answer, Transition } from "../../../types";
 
 const MIN_DELAY = 200;
 // TODO: using questionindex for resetting states is bad, because it doesn't update for consequtive codebooks with 1 question
@@ -14,7 +14,12 @@ interface AnswerFieldProps {
   answers: Answer[];
   questions: Question[];
   questionIndex: number;
-  onAnswer: (items: AnswerItem[], onlySave: boolean, minDelay: number) => void;
+  onAnswer: (
+    items: AnswerItem[],
+    onlySave: boolean,
+    minDelay: number,
+    transition?: Transition
+  ) => void;
   swipe: Swipes;
   blockEvents?: boolean;
 }
@@ -69,6 +74,7 @@ const AnswerField = ({
     finish = false,
     invalid = false,
     save = false,
+    transition,
   }: OnSelectParams = {}) => {
     // this bad boy is used in all of the AnswerField sub-components to write values.
     // it's a bit complicated here, but it makes the code within the sub-components easier
@@ -102,7 +108,7 @@ const AnswerField = ({
     newAnswerItems[itemIndex].invalid = invalid;
     setAnswerItems(newAnswerItems);
     if (finish) {
-      onAnswer(newAnswerItems, false, MIN_DELAY);
+      onAnswer(newAnswerItems, false, MIN_DELAY, transition);
     } else {
       if (save) onAnswer(newAnswerItems, true, MIN_DELAY);
     }

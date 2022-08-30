@@ -112,6 +112,7 @@ const getIndexedUnit = async (jobServer: any, unitIndex: number): Promise<Indexe
     meta_fields: unit.unit.meta_fields,
     image_fields: unit.unit.image_fields,
     markdown_fields: unit.unit.markdown_fields,
+    grid: unit.unit.grid,
     importedAnnotations: unit.unit.importedAnnotations,
     settings: unit.unit.settings,
     variables: unit.unit.variables,

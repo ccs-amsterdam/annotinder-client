@@ -42,6 +42,7 @@ const useUnit = (
     initializeCodeHistory(unit.annotations, setCodeHistory);
 
     const [document, annotations] = getDocAndAnnotations(unit);
+
     safetyCheck.current = { tokens: document.tokens };
 
     setDoc(document);

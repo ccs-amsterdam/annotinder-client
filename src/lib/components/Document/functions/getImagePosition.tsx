@@ -1,7 +1,7 @@
 export default function getImagePosition(e) {
   const [image, position] = getPosition(e);
   if (!image) return {};
-  const borderOffset = 3; // offset for border around img
+  const borderOffset = 2; // offset for border around img
 
   return {
     image,

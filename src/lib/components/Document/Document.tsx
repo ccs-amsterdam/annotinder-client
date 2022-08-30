@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, CSSProperties } from "react";
+import React, { useState, useEffect, useRef, CSSProperties, useMemo } from "react";
 import AnnotateNavigation from "./components/AnnotateNavigation";
 import Body from "./components/Body";
 import useCodeSelector from "./components/useCodeSelector";
@@ -18,6 +18,7 @@ import {
   Token,
   SetState,
   FullScreenNode,
+  FieldRefs,
 } from "../../types";
 
 interface DocumentProps {
@@ -45,6 +46,8 @@ interface DocumentProps {
   fullScreenNode?: FullScreenNode;
   /** An array of variable names, to indicate that annotations of this variable should be highlighted */
   showAnnotations?: string[];
+  /** An array of annotations, that will be put into focus */
+  focus?: Annotation[];
   /** CSSProperties for the body container  */
   bodyStyle?: CSSProperties;
 }
@@ -64,12 +67,15 @@ const Document = ({
   blockEvents,
   fullScreenNode,
   showAnnotations,
+  focus,
   bodyStyle,
 }: DocumentProps) => {
   const safetyCheck = useRef(null); // ensures only new annotations for the current unit are passed to onChangeAnnotations
   const [variable, setVariable] = useState(null);
   const [codeHistory, setCodeHistory] = useState<CodeHistory>({});
   const [tokensReady, setTokensReady] = useState(0);
+
+  const fieldRefs: FieldRefs = useMemo(() => ({}), []);
 
   const [doc, annotations, setAnnotations, importedCodes] = useUnit(
     unit,
@@ -131,7 +137,9 @@ const Document = ({
           meta_fields={doc.meta_fields}
           image_fields={doc.image_fields}
           markdown_fields={doc.markdown_fields}
+          grid={doc.grid}
           setReady={setTokensReady}
+          fieldRefs={fieldRefs}
           bodyStyle={bodyStyle}
         />
 

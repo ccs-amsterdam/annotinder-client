@@ -98,6 +98,11 @@ export interface Question {
   showAnnotations?: string[];
 }
 
+export interface Transition {
+  direction?: "left" | "right" | "up";
+  color?: string;
+}
+
 export type QuestionType =
   | "search code"
   | "select code"
@@ -185,6 +190,8 @@ export interface OnSelectParams {
   invalid?: boolean;
   /** If True, post the annotations but without going to the next question/unit */
   save?: boolean;
+  /** Optionally, transition parameters */
+  transition?: Transition;
 }
 
 ///// ANNOTATE MODE
@@ -417,6 +424,12 @@ export interface BackendUnit {
 
 export type UnitStatus = "DONE" | "IN_PROGRESS";
 
+export interface FieldGrid {
+  areas: string;
+  columns: string;
+  rows: string;
+}
+
 export interface TextField {
   name: string;
   value: string;
@@ -550,11 +563,16 @@ export interface Doc {
   meta_fields?: MetaField[];
   image_fields?: ImageField[];
   markdown_fields?: MarkdownField[];
+  grid?: FieldGrid;
 }
 
 export interface DocumentSettings {
   editAll: boolean;
   editMode: boolean;
+}
+
+export interface FieldRefs {
+  [field: string]: RefObject<HTMLElement>;
 }
 
 export interface VariableValueMap {

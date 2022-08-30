@@ -106,6 +106,7 @@ const SelectCode = React.memo(
                 itemIndex: 0,
                 multiple,
                 finish: !multiple,
+                transition: { color: options[selected]?.color },
               }); // !multiple tells not to finish unit if multiple is true
           }
           // simulate active pseudoclass for transition effect
@@ -184,7 +185,13 @@ const SelectCode = React.memo(
                 compact
                 //onMouseOver={() => setSelected(i)}
                 onClick={(e, d) => {
-                  onSelect({ value: d.value, itemIndex: 0, multiple: multiple, finish: !multiple }); // !multiple tells not to finish unit if multiple is true
+                  onSelect({
+                    value: d.value,
+                    itemIndex: 0,
+                    multiple: multiple,
+                    finish: !multiple,
+                    transition: { color: option.color },
+                  }); // !multiple tells not to finish unit if multiple is true
                 }}
               >
                 {option.code}

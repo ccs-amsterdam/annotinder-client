@@ -10,6 +10,7 @@ import {
   Annotation,
   Swipes,
   ConditionReport,
+  Transition,
 } from "../../../types";
 import {
   getMakesIrrelevantArray,
@@ -93,6 +94,7 @@ interface QuestionFormProps {
   nextUnit: () => void;
   setConditionReport: SetState<ConditionReport>;
   swipe: Swipes;
+  startTransition: ({ direction, color }: Transition) => void;
   blockEvents: boolean;
 }
 
@@ -105,6 +107,7 @@ const QuestionForm = ({
   nextUnit,
   setConditionReport,
   swipe,
+  startTransition,
   blockEvents,
 }: QuestionFormProps) => {
   const blockAnswer = useRef(false); // to prevent answering double (e.g. with swipe events)
@@ -127,7 +130,7 @@ const QuestionForm = ({
   }, [unit, questions, questionIndex, answers, setQuestionIndex]);
 
   const onAnswer = useCallback(
-    (items: AnswerItem[], onlySave = false, minDelay = 0): void => {
+    (items: AnswerItem[], onlySave = false, minDelay = 0, transition?: Transition): void => {
       // posts results and skips to next question, or next unit if no questions left.
       // If onlySave is true, only write to db without going to next question
       processAnswer(
@@ -141,10 +144,20 @@ const QuestionForm = ({
         nextUnit,
         setQuestionIndex,
         setConditionReport,
+        () => startTransition(transition),
         blockAnswer
       );
     },
-    [answers, questionIndex, questions, setQuestionIndex, nextUnit, setConditionReport, unit]
+    [
+      answers,
+      questionIndex,
+      questions,
+      setQuestionIndex,
+      nextUnit,
+      setConditionReport,
+      unit,
+      startTransition,
+    ]
   );
 
   if (!questions || !unit || !answers) return null;
@@ -249,6 +262,7 @@ const processAnswer = async (
   nextUnit: () => void,
   setQuestionIndex: SetState<number>,
   setConditionReport: SetState<ConditionReport>,
+  transition: () => void,
   blockAnswer: any
 ): Promise<void> => {
   if (blockAnswer.current) return null;
@@ -300,6 +314,7 @@ const processAnswer = async (
     } else if (action === "retry") {
       blockAnswer.current = false;
     } else {
+      if (newQuestionIndex === null) transition();
       const delay = new Date().getTime() - start.getTime();
       const extradelay = Math.max(0, minDelay - delay);
       await new Promise((resolve) => setTimeout(resolve, extradelay));

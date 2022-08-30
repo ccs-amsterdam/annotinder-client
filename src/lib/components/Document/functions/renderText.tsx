@@ -1,10 +1,11 @@
-import React, { ReactElement } from "react";
-import { TextField, Token, RenderedText } from "../../../types";
+import React, { createRef, ReactElement } from "react";
+import { TextField, Token, RenderedText, FieldRefs } from "../../../types";
 
 export default function renderText(
   tokens: Token[],
   text_fields: TextField[],
-  containerRef: any
+  containerRef: any,
+  fieldRefs: FieldRefs
 ): RenderedText {
   const text: RenderedText = text_fields.reduce((obj: any, tf: TextField) => {
     obj[tf.name] = [];
@@ -49,7 +50,7 @@ export default function renderText(
     if (tokens[i].field !== field_name) {
       if (field.length > 0)
         text[field_name].push(
-          renderField(getTextField(field_name), i + "_" + field_name, field, field_name)
+          renderField(getTextField(field_name), i + "_" + field_name, field, field_name, fieldRefs)
         );
       field = [];
     }
@@ -70,7 +71,9 @@ export default function renderText(
   if (sentence.length > 0) paragraph.push(renderSentence("last", sentence_nr, sentence));
   if (paragraph.length > 0) field.push(renderParagraph(textField, paragraph_nr, paragraph, false));
   if (field.length > 0)
-    text[field_name].push(renderField(textField, "last_" + field_name, field, field_name));
+    text[field_name].push(
+      renderField(textField, "last_" + field_name, field, field_name, fieldRefs)
+    );
   return text;
 }
 
@@ -78,7 +81,8 @@ const renderField = (
   textField: TextField,
   paragraph_key: string,
   paragraphs: ReactElement[],
-  field: string
+  field: string,
+  fieldRefs: any
 ) => {
   const fontstyle = (paragraphs: ReactElement[]) => {
     if (textField) {
@@ -109,10 +113,16 @@ const renderField = (
     return paragraphs;
   };
 
+  fieldRefs[field] = { ref: createRef() };
   return (
-    <span className="field" key={"field" + field}>
+    <div
+      ref={fieldRefs[field].ref}
+      className="field"
+      key={"field" + field}
+      style={{ gridArea: field }}
+    >
       {fontstyle(paragraphs)}
-    </span>
+    </div>
   );
 };
 

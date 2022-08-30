@@ -25,9 +25,12 @@ const Annotinder = React.memo(
 
     useEffect(() => {
       if (swipe) {
-        if (swipe === "right") onSelect({ value: swipeOptions.right.code, finish: true });
-        if (swipe === "up") onSelect({ value: swipeOptions.up.code, finish: true });
-        if (swipe === "left") onSelect({ value: swipeOptions.left.code, finish: true });
+        const option = swipeOptions[swipe];
+        onSelect({
+          value: option.code,
+          finish: true,
+          transition: { direction: swipe, color: option.color },
+        });
       }
     }, [swipe, onSelect, swipeOptions]);
 
@@ -37,11 +40,15 @@ const Annotinder = React.memo(
         if (arrowKeys.includes(event.key)) {
           event.preventDefault();
           event.stopPropagation();
-          let option;
-          if (event.key === "ArrowRight") option = swipeOptions.right;
-          if (event.key === "ArrowUp") option = swipeOptions.up;
-          if (event.key === "ArrowLeft") option = swipeOptions.left;
-          onSelect({ value: option.code, finish: true });
+          let dir: "left" | "right" | "up" = "up";
+          if (event.key === "ArrowRight") dir = "right";
+          if (event.key === "ArrowLeft") dir = "left";
+          const option = swipeOptions[dir];
+          onSelect({
+            value: option.code,
+            finish: true,
+            transition: { direction: dir, color: option.color },
+          });
           const el = option.ref.current;
           el.classList.add("active");
           setTimeout(() => el.classList.remove("active"), 5);
@@ -74,7 +81,7 @@ const Annotinder = React.memo(
           margin: "0",
         }}
       >
-        {["left", "up", "right"].map((direction) => {
+        {["left", "up", "right"].map((direction: "left" | "right" | "up") => {
           return (
             <AnnotinderButton
               key={direction}
@@ -92,7 +99,7 @@ const Annotinder = React.memo(
 
 interface AnnotinderButtonProps {
   swipeOptions: SwipeOptions;
-  direction: string;
+  direction: "left" | "right" | "up";
   value: string | number;
   onSelect: (params: OnSelectParams) => void;
 }
@@ -115,7 +122,13 @@ const AnnotinderButton = ({ swipeOptions, direction, value, onSelect }: Annotind
       <Button
         className="ripplebutton"
         disabled={option == null}
-        onClick={(e, d) => onSelect({ value: option?.code, finish: true })}
+        onClick={(e, d) =>
+          onSelect({
+            value: option?.code,
+            finish: true,
+            transition: { direction, color: option.color },
+          })
+        }
         style={{
           fontSize: "inherit",
           borderRadius: "10px",
