@@ -3,7 +3,7 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Backend, { redeemJobToken } from "../AnnotatorClient/classes/Backend";
-import { Button, Divider, Form, Grid, Header, Icon, Popup, Segment } from "semantic-ui-react";
+import { Button, Divider, Form, Grid, Header, Segment } from "semantic-ui-react";
 
 // store redeemed tokens in localstorage
 // If a token has already been redeemed, don't redeem it again
@@ -18,9 +18,6 @@ const GuestCoder = () => {
   const userId = searchParams.get("user_id");
   const jobtoken = searchParams.get("jobtoken");
   const asGuest = searchParams.get("guest");
-
-  const key = `host:${host};user_id:${userId};jobtoken:${jobtoken}`;
-  const alreadyGuest = !!guestAuth[key];
 
   return (
     <Grid inverted textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
@@ -53,6 +50,9 @@ const GuestCoder = () => {
 const AsGuest = ({ guestAuth, setGuestAuth, host, userId, jobtoken, asGuest }) => {
   const navigate = useNavigate();
 
+  const key = `host:${host};user_id:${userId};jobtoken:${jobtoken}`;
+  const alreadyGuest = !!guestAuth[key];
+
   useEffect(() => {
     if (!asGuest) return;
     redeemShuffle(host, userId, jobtoken, guestAuth, setGuestAuth, navigate)
@@ -74,8 +74,9 @@ const AsGuest = ({ guestAuth, setGuestAuth, host, userId, jobtoken, asGuest }) =
       >
         <Header style={{ color: "rgb(33, 133, 208)", marginBottom: "20px" }}>One-time login</Header>
         <p style={{ marginLeft: "10%", marginRight: "10%" }}>
-          Log in once with your current device. You can then still close the app and return later,
-          but only using this device (and using the same browser)
+          {alreadyGuest
+            ? "This device is already logged in. Click here to continue"
+            : "Log in once with your current device. You can then still close the app and return later, but only using this device (and using the same browser)"}
         </p>
 
         <Button
@@ -90,7 +91,7 @@ const AsGuest = ({ guestAuth, setGuestAuth, host, userId, jobtoken, asGuest }) =
               });
           }}
         >
-          Log in
+          {alreadyGuest ? "Continue" : "Log in"}
         </Button>
       </div>
     </Grid.Column>
@@ -98,7 +99,7 @@ const AsGuest = ({ guestAuth, setGuestAuth, host, userId, jobtoken, asGuest }) =
 };
 
 const AsUser = ({ host, userId, jobtoken }) => {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [invalidEmail, setInvalidEmail] = useState(false);

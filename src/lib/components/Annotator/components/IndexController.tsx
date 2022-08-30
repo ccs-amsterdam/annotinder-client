@@ -9,7 +9,7 @@ const iconStyleHidden = { color: "white" };
 
 interface IndexControllerProps {
   n: number;
-  maxN: number;
+  progressN: number;
   index: number;
   setIndex: SetState<number>;
   canGoForward: boolean;
@@ -18,14 +18,14 @@ interface IndexControllerProps {
 
 const IndexController = ({
   n,
-  maxN,
+  progressN,
   index,
   setIndex,
   canGoForward = true,
   canGoBack = true,
 }: IndexControllerProps) => {
-  const [activePage, setActivePage] = useState(1);
-  const [sliderPage, setSliderPage] = useState(1);
+  const [activePage, setActivePage] = useState(0);
+  const [sliderPage, setSliderPage] = useState(0);
 
   useEffect(() => {
     // if index changes on the outside, update the active page shown in the controller
@@ -42,7 +42,7 @@ const IndexController = ({
   };
 
   if (!n) return null;
-  let progress = (100 * Math.max(0, maxN)) / n;
+  let progress = (100 * Math.max(0, progressN)) / n;
   if (canGoForward) progress = 0; // linear progress is useless in this case.
 
   const digits = Math.floor(Math.log10(n)) + 1;
@@ -90,7 +90,7 @@ const IndexController = ({
             borderRadius: "2px",
           }}
         >
-          {sliderPage <= n ? `${sliderPage} / ${n}` : `done`}
+          {sliderPage <= n ? `${sliderPage || ""} / ${n}` : `done`}
         </Label>
         {canGoForward || canGoBack ? (
           <>
@@ -100,22 +100,22 @@ const IndexController = ({
                 if (canGoForward) {
                   updatePage(activePage + 1);
                 } else {
-                  updatePage(Math.min(maxN + 1, activePage + 1));
+                  updatePage(Math.min(progressN + 1, activePage + 1));
                 }
               }}
-              disabled={!canGoForward && activePage >= maxN + 1}
+              disabled={!canGoForward && activePage >= progressN + 1}
               style={iconStyle}
             />
             <Icon
               name="fast forward"
               onClick={() => {
                 if (canGoForward) {
-                  updatePage(Math.max(maxN + 1, activePage + 1));
+                  updatePage(Math.max(progressN + 1, activePage + 1));
                 } else {
-                  updatePage(maxN + 1);
+                  updatePage(progressN + 1);
                 }
               }}
-              disabled={!canGoForward && activePage >= maxN + 1}
+              disabled={!canGoForward && activePage >= progressN + 1}
               style={canGoForward ? iconStyleHidden : iconStyle}
             />
           </>
@@ -138,7 +138,7 @@ const IndexController = ({
             if (canGoForward) {
               setSliderPage(Number(e.target.value));
             } else {
-              setSliderPage(Math.min(maxN + 1, Number(e.target.value)));
+              setSliderPage(Math.min(progressN + 1, Number(e.target.value)));
             }
           }
           if (canGoBack && Number(e.target.value) < sliderPage)

@@ -37,12 +37,7 @@ class JobServerAPI implements JobServer {
   }
 
   async getUnit(i: number): Promise<BackendUnit> {
-    // if i is higher than
-    //let getNext = i >= this.progress.n_coded && !this.progress.seek_forwards;
-    //const unit = await this.backend.getUnit(this.job_id, getNext ? null : i);
-    const unit = await this.backend.getUnit(this.job_id, i);
-    //this.progress.n_coded = Math.max(unit?.index ?? i, this.progress.n_coded);
-    return unit;
+    return await this.backend.getUnit(this.job_id, i);
   }
 
   async postAnnotations(unitId: number, annotation: Annotation[], status: Status) {

@@ -8,7 +8,7 @@ import { JobServer, Unit, SetUnitIndex } from "../../types";
 import { importCodebook } from "../../functions/codebook";
 
 /**
- * Keep unit and index in same state to guaranteer that they're synchronized
+ * Keep unit and index in same state to guarantee that they're synchronized
  */
 interface IndexedUnit {
   unit: Unit;
@@ -26,14 +26,24 @@ interface AnnotatorProps {
 
 const Annotator = ({ jobServer, askFullScreen = false }: AnnotatorProps) => {
   const [indexedUnit, setIndexedUnit] = useState<IndexedUnit>({ unit: null, index: -1 });
+  const [unitProgress, setUnitProgress] = useState(0);
 
   const setUnitIndex: SetUnitIndex = useCallback(
     (index) => {
       if (!jobServer || index === null) return;
+
       getIndexedUnit(jobServer, index)
         .then((indexedUnit) => {
-          console.log(indexedUnit);
           setIndexedUnit(indexedUnit);
+
+          setUnitProgress((unitProgress: number) => {
+            if (index === -1) {
+              // on jobserver change, reset unitProgress to first loaded unit
+              return indexedUnit.index;
+            } else {
+              return Math.max(unitProgress, indexedUnit.index);
+            }
+          });
         })
         .catch((e) => {
           console.error(e);
@@ -57,6 +67,7 @@ const Annotator = ({ jobServer, askFullScreen = false }: AnnotatorProps) => {
           jobServer={jobServer}
           unitIndex={indexedUnit?.index}
           setUnitIndex={setUnitIndex}
+          unitProgress={unitProgress}
           fullScreenButton={fullScreenButton}
           fullScreenNode={fullScreenNode}
         >
@@ -79,7 +90,7 @@ const getIndexedUnit = async (jobServer: any, unitIndex: number): Promise<Indexe
   if (unitIndex >= jobServer.progress.n_total) return { unit: null, index: unitIndex };
 
   const unit = await jobServer.getUnit(unitIndex);
-  if (unit.id == null) return { unit: null, index: unit?.index || unitIndex };
+  if (unit.id == null) return { unit: null, index: unit?.index ?? unitIndex };
 
   if (!unit.unit.variables) unit.unit.variables = {};
   for (let a of unit.unit.importedAnnotations || []) {
@@ -92,7 +103,7 @@ const getIndexedUnit = async (jobServer: any, unitIndex: number): Promise<Indexe
 
   const u = {
     jobServer,
-    //unitIndex: unit.index || unitIndex, // unit can (should?) return an index to keep it fully controlled
+    //unitIndex: unit.index ?? unitIndex, // unit can (should?) return an index to keep it fully controlled
     unitId: unit.id,
     annotations: unit.annotation,
     status: unit.status,
@@ -106,7 +117,7 @@ const getIndexedUnit = async (jobServer: any, unitIndex: number): Promise<Indexe
     variables: unit.unit.variables,
     codebook: unit.unit.codebook ? importCodebook(unit.unit.codebook) : undefined,
   };
-  return { unit: u, index: unit.index || unitIndex };
+  return { unit: u, index: unit.index ?? unitIndex };
 };
 
 export default React.memo(Annotator);

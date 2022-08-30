@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement } from "react";
 import { Popup, Button } from "semantic-ui-react";
 
 import { useNavigate } from "react-router-dom";
@@ -10,10 +10,11 @@ import { FullScreenNode, JobServer, SetState } from "../../../types";
 interface JobControllerProps {
   children: ReactElement;
   jobServer: JobServer;
-  fullScreenButton: ReactElement;
-  fullScreenNode: FullScreenNode;
   unitIndex: number;
   setUnitIndex: SetState<number>;
+  unitProgress: number;
+  fullScreenButton: ReactElement;
+  fullScreenNode: FullScreenNode;
 }
 
 /**
@@ -24,22 +25,13 @@ interface JobControllerProps {
 const JobController = ({
   children,
   jobServer,
-  fullScreenButton,
-  fullScreenNode,
   unitIndex,
   setUnitIndex,
+  unitProgress,
+  fullScreenButton,
+  fullScreenNode,
 }: JobControllerProps) => {
   const [maxHeight, maxWidth] = getWindowSize(jobServer);
-  const [maxN, setMaxN] = useState(0);
-
-  useEffect(() => {
-    setMaxN((maxN: number) => {
-      const nCoded = jobServer?.progress?.n_coded || 0;
-      const max = Math.max(maxN, unitIndex, nCoded);
-      if (jobServer?.progress?.n_coded != null) jobServer.progress.n_coded = max;
-      return max;
-    });
-  }, [unitIndex, jobServer]);
 
   return (
     <div
@@ -71,7 +63,7 @@ const JobController = ({
         >
           <IndexController
             n={jobServer?.progress?.n_total}
-            maxN={maxN}
+            progressN={unitProgress}
             index={unitIndex}
             setIndex={setUnitIndex}
             canGoBack={jobServer?.progress?.seek_backwards}
