@@ -4,8 +4,8 @@
     "type": "unit",
     "unit": {
       "grid": {
-        "columns": "2fr 1fr",
-        "areas": ["title", ["text", "img"]]
+        "columns": "2fr",
+        "areas": ["title", ["text"]]
       },
       "text_fields": [
         {
@@ -434,6 +434,43 @@
           }
         ]
       }
+    }
+  },
+  {
+    "id": "focus",
+    "type": "unit",
+    "unit": {
+      "grid": {
+        "areas": [["text1", "text2"]]
+      },
+      "text_fields": [
+        {
+          "name": "text1",
+          "value": "Questions can also specify unit fields to focus on.",
+          "style": { "fontSize": "1.5em", "textAlign": "center" }
+        },
+        {
+          "name": "text2",
+          "value": "This can be used to focus the attention of the coder.",
+          "style": { "fontSize": "1.5em", "textAlign": "center" }
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "welcome",
+            "type": "confirm",
+            "fields": "text1"
+          },
+          {
+            "name": "welcome",
+            "type": "confirm",
+            "fields": "text2"
+          }
+        ]
+      },
+      "variables": []
     }
   },
   {
