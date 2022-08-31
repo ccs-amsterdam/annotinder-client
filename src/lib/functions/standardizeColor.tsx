@@ -4,7 +4,7 @@ const standardizeColor = (str: string, alpha: string = null) => {
   const ctx = document.createElement("canvas").getContext("2d");
   ctx.fillStyle = str.trim();
   let color = ctx.fillStyle;
-  if (alpha !== null) color += alpha;
+  if (color.slice(0, 1) === "#" && color.length === 7 && alpha !== null) color += alpha;
   return color;
 };
 

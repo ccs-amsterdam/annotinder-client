@@ -38,6 +38,11 @@ const SwipeableBox = styled.div`
   outline: 1px solid black;
   outline-offset: -1px;
   position: absolute;
+  will-change: opacity, transform;
+  border: 1px solid black;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  z-index: 20;
 `;
 
 const SwipeCode = styled.div`
@@ -55,6 +60,7 @@ const Content = styled.div<{ fontSize: number }>`
   background-color: white;
   font-size: ${(props) => props.fontSize}em;
   box-shadow: 5px 5px 20px 5px;
+  will-change: background, transform;
 `;
 
 const QuestionMenu = styled.div<{
@@ -104,8 +110,8 @@ const QuestionTask = ({
   useEffect(() => {
     // when new unit arrives, reset style (in case of swipe) and make
     // text transparent.
-    resetStyle(refs.text, refs.box);
-  }, [refs.text, refs.box, unit, questionIndex]);
+    resetStyle(refs.text, refs.box, refs.code);
+  }, [refs.text, refs.box, refs.code, unit, questionIndex]);
 
   useEffect(() => {
     // fade in text when the text is ready (which Document tells us)
@@ -119,20 +125,10 @@ const QuestionTask = ({
   }, [unit]);
 
   const startTransition = useCallback(
-    (trans: Transition) => {
-      const direction = trans?.direction || "up";
-      const color = trans?.color || "white";
-      const r: SwipeRefs = refs;
-      if (r?.box?.current?.style != null && r?.text?.current != null) {
-        r.code.current.innerText = "";
-        r.text.current.style.transition = `transform 250ms ease-out, opacity 250ms ease-out`;
-        r.text.current.style.transform = `translateX(${
-          direction === "right" ? 100 : direction === "left" ? -100 : 0
-        }%) translateY(-100%)`;
-        r.box.current.style.background = color || "white";
-        r.box.current.style.transition = `opacity 250ms ease-out`;
-        r.box.current.style.opacity = "0";
-      }
+    (trans: Transition, nextUnit: boolean) => {
+      if (nextUnit) {
+        nextUnitTransition(refs, trans);
+      } else nextQuestionTransition(refs, trans);
     },
     [refs]
   );
@@ -177,6 +173,7 @@ const QuestionTask = ({
               setReady={setTextReady}
               showAnnotations={codebook?.questions?.[questionIndex]?.showAnnotations || []}
               fullScreenNode={fullScreenNode}
+              focus={codebook?.questions?.[questionIndex]?.fields}
             />
           </Content>
         </SwipeableBox>
@@ -321,19 +318,50 @@ const SettingsPopup = ({
   );
 };
 
-const resetStyle = (text: RefObject<HTMLElement>, box: RefObject<HTMLElement>): void => {
+const nextUnitTransition = (r: SwipeRefs, trans: Transition) => {
+  const direction = trans?.direction;
+  const color = trans?.color || "white";
+  if (r?.box?.current?.style != null && r?.text?.current != null) {
+    r.text.current.style.transition = `transform 1000ms, opacity 500ms`;
+    r.text.current.style.transform = `translateX(${
+      direction === "right" ? 100 : direction === "left" ? -100 : 0
+    }%) translateY(${direction ? "-100" : "0"}%)`;
+    r.text.current.style.opacity = "0";
+    r.box.current.style.transition = `opacity 500ms linear`;
+    r.box.current.style.background = color || "white";
+    r.box.current.style.opacity = "0";
+  }
+};
+
+const nextQuestionTransition = (r: SwipeRefs, trans: Transition) => {
+  if (!trans?.color) return;
+  if (r?.box?.current?.style != null && r?.text?.current != null) {
+    r.text.current.style.transition = `background 50ms ease-out`;
+    r.text.current.style.background = trans.color;
+  }
+};
+
+const resetStyle = (
+  text: RefObject<HTMLElement>,
+  box: RefObject<HTMLElement>,
+  code: RefObject<HTMLElement>
+): void => {
   if (!text.current) return null;
-  box.current.style.backgroundColor = "white";
+  code.current.innerText = "";
   text.current.style.transition = ``;
-  box.current.style.transition = ``;
+  box.current.style.transition = `background 5s`;
+  box.current.style.background = "white";
   box.current.style.opacity = "0";
   text.current.style.transform = "translateX(0%) translateY(0%)";
 };
 
 const fadeIn = (text: RefObject<HTMLElement>, box: RefObject<HTMLElement>): void => {
   if (!text.current) return null;
-  box.current.style.transition = `opacity 200ms ease-out`;
+  box.current.style.transition = `opacity 400ms linear`;
   box.current.style.opacity = "1";
+  text.current.style.transition = `background 500ms, opacity 1000ms`;
+  text.current.style.background = "white";
+  text.current.style.opacity = "1";
 };
 
 export default React.memo(QuestionTask);

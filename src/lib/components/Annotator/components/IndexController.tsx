@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Icon, Label, Segment } from "semantic-ui-react";
 import { SetState } from "../../../types";
 
@@ -27,6 +27,9 @@ const IndexController = ({
   const [activePage, setActivePage] = useState(0);
   const [sliderPage, setSliderPage] = useState(0);
 
+  // also keep track of slider as a ref, because touchevents suck (see onTouchEnd below for explanation)
+  const slider = useRef(0);
+
   useEffect(() => {
     // if index changes on the outside, update the active page shown in the controller
     if (index < 0) return;
@@ -39,6 +42,25 @@ const IndexController = ({
     setIndex(page - 1);
     setActivePage(page);
     setSliderPage(page);
+  };
+
+  const updateSliderPage = (e: any) => {
+    // Changing the range slider directly only updates sliderPage, which shows the value on the slider.
+    // the onMouseUp event then process the change
+    let newpage: number = null;
+    if (Number(e.target.value) > sliderPage) {
+      if (canGoForward) {
+        newpage = Number(e.target.value);
+      } else {
+        newpage = Math.min(progressN + 1, Number(e.target.value));
+      }
+    }
+    if (canGoBack && Number(e.target.value) < sliderPage) newpage = Number(e.target.value);
+
+    if (newpage !== null) {
+      setSliderPage(newpage);
+      slider.current = newpage;
+    }
   };
 
   if (!n) return null;
@@ -131,24 +153,15 @@ const IndexController = ({
         }}
         min={1}
         max={n + 1}
-        onChange={(e) => {
-          // Changing the range slider directly only updates sliderPage, which shows the value on the slider.
-          // Below, the onMouseUp event then process the change
-          if (Number(e.target.value) > sliderPage) {
-            if (canGoForward) {
-              setSliderPage(Number(e.target.value));
-            } else {
-              setSliderPage(Math.min(progressN + 1, Number(e.target.value)));
-            }
-          }
-          if (canGoBack && Number(e.target.value) < sliderPage)
-            setSliderPage(Number(e.target.value));
-        }}
+        onChange={updateSliderPage}
         onMouseUp={(e) => {
-          updatePage(sliderPage);
+          updatePage(slider.current);
         }}
         onTouchEnd={(e) => {
-          updatePage(sliderPage);
+          // For touch events onChange runs after onTouchEnd, so we use setTimeout
+          // to put it on the callback Queue. We also need a ref for sliderPage otherwise
+          // it sets the previous state
+          setTimeout(() => updatePage(slider.current), 0);
         }}
         type="range"
         value={sliderPage}

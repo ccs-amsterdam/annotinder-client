@@ -93,9 +93,7 @@ const swipeControl = (
       if (deltaY < 0 && !swipeOptions.up) return;
       //if (deltaY !== 0 && deltaY > 0) return;
 
-      refs.text.current.style.transition = `transform ${transitionTime}ms ease-out, opacity ${
-        transitionTime * 5
-      }ms ease-out`;
+      refs.text.current.style.transition = `transform ${transitionTime}ms`;
 
       if (Math.abs(deltaX) < triggerdist && Math.abs(deltaY) < triggerdist) {
         refs.text.current.style.transform = `translateX(0%) translateY(0%)`;
@@ -104,7 +102,7 @@ const swipeControl = (
         refs.text.current.style.transform = `translateX(${
           deltaX > 0 ? 100 : deltaX < 0 ? -100 : 0
         }%) translateY(${deltaY > 0 ? 100 : -100}%)`;
-        refs.box.current.style.transition = `opacity ${transitionTime}ms ease-out`;
+        refs.box.current.style.transition = `opacity ${transitionTime}ms`;
         refs.box.current.style.opacity = "0";
 
         let dir = deltaX > 0 ? "right" : "up";

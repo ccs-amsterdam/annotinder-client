@@ -8,7 +8,7 @@ import {
   Span,
   Annotation,
   SpanAnnotations,
-  TokenAnnotations,
+  AnnotationMap,
   VariableMap,
   SetState,
   Token,
@@ -25,7 +25,7 @@ interface NewCodepageProps {
   variable: string;
   variableMap: VariableMap;
   annotations: SpanAnnotations;
-  tokenAnnotations: TokenAnnotations;
+  tokenAnnotations: AnnotationMap;
   setAnnotations: SetState<SpanAnnotations>;
   editMode: boolean;
   span: Span;

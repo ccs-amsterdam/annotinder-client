@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { AnnotationEvents } from "./AnnotationEvents";
 import { Popup, List } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
+import standardizeColor from "../../../functions/standardizeColor";
 import {
   VariableMap,
   SetState,
   Token,
   SpanAnnotations,
-  TokenAnnotations,
+  AnnotationMap,
   TokenSelection,
   TriggerCodePopup,
   FullScreenNode,
@@ -130,7 +131,7 @@ const highlightAnnotations = (
 };
 
 const allowedAnnotations = (
-  annotations: TokenAnnotations,
+  annotations: AnnotationMap,
   variableMap: VariableMap,
   showAnnotations: string[]
 ) => {
@@ -156,7 +157,7 @@ const allowedAnnotations = (
   return annotations;
 };
 
-const annotateToken = (token: Token, annotations: TokenAnnotations, variableMap: VariableMap) => {
+const annotateToken = (token: Token, annotations: AnnotationMap, variableMap: VariableMap) => {
   // Set specific classes for nice css to show the start/end of codes
   let nLeft = 0;
   let nRight = 0;
@@ -166,7 +167,7 @@ const annotateToken = (token: Token, annotations: TokenAnnotations, variableMap:
   for (let id of Object.keys(annotations)) {
     const annotation = annotations[id];
     const codeMap = variableMap?.[annotation.variable]?.codeMap || {};
-    const color = annotation.color || getColor(annotation.value, codeMap);
+    const color = standardizeColor(annotation.color, "50") || getColor(annotation.value, codeMap);
 
     colors.text.push(color);
     if (annotation.span[0] === annotation.index) {

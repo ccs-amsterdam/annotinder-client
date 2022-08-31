@@ -7,19 +7,11 @@ import SelectCode from "./AnswerFieldSelectCode";
 import Inputs from "./AnswerFieldInputs";
 import { AnswerItem, OnSelectParams, Swipes, Question, Answer, Transition } from "../../../types";
 
-const MIN_DELAY = 200;
-// TODO: using questionindex for resetting states is bad, because it doesn't update for consequtive codebooks with 1 question
-
 interface AnswerFieldProps {
   answers: Answer[];
   questions: Question[];
   questionIndex: number;
-  onAnswer: (
-    items: AnswerItem[],
-    onlySave: boolean,
-    minDelay: number,
-    transition?: Transition
-  ) => void;
+  onAnswer: (items: AnswerItem[], onlySave: boolean, transition?: Transition) => void;
   swipe: Swipes;
   blockEvents?: boolean;
 }
@@ -64,7 +56,7 @@ const AnswerField = ({
   }, [answers, questionIndex, answerItems]);
 
   const onFinish = () => {
-    onAnswer(answerItems, false, MIN_DELAY);
+    onAnswer(answerItems, false);
   };
 
   const onSelect = ({
@@ -108,9 +100,9 @@ const AnswerField = ({
     newAnswerItems[itemIndex].invalid = invalid;
     setAnswerItems(newAnswerItems);
     if (finish) {
-      onAnswer(newAnswerItems, false, MIN_DELAY, transition);
+      onAnswer(newAnswerItems, false, transition);
     } else {
-      if (save) onAnswer(newAnswerItems, true, MIN_DELAY);
+      if (save) onAnswer(newAnswerItems, true);
     }
     return newAnswerItems;
   };

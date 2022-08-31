@@ -1,6 +1,14 @@
 import { importTokens, importTokenAnnotations, parseTokens } from "../../../functions/tokens";
-import { importSpanAnnotations } from "../../../functions/annotations";
-import { Doc, ImageField, MarkdownField, SpanAnnotations, TextField, Unit } from "../../../types";
+import { importFieldAnnotations, importSpanAnnotations } from "../../../functions/annotations";
+import {
+  Doc,
+  ImageField,
+  MarkdownField,
+  SpanAnnotations,
+  TextField,
+  Unit,
+  FieldAnnotations,
+} from "../../../types";
 
 /**
  *
@@ -8,7 +16,7 @@ import { Doc, ImageField, MarkdownField, SpanAnnotations, TextField, Unit } from
  * @param codes This is
  * @returns
  */
-export const getDocAndAnnotations = (unit: Unit): [Doc, SpanAnnotations] => {
+export const getDocAndAnnotations = (unit: Unit): [Doc, SpanAnnotations, FieldAnnotations] => {
   // d is an intermediate object to do some processing on the Unit and extract the document and annotations
   const d: any = { ...unit };
 
@@ -74,12 +82,13 @@ export const getDocAndAnnotations = (unit: Unit): [Doc, SpanAnnotations] => {
 
   // ImportSpanAnnotations transforms the array format annotations to an object format.
   // More importantly, it matches the annotations to token indices (based on the char offset)
-  let annotations: SpanAnnotations = {};
-  if (d.annotations) annotations = importSpanAnnotations([...d.annotations], d.tokens);
-
+  let spanAnnotations: SpanAnnotations = {};
+  if (d.annotations) spanAnnotations = importSpanAnnotations([...d.annotations], d.tokens);
   const tokenAnnotations = importTokenAnnotations(d.tokens);
   if (tokenAnnotations.length > 0)
-    annotations = importSpanAnnotations(tokenAnnotations, d.tokens, annotations);
+    spanAnnotations = importSpanAnnotations(tokenAnnotations, d.tokens, spanAnnotations);
 
-  return [doc, annotations];
+  const fieldAnnotations: FieldAnnotations = importFieldAnnotations(d.annotations);
+
+  return [doc, spanAnnotations, fieldAnnotations];
 };

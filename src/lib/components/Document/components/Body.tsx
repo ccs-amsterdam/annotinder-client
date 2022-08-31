@@ -1,10 +1,12 @@
-import React, { CSSProperties, useEffect, useRef, useState } from "react";
+import React, { CSSProperties, useEffect, useRef, useState, useMemo } from "react";
 import { Ref } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
 import Meta from "./Meta";
 import renderText from "../functions/renderText";
 import renderImages from "../functions/renderImages";
 import renderMarkdown from "../functions/renderMarkdown";
+import FocusOverlay from "./FocusOverlay";
+
 import {
   FieldGrid,
   FieldRefs,
@@ -27,8 +29,8 @@ interface BodyProps {
   markdown_fields: MarkdownField[];
   grid?: FieldGrid;
   setReady: SetState<number>;
-  fieldRefs: FieldRefs;
   bodyStyle: CSSProperties;
+  focus: string[];
 }
 
 const Body = ({
@@ -39,12 +41,13 @@ const Body = ({
   markdown_fields,
   grid,
   setReady,
-  fieldRefs,
   bodyStyle = {},
+  focus,
 }: BodyProps) => {
   const [text, setText] = useState<RenderedText>({});
   const [images, setImages] = useState<RenderedImages>({});
   const [markdown, setMarkdown] = useState<RenderedMarkdown>({});
+  const fieldRefs: FieldRefs = useMemo(() => ({}), []);
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -76,6 +79,7 @@ const Body = ({
           key="tokens"
           className="BodyContainer"
           style={{
+            height: "100%",
             flex: "1 1 auto",
             display: "flex",
             flexDirection: "column",
@@ -87,11 +91,14 @@ const Body = ({
           <Meta meta_fields={meta_fields} />
           <div
             style={{
+              position: "relative",
               flex: "1 1 97%",
               display: "flex",
+              paddingTop: "10px",
               width: "100%",
             }}
           >
+            <FocusOverlay fieldRefs={fieldRefs} focus={focus} />
             <div
               key="content"
               style={{

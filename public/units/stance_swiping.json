@@ -9,7 +9,8 @@
           "variable": "actor",
           "value": "Bob",
           "offset": 0,
-          "length": 3
+          "length": 3,
+          "color": "green"
         },
         {
           "variable": "issue",

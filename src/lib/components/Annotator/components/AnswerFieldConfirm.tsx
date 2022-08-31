@@ -39,7 +39,11 @@ const Confirm = ({ onSelect, button, swipe, blockEvents }: ConfirmProps) => {
 
   useEffect(() => {
     if (swipe) {
-      onSelect({ value: "continue", finish: true });
+      onSelect({
+        value: "continue",
+        finish: true,
+        transition: { direction: "up", color: "#2185d0" },
+      });
     }
   }, [swipe, onSelect]);
 

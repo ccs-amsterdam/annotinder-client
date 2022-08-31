@@ -3,43 +3,33 @@
     "id": "4",
     "type": "unit",
     "unit": {
+      "grid": {
+        "areas": [["text1", "text2"]]
+      },
       "text_fields": [
         {
-          "name": "title",
-          "value": "Let's annotate already!",
-          "style": {
-            "fontWeight": "bold",
-            "fontSize": "1.2em",
-            "textAlign": "center"
-          }
+          "name": "text1",
+          "value": "Questions can also specify unit fields to focus on.",
+          "style": { "fontSize": "1.5em", "textAlign": "center" }
         },
         {
-          "name": "text",
-          "value": "Right, so you've probably figured that all those question things can also be used for annotating texts and images. But there are some special annotation features as well.\n\n  One we quite like is the Annotinder function. If you're on mobile, you can swipe this one!"
+          "name": "text2",
+          "value": "This can be used to focus the attention of the coder.",
+          "style": { "fontSize": "1.5em", "textAlign": "center" }
         }
       ],
       "codebook": {
         "type": "questions",
         "questions": [
           {
-            "name": "swipe",
-            "question": "Try swiping this!",
-            "codes": [
-              { "code": "Left", "color": "crimson", "swipe": "left" },
-              { "code": "Right", "color": "lightgreen", "swipe": "right" },
-              { "code": "Up", "color": "yellow", "swipe": "up" }
-            ],
-            "type": "annotinder"
+            "name": "welcome",
+            "type": "confirm",
+            "fields": "text1"
           },
           {
-            "name": "swipe2",
-            "question": "Try swiping this!",
-            "codes": [
-              { "code": "Left", "color": "crimson", "swipe": "left" },
-              { "code": "Right", "color": "lightgreen", "swipe": "right" },
-              { "code": "Up", "color": "yellow", "swipe": "up" }
-            ],
-            "type": "annotinder"
+            "name": "welcome",
+            "type": "confirm",
+            "fields": "text2"
           }
         ]
       },

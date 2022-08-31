@@ -283,6 +283,7 @@ const TokenMouseEvents = ({
 
   const onTouchDown = useCallback(
     (event) => {
+      istouch.current = true;
       // store token from touch down, but process on touch up, so that we cna set a max
       // time passed (to ignore holding touch when scrolling)
       touch.current = { time: new Date(), token: getToken(tokens, event) };
@@ -373,7 +374,10 @@ const TokenMouseEvents = ({
 
   const onMouseMove = useCallback(
     (event) => {
-      if (istouch.current) return;
+      // If mousemove only happens if mouse is used (which you can't be sure of, because chaos),
+      // this would work to prevent odd cases where a touchscreen could disable mouse
+      //if (istouch.current) return;
+      istouch.current = false;
 
       // When selection started (mousedown), select tokens hovered over
       if (!editMode && selectionStarted.current) {

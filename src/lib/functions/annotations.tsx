@@ -1,4 +1,4 @@
-import { Token, Annotation, SpanAnnotations } from "../types";
+import { Token, Annotation, SpanAnnotations, FieldAnnotations } from "../types";
 
 export const createId = (annotation: any): string => {
   return annotation.variable + "|" + annotation.value;
@@ -10,6 +10,7 @@ export const exportSpanAnnotations = (
   SpanAndText = false
 ): Annotation[] => {
   // export annotations from the object format (for fast use in the annotator) to array format
+  if (!annotations) return [];
   if (Object.keys(annotations).length === 0) return [];
   const uniqueAnnotations = Object.keys(annotations).reduce((un_ann, index) => {
     const ann = annotations[index];
@@ -46,6 +47,18 @@ export const exportSpanAnnotations = (
     return un_ann;
   }, []);
   return uniqueAnnotations;
+};
+
+export const exportFieldAnnotations = (fieldAnnotations: FieldAnnotations) => {
+  if (!fieldAnnotations) return [];
+  if (Object.keys(fieldAnnotations).length === 0) return [];
+  const fa: Annotation[] = [];
+  for (const field of Object.keys(fieldAnnotations)) {
+    for (const key of Object.keys(fieldAnnotations[field])) {
+      fa.push({ field, ...fieldAnnotations[field][key] });
+    }
+  }
+  return fa;
 };
 
 export const importSpanAnnotations = (
@@ -85,6 +98,23 @@ export const importSpanAnnotations = (
   }
 
   return currentAnnotations;
+};
+
+export const importFieldAnnotations = (annotationsArray: Annotation[]) => {
+  const fieldAnnotations: FieldAnnotations = {};
+  for (let a of annotationsArray || []) {
+    const field = a.field || "";
+    if (!a.offset) {
+      if (!fieldAnnotations[field]) fieldAnnotations[field] = {};
+      const key = a.variable + "." + a.value;
+      fieldAnnotations[field][key] = {
+        variable: a.variable,
+        value: a.value,
+        color: a.color,
+      };
+    }
+  }
+  return fieldAnnotations;
 };
 
 export const toggleSpanAnnotation = (
@@ -153,6 +183,7 @@ export const toggleSpanAnnotation = (
         value: newAnnotation.value,
         field: newAnnotation.field,
         offset: newAnnotation.offset,
+        color: newAnnotation.color,
       };
     }
   }
@@ -203,6 +234,7 @@ const findMatches = (
           offset: annotation.offset,
           length: null,
           span: [token.index],
+          color: annotation.color,
         };
       }
 

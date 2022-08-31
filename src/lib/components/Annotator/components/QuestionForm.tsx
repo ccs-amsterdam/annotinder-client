@@ -94,7 +94,7 @@ interface QuestionFormProps {
   nextUnit: () => void;
   setConditionReport: SetState<ConditionReport>;
   swipe: Swipes;
-  startTransition: ({ direction, color }: Transition) => void;
+  startTransition: ({ direction, color }: Transition, nextUnit: boolean) => void;
   blockEvents: boolean;
 }
 
@@ -130,13 +130,12 @@ const QuestionForm = ({
   }, [unit, questions, questionIndex, answers, setQuestionIndex]);
 
   const onAnswer = useCallback(
-    (items: AnswerItem[], onlySave = false, minDelay = 0, transition?: Transition): void => {
+    (items: AnswerItem[], onlySave = false, transition?: Transition): void => {
       // posts results and skips to next question, or next unit if no questions left.
       // If onlySave is true, only write to db without going to next question
       processAnswer(
         items,
         onlySave,
-        minDelay,
         unit,
         questions,
         answers,
@@ -144,7 +143,7 @@ const QuestionForm = ({
         nextUnit,
         setQuestionIndex,
         setConditionReport,
-        () => startTransition(transition),
+        (nextUnit: boolean) => startTransition(transition, nextUnit),
         blockAnswer
       );
     },
@@ -230,7 +229,7 @@ const prepareQuestion = (unit: Unit, question: Question, answers: Answer[]) => {
 };
 
 const markedString = (text: string) => {
-  const regex = new RegExp(/{(.*?)}/); // Match text inside two square brackets
+  const regex = new RegExp(/{(.*?)}/); // Match text inside two curly brackets
 
   text = text.replace(/(\r\n|\n|\r)/gm, "");
   return (
@@ -254,7 +253,6 @@ const markedString = (text: string) => {
 const processAnswer = async (
   items: AnswerItem[],
   onlySave = false,
-  minDelay = 0,
   unit: Unit,
   questions: Question[],
   answers: Answer[],
@@ -262,7 +260,7 @@ const processAnswer = async (
   nextUnit: () => void,
   setQuestionIndex: SetState<number>,
   setConditionReport: SetState<ConditionReport>,
-  transition: () => void,
+  transition: (nextUnit: boolean) => void,
   blockAnswer: any
 ): Promise<void> => {
   if (blockAnswer.current) return null;
@@ -314,7 +312,15 @@ const processAnswer = async (
     } else if (action === "retry") {
       blockAnswer.current = false;
     } else {
-      if (newQuestionIndex === null) transition();
+      let minDelay;
+      if (newQuestionIndex === null) {
+        minDelay = 250;
+        transition(true);
+      } else {
+        minDelay = 150;
+        transition(false);
+      }
+
       const delay = new Date().getTime() - start.getTime();
       const extradelay = Math.max(0, minDelay - delay);
       await new Promise((resolve) => setTimeout(resolve, extradelay));

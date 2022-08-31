@@ -46,16 +46,21 @@ export interface Annotation {
   color?: string;
 }
 
-/** An object with all annotations linked to a token, quickly accessible by their (unique) variable + '.' + value
+/** Annotations, but quickly accessible by their (unique) variable + '.' + value
  */
-export interface TokenAnnotations {
+export interface AnnotationMap {
   [key: string]: Annotation;
 }
 
 /** All tokenAnnotations quickly accessible by token index
  */
 export interface SpanAnnotations {
-  [key: number | string]: TokenAnnotations;
+  [index: number | string]: AnnotationMap;
+}
+
+/** Annotations that only have a field (or empty field for entire document) */
+export interface FieldAnnotations {
+  [field: string]: AnnotationMap;
 }
 
 ///// CODEBOOK
@@ -96,6 +101,7 @@ export interface Question {
   swipeOptions?: SwipeOptions;
   options?: AnswerOption[];
   showAnnotations?: string[];
+  fields?: string[];
 }
 
 export interface Transition {

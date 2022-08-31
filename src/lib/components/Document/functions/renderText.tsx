@@ -113,13 +113,13 @@ const renderField = (
     return paragraphs;
   };
 
-  fieldRefs[field] = { ref: createRef() };
+  fieldRefs[field] = createRef();
   return (
     <div
-      ref={fieldRefs[field].ref}
+      ref={fieldRefs[field]}
       className="field"
       key={"field" + field}
-      style={{ gridArea: field }}
+      style={{ gridArea: field, padding: "10px 0px 10px 0px", margin: "0px 10px 0px 10px" }}
     >
       {fontstyle(paragraphs)}
     </div>
@@ -140,23 +140,16 @@ const renderParagraph = (
     );
 
   return (
-    // uses span behaving like p, because p is not allowed due to nested div (for Label)
-    <div
-      key={"pardiv" + paragraph_nr}
-      style={{ display: "flex", paddingRight: "25px", paddingLeft: "25px" }}
+    <p
+      key={"par" + paragraph_nr}
+      className="paragraph"
+      style={{
+        padding: "0px 10px 0px 10px",
+        //display: "table",
+      }}
     >
-      <span
-        key={"par" + paragraph_nr}
-        className="paragraph"
-        style={{
-          flex: "1 98%",
-          paddingBottom: end ? "1.5em" : "0em",
-          display: "table",
-        }}
-      >
-        {sentences}
-      </span>
-    </div>
+      {sentences}
+    </p>
   );
 };
 

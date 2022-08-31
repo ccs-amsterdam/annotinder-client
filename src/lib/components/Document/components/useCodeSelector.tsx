@@ -11,7 +11,7 @@ import {
   Span,
   SpanAnnotations,
   Token,
-  TokenAnnotations,
+  AnnotationMap,
   TriggerCodePopup,
   Variable,
   VariableMap,
@@ -52,7 +52,7 @@ const useCodeSelector = (
   const [span, setSpan] = useState<Span>(null);
   const [variable, setVariable] = useState(null);
   const [tokenRef, setTokenRef] = useState(null);
-  const [tokenAnnotations, setTokenAnnotations] = useState<TokenAnnotations>({});
+  const [tokenAnnotations, setTokenAnnotations] = useState<AnnotationMap>({});
 
   const triggerFunction = React.useCallback(
     // this function can be called to open the code selector.

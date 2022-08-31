@@ -8,6 +8,7 @@ import {
   Token,
   Unit,
   SpanAnnotations,
+  FieldAnnotations,
   VariableValueMap,
 } from "../../../types";
 
@@ -15,10 +16,11 @@ const useUnit = (
   unit: Unit,
   safetyCheck: any,
   returnTokens: (value: Token[]) => void,
+  setSpanAnnotations: SetState<SpanAnnotations | null>,
+  setFieldAnnotations: SetState<FieldAnnotations | null>,
   setCodeHistory: (value: CodeHistory) => void
-): [Doc, SpanAnnotations, SetState<SpanAnnotations>, VariableValueMap] => {
+): [Doc, VariableValueMap] => {
   const [doc, setDoc] = useState<Doc>({});
-  const [annotations, setAnnotations] = useState<SpanAnnotations | null>(null);
   const [importedCodes, setImportedCodes] = useState<VariableValueMap>({});
 
   useEffect(() => {
@@ -41,18 +43,25 @@ const useUnit = (
 
     initializeCodeHistory(unit.annotations, setCodeHistory);
 
-    const [document, annotations] = getDocAndAnnotations(unit);
+    const [document, spanAnnotations, fieldAnnotations] = getDocAndAnnotations(unit);
 
     safetyCheck.current = { tokens: document.tokens };
 
     setDoc(document);
-    setAnnotations(annotations);
+    setSpanAnnotations(spanAnnotations);
+    setFieldAnnotations(fieldAnnotations);
     if (returnTokens) returnTokens(document.tokens);
-  }, [unit, returnTokens, safetyCheck, setCodeHistory, setImportedCodes]);
+  }, [
+    unit,
+    returnTokens,
+    safetyCheck,
+    setCodeHistory,
+    setImportedCodes,
+    setSpanAnnotations,
+    setFieldAnnotations,
+  ]);
 
-  // if returnAnnotations is falsy (so not passed to Document), make setAnnotations
-  // falsy as well. This is used further down as a sign that annotations are disabled
-  return [doc, annotations, setAnnotations, importedCodes];
+  return [doc, importedCodes];
 };
 
 const initializeCodeHistory = (

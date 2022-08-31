@@ -119,10 +119,10 @@ const ApplaudPortal = ({ action, fullScreenNode }: ApplaudPortalProps) => {
       <Icon
         name="check"
         style={{
-          top: "25%",
-          left: "25%",
+          top: "35%",
+          left: "0%",
           position: "fixed",
-          width: "50%",
+          width: "100%",
           margin: "0",
           zIndex: 1000,
           color: "#90ee90cf",

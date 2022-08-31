@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, CSSProperties, useMemo } from "reac
 import AnnotateNavigation from "./components/AnnotateNavigation";
 import Body from "./components/Body";
 import useCodeSelector from "./components/useCodeSelector";
-import { exportSpanAnnotations } from "../../functions/annotations";
+import { exportFieldAnnotations, exportSpanAnnotations } from "../../functions/annotations";
 import useUnit from "./components/useUnit";
 import SelectVariable from "./components/SelectVariable";
 
@@ -15,10 +15,10 @@ import {
   Unit,
   Annotation,
   SpanAnnotations,
+  FieldAnnotations,
   Token,
   SetState,
   FullScreenNode,
-  FieldRefs,
 } from "../../types";
 
 interface DocumentProps {
@@ -46,8 +46,8 @@ interface DocumentProps {
   fullScreenNode?: FullScreenNode;
   /** An array of variable names, to indicate that annotations of this variable should be highlighted */
   showAnnotations?: string[];
-  /** An array of annotations, that will be put into focus */
-  focus?: Annotation[];
+  /** Names of fields to focus on */
+  focus?: string[];
   /** CSSProperties for the body container  */
   bodyStyle?: CSSProperties;
 }
@@ -73,14 +73,16 @@ const Document = ({
   const safetyCheck = useRef(null); // ensures only new annotations for the current unit are passed to onChangeAnnotations
   const [variable, setVariable] = useState(null);
   const [codeHistory, setCodeHistory] = useState<CodeHistory>({});
+  const [spanAnnotations, setSpanAnnotations] = useState<SpanAnnotations | null>(null);
+  const [fieldAnnotations, setFieldAnnotations] = useState<FieldAnnotations | null>(null);
   const [tokensReady, setTokensReady] = useState(0);
 
-  const fieldRefs: FieldRefs = useMemo(() => ({}), []);
-
-  const [doc, annotations, setAnnotations, importedCodes] = useUnit(
+  const [doc, importedCodes] = useUnit(
     unit,
     safetyCheck,
     returnTokens,
+    setSpanAnnotations,
+    setFieldAnnotations,
     setCodeHistory
   );
 
@@ -90,19 +92,30 @@ const Document = ({
     variableMap,
     editMode,
     variables,
-    annotations,
-    setAnnotations,
+    spanAnnotations,
+    setSpanAnnotations,
     codeHistory,
     setCodeHistory,
     fullScreenNode
   );
 
+  // If annotations change, immediately prepare memoised version in standard annotation
+  // array format. Then when one of these changes, a side effect performs onChangeAnnotations
+  const exportedSpanAnnotations: Annotation[] = useMemo(() => {
+    return exportSpanAnnotations(spanAnnotations, doc.tokens, true);
+  }, [spanAnnotations, doc]);
+
+  const exportedFieldAnnotations: Annotation[] = useMemo(() => {
+    return exportFieldAnnotations(fieldAnnotations);
+  }, [fieldAnnotations]);
+
   useEffect(() => {
-    if (!annotations || !onChangeAnnotations) return;
+    // if exported annotations are updated, and onChangeAnnotations
+    if (!onChangeAnnotations) return;
     // check if same unit, to prevent annotations from spilling over due to race conditions
     if (safetyCheck.current.tokens !== doc.tokens) return;
-    onChangeAnnotations(exportSpanAnnotations(annotations, doc.tokens, true));
-  }, [doc.tokens, annotations, onChangeAnnotations]);
+    onChangeAnnotations([...exportedSpanAnnotations, ...exportedFieldAnnotations]);
+  }, [doc.tokens, exportedSpanAnnotations, exportedFieldAnnotations, onChangeAnnotations]);
 
   useEffect(() => {
     if (returnVariableMap) returnVariableMap(variableMap);
@@ -110,8 +123,8 @@ const Document = ({
 
   useEffect(() => {
     if (setReady) setReady((counter) => counter + 1);
-    setAnnotations((annotations: SpanAnnotations) => ({ ...annotations })); //trigger DOM update after token refs have been prepared
-  }, [tokensReady, setAnnotations, setReady]);
+    setSpanAnnotations((spanAnnotations: SpanAnnotations) => ({ ...spanAnnotations })); //trigger DOM update after token refs have been prepared
+  }, [tokensReady, setSpanAnnotations, setReady]);
 
   if (!doc.tokens && !doc.image_fields) return null;
 
@@ -119,43 +132,42 @@ const Document = ({
     <div
       style={{
         display: "flex",
+        position: "relative",
         height: "100%",
         maxHeight: "100%",
         flexDirection: "column",
       }}
     >
-      <>
-        <SelectVariable
-          variables={variables}
-          variable={variable}
-          setVariable={setVariable}
-          editAll={settings?.editAll}
-        />
-        <Body
-          tokens={doc.tokens}
-          text_fields={doc.text_fields}
-          meta_fields={doc.meta_fields}
-          image_fields={doc.image_fields}
-          markdown_fields={doc.markdown_fields}
-          grid={doc.grid}
-          setReady={setTokensReady}
-          fieldRefs={fieldRefs}
-          bodyStyle={bodyStyle}
-        />
+      <SelectVariable
+        variables={variables}
+        variable={variable}
+        setVariable={setVariable}
+        editAll={settings?.editAll}
+      />
+      <Body
+        tokens={doc.tokens}
+        text_fields={doc.text_fields}
+        meta_fields={doc.meta_fields}
+        image_fields={doc.image_fields}
+        markdown_fields={doc.markdown_fields}
+        grid={doc.grid}
+        setReady={setTokensReady}
+        bodyStyle={bodyStyle}
+        focus={focus}
+      />
 
-        <AnnotateNavigation
-          tokens={doc.tokens}
-          variableMap={variableMap}
-          annotations={annotations}
-          disableAnnotations={!onChangeAnnotations || !variableMap}
-          editMode={editMode}
-          triggerCodeSelector={triggerCodeSelector}
-          eventsBlocked={codeSelectorOpen || blockEvents}
-          showAnnotations={showAnnotations}
-          fullScreenNode={fullScreenNode}
-        />
-        {codeSelector || null}
-      </>
+      <AnnotateNavigation
+        tokens={doc.tokens}
+        variableMap={variableMap}
+        annotations={spanAnnotations}
+        disableAnnotations={!onChangeAnnotations || !variableMap}
+        editMode={editMode}
+        triggerCodeSelector={triggerCodeSelector}
+        eventsBlocked={codeSelectorOpen || blockEvents}
+        showAnnotations={showAnnotations}
+        fullScreenNode={fullScreenNode}
+      />
+      {codeSelector || null}
     </div>
   );
 };

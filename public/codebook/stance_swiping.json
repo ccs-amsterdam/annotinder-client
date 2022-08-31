@@ -10,6 +10,7 @@
         { "code": "No stance", "color": "yellow", "swipe": "up" },
         { "code": "Supports", "color": "lightgreen", "swipe": "right" }
       ],
+      "showAnnotations": ["actor"],
       "type": "annotinder"
     }
   ]
