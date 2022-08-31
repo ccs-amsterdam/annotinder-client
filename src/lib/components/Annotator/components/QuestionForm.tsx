@@ -207,20 +207,24 @@ const prepareQuestion = (unit: Unit, question: Question, answers: Answer[]) => {
   let preparedQuestion = question.question;
 
   const regex = /{(.*?)}/g;
-  const matches = [...Array.from(preparedQuestion.matchAll(regex))];
   if (answers) {
-    for (let m of matches) {
+    //const matches = [...Array.from(preparedQuestion.matchAll(regex))];
+    //for (let m of matches) {
+    let m: RegExpExecArray;
+    while ((m = regex.exec(preparedQuestion))) {
+      const m0: string = m[0];
+      const m1: string = m[1];
       let answer;
       if (unit.variables) {
-        answer = { variable: m["1"], items: [{ values: [unit.variables[m["1"]]] }] };
+        answer = { variable: m1, items: [{ values: [unit.variables[m1]] }] };
       }
       if (answers) {
-        answer = answers.find((a) => a.variable === m["1"]) || answer;
+        answer = answers.find((a) => a.variable === m1) || answer;
       }
 
       if (answer) {
         const value = answer.items[0].values.join(", ");
-        preparedQuestion = preparedQuestion.replace(m["0"], "{" + value + "}");
+        preparedQuestion = preparedQuestion.replace(m0, "{" + value + "}");
       }
     }
   }

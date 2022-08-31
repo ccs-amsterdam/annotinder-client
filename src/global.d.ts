@@ -1,12 +1,16 @@
 declare module "*.jpg" {
-  export default "" as string;
+  const _default: string;
+  export default _default;
 }
 declare module "*.jpeg" {
-  export default "" as string;
+  const _default: string;
+  export default _default;
 }
 declare module "*.png" {
-  export default "" as string;
+  const _default: string;
+  export default _default;
 }
 declare module "*.json" {
-  export default "" as any;
+  const _default: any;
+  export default _default;
 }

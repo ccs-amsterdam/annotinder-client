@@ -39,8 +39,6 @@ const SwipeableBox = styled.div`
   outline-offset: -1px;
   position: absolute;
   will-change: opacity, transform;
-  border: 1px solid black;
-
   z-index: 20;
 `;
 
@@ -358,7 +356,7 @@ const fadeIn = (text: RefObject<HTMLElement>, box: RefObject<HTMLElement>): void
   if (!text.current) return null;
   box.current.style.transition = `opacity 400ms linear`;
   box.current.style.opacity = "1";
-  text.current.style.transition = `background 500ms, opacity 1000ms`;
+  text.current.style.transition = `background 300ms, opacity 100ms`;
   text.current.style.background = "white";
   text.current.style.opacity = "1";
 };

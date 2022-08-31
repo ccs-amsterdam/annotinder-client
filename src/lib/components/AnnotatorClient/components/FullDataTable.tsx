@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { ButtonComponentProps, Column, RowObj } from "../../../types";
 import PaginationTable from "./PaginationTable";
+import "./tableStyle.css";
 
 const PAGESIZE = 10;
 interface FullData {

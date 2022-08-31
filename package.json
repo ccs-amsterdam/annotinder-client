@@ -1,20 +1,20 @@
 {
-  "name": "annotinder",
-  "homepage": "https://ccs-amsterdam.github.io/annotinder",
+  "name": "annotinder-client",
+  "homepage": "https://ccs-amsterdam.github.io/annotinder-client",
   "description": "The AnnoTinder React Client",
   "author": "Kasper Welbers",
   "keywords": [
     "react",
     "annotation"
   ],
-  "version": "0.2.7",
+  "version": "0.3.4",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ccs-amsterdam/AnnoTinder"
+    "url": "https://github.com/ccs-amsterdam/annotinder-client"
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "types": "./dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "module": "dist/index.js",
   "files": [
     "dist",
@@ -46,10 +46,12 @@
     "start": "react-scripts start",
     "predeploy": "react-scripts build && cp build/index.html build/404.html",
     "deploy": "gh-pages -d build",
-    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build_npm": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files",
+    "clean": "rimraf dist/",
+    "copy-files": "copyfiles -u 2 src/lib/**/*.html src/lib/**/*.css dist/",
+    "build": "react-scripts build",
+    "build_npm": "npm run clean && tsc && npm run copy-files",
     "postinstall": "semantic-ui-css-patch"
   },
   "resolutions": {
@@ -84,10 +86,12 @@
     "@types/semantic-ui": "^2.2.7",
     "@types/styled-components": "^5.1.25",
     "babel-jest": "^28.0.2",
+    "copyfiles": "^2.4.1",
     "gh-pages": "^3.1.0",
     "jest": "^28.0.2",
+    "react-scripts": "^5.0.0",
+    "rimraf": "^3.0.2",
     "ts-loader": "^9.3.0",
-    "typescript": "^4.6.4",
-    "react-scripts": "^5.0.0"
+    "typescript": "^4.6.4"
   }
 }

@@ -8,7 +8,6 @@ import DemoJobOverview from "./lib/components/DemoJob/DemoJobOverview";
 import GuestCoder from "./lib/components/GuestCoder/GuestCoder";
 import useWindowSize from "./lib/hooks/useWindowSize";
 import styled from "styled-components";
-import "./appStyle.css";
 
 const ResponsiveContainer = styled.div<{ height: number; width: number }>`
   height: ${(props) => props.height}px;
