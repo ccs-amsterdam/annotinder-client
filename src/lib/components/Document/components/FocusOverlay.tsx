@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import styled from "styled-components";
+import { keepInView } from "../../../functions/scroll";
 import { FieldRefs } from "../../../types";
 
 const Overlay = styled.div`
@@ -16,9 +17,10 @@ const Overlay = styled.div`
 interface FocusOverlayProps {
   fieldRefs: FieldRefs;
   focus: string[];
+  containerRef: any;
 }
 
-const FocusOverlay = ({ fieldRefs, focus }: FocusOverlayProps) => {
+const FocusOverlay = ({ fieldRefs, focus, containerRef }: FocusOverlayProps) => {
   useEffect(() => {
     let first = true;
     if (!focus || focus.length === 0) return;
@@ -27,8 +29,11 @@ const FocusOverlay = ({ fieldRefs, focus }: FocusOverlayProps) => {
       const cl = fieldRefs[key].current.classList;
       if (focus.includes(key)) {
         cl.add("focus");
-        if (first) fieldRefs[key].current.scrollIntoView();
-        first = false;
+        if (first) {
+          containerRef.current.style.scrollBehavior = "smooth";
+          setTimeout(() => keepInView(containerRef.current, fieldRefs[key].current), 0);
+          first = false;
+        }
       } else {
         cl.remove("focus");
       }

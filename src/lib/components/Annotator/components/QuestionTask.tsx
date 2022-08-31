@@ -40,8 +40,7 @@ const SwipeableBox = styled.div`
   position: absolute;
   will-change: opacity, transform;
   border: 1px solid black;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+
   z-index: 20;
 `;
 

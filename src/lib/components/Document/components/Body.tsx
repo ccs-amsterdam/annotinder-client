@@ -98,7 +98,7 @@ const Body = ({
               width: "100%",
             }}
           >
-            <FocusOverlay fieldRefs={fieldRefs} focus={focus} />
+            <FocusOverlay fieldRefs={fieldRefs} focus={focus} containerRef={containerRef} />
             <div
               key="content"
               style={{

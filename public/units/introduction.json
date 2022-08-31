@@ -1,110 +1,5 @@
 [
   {
-    "id": "4",
-    "type": "unit",
-    "unit": {
-      "grid": {
-        "areas": [["text1", "text2"]]
-      },
-      "text_fields": [
-        {
-          "name": "text1",
-          "value": "Questions can also specify unit fields to focus on.",
-          "style": { "fontSize": "1.5em", "textAlign": "center" }
-        },
-        {
-          "name": "text2",
-          "value": "This can be used to focus the attention of the coder.",
-          "style": { "fontSize": "1.5em", "textAlign": "center" }
-        }
-      ],
-      "codebook": {
-        "type": "questions",
-        "questions": [
-          {
-            "name": "welcome",
-            "type": "confirm",
-            "fields": "text1"
-          },
-          {
-            "name": "welcome",
-            "type": "confirm",
-            "fields": "text2"
-          }
-        ]
-      },
-      "variables": []
-    }
-  },
-  {
-    "id": "1",
-    "type": "unit",
-    "unit": {
-      "text_fields": [
-        {
-          "name": "title",
-          "value": "Welcome!",
-          "style": {
-            "fontWeight": "bold",
-            "fontSize": "1.2em",
-            "textAlign": "center"
-          }
-        },
-        {
-          "name": "text1",
-          "value": "This is a quick introduction to the CCS Annotator. This very introduction in itself is actually a codingjob!\n\nA basic codingjob consists of a set of units (what to code) and a codebook (how to code). But you can also combine different codebooks to tailor codingjobs to particular purposes, which this introduction serves to demonstrate.\n\nBy the way, we are not storing any of your data. In fact, the annotator can run entirely in your own browser without a server involved. This is actually a key feature, but more on that later."
-        },
-        {
-          "name": "text2",
-          "value": "This is a quick introduction to the CCS Annotator. This very introduction in itself is actually a codingjob!\n\nA basic codingjob consists of a set of units (what to code) and a codebook (how to code). But you can also combine different codebooks to tailor codingjobs to particular purposes, which this introduction serves to demonstrate.\n\nBy the way, we are not storing any of your data. In fact, the annotator can run entirely in your own browser without a server involved. This is actually a key feature, but more on that later."
-        },
-        {
-          "name": "text3",
-          "value": "This is a quick introduction to the CCS Annotator. This very introduction in itself is actually a codingjob!\n\nA basic codingjob consists of a set of units (what to code) and a codebook (how to code). But you can also combine different codebooks to tailor codingjobs to particular purposes, which this introduction serves to demonstrate.\n\nBy the way, we are not storing any of your data. In fact, the annotator can run entirely in your own browser without a server involved. This is actually a key feature, but more on that later."
-        },
-        {
-          "name": "text4",
-          "value": "This is a quick introduction to the CCS Annotator. This very introduction in itself is actually a codingjob!\n\nA basic codingjob consists of a set of units (what to code) and a codebook (how to code). But you can also combine different codebooks to tailor codingjobs to particular purposes, which this introduction serves to demonstrate.\n\nBy the way, we are not storing any of your data. In fact, the annotator can run entirely in your own browser without a server involved. This is actually a key feature, but more on that later."
-        }
-      ],
-      "importedAnnotations": [
-        {
-          "field": "text1",
-          "variable": "some variable",
-          "value": "Some label"
-        },
-        {
-          "field": "text2",
-          "variable": "some variable",
-          "value": "Another label"
-        },
-        {
-          "field": "text3",
-          "variable": "some variable",
-          "value": "EMPTY"
-        }
-      ],
-
-      "codebook": {
-        "type": "questions",
-        "questions": [
-          {
-            "name": "fav_animal",
-            "instruction": "questions can have individual instructions",
-            "type": "select code",
-            "question": "What's your favourite type of animal?",
-            "codes": [
-              { "code": "Birds" },
-              { "code": "Mammals" },
-              { "code": "Insects" },
-              { "code": "Fish" }
-            ]
-          }
-        ]
-      }
-    }
-  },
-  {
     "id": "1",
     "type": "unit",
     "unit": {
@@ -539,6 +434,43 @@
           }
         ]
       }
+    }
+  },
+  {
+    "id": "focus",
+    "type": "unit",
+    "unit": {
+      "grid": {
+        "areas": [["text1", "text2"]]
+      },
+      "text_fields": [
+        {
+          "name": "text1",
+          "value": "Questions can also specify unit fields to focus on.",
+          "style": { "fontSize": "1.5em", "textAlign": "center" }
+        },
+        {
+          "name": "text2",
+          "value": "This can be used to focus the attention of the coder.",
+          "style": { "fontSize": "1.5em", "textAlign": "center" }
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "welcome",
+            "type": "confirm",
+            "fields": "text1"
+          },
+          {
+            "name": "welcome",
+            "type": "confirm",
+            "fields": "text2"
+          }
+        ]
+      },
+      "variables": []
     }
   },
   {
