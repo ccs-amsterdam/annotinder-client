@@ -22,9 +22,10 @@ interface IndexedUnit {
 interface AnnotatorProps {
   jobServer: JobServer;
   askFullScreen?: boolean;
+  cantLeave?: boolean;
 }
 
-const Annotator = ({ jobServer, askFullScreen = false }: AnnotatorProps) => {
+const Annotator = ({ jobServer, askFullScreen = false, cantLeave = false }: AnnotatorProps) => {
   const [indexedUnit, setIndexedUnit] = useState<IndexedUnit>({ unit: null, index: -1 });
   const [unitProgress, setUnitProgress] = useState(0);
 
@@ -70,6 +71,7 @@ const Annotator = ({ jobServer, askFullScreen = false }: AnnotatorProps) => {
           unitProgress={unitProgress}
           fullScreenButton={fullScreenButton}
           fullScreenNode={fullScreenNode}
+          cantLeave={cantLeave}
         >
           <Segment basic style={{ height: "100%", padding: "0", margin: "0" }}>
             <AnnotateUnit

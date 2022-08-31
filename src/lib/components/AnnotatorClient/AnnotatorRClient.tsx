@@ -42,7 +42,7 @@ export default function AnnotatorRClient() {
     );
   }
 
-  return <Annotator jobServer={jobServer} />;
+  return <Annotator jobServer={jobServer} cantLeave />;
 }
 
 const login = async (setJobServer: SetState<JobServer>) => {

@@ -15,6 +15,7 @@ interface JobControllerProps {
   unitProgress: number;
   fullScreenButton: ReactElement;
   fullScreenNode: FullScreenNode;
+  cantLeave: boolean;
 }
 
 /**
@@ -30,6 +31,7 @@ const JobController = ({
   unitProgress,
   fullScreenButton,
   fullScreenNode,
+  cantLeave,
 }: JobControllerProps) => {
   const [maxHeight, maxWidth] = getWindowSize(jobServer);
 
@@ -74,7 +76,9 @@ const JobController = ({
           <div>
             <Button.Group>
               {fullScreenButton}
-              <UserButton fullScreenNode={fullScreenNode} jobServer={jobServer} />
+              {cantLeave ? null : (
+                <UserButton fullScreenNode={fullScreenNode} jobServer={jobServer} />
+              )}
             </Button.Group>
           </div>
         </div>

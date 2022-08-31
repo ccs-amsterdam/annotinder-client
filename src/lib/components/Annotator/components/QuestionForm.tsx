@@ -208,6 +208,7 @@ const prepareQuestion = (unit: Unit, question: Question, answers: Answer[]) => {
 
   const regex = /{(.*?)}/g;
   if (answers) {
+    // matchAll not yet supported by RStudio browser
     //const matches = [...Array.from(preparedQuestion.matchAll(regex))];
     //for (let m of matches) {
     let m: RegExpExecArray;
