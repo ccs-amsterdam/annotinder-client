@@ -16,7 +16,10 @@ const FeedbackPortal = ({
   setConditionReport,
   fullScreenNode,
 }: FeedbackPortalProps) => {
-  const action = useMemo(() => conditionReport?.[variable], [conditionReport, variable]);
+  const action = useMemo(
+    () => conditionReport?.evaluation?.[variable],
+    [conditionReport, variable]
+  );
 
   return (
     <>
@@ -44,7 +47,7 @@ const RetryPortal = ({ action, setConditionReport, fullScreenNode }: RetryPortal
       transition={{ animation: "fly down", duration: 600 }}
       mountNode={fullScreenNode || undefined}
       onClose={() => {
-        setConditionReport({});
+        setConditionReport({ evaluation: {}, damage: {} });
       }}
       open={action?.action === "retry"}
       style={{ zIndex: 10000 }}
@@ -56,7 +59,6 @@ const RetryPortal = ({ action, setConditionReport, fullScreenNode }: RetryPortal
           position: "fixed",
           width: "100%",
           margin: "0",
-          //minHeight: "10%",
           maxHeight: "50%",
           overflow: "auto",
           zIndex: 1000,
@@ -67,7 +69,7 @@ const RetryPortal = ({ action, setConditionReport, fullScreenNode }: RetryPortal
           paddingBottom: "35px",
         }}
       >
-        <CloseButton onClick={() => setConditionReport({})} />
+        <CloseButton onClick={() => setConditionReport({ evaluation: {}, damage: {} })} />
         <div
           style={{
             width: "100%",

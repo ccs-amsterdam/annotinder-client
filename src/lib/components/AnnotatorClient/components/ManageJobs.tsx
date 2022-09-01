@@ -374,6 +374,7 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
   const [link, setLink] = useState(null);
   const [open, setOpen] = useState(false);
 
+  console.log(window.location);
   useEffect(() => {
     // to just load this if it's being requested
     if (!open) return;
@@ -382,8 +383,12 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
       .then((token: string) => {
         const qrhost = backend.host.replace(":", "%colon%");
         setLink({
-          url: `${window.location.origin}/annotinder/guest/?host=${backend.host}&jobtoken=${token}`,
-          qrUrl: `${window.location.origin}/annotinder/guest/?host=${qrhost}&jobtoken=${token}`,
+          url: `${window.location.origin + window.location.pathname}guest/?host=${
+            backend.host
+          }&jobtoken=${token}`,
+          qrUrl: `${
+            window.location.origin + window.location.pathname
+          }/guest/?host=${qrhost}&jobtoken=${token}`,
         });
       })
       .catch((e: Error) => {

@@ -61,8 +61,12 @@ const LoginLinkButton = ({ row, backend, style }: LoginLinkButtonProps) => {
       .then((token) => {
         const qrhost = backend.host.replace(":", "%colon%");
         setLink({
-          url: `${window.location.origin}/annotinder/?host=${backend.host}&token=${token.token}`,
-          qrUrl: `${window.location.origin}/annotinder/?host=${qrhost}&token=${token.token}`,
+          url: `${window.location.origin + window.location.pathname}?host=${backend.host}&token=${
+            token.token
+          }`,
+          qrUrl: `${window.location.origin + window.location.pathname}?host=${qrhost}&token=${
+            token.token
+          }`,
         });
       })
       .catch((e) => {

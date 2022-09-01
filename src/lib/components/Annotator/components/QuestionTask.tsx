@@ -118,7 +118,7 @@ const QuestionTask = ({
   useEffect(() => {
     // When unit changes, refresh condition report
     // (the backend can also return a condition report for a new unit)
-    setConditionReport(unit.report || {});
+    setConditionReport(unit.report || { evaluation: {}, damage: {} });
   }, [unit]);
 
   const startTransition = useCallback(
@@ -319,12 +319,11 @@ const nextUnitTransition = (r: SwipeRefs, trans: Transition) => {
   const direction = trans?.direction;
   const color = trans?.color || "white";
   if (r?.box?.current?.style != null && r?.text?.current != null) {
-    r.text.current.style.transition = `transform 1000ms, opacity 500ms`;
+    r.text.current.style.transition = `transform 2000ms`;
     r.text.current.style.transform = `translateX(${
       direction === "right" ? 100 : direction === "left" ? -100 : 0
     }%) translateY(${direction ? "-100" : "0"}%)`;
-    r.text.current.style.opacity = "0";
-    r.box.current.style.transition = `opacity 500ms linear`;
+    r.box.current.style.transition = `opacity 250ms linear`;
     r.box.current.style.background = color || "white";
     r.box.current.style.opacity = "0";
   }
@@ -332,10 +331,10 @@ const nextUnitTransition = (r: SwipeRefs, trans: Transition) => {
 
 const nextQuestionTransition = (r: SwipeRefs, trans: Transition) => {
   if (!trans?.color) return;
-  if (r?.box?.current?.style != null && r?.text?.current != null) {
-    r.text.current.style.transition = `background 50ms ease-out`;
-    r.text.current.style.background = trans.color;
-  }
+  // if (r?.box?.current?.style != null && r?.text?.current != null) {
+  //   r.text.current.style.transition = `background 50ms ease-out`;
+  //   r.text.current.style.background = trans.color;
+  // }
 };
 
 const resetStyle = (
@@ -359,6 +358,7 @@ const fadeIn = (text: RefObject<HTMLElement>, box: RefObject<HTMLElement>): void
   text.current.style.transition = `background 300ms, opacity 100ms`;
   text.current.style.background = "white";
   text.current.style.opacity = "1";
+  text.current.style.filter = "";
 };
 
 export default React.memo(QuestionTask);

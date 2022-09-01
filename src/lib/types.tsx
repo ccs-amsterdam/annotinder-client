@@ -290,7 +290,13 @@ export interface Condition {
 
 export interface ConditionReport {
   // A record where keys are variables and values are objects with results of conditions
-  [key: string]: Action;
+  evaluation: { [key: string]: Action };
+  damage: {
+    damage?: number;
+    game_over?: boolean;
+    max_damage?: number;
+  };
+  reportSucces?: boolean;
 }
 
 export interface Action {

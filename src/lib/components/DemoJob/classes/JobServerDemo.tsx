@@ -79,15 +79,15 @@ class JobServerDemo implements JobServer {
 
 function checkConditions(units: BackendUnit[], unitIndex: number): ConditionReport {
   const type = units[unitIndex].type;
-  if (type !== "train" && type !== "test" && type !== "pre") return {};
+  const cr: ConditionReport = { evaluation: {}, damage: {} };
 
-  if (!units[unitIndex].conditionals) return {};
+  if (type !== "train" && type !== "test" && type !== "pre") return cr;
+  if (!units[unitIndex].conditionals) return cr;
 
   const annotation: Annotation[] = units[unitIndex].annotation;
   const status: Status = units[unitIndex].status;
 
   let damage = 0;
-  const cr: ConditionReport = {};
 
   // Default actions are determined by unit type
   let defaultSuccessAction: ConditionalAction = null;
@@ -112,8 +112,8 @@ function checkConditions(units: BackendUnit[], unitIndex: number): ConditionRepo
   for (let conditional of units[unitIndex].conditionals) {
     // only check conditions for variables that have been coded
     // (if unit is done, all variables are assumed to have been coded)
-    if (!cr[conditional.variable])
-      cr[conditional.variable] = {
+    if (!cr.evaluation[conditional.variable])
+      cr.evaluation[conditional.variable] = {
         action: conditional.onSuccess || defaultSuccessAction,
         message: conditional.message || defaultMessage,
       };
@@ -167,15 +167,17 @@ function checkConditions(units: BackendUnit[], unitIndex: number): ConditionRepo
     if (invalidAnnotationI.length > 0) success = false;
 
     if (success) {
-      cr[conditional.variable].action = conditional.onSuccess || defaultSuccessAction;
+      cr.evaluation[conditional.variable].action = conditional.onSuccess || defaultSuccessAction;
     } else {
-      cr[conditional.variable].action = conditional.onFail || defaultFailAction;
-      cr[conditional.variable].message = conditional.message || defaultMessage;
-      cr[conditional.variable].submessages = submessages;
+      cr.evaluation[conditional.variable].action = conditional.onFail || defaultFailAction;
+      cr.evaluation[conditional.variable].message = conditional.message || defaultMessage;
+      cr.evaluation[conditional.variable].submessages = submessages;
 
       // add correct and incorrect annotations
-      cr[conditional.variable].correct = validAnnotationI.map((i: string) => annotation[Number(i)]);
-      cr[conditional.variable].incorrect = invalidAnnotationI.map(
+      cr.evaluation[conditional.variable].correct = validAnnotationI.map(
+        (i: string) => annotation[Number(i)]
+      );
+      cr.evaluation[conditional.variable].incorrect = invalidAnnotationI.map(
         (i: string) => annotation[Number(i)]
       );
 
@@ -183,6 +185,7 @@ function checkConditions(units: BackendUnit[], unitIndex: number): ConditionRepo
     }
   }
   if (damage) {
+    cr.damage.damage = damage;
     alert(`This answer gave you ${damage} damage!\n(coders normally don't see this message)`);
   }
 

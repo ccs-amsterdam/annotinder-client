@@ -36,7 +36,7 @@ const swipeControl = (
     delta: 10, // min distance(px) before a swipe starts. *See Notes*
     preventDefaultTouchmoveEvent: false, // call e.preventDefault *See Details*
     trackTouch: true, // track touch input
-    trackMouse: false, // track mouse input
+    trackMouse: true, // track mouse input
     rotationAngle: 0, // set a rotation angle
   };
 

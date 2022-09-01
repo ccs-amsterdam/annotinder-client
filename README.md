@@ -2,7 +2,7 @@
 
 This repository contains the app for the AnnoTinder client.
 
-Several components are also published as an [NPM module](https://www.npmjs.com/package/annotinder). There are used by the CCS_Annotator client for managing and deploying jobs, and the annotinder R package.
+Several components are also published as an [NPM module](https://www.npmjs.com/package/annotinder-client). There are used by the CCS_Annotator client for managing and deploying jobs, and the annotinder R package.
 
 ## AnnoTinder client App
 
@@ -12,7 +12,7 @@ For now we're hosting it on [Github pages](https://ccs-amsterdam.github.io/annot
 Install the app, and run locally for development
 
 ```bash
-git clone https://github.com/ccs-amsterdam/annotinder
+git clone https://github.com/ccs-amsterdam/annotinder-client
 cd annotinder
 npm install
 npm start

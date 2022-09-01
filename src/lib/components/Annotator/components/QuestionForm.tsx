@@ -311,7 +311,7 @@ const processAnswer = async (
     );
 
     setConditionReport(conditionReport);
-    const action = conditionReport?.[questions[questionIndex].name]?.action;
+    const action = conditionReport?.evaluation?.[questions[questionIndex].name]?.action;
     if (action === "block") {
       // pass
     } else if (action === "retry") {
@@ -332,7 +332,7 @@ const processAnswer = async (
 
       // check if there are other variables in the current unit that have an action
       for (let i = 0; i < questions.length; i++) {
-        const action = conditionReport[questions[i].name]?.action;
+        const action = conditionReport.evaluation[questions[i].name]?.action;
         if (action === "block" || action === "retry") newQuestionIndex = i;
       }
 

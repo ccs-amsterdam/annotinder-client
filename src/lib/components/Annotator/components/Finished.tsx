@@ -86,7 +86,6 @@ interface JobLinkProps {
 
 const JobLink = ({ jobId, backend, style = {} }: JobLinkProps) => {
   const [link, setLink] = useState(null);
-
   useEffect(() => {
     // to just load this if it's being requested
     backend
@@ -94,8 +93,8 @@ const JobLink = ({ jobId, backend, style = {} }: JobLinkProps) => {
       .then((token: string) => {
         const qrhost = backend.host.replace(":", "%colon%");
         setLink({
-          url: `${window.location.origin}/annotinder/guest/?host=${backend.host}&jobtoken=${token}`,
-          qrUrl: `${window.location.origin}/annotinder/guest/?host=${qrhost}&jobtoken=${token}`,
+          url: `${window.location.origin + window.location.pathname}guest/?host=${backend.host}&jobtoken=${token}`,
+          qrUrl: `${window.location.origin + window.location.pathname}guest/?host=${qrhost}&jobtoken=${token}`,
         });
       })
       .catch((e: Error) => {

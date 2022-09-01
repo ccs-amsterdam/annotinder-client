@@ -203,7 +203,7 @@ const SelectCode = React.memo(
                     height: "100%",
                     width: "100%",
                     borderStyle: "solid",
-                    borderColor: isCurrent ? "#1B1C1D" : "#00000066",
+                    borderColor: isCurrent ? "#444444" : "#00000066",
                     borderWidth: isCurrent ? "10px 5px 5px 5px" : "5px 5px 10px 5px",
                   }}
                 ></div>
