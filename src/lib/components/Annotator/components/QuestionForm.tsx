@@ -309,6 +309,7 @@ const processAnswer = async (
       cleanAnnotations,
       status
     );
+    conditionReport.reportSuccess = true;
 
     setConditionReport(conditionReport);
     const action = conditionReport?.evaluation?.[questions[questionIndex].name]?.action;

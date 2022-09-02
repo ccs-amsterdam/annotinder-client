@@ -296,7 +296,7 @@ export interface ConditionReport {
     game_over?: boolean;
     max_damage?: number;
   };
-  reportSucces?: boolean;
+  reportSuccess?: boolean;
 }
 
 export interface Action {

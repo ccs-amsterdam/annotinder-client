@@ -11,6 +11,7 @@ const Meta = ({ meta_fields }: MetaProps) => {
     return meta_fields.map((row) => {
       let label = row.label ?? row.name ?? "";
       label = String(label);
+
       return (
         <Table.Row
           key={label}
@@ -27,7 +28,7 @@ const Meta = ({ meta_fields }: MetaProps) => {
               color: "#1768a6",
             }}
           >
-            <b>{label.toUpperCase()}</b>
+            <b>{label}</b>
           </Table.Cell>
           <Table.Cell style={row.style}>{row.value}</Table.Cell>
         </Table.Row>

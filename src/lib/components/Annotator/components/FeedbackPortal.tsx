@@ -21,6 +21,9 @@ const FeedbackPortal = ({
     [conditionReport, variable]
   );
 
+  console.log(conditionReport);
+  console.log(action);
+
   return (
     <>
       <RetryPortal
@@ -28,7 +31,11 @@ const FeedbackPortal = ({
         setConditionReport={setConditionReport}
         fullScreenNode={fullScreenNode}
       />
-      <ApplaudPortal action={action} fullScreenNode={fullScreenNode} />
+      <ApplaudPortal
+        action={action}
+        reportSuccess={conditionReport?.reportSuccess}
+        fullScreenNode={fullScreenNode}
+      />
     </>
   );
 };
@@ -98,10 +105,11 @@ const RetryPortal = ({ action, setConditionReport, fullScreenNode }: RetryPortal
 
 interface ApplaudPortalProps {
   action: Action;
+  reportSuccess: boolean;
   fullScreenNode: FullScreenNode;
 }
 
-const ApplaudPortal = ({ action, fullScreenNode }: ApplaudPortalProps) => {
+const ApplaudPortal = ({ action, reportSuccess, fullScreenNode }: ApplaudPortalProps) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -115,7 +123,7 @@ const ApplaudPortal = ({ action, fullScreenNode }: ApplaudPortalProps) => {
       closeOnDocumentClick={false}
       transition={{ duration: 200, animation: "scale" }}
       mountNode={fullScreenNode || undefined}
-      open={open}
+      open={open && reportSuccess}
       style={{ zIndex: 10000 }}
     >
       <Icon

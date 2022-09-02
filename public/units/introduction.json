@@ -22,6 +22,7 @@
           "value": "This is a quick introduction to the CCS Annotator. This very introduction in itself is actually a codingjob!\n\nA basic codingjob consists of a set of units (what to code) and a codebook (how to code). But you can also combine different codebooks to tailor codingjobs to particular purposes, which this introduction serves to demonstrate.\n\nBy the way, we are not storing any of your data. In fact, the annotator can run entirely in your own browser without a server involved. This is actually a key feature, but more on that later."
         }
       ],
+
       "image_fields": [
         {
           "name": "img",
