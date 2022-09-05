@@ -104,10 +104,9 @@ const NewCodePage = ({
       // if this closes the popup, wait 100ms for the portal to close so that users dont
       // see the portal change (because the annotations change)
       setOpen(false);
-      setTimeout(
-        () => updateAnnotations(tokens, value, setAnnotations, setCodeHistory, editMode),
-        100
-      );
+      setTimeout(() => {
+        updateAnnotations(tokens, value, setAnnotations, setCodeHistory, editMode);
+      }, 100);
     } else {
       updateAnnotations(tokens, value, setAnnotations, setCodeHistory, editMode);
     }

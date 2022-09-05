@@ -198,7 +198,7 @@ const CloseButton = ({ selected, onClick }: CloseButtonProps) => {
         color: selected ? "white" : "grey",
         position: "absolute",
         left: "calc(50% - 15px)",
-        top: "-20px",
+        top: "-15px",
       }}
       onClick={onClick}
     />

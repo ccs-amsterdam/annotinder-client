@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement, useRef, RefObject, CSSProperties } from "react";
+import React, { useState, useEffect, ReactElement, useRef, RefObject } from "react";
 import { TransitionablePortal } from "semantic-ui-react";
 
 import SelectVariablePage from "./SelectVariablePage";
@@ -173,7 +173,7 @@ const SelectPage = React.memo(
   }
 );
 
-const transition = { transition: "browse", duration: 250 };
+const transition = { transition: "zoom", duration: 100 };
 interface CodeSelectorPopupProps {
   children: ReactElement;
   fullScreenNode: any;
@@ -187,11 +187,6 @@ const CodeSelectorPopup = React.memo(
     const portalref = useRef(null);
 
     useEffect(() => {
-      // When the portal opens, we run a function to make it position nicely.
-      // The setTimeout makes sure this happens after rendering, when the size of the
-      // portal is known
-      setTimeout(() => fitPortalOnScreen(portalref, positionRef), 0);
-
       // When creating an annotation by mouse, the mouseup event immediately triggers the closeOnDocumentClick
       // of the portal. So we disable that listener and do it here manually. We then use the canIClose
       // boolean to ignore the first mouseup event
@@ -204,11 +199,14 @@ const CodeSelectorPopup = React.memo(
       };
     }, [positionRef, open, setOpen]);
 
-    let portalPosition: CSSProperties = { top: 0, right: 0 };
-    if (positionRef?.current) {
-      const bc = positionRef.current.getBoundingClientRect();
-      portalPosition["top"] = Math.max(0, bc.top + 20);
-    }
+    // useEffect(() => {
+    //   // When the portal opens, we run a function to make it position nicely.
+    //   // The setTimeout makes sure this happens after rendering, when the size of the
+    //   // portal is known
+    //   if (!open) return;
+    //   const timer = setTimeout(() => fitPortalOnScreen(portalref, positionRef), 0);
+    //   return () => clearTimeout(timer);
+    // }, [open, positionRef]);
 
     // if this is a small screen, use a portal instead of a popup
     const smallscreen = window.innerWidth < 500;
@@ -222,6 +220,9 @@ const CodeSelectorPopup = React.memo(
         mountOnShow={false}
         open={open}
         closeOnDocumentClick={false}
+        onOpen={() => {
+          setTimeout(() => fitPortalOnScreen(portalref, positionRef), 0);
+        }}
         onClose={(e, d) => {
           setOpen(false);
         }}
@@ -229,7 +230,8 @@ const CodeSelectorPopup = React.memo(
         <div
           ref={portalref}
           style={{
-            ...portalPosition,
+            bottom: 0,
+            right: 0,
             position: "fixed",
             minWidth: smallscreen ? "100%" : "200px",
             maxWidth: "max(100%, 500px)",
@@ -239,6 +241,7 @@ const CodeSelectorPopup = React.memo(
             marginTop: "14px",
             borderRadius: "5px",
             border: "1px solid #136bae",
+            transition: "transform 0ms",
           }}
         >
           {children}
@@ -255,16 +258,23 @@ const fitPortalOnScreen = (
   // move portal up if it doesn't fit on screen
   if (!portalref.current || !positionRef.current) return;
   const portal = portalref.current.getBoundingClientRect();
-  const bottom = portal.top + portal.height;
-  const offsetY = Math.max(0, bottom - window.innerHeight);
+  // const bottom = portal.top + portal.height;
+  // const offsetY = Math.max(0, bottom - window.innerHeight);
 
   // if theres space, move portal left until it centers on the selected word
   const position = positionRef.current.getBoundingClientRect();
+  const y = position.y + 30;
+  const diffY = Math.max(0, portal.y - y);
+  let offsetY = 0;
+  const maxmoveY = portal.y;
+  offsetY = Math.min(diffY, maxmoveY);
+
+  // if theres space, move portal left until it centers on the selected word
   const x = position.x + position.width / 2 - portal.width / 2;
-  const diff = Math.max(0, portal.x - x);
+  const diffX = Math.max(0, portal.x - x);
   let offsetX = 0;
-  const maxmove = portal.x;
-  offsetX = Math.min(diff, maxmove);
+  const maxmoveX = portal.x;
+  offsetX = Math.min(diffX, maxmoveX);
 
   portalref.current.style.transform = `translateY(-${offsetY}px) translateX(-${offsetX}px)`;
 };
