@@ -63,6 +63,7 @@ const AnnotatableImage = React.forwardRef(({ image_field }: AnnotatableImageProp
     >
       <img
         ref={img}
+        draggable={false}
         className="AnnotatableImage"
         onLoad={() => updateImageSize(img, container, setSize, extraspace)}
         data-imagefieldname={image_field.name}
