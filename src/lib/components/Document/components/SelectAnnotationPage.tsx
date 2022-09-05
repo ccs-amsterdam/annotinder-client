@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Popup } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
 import {
@@ -32,8 +32,6 @@ const SelectAnnotationPage = ({
   setOpen,
   variableMap,
 }: SelectAnnotationPageProps) => {
-  const [options, setOptions] = useState(null);
-
   const onButtonSelection = React.useCallback(
     (value, ctrlKey) => {
       if (value.cancel) {
@@ -47,14 +45,18 @@ const SelectAnnotationPage = ({
     [setSpan, setVariable, setOpen]
   );
 
+  const options = useMemo(() => {
+    return getAnnotationOptions(annotations, span, variableMap, tokens);
+  }, [annotations, span, variableMap, tokens]);
+
+  console.log(options);
+
   useEffect(() => {
-    const options = getAnnotationOptions(annotations, span, variableMap, tokens);
-    setOptions(options);
-    if (options.length === 0) setOpen(false);
-    if (options.length === 1) {
+    if (options?.length === 0) setOpen(false);
+    if (options?.length === 1) {
       onButtonSelection(options[0].value, false);
     }
-  }, [annotations, span, variableMap, tokens, onButtonSelection, setOpen]);
+  }, [options, setOpen, onButtonSelection]);
 
   if (variable || !span || options === null) return null;
 

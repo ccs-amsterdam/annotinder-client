@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { VariableValueMap, Variable, VariableMap } from "../../../types";
 
 export default function useVariableMap(
@@ -6,16 +6,9 @@ export default function useVariableMap(
   selectedVariable: string,
   importedCodes: VariableValueMap
 ): [VariableMap, boolean] {
-  const [fullVariableMap, setFullVariableMap] = useState<VariableMap>(null);
-  const [variableMap, setVariableMap] = useState<VariableMap>(null);
-  const [editMode, setEditMode] = useState(false);
-
-  useEffect(() => {
+  const fullVariableMap: VariableMap = useMemo(() => {
     // creates fullVariableMap
-    if (!variables || variables.length === 0) {
-      setFullVariableMap(null);
-      return null;
-    }
+    if (!variables || variables.length === 0) return null;
 
     const vm: any = {};
     for (let variable of variables) {
@@ -28,17 +21,14 @@ export default function useVariableMap(
       vm[variable.name] = { ...variable, codeMap: cm };
     }
 
-    setFullVariableMap(vm);
-  }, [variables, setFullVariableMap]);
+    return vm;
+  }, [variables]);
 
-  useEffect(() => {
+  const variableMap: VariableMap = useMemo(() => {
     // creates the actually used variableMap from the fullVariableMap
     // this lets us select specific variables without recreating full map
     // Here we also add imported variables
-    if (fullVariableMap === null) {
-      setVariableMap(null);
-      return;
-    }
+    if (fullVariableMap === null) return null;
 
     let vmap: VariableMap;
     if (selectedVariable === null || selectedVariable === "EDIT ALL") {
@@ -65,9 +55,12 @@ export default function useVariableMap(
       }
     }
 
-    setVariableMap(vmap);
-    setEditMode(vmap?.[selectedVariable]?.editMode || selectedVariable === "EDIT ALL");
-  }, [importedCodes, fullVariableMap, selectedVariable, setVariableMap, setEditMode]);
+    return vmap;
+  }, [importedCodes, fullVariableMap, selectedVariable]);
+
+  const editMode: boolean = useMemo(() => {
+    return variableMap?.[selectedVariable]?.editMode || selectedVariable === "EDIT ALL";
+  }, [variableMap, selectedVariable]);
 
   if (!selectedVariable) return [null, editMode];
   return [variableMap, editMode];

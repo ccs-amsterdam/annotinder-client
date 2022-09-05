@@ -94,6 +94,7 @@ interface QuestionFormProps {
   nextUnit: () => void;
   setConditionReport: SetState<ConditionReport>;
   swipe: Swipes;
+  setSwipe: SetState<Swipes>;
   startTransition: ({ direction, color }: Transition, nextUnit: boolean) => void;
   blockEvents: boolean;
 }
@@ -107,6 +108,7 @@ const QuestionForm = ({
   nextUnit,
   setConditionReport,
   swipe,
+  setSwipe,
   startTransition,
   blockEvents,
 }: QuestionFormProps) => {
@@ -133,6 +135,13 @@ const QuestionForm = ({
     (items: AnswerItem[], onlySave = false, transition?: Transition): void => {
       // posts results and skips to next question, or next unit if no questions left.
       // If onlySave is true, only write to db without going to next question
+
+      // Swipe is now passed down via a state, so state needs to be reset
+      // before the next question or unit. It would probably be better to
+      // do this via a function, but than this would need to be passed up from
+      // AnswerField. At some point think of this when refactoring
+      setSwipe(null);
+
       processAnswer(
         items,
         onlySave,
@@ -155,6 +164,7 @@ const QuestionForm = ({
       nextUnit,
       setConditionReport,
       unit,
+      setSwipe,
       startTransition,
     ]
   );

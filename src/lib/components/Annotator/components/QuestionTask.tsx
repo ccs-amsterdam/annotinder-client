@@ -189,6 +189,7 @@ const QuestionTask = ({
           nextUnit={nextUnit}
           setConditionReport={setConditionReport}
           swipe={swipe}
+          setSwipe={setSwipe}
           startTransition={startTransition}
           blockEvents={blockEvents}
         >
@@ -352,6 +353,7 @@ const resetStyle = (
 };
 
 const fadeIn = (text: RefObject<HTMLElement>, box: RefObject<HTMLElement>): void => {
+  console.log("fade in");
   if (!text.current) return null;
   box.current.style.transition = `opacity 400ms linear`;
   box.current.style.opacity = "1";

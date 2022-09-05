@@ -260,7 +260,7 @@ const AnnotationPopup = React.memo(
       if (!tokens?.[currentToken.i]?.ref || !annotations?.[tokens[currentToken.i].index]) {
         setContent(null);
         setRefresh(0);
-        return null;
+        return;
       }
 
       const tokenAnnotations = annotations[tokens[currentToken.i].index];

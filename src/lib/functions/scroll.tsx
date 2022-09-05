@@ -30,8 +30,6 @@ export const keepInView = (parent: HTMLElement, child: HTMLElement) => {
   const needUp = clientTop - parentTop < 50;
   const needDown = clientTop > parentTop + parentHeight * 0.9;
 
-  console.log(parentBounding, clientBounding);
-
   //if (needUp > 0) parent.scrollTop = parent.scrollTop + needUp;
   if (needDown) {
     let scrollTo = parent.scrollTop + clientTop - (parentHeight * 0.9 + parentTop);

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, ReactElement, useRef } from "react";
-import { Popup, Portal, Segment } from "semantic-ui-react";
+import React, { useState, useEffect, ReactElement, useRef, RefObject, CSSProperties } from "react";
+import { TransitionablePortal } from "semantic-ui-react";
 
 import SelectVariablePage from "./SelectVariablePage";
 import SelectAnnotationPage from "./SelectAnnotationPage";
@@ -173,7 +173,7 @@ const SelectPage = React.memo(
   }
 );
 
-//const transition = { transition: "browse", duration: 1000 };
+const transition = { transition: "browse", duration: 250 };
 interface CodeSelectorPopupProps {
   children: ReactElement;
   fullScreenNode: any;
@@ -184,101 +184,89 @@ interface CodeSelectorPopupProps {
 
 const CodeSelectorPopup = React.memo(
   ({ children, fullScreenNode, open, setOpen, positionRef }: CodeSelectorPopupProps) => {
-    const popupMargin = "5px";
-    const canIClose = useRef(false);
-    let position = "top left";
-    let portalposition = 0;
-    let maxHeight = "100vh";
+    const portalref = useRef(null);
 
     useEffect(() => {
-      // Due to click propagation when opening the popup is triggered, the popup can
-      // immediately call onClose as the click reaches the document root. Here we
-      // use a ref to ignore the first call to onClose.
-      canIClose.current = false;
-    }, [open]);
+      // When the portal opens, we run a function to make it position nicely.
+      // The setTimeout makes sure this happens after rendering, when the size of the
+      // portal is known
+      setTimeout(() => fitPortalOnScreen(portalref, positionRef), 0);
 
+      // When creating an annotation by mouse, the mouseup event immediately triggers the closeOnDocumentClick
+      // of the portal. So we disable that listener and do it here manually. We then use the canIClose
+      // boolean to ignore the first mouseup event
+      let canIClose = false;
+      const closePortal = () => (canIClose ? setOpen(false) : null);
+      canIClose = true;
+      document.addEventListener("mouseup", closePortal);
+      return () => {
+        document.removeEventListener("mouseup", closePortal);
+      };
+    }, [positionRef, open, setOpen]);
+
+    let portalPosition: CSSProperties = { top: 0, right: 0 };
     if (positionRef?.current) {
-      // determine popup position and maxHeight/maxWidth
       const bc = positionRef.current.getBoundingClientRect();
-      const topSpace = bc.top / window.innerHeight;
-      const bottomSpace = (window.innerHeight - bc.bottom) / window.innerHeight;
-
-      if (topSpace > bottomSpace) {
-        position = "top";
-        maxHeight = `calc(${topSpace * 100}vh - ${popupMargin})`;
-      } else {
-        position = "bottom";
-        maxHeight = `calc(${bottomSpace * 100}vh - ${popupMargin})`;
-      }
-      const leftSpace = bc.left / window.innerWidth;
-      const rightSpace = (window.innerWidth - bc.right) / window.innerWidth;
-      position = rightSpace > leftSpace ? position + " left" : position + " right";
-
-      portalposition = Math.max(0, bc.top + 20);
+      portalPosition["top"] = Math.max(0, bc.top + 20);
     }
 
     // if this is a small screen, use a portal instead of a popup
-    const smallscreen = window.innerWidth < 768;
-
-    if (smallscreen) {
-      return (
-        // A transitionableportal would look cool, but a mouseclick to trigger the popup/portal
-        // propagates to the document and immediately closes it and I somehow can't stopt it (hence the silly canIClose check).
-        <Portal
-          mountNode={fullScreenNode || undefined}
-          mountOnShow={false}
-          open={open}
-          onClose={(e, d) => {
-            if (canIClose.current) setOpen(false);
-            canIClose.current = true;
-          }}
-        >
-          {/* TODO: this used to be a segment, but somehow ts doesn't like those either. But maybe this broke the portal */}
-          <Segment
-            style={{
-              top: portalposition,
-              position: "fixed",
-              width: "100%",
-              zIndex: 1000,
-              background: "#dfeffb",
-              border: "1px solid #136bae",
-            }}
-          >
-            {children}
-          </Segment>
-        </Portal>
-      );
-    }
+    const smallscreen = window.innerWidth < 500;
 
     return (
-      <Popup
+      // A transitionableportal would look cool, but a mouseclick to trigger the popup/portal
+      // propagates to the document and immediately closes it and I somehow can't stopt it (hence the silly canIClose check).
+      <TransitionablePortal
+        transition={transition}
         mountNode={fullScreenNode || undefined}
-        context={positionRef}
-        basic
-        wide="very"
-        position={position as "top left" | "top right" | "bottom left" | "bottom right"}
-        hoverable
+        mountOnShow={false}
         open={open}
-        mouseLeaveDelay={10000000} // just don't use mouse leave
+        closeOnDocumentClick={false}
         onClose={(e, d) => {
-          if (canIClose.current) setOpen(false);
-          canIClose.current = true;
-        }}
-        style={{
-          margin: popupMargin,
-          padding: "0px",
-          background: "#dfeffb",
-          border: "1px solid #136bae",
-          //backdropFilter: "blur(3px)",
-          minWidth: "15em",
-          maxHeight,
-          overflow: "visible",
+          setOpen(false);
         }}
       >
-        <div style={{ margin: "5px", border: "0px", position: "relative" }}>{children}</div>
-      </Popup>
+        <div
+          ref={portalref}
+          style={{
+            ...portalPosition,
+            position: "fixed",
+            minWidth: smallscreen ? "100%" : "200px",
+            maxWidth: "max(100%, 500px)",
+            zIndex: 1000,
+            background: "#dfeffb",
+            padding: "10px",
+            marginTop: "14px",
+            borderRadius: "5px",
+            border: "1px solid #136bae",
+          }}
+        >
+          {children}
+        </div>
+      </TransitionablePortal>
     );
   }
 );
+
+const fitPortalOnScreen = (
+  portalref: RefObject<HTMLElement>,
+  positionRef: RefObject<HTMLElement>
+) => {
+  // move portal up if it doesn't fit on screen
+  if (!portalref.current || !positionRef.current) return;
+  const portal = portalref.current.getBoundingClientRect();
+  const bottom = portal.top + portal.height;
+  const offsetY = Math.max(0, bottom - window.innerHeight);
+
+  // if theres space, move portal left until it centers on the selected word
+  const position = positionRef.current.getBoundingClientRect();
+  const x = position.x + position.width / 2 - portal.width / 2;
+  const diff = Math.max(0, portal.x - x);
+  let offsetX = 0;
+  const maxmove = portal.x;
+  offsetX = Math.min(diff, maxmove);
+
+  portalref.current.style.transform = `translateY(-${offsetY}px) translateX(-${offsetX}px)`;
+};
 
 export default useCodeSelector;

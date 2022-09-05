@@ -99,9 +99,18 @@ const NewCodePage = ({
       setOpen(false);
       return;
     }
-    updateAnnotations(tokens, value, setAnnotations, setCodeHistory, editMode);
 
-    if (!variableMap?.[variable]?.multiple && !ctrlKey) setOpen(false);
+    if (!variableMap?.[variable]?.multiple && !ctrlKey) {
+      // if this closes the popup, wait 100ms for the portal to close so that users dont
+      // see the portal change (because the annotations change)
+      setOpen(false);
+      setTimeout(
+        () => updateAnnotations(tokens, value, setAnnotations, setCodeHistory, editMode),
+        100
+      );
+    } else {
+      updateAnnotations(tokens, value, setAnnotations, setCodeHistory, editMode);
+    }
   };
 
   const autoCode = (codeMap: CodeMap, existing: Annotation[]): void => {
@@ -286,7 +295,7 @@ const NewCodePage = ({
   );
 };
 
-const getTextSnippet = (tokens: Token[], span: Span, maxlength = 8) => {
+const getTextSnippet = (tokens: Token[], span: Span, maxlength = 12) => {
   let text = tokens.slice(span[0], span[1] + 1).map((t, i) => {
     if (i === 0) return t.text + t.post;
     if (i === span[1] - span[0]) return t.pre + t.text;
@@ -295,7 +304,7 @@ const getTextSnippet = (tokens: Token[], span: Span, maxlength = 8) => {
   if (text.length > maxlength)
     text = [
       text.slice(0, Math.floor(maxlength / 2)).join(""),
-      " ... ",
+      " ...... ",
       text.slice(-Math.floor(maxlength / 2)).join(""),
     ];
   return text.join("");

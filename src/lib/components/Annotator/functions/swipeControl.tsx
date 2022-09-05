@@ -108,7 +108,6 @@ const swipeControl = (
         let dir = deltaX > 0 ? "right" : "up";
         dir = deltaX < 0 ? "left" : dir;
         setSwipe(dir);
-        setSwipe(null);
       }
     },
     ...swipeConfig,

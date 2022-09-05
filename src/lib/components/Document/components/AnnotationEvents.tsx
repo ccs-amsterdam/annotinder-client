@@ -137,8 +137,6 @@ export const AnnotationEvents = ({
     setTokenSelection,
   ]);
 
-  //if (!tokens || tokens.length === 0) return null;
-
   // this prevents rendering the components that manage the key and mouse events
   if (eventsBlocked) return null;
 
@@ -414,8 +412,9 @@ const TokenMouseEvents = ({
       if (event.which !== 1 && event.which !== 0) return null;
 
       // can these be disabled? Does this solve the mac issue? (slider getting stuck on click)
-      //event.preventDefault();
-      //event.stopPropagation();
+      console.log("release");
+      event.preventDefault();
+      event.stopPropagation();
 
       const currentNode = storeMouseTokenSelection(getToken(tokens, event));
       window.getSelection().empty();
@@ -440,17 +439,17 @@ const TokenMouseEvents = ({
   );
 
   useEffect(() => {
-    window.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-    window.addEventListener("touchstart", onTouchDown);
-    window.addEventListener("touchend", onTouchUp);
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+    document.addEventListener("touchstart", onTouchDown);
+    document.addEventListener("touchend", onTouchUp);
     return () => {
-      window.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-      window.removeEventListener("touchstart", onTouchDown);
-      window.removeEventListener("touchend", onTouchUp);
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+      document.removeEventListener("touchstart", onTouchDown);
+      document.removeEventListener("touchend", onTouchUp);
     };
   }, [onMouseDown, onMouseMove, onMouseUp, onTouchDown, onTouchUp]);
 

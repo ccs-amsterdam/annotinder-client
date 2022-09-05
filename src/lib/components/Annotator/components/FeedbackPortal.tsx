@@ -21,9 +21,6 @@ const FeedbackPortal = ({
     [conditionReport, variable]
   );
 
-  console.log(conditionReport);
-  console.log(action);
-
   return (
     <>
       <RetryPortal

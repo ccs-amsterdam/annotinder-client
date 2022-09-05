@@ -50,10 +50,7 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
 
   useEffect(() => {
     if (variable === null) setVariable(variableNames[0]);
-    if (!variables || variables.length === 0) {
-      setVariable(null);
-      return null;
-    }
+    if (!variables || variables.length === 0) setVariable(null);
   }, [variable, variables, setVariable, variableNames]);
 
   if (!variables) return null;
@@ -125,10 +122,10 @@ const VariableMenu = ({ variable, setVariable, variables, variableNames }: Varia
   };
 
   useEffect(() => {
-    if (!variables) return null;
-    if (variables.length === 1) {
+    if (!variables) return;
+    if (variable && variables.length === 1) {
       setVariable(variables[0].name);
-      return null;
+      return;
     }
     if (!variableNames.includes(variable)) setVariable(variableNames[0]);
   }, [variables, setVariable, variableNames, variable]);

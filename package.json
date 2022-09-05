@@ -7,7 +7,7 @@
     "react",
     "annotation"
   ],
-  "version": "0.3.6",
+  "version": "0.3.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/ccs-amsterdam/annotinder-client"
@@ -31,8 +31,8 @@
     "compromise-paragraphs": "^0.0.5",
     "qrcode.react": "^3.0.1",
     "randomcolor": "^0.6.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-full-screen": "^1.1.0",
     "react-markdown": "^8.0.3",
     "react-papaparse": "^4.0.2",
