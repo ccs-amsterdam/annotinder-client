@@ -29,11 +29,18 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
     let allOptions = [cancelOption, ...options];
     for (let option of allOptions) option.ref = React.createRef();
     setAllOptions(allOptions);
+    setSelected(1);
   }, [options, setAllOptions]);
 
   const onKeydown = React.useCallback(
     (event) => {
       const nbuttons = allOptions.length;
+      // if key is a number that indexes an option, select it
+      if (!isNaN(event.key) && Number(event.key) <= nbuttons) {
+        event.preventDefault();
+        let value = allOptions[Number(event.key)].value;
+        onSelect(value, event.ctrlKey || event.altKey);
+      }
 
       // any arrowkey
       if (arrowKeys.includes(event.key)) {
@@ -92,8 +99,9 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
       <Ref key={option.label + "_" + i} innerRef={option.ref}>
         <Button
           style={{
+            position: "relative",
             flex: `0.2 1 auto`,
-            padding: "4px 4px",
+            padding: "5px",
             background: bgColor,
             color: textColor,
             border: "3px solid",
@@ -105,8 +113,38 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
           compact
           size="mini"
           onMouseOver={() => setSelected(i)}
-          onClick={(e, d) => onSelect(d.value, e.ctrlKey || e.altKey)}
+          onClick={(e, d) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onSelect(d.value, e.ctrlKey || e.altKey);
+          }}
         >
+          {/* {i <= 9 ? (
+            <div
+              style={{
+                position: "absolute",
+                display: "flex",
+                width: "100%",
+                left: "0",
+                top: "-10px",
+              }}
+            >
+              <div
+                style={{
+                  margin: "auto",
+                  color: "white",
+                  background: "black",
+                  height: "15px",
+                  width: "15px",
+                  fontSize: "10px",
+                  border: "2px solid white",
+                  borderRadius: "50%",
+                }}
+              >
+                {i}
+              </div>
+            </div>
+          ) : null} */}
           {option.tag ? (
             <span
               style={{

@@ -22,6 +22,7 @@ export default function SelectVariablePage({
   variableMap,
 }: SelectVariablePageProps) {
   const getOptions = (): CodeSelectorOption[] => {
+    if (!span) return [];
     let variables = Object.keys(variableMap);
     const variableColors: Record<string, string> = {};
     for (let v of variables) {

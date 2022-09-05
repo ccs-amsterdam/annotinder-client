@@ -43,12 +43,14 @@ interface RetryPortalProps {
   fullScreenNode: FullScreenNode;
 }
 
+const retryTransition = { animation: "slide down", duration: 300 };
+
 const RetryPortal = ({ action, setConditionReport, fullScreenNode }: RetryPortalProps) => {
   return (
     <TransitionablePortal
       key="retry"
       closeOnDocumentClick={false}
-      transition={{ animation: "fly down", duration: 600 }}
+      transition={retryTransition}
       mountNode={fullScreenNode || undefined}
       onClose={() => {
         setConditionReport({ evaluation: {}, damage: {} });
@@ -106,6 +108,8 @@ interface ApplaudPortalProps {
   fullScreenNode: FullScreenNode;
 }
 
+const applaudTransition = { duration: 200, animation: "scale" };
+
 const ApplaudPortal = ({ action, reportSuccess, fullScreenNode }: ApplaudPortalProps) => {
   const [open, setOpen] = useState(false);
 
@@ -118,7 +122,7 @@ const ApplaudPortal = ({ action, reportSuccess, fullScreenNode }: ApplaudPortalP
     <TransitionablePortal
       key="applaud"
       closeOnDocumentClick={false}
-      transition={{ duration: 200, animation: "scale" }}
+      transition={applaudTransition}
       mountNode={fullScreenNode || undefined}
       open={open && reportSuccess}
       style={{ zIndex: 10000 }}

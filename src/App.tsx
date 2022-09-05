@@ -17,7 +17,6 @@ const ResponsiveContainer = styled.div<{ height: number; width: number }>`
 // just for quick testing
 const App = () => {
   const size = useWindowSize();
-  console.log(process.env);
   return (
     <Router basename={process.env.REACT_APP_PUBLIC_URL || process.env.PUBLIC_URL}>
       <ResponsiveContainer height={size.height - 1} width={size.width - 1}>

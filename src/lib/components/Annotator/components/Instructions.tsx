@@ -36,18 +36,19 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
       mountNode={fullScreenNode || undefined}
       onClose={() => setOpen(false)}
       open={open}
-      style={{ zIndex: 10000 }}
+      style={{ zIndex: 800 }}
       trigger={
         <Button
           size="huge"
           icon="help circle"
           style={{
+            position: "relative",
             background: "transparent",
             cursor: "pointer",
             color: "white",
             padding: "4px 5px 4px 5px",
             maxWidth: "40px",
-            zIndex: 1000,
+            zIndex: 800,
           }}
           onClick={() => setOpen(true)}
         />
@@ -58,9 +59,9 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
         mountNode={fullScreenNode || undefined}
         open={true}
         onClose={() => setOpen(false)}
-        style={{ zIndex: 10000 }}
+        style={{ zIndex: 900 }}
       >
-        <Modal.Content scrolling style={{ zIndex: 10000 }}>
+        <Modal.Content scrolling style={{ zIndex: 900 }}>
           <Markdown>{instruction}</Markdown>
         </Modal.Content>
       </Modal>

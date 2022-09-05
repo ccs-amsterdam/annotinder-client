@@ -1,7 +1,5 @@
-import nlp from "compromise";
+import nlp from "compromise/one";
 import { TextField, Token, RawToken, RawTokenColumn } from "../types";
-import paragraphs from "compromise-paragraphs";
-nlp.extend(paragraphs);
 
 /**
  * Tokenize a document, but allowing for multiple text fields to be concatenated as different fields.
@@ -42,45 +40,37 @@ export const parseTokens = (text_fields: TextField[]): Token[] => {
     }
 
     const tokenized = nlp.tokenize(text) as any; // circumvent some typescript issues
-    t = tokenized.paragraphs().json({ offset: true });
-    // map to single array.
-    for (let par = 0; par < t.length; par++) {
-      for (let sent = 0; sent < t[par].sentences.length; sent++) {
-        for (let sent2 = 0; sent2 < t[par].sentences[sent].length; sent2++) {
-          // for some reason there's an extra array layer between sents and pars...
-          // I've only found cases where lenght is 1, but I'll map it just in case
-          for (let term = 0; term < t[par].sentences[sent][sent2].terms.length; term++) {
-            token = t[par].sentences[sent][sent2].terms[term];
+    t = tokenized.json({ offset: true });
 
-            if (
-              text_field.unit_start != null &&
-              token.offset.start + offset >= text_field.unit_start
-            )
-              unit_started = true;
-            if (text_field.unit_end != null && token.offset.start + offset > text_field.unit_end)
-              unit_ended = true;
+    for (let sent = 0; sent < t.length; sent++) {
+      for (let term = 0; term < t[sent].terms.length; term++) {
+        token = t[sent].terms[term];
 
-            const tokenobj: Token = {
-              field: field,
-              offset: token.offset.start + offset,
-              length: token.offset.length,
-              paragraph: paragraph,
-              sentence: sentence,
-              index: tokenIndex,
-              text: token.text,
-              pre: token.pre,
-              post: token.post,
-              codingUnit: unit_started && !unit_ended,
-              annotations: [],
-            };
-            tokens.push(tokenobj);
-            tokenIndex++;
-          }
-        }
-        sentence++;
+        if (text_field.unit_start != null && token.offset.start + offset >= text_field.unit_start)
+          unit_started = true;
+        if (text_field.unit_end != null && token.offset.start + offset > text_field.unit_end)
+          unit_ended = true;
+
+        const tokenobj: Token = {
+          field: field,
+          offset: token.offset.start + offset,
+          length: token.offset.length,
+          paragraph: paragraph,
+          sentence: sentence,
+          index: tokenIndex,
+          text: token.text,
+          pre: token.pre,
+          post: token.post,
+          codingUnit: unit_started && !unit_ended,
+          annotations: [],
+        };
+        tokens.push(tokenobj);
+        tokenIndex++;
+        if (/(?:\r?\n)+/.test(token.post)) paragraph++;
       }
-      paragraph++;
+      sentence++;
     }
+    paragraph++;
 
     if (text_field.unit_end != null) unit_ended = true;
   }

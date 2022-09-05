@@ -100,15 +100,9 @@ const NewCodePage = ({
       return;
     }
 
+    updateAnnotations(tokens, value, setAnnotations, setCodeHistory, editMode);
     if (!variableMap?.[variable]?.multiple && !ctrlKey) {
-      // if this closes the popup, wait 100ms for the portal to close so that users dont
-      // see the portal change (because the annotations change)
       setOpen(false);
-      setTimeout(() => {
-        updateAnnotations(tokens, value, setAnnotations, setCodeHistory, editMode);
-      }, 100);
-    } else {
-      updateAnnotations(tokens, value, setAnnotations, setCodeHistory, editMode);
     }
   };
 
@@ -137,11 +131,6 @@ const NewCodePage = ({
     autoCode(codeMap, existing);
 
     for (let code of Object.keys(codeMap)) {
-      if (tokenAnnotations[variable + "|" + code]) {
-        const existingSpan = tokenAnnotations[variable + "|" + code].span;
-        if (existingSpan[0] === span?.[0] && existingSpan[1] === span?.[1]) continue;
-      }
-
       if (settings && settings.buttonMode === "all")
         buttonOptions.push({
           label: code,

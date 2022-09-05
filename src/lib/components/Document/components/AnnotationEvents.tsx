@@ -412,7 +412,6 @@ const TokenMouseEvents = ({
       if (event.which !== 1 && event.which !== 0) return null;
 
       // can these be disabled? Does this solve the mac issue? (slider getting stuck on click)
-      console.log("release");
       event.preventDefault();
       event.stopPropagation();
 

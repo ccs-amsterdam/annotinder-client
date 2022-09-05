@@ -1,5 +1,4 @@
-import React, { useState, useEffect, ReactElement, useRef, RefObject } from "react";
-import { TransitionablePortal } from "semantic-ui-react";
+import React, { useState, useEffect, ReactElement, useRef } from "react";
 
 import SelectVariablePage from "./SelectVariablePage";
 import SelectAnnotationPage from "./SelectAnnotationPage";
@@ -81,7 +80,7 @@ const useCodeSelector = (
   if (!variables) return [null, null, true];
 
   let popup = (
-    <CodeSelectorPopup
+    <CodeSelectorPortal
       fullScreenNode={fullScreenNode}
       open={open}
       setOpen={setOpen}
@@ -113,7 +112,7 @@ const useCodeSelector = (
           setCodeHistory={setCodeHistory}
         />
       </>
-    </CodeSelectorPopup>
+    </CodeSelectorPortal>
   );
 
   if (!variableMap || !tokens) popup = null;
@@ -173,8 +172,7 @@ const SelectPage = React.memo(
   }
 );
 
-const transition = { transition: "zoom", duration: 100 };
-interface CodeSelectorPopupProps {
+interface CodeSelectorPortalProps {
   children: ReactElement;
   fullScreenNode: any;
   open: boolean;
@@ -182,101 +180,98 @@ interface CodeSelectorPopupProps {
   positionRef: any;
 }
 
-const CodeSelectorPopup = React.memo(
-  ({ children, fullScreenNode, open, setOpen, positionRef }: CodeSelectorPopupProps) => {
+const CodeSelectorPortal = React.memo(
+  ({ children, fullScreenNode, open, setOpen, positionRef }: CodeSelectorPortalProps) => {
     const portalref = useRef(null);
 
     useEffect(() => {
-      // When creating an annotation by mouse, the mouseup event immediately triggers the closeOnDocumentClick
-      // of the portal. So we disable that listener and do it here manually. We then use the canIClose
-      // boolean to ignore the first mouseup event
-      let canIClose = false;
-      const closePortal = () => (canIClose ? setOpen(false) : null);
-      canIClose = true;
+      // close popup on document click
+      const closePortal = (e: any) => {
+        if (portalref.current && !portalref.current.contains(e.target)) {
+          setOpen(false);
+        }
+      };
       document.addEventListener("mouseup", closePortal);
       return () => {
         document.removeEventListener("mouseup", closePortal);
       };
     }, [positionRef, open, setOpen]);
 
-    // useEffect(() => {
-    //   // When the portal opens, we run a function to make it position nicely.
-    //   // The setTimeout makes sure this happens after rendering, when the size of the
-    //   // portal is known
-    //   if (!open) return;
-    //   const timer = setTimeout(() => fitPortalOnScreen(portalref, positionRef), 0);
-    //   return () => clearTimeout(timer);
-    // }, [open, positionRef]);
+    useEffect(() => {
+      if (!open || !portalref.current) return;
+      setTimeout(() => fitPortalOnScreen(portalref.current, positionRef.current), 10);
+
+      // this isn't pretty, but we can't know when the portal reaches its full size.
+      // Supposedly this should also be possible with the resizeObserver API, but not
+      // sure that's sufficiently supported yet (especially considering RStudio)
+      let portalWidth = portalref.current.clientWidth;
+      const interval = setInterval(() => {
+        if (portalref.current.clientWidth === portalWidth) return;
+        fitPortalOnScreen(portalref.current, positionRef.current);
+        portalWidth = portalref.current.clientWidth;
+      }, 50);
+      return () => clearInterval(interval);
+    }, [open, positionRef]);
 
     // if this is a small screen, use a portal instead of a popup
     const smallscreen = window.innerWidth < 500;
 
+    if (!open) return null;
     return (
-      // A transitionableportal would look cool, but a mouseclick to trigger the popup/portal
-      // propagates to the document and immediately closes it and I somehow can't stopt it (hence the silly canIClose check).
-      <TransitionablePortal
-        transition={transition}
-        mountNode={fullScreenNode || undefined}
-        mountOnShow={false}
-        open={open}
-        closeOnDocumentClick={false}
-        onOpen={() => {
-          setTimeout(() => fitPortalOnScreen(portalref, positionRef), 0);
-        }}
-        onClose={(e, d) => {
-          setOpen(false);
+      <div
+        ref={portalref}
+        style={{
+          left: 0,
+          top: 0,
+          position: "fixed",
+          minWidth: smallscreen ? "100%" : "200px",
+          maxWidth: "min(100%, 500px)",
+          zIndex: 1000,
+          background: "#dfeffb",
+          padding: "10px",
+          marginTop: "14px",
+          borderRadius: "5px",
+          border: "1px solid #136bae",
+          opacity: "0",
+          transition: "opacity 250ms",
         }}
       >
-        <div
-          ref={portalref}
-          style={{
-            bottom: 0,
-            right: 0,
-            position: "fixed",
-            minWidth: smallscreen ? "100%" : "200px",
-            maxWidth: "max(100%, 500px)",
-            zIndex: 1000,
-            background: "#dfeffb",
-            padding: "10px",
-            marginTop: "14px",
-            borderRadius: "5px",
-            border: "1px solid #136bae",
-            transition: "transform 0ms",
-          }}
-        >
-          {children}
-        </div>
-      </TransitionablePortal>
+        {children}
+      </div>
     );
   }
 );
 
-const fitPortalOnScreen = (
-  portalref: RefObject<HTMLElement>,
-  positionRef: RefObject<HTMLElement>
-) => {
+const fitPortalOnScreen = (portalEl: HTMLElement, positionEl: HTMLElement) => {
   // move portal up if it doesn't fit on screen
-  if (!portalref.current || !positionRef.current) return;
-  const portal = portalref.current.getBoundingClientRect();
-  // const bottom = portal.top + portal.height;
-  // const offsetY = Math.max(0, bottom - window.innerHeight);
+  if (!portalEl || !positionEl) return;
+  const portal = portalEl.getBoundingClientRect();
+  const position = positionEl.getBoundingClientRect();
+  const windowHeight = document.documentElement.clientHeight;
+  const windowWidth = document.documentElement.clientWidth;
 
-  // if theres space, move portal left until it centers on the selected word
-  const position = positionRef.current.getBoundingClientRect();
-  const y = position.y + 30;
-  const diffY = Math.max(0, portal.y - y);
-  let offsetY = 0;
-  const maxmoveY = portal.y;
-  offsetY = Math.min(diffY, maxmoveY);
+  console.log(portal.height);
+  let up = position.y + 30;
+  if (up < 0) {
+    up = 0;
+  } else {
+    const bottom = up + 30 + portal.height;
+    const offscreen = bottom - windowHeight;
+    if (offscreen > 0) up -= offscreen;
+  }
 
-  // if theres space, move portal left until it centers on the selected word
-  const x = position.x + position.width / 2 - portal.width / 2;
-  const diffX = Math.max(0, portal.x - x);
-  let offsetX = 0;
-  const maxmoveX = portal.x;
-  offsetX = Math.min(diffX, maxmoveX);
+  let left = position.x + position.width / 2 - portal.width / 2;
+  if (left < 0) {
+    left = 0;
+  } else {
+    const right = left + portal.width;
+    const offscreen = right - windowWidth;
+    if (offscreen > 0) left -= offscreen;
+  }
 
-  portalref.current.style.transform = `translateY(-${offsetY}px) translateX(-${offsetX}px)`;
+  portalEl.style.opacity = "1";
+  portalEl.style.left = `${left}px`;
+  portalEl.style.top = `${up}px`;
 };
 
 export default useCodeSelector;

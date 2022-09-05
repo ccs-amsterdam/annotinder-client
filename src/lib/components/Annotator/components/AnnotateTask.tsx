@@ -264,7 +264,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
             color: "white",
             padding: "4px 5px 4px 5px",
             maxWidth: "30px",
-            zIndex: 1000,
+            zIndex: 900,
           }}
         />
       }
