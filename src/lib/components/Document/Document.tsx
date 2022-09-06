@@ -48,6 +48,8 @@ interface DocumentProps {
   showAnnotations?: string[];
   /** Names of fields to focus on */
   focus?: string[];
+  /** Should the text be centered? */
+  centered?: boolean;
   /** CSSProperties for the body container  */
   bodyStyle?: CSSProperties;
 }
@@ -68,6 +70,7 @@ const Document = ({
   fullScreenNode,
   showAnnotations,
   focus,
+  centered,
   bodyStyle,
 }: DocumentProps) => {
   const safetyCheck = useRef(null); // ensures only new annotations for the current unit are passed to onChangeAnnotations
@@ -154,6 +157,7 @@ const Document = ({
         setReady={setTokensReady}
         bodyStyle={bodyStyle}
         focus={focus}
+        centered={centered}
       />
 
       <AnnotateNavigation

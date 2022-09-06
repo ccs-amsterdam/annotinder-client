@@ -50,8 +50,8 @@
       ],
       "name": "issue",
       "instruction": "Select an issue from the CAP codebook",
-      "searchBox": false,
-      "buttonMode": "all",
+      "searchBox": true,
+      "buttonMode": "recent",
       "multiple": false,
       "editMode": false
     }

@@ -31,6 +31,7 @@ interface BodyProps {
   setReady: SetState<number>;
   bodyStyle: CSSProperties;
   focus: string[];
+  centered: boolean;
 }
 
 const Body = ({
@@ -43,6 +44,7 @@ const Body = ({
   setReady,
   bodyStyle = {},
   focus,
+  centered,
 }: BodyProps) => {
   const [text, setText] = useState<RenderedText>({});
   const [images, setImages] = useState<RenderedImages>({});
@@ -106,7 +108,7 @@ const Body = ({
                 gridTemplateRows: grid?.rows,
                 gridTemplateColumns: grid?.columns,
                 gridTemplateAreas: grid?.areas,
-                margin: "auto",
+                margin: centered ? "auto" : "",
                 paddingTop: "0px",
                 paddingBottom: "0px",
                 width: "100%",

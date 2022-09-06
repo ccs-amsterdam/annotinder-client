@@ -171,6 +171,7 @@ const QuestionTask = ({
               showAnnotations={codebook?.questions?.[questionIndex]?.showAnnotations || []}
               fullScreenNode={fullScreenNode}
               focus={codebook?.questions?.[questionIndex]?.fields}
+              centered
             />
           </Content>
         </SwipeableBox>

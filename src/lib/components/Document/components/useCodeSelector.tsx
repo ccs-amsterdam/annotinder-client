@@ -224,8 +224,8 @@ const CodeSelectorPortal = React.memo(
           left: 0,
           top: 0,
           position: "fixed",
-          minWidth: smallscreen ? "100%" : "200px",
-          maxWidth: "min(100%, 500px)",
+          minWidth: smallscreen ? "100%" : "300px",
+          maxWidth: "min(100%, 600px)",
           zIndex: 1000,
           background: "#dfeffb",
           padding: "10px",
@@ -233,7 +233,7 @@ const CodeSelectorPortal = React.memo(
           borderRadius: "5px",
           border: "1px solid #136bae",
           opacity: "0",
-          transition: "opacity 250ms",
+          transition: "opacity 250ms, width 250ms, padding 250ms, left 250ms",
         }}
       >
         {children}
@@ -250,7 +250,6 @@ const fitPortalOnScreen = (portalEl: HTMLElement, positionEl: HTMLElement) => {
   const windowHeight = document.documentElement.clientHeight;
   const windowWidth = document.documentElement.clientWidth;
 
-  console.log(portal.height);
   let up = position.y + 30;
   if (up < 0) {
     up = 0;
