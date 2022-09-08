@@ -50,11 +50,13 @@ const JobController = ({
     >
       <div
         style={{
-          height: "35px",
+          height: "40px",
           width: "100%",
-          padding: "0px 5px 0px 5px",
+          padding: "3px 5px 0px 5px",
           display: "flex",
           justifyContent: "space-between",
+          background: "#1B1C1D",
+          borderBottom: "3px double white",
         }}
       >
         <div
@@ -86,7 +88,7 @@ const JobController = ({
           </div>
         </div>
       </div>
-      <div style={{ height: "calc(100% - 35px)" }}>
+      <div style={{ height: "calc(100% - 40px)" }}>
         {unitIndex < jobServer?.progress?.n_total ? children : <Finished jobServer={jobServer} />}
       </div>
     </div>
@@ -110,10 +112,14 @@ const UserButton = ({ fullScreenNode, jobServer }: UserButtonProps) => {
       on="click"
       trigger={
         <Button
-          basic
           icon="cancel"
           size="massive"
-          style={{ cursor: "pointer", padding: "4px 1px" }}
+          style={{
+            background: "transparent",
+            color: "white",
+            cursor: "pointer",
+            padding: "4px 1px",
+          }}
         />
       }
     >

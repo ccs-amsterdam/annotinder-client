@@ -77,18 +77,12 @@ const Document = ({
   const [variable, setVariable] = useState(null);
 
   const unitStates = useUnit(unit, safetyCheck, returnTokens, onChangeAnnotations);
-
   const [variableMap, editMode] = useVariableMap(variables, variable, unitStates.importedCodes);
   const [codeSelector, triggerCodeSelector, codeSelectorOpen] = useCodeSelector(
-    unitStates.doc.tokens,
+    unitStates,
     variableMap,
     editMode,
-    variables,
-    unitStates.spanAnnotations,
-    unitStates.setSpanAnnotations,
-    unitStates.codeHistory,
-    unitStates.setCodeHistory,
-    fullScreenNode
+    variables
   );
 
   useEffect(() => {

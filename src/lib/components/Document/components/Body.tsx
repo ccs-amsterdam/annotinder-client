@@ -69,7 +69,7 @@ const Body = ({
     setText(renderText(tokens, text_fields, containerRef, fieldRefs));
     setImages(renderImages(image_fields, containerRef));
     setMarkdown(renderMarkdown(markdown_fields));
-    onReady();
+    setTimeout(() => onReady(), 50);
   }, [tokens, text_fields, image_fields, markdown_fields, onReady, fieldRefs]);
 
   if (tokens === null) return null;

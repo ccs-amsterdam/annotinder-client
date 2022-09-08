@@ -4,7 +4,13 @@ import { SetState } from "../../../types";
 
 const sliderColor = "#d3dfe9";
 const progressColor = "#7fb9eb";
-const iconStyle = { cursor: "pointer", height: "24px", lineHeight: "24px", fontSize: "20px" };
+const iconStyle = {
+  cursor: "pointer",
+  height: "24px",
+  lineHeight: "24px",
+  fontSize: "20px",
+  color: "white",
+};
 //const iconStyleHidden = { color: "white" };
 
 interface IndexControllerProps {
@@ -39,9 +45,11 @@ const IndexController = ({
   }, [index, n, setActivePage]);
 
   const updatePage = (page: number) => {
-    setIndex(page - 1);
-    setActivePage(page);
-    setSliderPage(page);
+    if (page !== activePage) {
+      setIndex(page - 1);
+      setActivePage(page);
+      setSliderPage(page);
+    }
   };
 
   const updateSliderPage = (e: any) => {
@@ -77,6 +85,7 @@ const IndexController = ({
         leftMargin: "0px",
         borderRadius: "0",
         fontSize: "1em",
+        background: "transparent",
       }}
     >
       <div style={{ marginRight: "3px", display: "flex" }}>
@@ -101,7 +110,7 @@ const IndexController = ({
           style={{
             height: "24px",
             padding: "0px 3px 0px 3px",
-            margin: "0 2px 0px 2px",
+            margin: "0 2.5px 0px 0px",
             display: "grid",
             gridAutoFlow: "column",
             gridAutoColumns: "1fr 0.7rem 1fr",
@@ -113,6 +122,7 @@ const IndexController = ({
             borderRadius: "2px",
             background: "#2185d0",
             color: "#ffffff99",
+            border: "1px solid white",
           }}
         >
           <div style={{ minWidth: "1rem", height: "100%", color: "white" }}>{sliderPage}</div>
@@ -154,6 +164,7 @@ const IndexController = ({
           marginTop: "0px",
           minWidth: "1px",
           //maxWidth: "500px",
+          border: "1px solid white",
           background: `linear-gradient(to right, ${progressColor} ${progress}%, ${sliderColor} ${progress}% 100%, ${sliderColor} 100%)`,
         }}
         min={1}

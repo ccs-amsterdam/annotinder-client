@@ -105,11 +105,13 @@ const QuestionTask = ({
     lowerTextSize: 1,
   });
 
+  console.log("before watch");
   if (useWatchChange([unit])) {
     setQuestionIndex(0);
     setConditionReport(unit.report || { evaluation: {}, damage: {} });
     hideUnit(refs.text, refs.box, refs.code); // hide unit until ready
   }
+  console.log("after watch");
 
   const onNewUnit = useCallback(() => {
     // this is called in the onReady callback in Document
@@ -249,11 +251,14 @@ const SettingsPopup = ({
     >
       <Segment
         style={{
-          bottom: "0",
+          bottom: "30%",
+          left: "10%",
           position: "fixed",
-          width: "50%",
+          width: "80%",
+          maxWidth: "400px",
           zIndex: 10000,
-          background: "#dfeffb",
+          background: "#dfeffbaa",
+          backdropFilter: "blur(2px)",
           border: "1px solid #136bae",
         }}
       >
@@ -364,7 +369,7 @@ const showUnit = (
   code.current.innerText = "";
   box.current.style.transition = `opacity 200ms linear`;
   box.current.style.opacity = "1";
-  text.current.style.transition = `background 300ms, opacity 100ms`;
+  text.current.style.transition = `background 300ms, opacity 200ms`;
   text.current.style.transform = "translateX(0%) translateY(0%)";
   text.current.style.background = "white";
   text.current.style.opacity = "1";

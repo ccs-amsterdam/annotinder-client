@@ -171,8 +171,6 @@ const QuestionForm = ({
   if (!questions || !unit || !answers) return null;
   if (!questions?.[questionIndex]) return null;
 
-  console.log(questions, questionIndex);
-
   const done = unit.status === "DONE";
 
   return (
@@ -344,7 +342,7 @@ const processAnswer = async (
 
       // check if there are other variables in the current unit that have an action
       for (let i = 0; i < questions.length; i++) {
-        const action = conditionReport.evaluation[questions[i].name]?.action;
+        const action = conditionReport?.evaluation?.[questions[i].name]?.action;
         if (action === "block" || action === "retry") newQuestionIndex = i;
       }
 

@@ -4,8 +4,6 @@ import SelectVariablePage from "./SelectVariablePage";
 import SelectAnnotationPage from "./SelectAnnotationPage";
 import NewCodePage from "./NewCodePage";
 import {
-  CodeHistory,
-  FullScreenNode,
   SetState,
   Span,
   SpanAnnotations,
@@ -14,7 +12,9 @@ import {
   TriggerCodePopup,
   Variable,
   VariableMap,
+  UnitStates,
 } from "../../../types";
+import useWatchChange from "../../../hooks/useWatchChange";
 
 /**
  * This hook is an absolute monster, as it takes care of a lot of moving parts.
@@ -33,59 +33,39 @@ import {
  * @param {*} setAnnotations
  * @param {*} codeHistory
  * @param {*} setCodeHistory
- * @param {*} fullScreenNode
  * @returns
  */
 const useCodeSelector = (
-  tokens: Token[],
+  unitStates: UnitStates,
   variableMap: VariableMap,
   editMode: boolean,
-  variables: Variable[],
-  annotations: SpanAnnotations,
-  setAnnotations: SetState<SpanAnnotations>,
-  codeHistory: CodeHistory,
-  setCodeHistory: SetState<CodeHistory>,
-  fullScreenNode: FullScreenNode
+  variables: Variable[]
 ): [ReactElement, TriggerCodePopup, boolean] => {
   const [open, setOpen] = useState(false);
+  const [index, setIndex] = useState(null);
   const [span, setSpan] = useState<Span>(null);
   const [variable, setVariable] = useState(null);
-  const [tokenRef, setTokenRef] = useState(null);
-  const [tokenAnnotations, setTokenAnnotations] = useState<AnnotationMap>({});
+  const tokens = unitStates.doc.tokens;
 
   const triggerFunction = React.useCallback(
     // this function can be called to open the code selector.
     (index: number, span: Span) => {
-      if (!tokens[index].ref) return;
-      setTokenRef(tokens[index].ref);
-      setTokenAnnotations(annotations[index] || {});
       setSpan(span || [index, index]);
+      setIndex(index);
       setOpen(true);
     },
-    [annotations, tokens]
+    [setIndex]
   );
 
-  useEffect(() => {
-    setVariable(null);
-  }, [variableMap]);
-
-  useEffect(() => {
-    setOpen(false);
-  }, [tokens]);
-
-  useEffect(() => {
-    if (!open) setVariable(null);
-  }, [open]);
+  if (useWatchChange([tokens])) setOpen(false);
+  if (useWatchChange([variableMap])) setVariable(null);
+  if (useWatchChange([open])) setVariable(null);
+  const tokenAnnotations: AnnotationMap = unitStates?.spanAnnotations?.[index] || {};
 
   if (!variables) return [null, null, true];
 
   let popup = (
-    <CodeSelectorPortal
-      fullScreenNode={fullScreenNode}
-      open={open}
-      setOpen={setOpen}
-      positionRef={tokenRef}
-    >
+    <CodeSelectorPortal open={open} setOpen={setOpen} positionRef={tokens?.[index]?.ref}>
       <>
         <SelectPage
           editMode={editMode}
@@ -93,7 +73,7 @@ const useCodeSelector = (
           variable={variable}
           setVariable={setVariable}
           variableMap={variableMap}
-          annotations={annotations}
+          annotations={unitStates.spanAnnotations}
           span={span}
           setSpan={setSpan}
           setOpen={setOpen}
@@ -102,14 +82,14 @@ const useCodeSelector = (
           tokens={tokens}
           variable={variable}
           variableMap={variableMap}
-          annotations={annotations}
+          annotations={unitStates.spanAnnotations}
+          setAnnotations={unitStates.setSpanAnnotations}
           tokenAnnotations={tokenAnnotations}
-          setAnnotations={setAnnotations}
           span={span}
           editMode={editMode}
           setOpen={setOpen}
-          codeHistory={codeHistory}
-          setCodeHistory={setCodeHistory}
+          codeHistory={unitStates.codeHistory}
+          setCodeHistory={unitStates.setCodeHistory}
         />
       </>
     </CodeSelectorPortal>
@@ -174,14 +154,13 @@ const SelectPage = React.memo(
 
 interface CodeSelectorPortalProps {
   children: ReactElement;
-  fullScreenNode: any;
   open: boolean;
   setOpen: SetState<boolean>;
   positionRef: any;
 }
 
 const CodeSelectorPortal = React.memo(
-  ({ children, fullScreenNode, open, setOpen, positionRef }: CodeSelectorPortalProps) => {
+  ({ children, open, setOpen, positionRef }: CodeSelectorPortalProps) => {
     const portalref = useRef(null);
 
     useEffect(() => {

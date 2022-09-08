@@ -107,10 +107,15 @@ interface FullScreenButtonProps {
 const FullScreenButton = ({ handle }: FullScreenButtonProps) => {
   return (
     <Button
-      basic
       size="massive"
       icon={handle.active ? "compress" : "expand"}
-      style={{ margin: "0", padding: "4px 1px" }}
+      style={{
+        background: "transparent",
+        color: "white",
+        margin: "0",
+        zIndex: 1000,
+        padding: "4px 1px",
+      }}
       onClick={() => {
         handle.active ? handle.exit() : handle.enter();
       }}
