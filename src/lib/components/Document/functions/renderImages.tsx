@@ -54,10 +54,10 @@ const AnnotatableImage = React.forwardRef(({ image_field }: AnnotatableImageProp
     <figure
       style={{
         gridArea: image_field.name,
-        display: "block",
+        display: "flex",
         flexDirection: "column",
         textAlign: "center",
-        margin: "0",
+        margin: "auto",
         ...image_field?.style,
       }}
     >
@@ -72,7 +72,7 @@ const AnnotatableImage = React.forwardRef(({ image_field }: AnnotatableImageProp
         src={src}
         style={{
           border: "2px solid grey", // DON"T CHANGE BORDER WIDTH WITHOUT ADJUSTING OFFSET IN getImagePosition.js
-          flex: "1 1 auto",
+          margin: "auto",
           background: "white",
           maxWidth: "100%",
           width: size.width,
@@ -81,8 +81,7 @@ const AnnotatableImage = React.forwardRef(({ image_field }: AnnotatableImageProp
       />
       <figcaption
         style={{
-          marginLeft: "10px",
-          marginRight: "10px",
+          margin: "auto",
           height: image_field.caption ? "50px" : "0px",
         }}
       >

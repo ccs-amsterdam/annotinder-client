@@ -304,7 +304,6 @@ const Item = ({
               <Button
                 fluid
                 primary
-                className="ripplebutton"
                 style={{
                   padding: "5px 0",
                   backgroundColor: isCurrent ? null : option.color || bgcolor,

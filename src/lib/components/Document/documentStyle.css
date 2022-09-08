@@ -63,7 +63,7 @@ span.token.annotated > span {
   border-left: none;
   border-right: none;
   /* cursor: pointer;; */
-  /* vertical-align: bottom; */
+  vertical-align: bottom;
   box-shadow: none;
   box-sizing: border-box;
 }
@@ -117,4 +117,9 @@ span.token.annotated.allRight > span.text {
   border-radius: 20px;
   box-shadow: 0px 1px 2px black;
   z-index: 20;
+}
+
+.menu > .selected {
+  background: #1678c2 !important;
+  color: white !important;
 }

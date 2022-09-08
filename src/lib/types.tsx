@@ -74,6 +74,7 @@ export interface CodeBook {
     instruction?: string;
     auto_instruction?: boolean;
     no_table?: boolean;
+    text_window_size?: number | string;
   };
 }
 
@@ -361,7 +362,6 @@ export type UnitType = "pre" | "train" | "test" | "unit" | "post";
 /** A unit after it has been prepared by the jobServer. This is for internal use */
 export interface Unit {
   jobServer: any;
-  //unitIndex: number;
   unitId: number | string; // this is the backend id, not the external id
   annotations: Annotation[];
   status: UnitStatus;
@@ -371,9 +371,6 @@ export interface Unit {
   meta_fields?: MetaField[];
   image_fields?: ImageField[];
   markdown_fields?: MarkdownField[];
-  settings?: {
-    text_window_size: number | string;
-  };
   importedAnnotations?: Annotation[];
   /** A unit can carry its own codebook. This will then be used instead of the codebook at the codingjob level */
   codebook?: CodeBook;
@@ -410,12 +407,13 @@ export interface UnitVariables {
 }
 
 /** A unit as it can be served by the backend. Basically extends rawunit (but not exactly), adding index and status.
- * Note that some parts (gold, damage) will normally not be visible to the frontend, but are included
+ * Note that some parts (conditionals, damage) will normally not be visible to the frontend, but are included
  * here for jobserverdemo
  */
 export interface BackendUnit {
   index: number;
   status: UnitStatus;
+  id: number | string; // this is the backend id, not the external id
   external_id?: string;
   unit: {
     text_fields?: TextField[];
@@ -426,6 +424,7 @@ export interface BackendUnit {
     importedAnnotations?: Annotation[];
     codebook?: RawCodeBook;
     variables?: UnitVariables;
+    grid?: FieldGrid;
   };
   type: UnitType;
   conditionals?: Conditional[];

@@ -68,6 +68,7 @@ const QuestionMenu = styled.div<{
   height: ${(props) => (props.minifiedAnswerForm ? null : props.formHeight)};
   min-height: ${(props) => (props.minifiedAnswerForm ? null : "200px")};
   font-size: ${(props) => props.fontSize}em;
+  transition: max-height 1s;
 `;
 
 interface QuestionTaskProps {
@@ -103,6 +104,8 @@ const QuestionTask = ({
   });
   const divref = useRef(null);
   const [conditionReport, setConditionReport] = useState<ConditionReport>(null);
+
+  console.log(conditionReport);
 
   useEffect(() => {
     // when new unit arrives, reset style (in case of swipe) and make
@@ -143,7 +146,7 @@ const QuestionTask = ({
   if (!unit) return null;
 
   // The size of the text div, in pct compared to the answer div
-  let splitHeight = unit?.settings?.text_window_size ?? settings.splitHeight;
+  let splitHeight = codebook?.settings?.text_window_size ?? settings.splitHeight;
   const formHeight = splitHeight === "auto" ? "auto" : `${100 - splitHeight}%`;
 
   // if there are only annotinder or confirm questions, minify the answer form
@@ -198,7 +201,9 @@ const QuestionTask = ({
             settings={settings}
             setSettings={setSettings}
             fullScreenNode={fullScreenNode}
-            cantChangeSplitHeight={minifiedAnswerForm || unit?.settings?.text_window_size != null}
+            cantChangeSplitHeight={
+              minifiedAnswerForm || codebook?.settings?.text_window_size != null
+            }
           />
           <Instructions
             codebook={codebook}
@@ -347,7 +352,7 @@ const resetStyle = (
   if (!text.current) return null;
   code.current.innerText = "";
   text.current.style.transition = ``;
-  box.current.style.transition = `background 5s`;
+  box.current.style.transition = ``;
   box.current.style.background = "white";
   box.current.style.opacity = "0";
   text.current.style.transform = "translateX(0%) translateY(0%)";
@@ -356,7 +361,7 @@ const resetStyle = (
 const fadeIn = (text: RefObject<HTMLElement>, box: RefObject<HTMLElement>): void => {
   console.log("fade in");
   if (!text.current) return null;
-  box.current.style.transition = `opacity 400ms linear`;
+  box.current.style.transition = `opacity 200ms linear`;
   box.current.style.opacity = "1";
   text.current.style.transition = `background 300ms, opacity 100ms`;
   text.current.style.background = "white";

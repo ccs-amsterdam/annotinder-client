@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { Popup, Button } from "semantic-ui-react";
+import { Popup, Button, Icon } from "semantic-ui-react";
 
 import { useNavigate } from "react-router-dom";
 import useLocalStorage from "../../../hooks/useLocalStorage";
@@ -16,6 +16,7 @@ interface JobControllerProps {
   fullScreenButton: ReactElement;
   fullScreenNode: FullScreenNode;
   cantLeave: boolean;
+  health?: any;
 }
 
 /**
@@ -32,6 +33,7 @@ const JobController = ({
   fullScreenButton,
   fullScreenNode,
   cantLeave,
+  health,
 }: JobControllerProps) => {
   const [maxHeight, maxWidth] = getWindowSize(jobServer);
 
@@ -42,14 +44,14 @@ const JobController = ({
         maxHeight,
         background: "white",
         margin: "0 auto",
-        padding: "0",
         height: "100%",
         width: "100%",
+        display: "grid",
+        gridAutoRows: "40px calc(100% - 40px)",
       }}
     >
       <div
         style={{
-          height: "45px",
           width: "100%",
           padding: "0px 5px 0px 5px",
           display: "flex",
@@ -61,6 +63,7 @@ const JobController = ({
             flex: "1 1 auto",
             paddingTop: "4px",
             paddingRight: "10px",
+            width: "100px",
           }}
         >
           <IndexController
@@ -72,6 +75,7 @@ const JobController = ({
             canGoForward={jobServer?.progress?.seek_forwards}
           />
         </div>
+        <HeartContainer damage={health?.damage} maxDamage={health?.maxDamage} />
         <div>
           <div>
             <Button.Group>
@@ -83,7 +87,7 @@ const JobController = ({
           </div>
         </div>
       </div>
-      <div style={{ height: "calc(100% - 45px)" }}>
+      <div>
         {unitIndex < jobServer?.progress?.n_total ? children : <Finished jobServer={jobServer} />}
       </div>
     </div>
@@ -161,6 +165,43 @@ const getWindowSize = (jobServer: JobServer) => {
     default:
       return ["100%", "100%"];
   }
+};
+
+const HeartContainer = ({
+  damage,
+  maxDamage,
+  hearts = 5,
+}: {
+  damage: number;
+  maxDamage: number;
+  hearts?: number;
+}) => {
+  if (damage == null || maxDamage == null) return null;
+  const healthPct = (100 * (maxDamage - damage)) / maxDamage;
+
+  return (
+    <div
+      className="test"
+      style={{
+        paddingTop: "5px",
+        height: "100%",
+        color: "black",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <span>{Math.ceil(healthPct)}%</span>
+      <Icon
+        size="large"
+        name="heart"
+        style={{
+          margin: "0px 3px",
+          color: "transparent",
+          background: `linear-gradient(to top, red ${healthPct}%, #000000aa ${healthPct}% 100%, #000000aa 100%)`,
+        }}
+      />
+    </div>
+  );
 };
 
 export default React.memo(JobController);

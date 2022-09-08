@@ -187,15 +187,13 @@ const CodeSelectorPortal = React.memo(
     useEffect(() => {
       // close popup on document click
       const closePortal = (e: any) => {
-        if (portalref.current && !portalref.current.contains(e.target)) {
-          setOpen(false);
-        }
+        if (portalref.current && !portalref.current.contains(e.target)) setOpen(false);
       };
       document.addEventListener("mouseup", closePortal);
       return () => {
         document.removeEventListener("mouseup", closePortal);
       };
-    }, [positionRef, open, setOpen]);
+    }, [positionRef, setOpen]);
 
     useEffect(() => {
       if (!open || !portalref.current) return;
@@ -209,7 +207,7 @@ const CodeSelectorPortal = React.memo(
         if (portalref.current.clientWidth === portalWidth) return;
         fitPortalOnScreen(portalref.current, positionRef.current);
         portalWidth = portalref.current.clientWidth;
-      }, 50);
+      }, 100);
       return () => clearInterval(interval);
     }, [open, positionRef]);
 
@@ -233,7 +231,7 @@ const CodeSelectorPortal = React.memo(
           borderRadius: "5px",
           border: "1px solid #136bae",
           opacity: "0",
-          transition: "opacity 250ms, width 250ms, padding 250ms, left 250ms",
+          transition: "opacity 250ms, width 250ms, padding 100ms, left 50ms",
         }}
       >
         {children}

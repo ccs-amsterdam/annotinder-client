@@ -24,6 +24,7 @@ class JobServerDemo implements JobServer {
     this.demodata = {
       units: units.map((u, i) => {
         return {
+          id: i,
           external_id: u.id,
           unit: u.unit,
           type: u.type,
@@ -47,7 +48,10 @@ class JobServerDemo implements JobServer {
   async getUnit(i: number) {
     this.progress.n_coded = Math.max(i, this.progress.n_coded);
     if (i < 0) i = this.progress.n_coded;
-    return { id: i, ...this.demodata.units[i], unit: { ...this.demodata.units[i].unit } };
+    return {
+      ...this.demodata.units[i],
+      unit: { ...this.demodata.units[i].unit },
+    };
   }
 
   async postAnnotations(

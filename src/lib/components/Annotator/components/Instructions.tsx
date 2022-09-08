@@ -27,6 +27,15 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
     }
   }, [codebook, sessionData]);
 
+  useEffect(() => {
+    const stopPropagation = (e: any) => open && e.stopPropagation();
+    const stopWhat = ["keydown", "keyup"];
+    for (const what of stopWhat) document.addEventListener(what, stopPropagation);
+    return () => {
+      for (const what of stopWhat) document.removeEventListener(what, stopPropagation);
+    };
+  }, [open]);
+
   if (!instruction) return null;
 
   return (

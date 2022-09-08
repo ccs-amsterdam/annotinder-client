@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import useSpeedBump from "lib/hooks/useSpeedBump";
+import React, { RefObject, useEffect } from "react";
 import { Button, Ref, Icon, SemanticICONS } from "semantic-ui-react";
 import { SwipeOptions, Swipes, AnswerItem, OnSelectParams, AnswerOption } from "../../../types";
 
@@ -19,6 +20,7 @@ interface AnnotinderProps {
 
 const Annotinder = React.memo(
   ({ answerItems, swipeOptions, onSelect, swipe, blockEvents }: AnnotinderProps) => {
+    const speedbump = useSpeedBump(answerItems);
     // const left = options.find(option => option.swipe === "left");
     // const up = options.find(option => option.swipe === "up");
     // const right = options.find(option => option.swipe === "right");
@@ -36,6 +38,7 @@ const Annotinder = React.memo(
 
     const onKeydown = React.useCallback(
       (event) => {
+        if (speedbump.current) return;
         // any arrowkey
         if (arrowKeys.includes(event.key)) {
           event.preventDefault();
@@ -49,13 +52,10 @@ const Annotinder = React.memo(
             finish: true,
             transition: { direction: dir, color: option.color },
           });
-          const el = option.ref.current;
-          el.classList.add("active");
-          setTimeout(() => el.classList.remove("active"), 5);
         }
       },
 
-      [onSelect, swipeOptions]
+      [onSelect, swipeOptions, speedbump]
     );
 
     useEffect(() => {
@@ -89,6 +89,7 @@ const Annotinder = React.memo(
               direction={direction}
               value={value}
               onSelect={onSelect}
+              speedbump={speedbump}
             />
           );
         })}
@@ -102,9 +103,16 @@ interface AnnotinderButtonProps {
   direction: "left" | "right" | "up";
   value: string | number;
   onSelect: (params: OnSelectParams) => void;
+  speedbump: RefObject<boolean>;
 }
 
-const AnnotinderButton = ({ swipeOptions, direction, value, onSelect }: AnnotinderButtonProps) => {
+const AnnotinderButton = ({
+  swipeOptions,
+  direction,
+  value,
+  onSelect,
+  speedbump,
+}: AnnotinderButtonProps) => {
   let icon: SemanticICONS = "arrow left";
   let option: AnswerOption = swipeOptions.left;
   if (direction === "up") {
@@ -120,15 +128,16 @@ const AnnotinderButton = ({ swipeOptions, direction, value, onSelect }: Annotind
   return (
     <Ref key={option.code} innerRef={option.ref}>
       <Button
-        className="ripplebutton"
         disabled={option == null}
-        onClick={(e, d) =>
+        onClick={(e, d) => {
+          if (speedbump.current) return;
+
           onSelect({
             value: option?.code,
             finish: true,
             transition: { direction, color: option.color },
-          })
-        }
+          });
+        }}
         style={{
           fontSize: "inherit",
           borderRadius: "10px",

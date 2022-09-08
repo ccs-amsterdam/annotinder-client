@@ -11,6 +11,8 @@
     "lib": ["ES2021.String", "DOM"],
     "declaration": true,
     "allowSyntheticDefaultImports": true,
-    "sourceMap": true
+    "sourceMap": true,
+
+    "baseUrl": "src"
   }
 }

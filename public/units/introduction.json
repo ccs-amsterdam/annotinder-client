@@ -95,9 +95,6 @@
     "id": "3",
     "type": "unit",
     "unit": {
-      "settings": {
-        "text_window_size": "auto"
-      },
       "text_fields": [
         {
           "name": "title",
@@ -118,6 +115,9 @@
       ],
       "codebook": {
         "type": "questions",
+        "settings": {
+          "text_window_size": "30"
+        },
         "questions": [
           {
             "name": "branching",

@@ -3,6 +3,7 @@ import { Button, Ref } from "semantic-ui-react";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
 import { scrollToMiddle } from "../../../functions/scroll";
 import { AnswerOption, OnSelectParams } from "../../../types";
+import useSpeedBump from "lib/hooks/useSpeedBump";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -45,6 +46,7 @@ const SelectCode = React.memo(
     const [selected, setSelected] = useState<number>(null);
     const container = useRef<HTMLDivElement>();
     const finishbutton = useRef<HTMLElement>();
+    const speedbump = useSpeedBump(values);
 
     const onKeydown = React.useCallback(
       (event) => {
@@ -95,6 +97,7 @@ const SelectCode = React.memo(
         if (event.keyCode === 32 || event.keyCode === 13) {
           event.preventDefault();
           event.stopPropagation();
+          if (speedbump.current) return;
 
           if (selected === options.length) {
             // this would be the finish button
@@ -109,13 +112,9 @@ const SelectCode = React.memo(
                 transition: { color: options[selected]?.color },
               }); // !multiple tells not to finish unit if multiple is true
           }
-          // simulate active pseudoclass for transition effect
-          const el = options[selected].ref.current;
-          el.classList.add("active");
-          setTimeout(() => el.classList.remove("active"), 5);
         }
       },
-      [selected, onSelect, multiple, options, onFinish]
+      [selected, onSelect, multiple, options, onFinish, speedbump]
     );
 
     useEffect(() => {
@@ -165,7 +164,6 @@ const SelectCode = React.memo(
             <Ref key={option.code} innerRef={option.ref}>
               <Button
                 fluid
-                className="ripplebutton"
                 style={{
                   overflowWrap: "break-word",
                   backgroundColor: option.color,
@@ -185,6 +183,8 @@ const SelectCode = React.memo(
                 compact
                 //onMouseOver={() => setSelected(i)}
                 onClick={(e, d) => {
+                  if (speedbump.current) return;
+
                   onSelect({
                     value: d.value,
                     itemIndex: 0,
@@ -246,6 +246,8 @@ const SelectCode = React.memo(
                   }`,
                 }}
                 onClick={() => {
+                  if (speedbump.current) return;
+
                   onSelect({ value: values, itemIndex: 0, finish: true });
                 }}
               />

@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon, Label, Segment } from "semantic-ui-react";
 import { SetState } from "../../../types";
 
 const sliderColor = "#d3dfe9";
 const progressColor = "#7fb9eb";
-const iconStyle = { cursor: "pointer" };
-const iconStyleHidden = { color: "white" };
+const iconStyle = { cursor: "pointer", height: "24px", lineHeight: "24px", fontSize: "20px" };
+//const iconStyleHidden = { color: "white" };
 
 interface IndexControllerProps {
   n: number;
@@ -67,9 +67,6 @@ const IndexController = ({
   let progress = (100 * Math.max(0, progressN)) / n;
   if (canGoForward) progress = 0; // linear progress is useless in this case.
 
-  const digits = Math.floor(Math.log10(n)) + 1;
-  const labelwidth = `${3 + digits * 2}em`;
-
   return (
     <Segment
       style={{
@@ -78,44 +75,52 @@ const IndexController = ({
         boxShadow: "none",
         padding: "0",
         leftMargin: "0px",
-        height: "35px",
         borderRadius: "0",
         fontSize: "1em",
       }}
     >
-      <div style={{ marginRight: "3px" }}>
+      <div style={{ marginRight: "3px", display: "flex" }}>
         {canGoBack || canGoForward ? (
-          <>
-            <Icon
+          <div style={{ height: "24px" }}>
+            {/* <Icon
               name="fast backward"
               onClick={() => updatePage(1)}
               style={iconStyle}
               disabled={!canGoBack || activePage === 1}
-            />
+            /> */}
             <Icon
               name="step backward"
               onClick={() => updatePage(Math.max(1, activePage - 1))}
               disabled={!canGoBack || activePage === 1}
               style={iconStyle}
             />
-          </>
+          </div>
         ) : null}
-        <Label
+        <div
           color="blue"
           style={{
             height: "24px",
-            padding: "6px 0 2px 0",
-            margin: "0 5px 0px 5px",
-            width: labelwidth,
+            padding: "0px 3px 0px 3px",
+            margin: "0 2px 0px 2px",
+            display: "grid",
+            gridAutoFlow: "column",
+            gridAutoColumns: "1fr 0.7rem 1fr",
+            lineHeight: "24px",
             textAlign: "center",
+            whiteSpace: "nowrap",
+            fontSize: "0.85rem",
             fontWeight: "bold",
             borderRadius: "2px",
+            background: "#2185d0",
+            color: "#ffffff99",
           }}
         >
-          {sliderPage <= n ? `${sliderPage || ""} / ${n}` : `done`}
-        </Label>
+          <div style={{ minWidth: "1rem", height: "100%", color: "white" }}>{sliderPage}</div>
+          &frasl;
+          <div>{n}</div>
+        </div>
         {canGoForward || canGoBack ? (
-          <>
+          <div style={{ height: "24px" }}>
             <Icon
               name="step forward"
               onClick={() => {
@@ -128,7 +133,7 @@ const IndexController = ({
               disabled={!canGoForward && activePage >= progressN + 1}
               style={iconStyle}
             />
-            <Icon
+            {/* <Icon
               name="fast forward"
               onClick={() => {
                 if (canGoForward) {
@@ -139,8 +144,8 @@ const IndexController = ({
               }}
               disabled={!canGoForward && activePage >= progressN + 1}
               style={canGoForward ? iconStyleHidden : iconStyle}
-            />
-          </>
+            /> */}
+          </div>
         ) : null}
       </div>
       <input
