@@ -16,7 +16,6 @@ import {
   RenderedImages,
   RenderedMarkdown,
   RenderedText,
-  SetState,
   TextField,
   Token,
 } from "../../../types";
@@ -28,7 +27,7 @@ interface BodyProps {
   image_fields: ImageField[];
   markdown_fields: MarkdownField[];
   grid?: FieldGrid;
-  setReady: SetState<number>;
+  onReady: () => any;
   bodyStyle: CSSProperties;
   focus: string[];
   centered: boolean;
@@ -41,7 +40,7 @@ const Body = ({
   image_fields,
   markdown_fields,
   grid,
-  setReady,
+  onReady,
   bodyStyle = {},
   focus,
   centered,
@@ -70,15 +69,15 @@ const Body = ({
     setText(renderText(tokens, text_fields, containerRef, fieldRefs));
     setImages(renderImages(image_fields, containerRef));
     setMarkdown(renderMarkdown(markdown_fields));
-    if (setReady) setReady((current) => current + 1); // setReady is an optional property used to let parents know the text is ready.
-  }, [tokens, text_fields, image_fields, markdown_fields, setReady, fieldRefs]);
+    onReady();
+  }, [tokens, text_fields, image_fields, markdown_fields, onReady, fieldRefs]);
 
   if (tokens === null) return null;
   return (
     <>
       <Ref innerRef={containerRef}>
         <div
-          key="tokens"
+          key="bodycontainer"
           className="BodyContainer"
           style={{
             height: "100%",
@@ -92,6 +91,7 @@ const Body = ({
         >
           <Meta meta_fields={meta_fields} />
           <div
+            key="fields"
             style={{
               position: "relative",
               flex: "1 1 97%",
@@ -100,7 +100,12 @@ const Body = ({
               width: "100%",
             }}
           >
-            <FocusOverlay fieldRefs={fieldRefs} focus={focus} containerRef={containerRef} />
+            <FocusOverlay
+              key="focusoverlay"
+              fieldRefs={fieldRefs}
+              focus={focus}
+              containerRef={containerRef}
+            />
             <div
               key="content"
               style={{

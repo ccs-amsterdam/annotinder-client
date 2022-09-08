@@ -12,6 +12,7 @@ const DemoJobOverview = () => {
   const [job, setJob] = useState(null);
   const [searchParams] = useSearchParams();
 
+  console.log("1");
   useEffect(() => {
     let codebook = searchParams.get("codebook");
     let units = searchParams.get("units");
@@ -158,7 +159,9 @@ interface DemoJobLinkProps {
 const DemoJobLink = ({ units, codebook }: DemoJobLinkProps) => {
   const [, setSearchParams] = useSearchParams();
   if (!units || !codebook) return null;
-  const url = `${window.location.origin + window.location.pathname}demo?units=${units}&codebook=${codebook}`;
+  const url = `${
+    window.location.origin + window.location.pathname
+  }demo?units=${units}&codebook=${codebook}`;
 
   const onClick = () => {
     setSearchParams({ units, codebook });

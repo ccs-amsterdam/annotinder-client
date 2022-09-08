@@ -16,7 +16,7 @@ export default function AnnotatorRClient() {
   const [jobServer, setJobServer] = useState(null);
 
   useEffect(() => {
-    if (jobServer) return null;
+    if (jobServer) return;
 
     const interval = setInterval(() => {
       login(setJobServer);

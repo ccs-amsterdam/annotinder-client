@@ -31,7 +31,7 @@ const Scale = React.memo(
     const [selectedButton, setSelectedButton] = useState(null);
 
     const onKeydown = React.useCallback(
-      (event) => {
+      (event: KeyboardEvent) => {
         const nbuttons = options.length;
         const nitems = items.length;
         if (selectedButton === null) {
@@ -224,7 +224,7 @@ const Items = ({
       }}
     >
       {items.map((itemObj, itemIndex: number) => {
-        const itemlabel = itemObj.label || itemObj.name || itemObj;
+        const itemlabel = itemObj.label || itemObj.name;
         let margin = "10px";
         if (itemIndex === 0) margin = "auto 10px 10px 10px";
         if (itemIndex === items.length - 1) margin = "10px 10px auto 10px";

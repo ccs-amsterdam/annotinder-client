@@ -17,7 +17,7 @@ const Confirm = ({ onSelect, button, swipe, blockEvents }: ConfirmProps) => {
   // there's only one option here and it's glorious
 
   const onKeydown = React.useCallback(
-    (event) => {
+    (event: KeyboardEvent) => {
       if (event.keyCode === 32 || event.keyCode === 13) {
         event.preventDefault();
         event.stopPropagation();

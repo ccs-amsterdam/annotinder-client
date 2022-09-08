@@ -7,21 +7,9 @@
 // -- questions where multiple codes can be selected correspond to multiple annotations as usual,
 //    and in the question answers this is represented as an array of objects
 
-import {
-  Answer,
-  AnswerItem,
-  Question,
-  SetState,
-  Annotation,
-  Unit,
-  QuestionItem,
-} from "../../../types";
+import { Answer, AnswerItem, Question, Annotation, Unit, QuestionItem } from "../../../types";
 
-export const getAnswersFromAnnotations = (
-  unit: Unit,
-  questions: Question[],
-  setAnswers: SetState<Answer[]>
-) => {
+export const getAnswersFromAnnotations = (unit: Unit, questions: Question[]): Answer[] => {
   const answers = [];
   if (!unit.annotations) unit.annotations = [];
   for (let i = 0; i < questions.length; i++) {
@@ -30,7 +18,7 @@ export const getAnswersFromAnnotations = (
     answer.items = getAnswerValues(unit.annotations, answer, questions[i]);
     answers.push(answer);
   }
-  setAnswers(answers);
+  return answers;
 };
 
 // const createAnswer = (tokens: Token[], question: Question): Answer => {

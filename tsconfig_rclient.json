@@ -1,7 +1,7 @@
 {
-  "files": ["src/lib/index.tsx", "src/lib/types.tsx", "src/global.d.ts"],
+  "files": ["src/r-client/index.tsx", "src/lib/types.tsx", "src/global.d.ts"],
   "compilerOptions": {
-    "outDir": "./dist/",
+    "outDir": "./annotinder_rclient/",
     "noImplicitAny": true,
     "module": "es6",
     "target": "es6",
@@ -11,6 +11,7 @@
     "lib": ["ES2021.String", "DOM"],
     "declaration": true,
     "allowSyntheticDefaultImports": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": "src"
   }
 }

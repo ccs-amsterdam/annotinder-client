@@ -7,6 +7,7 @@ export default function renderMarkdown(markdown_fields: MarkdownField[]): Render
   for (let markdown_field of markdown_fields) {
     rm[markdown_field.name] = (
       <div
+        key={"markdown-" + markdown_field}
         style={{
           gridArea: markdown_field.name,
           padding: "25px",

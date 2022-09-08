@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, RefObject, useCallback, useMemo } from "react";
+import React, { useState, useRef, RefObject, useCallback, useMemo } from "react";
 import QuestionForm from "./QuestionForm";
 import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
@@ -19,6 +19,7 @@ import {
 } from "../../../types";
 import Instructions from "./Instructions";
 import FeedbackPortal from "./FeedbackPortal";
+import useWatchChange from "../../../hooks/useWatchChange";
 
 const Container = styled.div`
   display: flex;
@@ -36,7 +37,7 @@ const SwipeableBox = styled.div`
   width: 100%;
   overflow: hidden;
   outline: 1px solid black;
-  outline-offset: -1px;
+  outline-offset: -2px;
   position: absolute;
   will-change: opacity, transform;
   z-index: 20;
@@ -58,6 +59,7 @@ const Content = styled.div<{ fontSize: number }>`
   font-size: ${(props) => props.fontSize}em;
   box-shadow: 5px 5px 20px 5px;
   will-change: background, transform;
+  border-top: 1px solid #dddddd;
 `;
 
 const QuestionMenu = styled.div<{
@@ -89,46 +91,41 @@ const QuestionTask = ({
   blockEvents = false,
 }: QuestionTaskProps) => {
   const [questionIndex, setQuestionIndex] = useState(0);
+  const [conditionReport, setConditionReport] = useState<ConditionReport>(null);
+  const divref = useRef(null);
   const textref = useRef();
   const boxref = useRef();
   const coderef = useRef();
   const refs = useMemo(() => {
     return { text: textref, box: boxref, code: coderef };
   }, []);
-
-  const [textReady, setTextReady] = useState(0);
   const [settings, setSettings] = useLocalStorage("questionTaskSettings", {
     splitHeight: 70,
     upperTextSize: 1,
     lowerTextSize: 1,
   });
-  const divref = useRef(null);
-  const [conditionReport, setConditionReport] = useState<ConditionReport>(null);
 
-  console.log(conditionReport);
-
-  useEffect(() => {
-    // when new unit arrives, reset style (in case of swipe) and make
-    // text transparent.
-    resetStyle(refs.text, refs.box, refs.code);
-  }, [refs.text, refs.box, refs.code, unit, questionIndex]);
-
-  useEffect(() => {
-    // fade in text when the text is ready (which Document tells us)
-    fadeIn(refs.text, refs.box);
-  }, [textReady, refs.text, refs.box, questionIndex]);
-
-  useEffect(() => {
-    // When unit changes, refresh condition report
-    // (the backend can also return a condition report for a new unit)
+  if (useWatchChange([unit])) {
+    setQuestionIndex(0);
     setConditionReport(unit.report || { evaluation: {}, damage: {} });
-  }, [unit]);
+    hideUnit(refs.text, refs.box, refs.code); // hide unit until ready
+  }
+
+  const onNewUnit = useCallback(() => {
+    // this is called in the onReady callback in Document
+    showUnit(refs.text, refs.box, refs.code);
+  }, [refs.text, refs.box, refs.code]);
 
   const startTransition = useCallback(
     (trans: Transition, nextUnit: boolean) => {
       if (nextUnit) {
         nextUnitTransition(refs, trans);
-      } else nextQuestionTransition(refs, trans);
+      } else {
+        nextQuestionTransition(refs, trans);
+        setTimeout(() => {
+          showUnit(refs.text, refs.box, refs.code);
+        }, 100);
+      }
     },
     [refs]
   );
@@ -170,7 +167,7 @@ const QuestionTask = ({
           <Content ref={refs.text} fontSize={settings.upperTextSize}>
             <Document
               unit={unit}
-              setReady={setTextReady}
+              onReady={onNewUnit}
               showAnnotations={codebook?.questions?.[questionIndex]?.showAnnotations || []}
               fullScreenNode={fullScreenNode}
               focus={codebook?.questions?.[questionIndex]?.fields}
@@ -344,7 +341,7 @@ const nextQuestionTransition = (r: SwipeRefs, trans: Transition) => {
   // }
 };
 
-const resetStyle = (
+const hideUnit = (
   text: RefObject<HTMLElement>,
   box: RefObject<HTMLElement>,
   code: RefObject<HTMLElement>
@@ -358,12 +355,17 @@ const resetStyle = (
   text.current.style.transform = "translateX(0%) translateY(0%)";
 };
 
-const fadeIn = (text: RefObject<HTMLElement>, box: RefObject<HTMLElement>): void => {
-  console.log("fade in");
+const showUnit = (
+  text: RefObject<HTMLElement>,
+  box: RefObject<HTMLElement>,
+  code: RefObject<HTMLElement>
+): void => {
   if (!text.current) return null;
+  code.current.innerText = "";
   box.current.style.transition = `opacity 200ms linear`;
   box.current.style.opacity = "1";
   text.current.style.transition = `background 300ms, opacity 100ms`;
+  text.current.style.transform = "translateX(0%) translateY(0%)";
   text.current.style.background = "white";
   text.current.style.opacity = "1";
   text.current.style.filter = "";

@@ -33,10 +33,10 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
   }, [options, setAllOptions]);
 
   const onKeydown = React.useCallback(
-    (event) => {
+    (event: KeyboardEvent) => {
       const nbuttons = allOptions.length;
       // if key is a number that indexes an option, select it
-      if (!isNaN(event.key) && Number(event.key) <= nbuttons) {
+      if (Number.isFinite(event.key) && Number(event.key) <= nbuttons) {
         event.preventDefault();
         let value = allOptions[Number(event.key)].value;
         onSelect(value, event.ctrlKey || event.altKey);

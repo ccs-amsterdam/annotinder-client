@@ -1,4 +1,4 @@
-import useSpeedBump from "lib/hooks/useSpeedBump";
+import useSpeedBump from "../../../hooks/useSpeedBump";
 import React, { RefObject, useEffect } from "react";
 import { Button, Ref, Icon, SemanticICONS } from "semantic-ui-react";
 import { SwipeOptions, Swipes, AnswerItem, OnSelectParams, AnswerOption } from "../../../types";
@@ -37,7 +37,7 @@ const Annotinder = React.memo(
     }, [swipe, onSelect, swipeOptions]);
 
     const onKeydown = React.useCallback(
-      (event) => {
+      (event: KeyboardEvent) => {
         if (speedbump.current) return;
         // any arrowkey
         if (arrowKeys.includes(event.key)) {

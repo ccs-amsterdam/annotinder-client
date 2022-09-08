@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef, ReactElement, useCallback } from "react";
+import React, { useState, useRef, ReactElement, useCallback } from "react";
 import { Header, Segment, Icon } from "semantic-ui-react";
 import styled from "styled-components";
+import useWatchChange from "../../../hooks/useWatchChange";
 import {
   Question,
   Unit,
@@ -116,20 +117,18 @@ const QuestionForm = ({
   const [answers, setAnswers] = useState<Answer[]>(null);
   const [questionText, setQuestionText] = useState(<div />);
 
-  useEffect(() => {
-    if (!questions) return;
-    getAnswersFromAnnotations(unit, questions, setAnswers);
-    setQuestionIndex(0);
-  }, [unit, setAnswers, setQuestionIndex, questions]);
+  if (useWatchChange([unit, questions])) {
+    if (questions) setAnswers(getAnswersFromAnnotations(unit, questions));
+  }
 
-  useEffect(() => {
+  if (useWatchChange([unit, questions, answers])) {
     if (!questions?.[questionIndex] || !unit) {
       setQuestionIndex(0);
-      return;
+    } else {
+      setQuestionText(prepareQuestion(unit, questions[questionIndex], answers));
+      blockAnswer.current = false;
     }
-    setQuestionText(prepareQuestion(unit, questions[questionIndex], answers));
-    blockAnswer.current = false;
-  }, [unit, questions, questionIndex, answers, setQuestionIndex]);
+  }
 
   const onAnswer = useCallback(
     (items: AnswerItem[], onlySave = false, transition?: Transition): void => {
@@ -171,6 +170,8 @@ const QuestionForm = ({
 
   if (!questions || !unit || !answers) return null;
   if (!questions?.[questionIndex]) return null;
+
+  console.log(questions, questionIndex);
 
   const done = unit.status === "DONE";
 

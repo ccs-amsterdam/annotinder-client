@@ -15,7 +15,11 @@ export default function renderImages(
   const images: RenderedImages = {};
   for (let image_field of image_fields) {
     images[image_field.name] = (
-      <AnnotatableImage key={image_field.name} ref={containerRef} image_field={image_field} />
+      <AnnotatableImage
+        key={"image-" + image_field.name}
+        ref={containerRef}
+        image_field={image_field}
+      />
     );
   }
   return images;

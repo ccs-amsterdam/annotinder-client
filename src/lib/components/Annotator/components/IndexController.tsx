@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Icon, Label, Segment } from "semantic-ui-react";
+import { Icon, Segment } from "semantic-ui-react";
 import { SetState } from "../../../types";
 
 const sliderColor = "#d3dfe9";

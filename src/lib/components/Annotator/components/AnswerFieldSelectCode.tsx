@@ -3,7 +3,7 @@ import { Button, Ref } from "semantic-ui-react";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
 import { scrollToMiddle } from "../../../functions/scroll";
 import { AnswerOption, OnSelectParams } from "../../../types";
-import useSpeedBump from "lib/hooks/useSpeedBump";
+import useSpeedBump from "../../../hooks/useSpeedBump";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -49,7 +49,7 @@ const SelectCode = React.memo(
     const speedbump = useSpeedBump(values);
 
     const onKeydown = React.useCallback(
-      (event) => {
+      (event: KeyboardEvent) => {
         // the finishbutton is just added to the buttons array, so that navigation still works nicely
         const buttons = multiple ? [...options, { ref: finishbutton }] : options;
         const nbuttons = buttons.length;

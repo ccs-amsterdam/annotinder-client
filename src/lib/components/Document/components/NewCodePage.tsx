@@ -52,7 +52,7 @@ const NewCodePage = ({
   const settings = variableMap[variable];
 
   const onKeydown = React.useCallback(
-    (event) => {
+    (event: KeyboardEvent) => {
       if (settings && !settings.searchBox && settings.buttonMode !== "recent") return null;
       const focusOnTextInput = textInputRef?.current?.children[0] === document.activeElement;
       if (!focusOnTextInput) setFocusOnButtons(true);

@@ -3,6 +3,7 @@ import { Popup } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
 import {
   CodeSelectorOption,
+  CodeSelectorValue,
   SetState,
   Span,
   SpanAnnotations,
@@ -33,7 +34,7 @@ const SelectAnnotationPage = ({
   variableMap,
 }: SelectAnnotationPageProps) => {
   const onButtonSelection = React.useCallback(
-    (value, ctrlKey) => {
+    (value: CodeSelectorValue, ctrlKey: boolean) => {
       if (value.cancel) {
         setOpen(false);
         return;
@@ -48,8 +49,6 @@ const SelectAnnotationPage = ({
   const options = useMemo(() => {
     return getAnnotationOptions(annotations, span, variableMap, tokens);
   }, [annotations, span, variableMap, tokens]);
-
-  console.log(options);
 
   useEffect(() => {
     if (options?.length === 0) setOpen(false);

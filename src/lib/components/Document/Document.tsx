@@ -1,25 +1,23 @@
-import React, { useState, useEffect, useRef, CSSProperties, useMemo } from "react";
+import React, { useState, useEffect, useRef, CSSProperties } from "react";
 import AnnotateNavigation from "./components/AnnotateNavigation";
 import Body from "./components/Body";
 import useCodeSelector from "./components/useCodeSelector";
-import { exportFieldAnnotations, exportSpanAnnotations } from "../../functions/annotations";
 import useUnit from "./components/useUnit";
 import SelectVariable from "./components/SelectVariable";
 
 import "./documentStyle.css";
 import useVariableMap from "./components/useVariableMap";
 import {
-  CodeHistory,
   Variable,
   VariableMap,
   Unit,
   Annotation,
   SpanAnnotations,
-  FieldAnnotations,
   Token,
   SetState,
   FullScreenNode,
 } from "../../types";
+import { useCallback } from "react";
 
 interface DocumentProps {
   /** A unit object, as created in JobServerClass (or standardizeUnit) */
@@ -38,8 +36,10 @@ interface DocumentProps {
   returnTokens?: SetState<Token[]>;
   /** returnVariableMap */
   returnVariableMap?: SetState<VariableMap>;
-  /** for setting a boolean state indicating whether the document is ready to render */
-  setReady?: SetState<number>;
+  /** A callback function that is called when the document is ready. This is mainly usefull for
+   * managing layout while waiting for document to load
+   */
+  onReady?: Function;
   /** a boolean value for blocking all event listeners */
   blockEvents?: boolean;
   /** in fullscreenmode popups require a mountNode */
@@ -65,7 +65,7 @@ const Document = ({
   onChangeAnnotations,
   returnTokens,
   returnVariableMap,
-  setReady,
+  onReady,
   blockEvents,
   fullScreenNode,
   showAnnotations,
@@ -75,61 +75,33 @@ const Document = ({
 }: DocumentProps) => {
   const safetyCheck = useRef(null); // ensures only new annotations for the current unit are passed to onChangeAnnotations
   const [variable, setVariable] = useState(null);
-  const [codeHistory, setCodeHistory] = useState<CodeHistory>({});
-  const [spanAnnotations, setSpanAnnotations] = useState<SpanAnnotations | null>(null);
-  const [fieldAnnotations, setFieldAnnotations] = useState<FieldAnnotations | null>(null);
-  const [tokensReady, setTokensReady] = useState(0);
 
-  const [doc, importedCodes] = useUnit(
-    unit,
-    safetyCheck,
-    returnTokens,
-    setSpanAnnotations,
-    setFieldAnnotations,
-    setCodeHistory
-  );
+  const unitStates = useUnit(unit, safetyCheck, returnTokens, onChangeAnnotations);
 
-  const [variableMap, editMode] = useVariableMap(variables, variable, importedCodes);
+  const [variableMap, editMode] = useVariableMap(variables, variable, unitStates.importedCodes);
   const [codeSelector, triggerCodeSelector, codeSelectorOpen] = useCodeSelector(
-    doc.tokens,
+    unitStates.doc.tokens,
     variableMap,
     editMode,
     variables,
-    spanAnnotations,
-    setSpanAnnotations,
-    codeHistory,
-    setCodeHistory,
+    unitStates.spanAnnotations,
+    unitStates.setSpanAnnotations,
+    unitStates.codeHistory,
+    unitStates.setCodeHistory,
     fullScreenNode
   );
-
-  // If annotations change, immediately prepare memoised version in standard annotation
-  // array format. Then when one of these changes, a side effect performs onChangeAnnotations
-  const exportedSpanAnnotations: Annotation[] = useMemo(() => {
-    return exportSpanAnnotations(spanAnnotations, doc.tokens, true);
-  }, [spanAnnotations, doc]);
-
-  const exportedFieldAnnotations: Annotation[] = useMemo(() => {
-    return exportFieldAnnotations(fieldAnnotations);
-  }, [fieldAnnotations]);
-
-  useEffect(() => {
-    // if exported annotations are updated, and onChangeAnnotations
-    if (!onChangeAnnotations) return;
-    // check if same unit, to prevent annotations from spilling over due to race conditions
-    if (safetyCheck.current.tokens !== doc.tokens) return;
-    onChangeAnnotations([...exportedSpanAnnotations, ...exportedFieldAnnotations]);
-  }, [doc.tokens, exportedSpanAnnotations, exportedFieldAnnotations, onChangeAnnotations]);
 
   useEffect(() => {
     if (returnVariableMap) returnVariableMap(variableMap);
   }, [variableMap, returnVariableMap]);
 
-  useEffect(() => {
-    if (setReady) setReady((counter) => counter + 1);
+  const setSpanAnnotations = unitStates.setSpanAnnotations;
+  const onBodyReady = useCallback(() => {
+    if (onReady) onReady();
     setSpanAnnotations((spanAnnotations: SpanAnnotations) => ({ ...spanAnnotations })); //trigger DOM update after token refs have been prepared
-  }, [tokensReady, setSpanAnnotations, setReady]);
+  }, [onReady, setSpanAnnotations]);
 
-  if (!doc.tokens && !doc.image_fields) return null;
+  if (!unitStates.doc.tokens && !unitStates.doc.image_fields) return null;
 
   return (
     <div
@@ -148,22 +120,22 @@ const Document = ({
         editAll={settings?.editAll}
       />
       <Body
-        tokens={doc.tokens}
-        text_fields={doc.text_fields}
-        meta_fields={doc.meta_fields}
-        image_fields={doc.image_fields}
-        markdown_fields={doc.markdown_fields}
-        grid={doc.grid}
-        setReady={setTokensReady}
+        tokens={unitStates.doc.tokens}
+        text_fields={unitStates.doc.text_fields}
+        meta_fields={unitStates.doc.meta_fields}
+        image_fields={unitStates.doc.image_fields}
+        markdown_fields={unitStates.doc.markdown_fields}
+        grid={unitStates.doc.grid}
+        onReady={onBodyReady}
         bodyStyle={bodyStyle}
         focus={focus}
         centered={centered}
       />
 
       <AnnotateNavigation
-        tokens={doc.tokens}
+        tokens={unitStates.doc.tokens}
         variableMap={variableMap}
-        annotations={spanAnnotations}
+        annotations={unitStates.spanAnnotations}
         disableAnnotations={!onChangeAnnotations || !variableMap}
         editMode={editMode}
         triggerCodeSelector={triggerCodeSelector}

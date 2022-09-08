@@ -181,8 +181,10 @@ const Items = ({
             <Form onSubmit={(e, d) => setSelectedItem((current: number) => current + 1)}>
               <Form.Field>
                 <label style={{ color: "black" }}>
-                  {itemlabel}
-                  <i style={{ color: "grey" }}>{itemObj?.optional ? " (optional)" : ""}</i>
+                  <>
+                    {itemlabel}
+                    <i style={{ color: "grey" }}>{itemObj?.optional ? " (optional)" : ""}</i>
+                  </>
                 </label>
 
                 <Input

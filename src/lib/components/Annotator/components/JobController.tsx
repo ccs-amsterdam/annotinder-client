@@ -46,12 +46,11 @@ const JobController = ({
         margin: "0 auto",
         height: "100%",
         width: "100%",
-        display: "grid",
-        gridAutoRows: "40px calc(100% - 40px)",
       }}
     >
       <div
         style={{
+          height: "35px",
           width: "100%",
           padding: "0px 5px 0px 5px",
           display: "flex",
@@ -87,7 +86,7 @@ const JobController = ({
           </div>
         </div>
       </div>
-      <div>
+      <div style={{ height: "calc(100% - 35px)" }}>
         {unitIndex < jobServer?.progress?.n_total ? children : <Finished jobServer={jobServer} />}
       </div>
     </div>

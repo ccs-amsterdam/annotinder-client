@@ -567,6 +567,17 @@ export interface RawTokenColumn {
 
 ////// DOCUMENT
 
+export interface UnitStates {
+  doc: Doc;
+  importedCodes: VariableValueMap;
+  spanAnnotations: SpanAnnotations | null;
+  setSpanAnnotations: SetState<SpanAnnotations | null>;
+  fieldAnnotations: SpanAnnotations | null;
+  setFieldAnnotations: SetState<FieldAnnotations | null>;
+  codeHistory: CodeHistory;
+  setCodeHistory: SetState<CodeHistory>;
+}
+
 export interface Doc {
   /** A processed version of a Unit, for use in the Document component */
   tokens?: Token[];

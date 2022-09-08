@@ -116,7 +116,7 @@
       "codebook": {
         "type": "questions",
         "settings": {
-          "text_window_size": "30"
+          "text_window_size": "auto"
         },
         "questions": [
           {

@@ -4,7 +4,13 @@ import { keepInView } from "../../../functions/scroll";
 import { FieldRefs } from "../../../types";
 
 const Overlay = styled.div`
-  background: #00000066;
+  background: linear-gradient(
+    90deg,
+    rgba(39, 133, 203, 0.4962359943977591) 0%,
+    rgba(39, 133, 203, 0.5046393557422969) 35%,
+    rgba(17, 177, 228, 0.5046393557422969) 67%,
+    rgba(16, 145, 171, 0.4990371148459384) 97%
+  );
   position: absolute;
   top: 0;
   left: 0;
@@ -41,7 +47,7 @@ const FocusOverlay = ({ fieldRefs, focus, containerRef }: FocusOverlayProps) => 
     }
   });
   if (!focus || focus.length === 0) return null;
-  return <Overlay />;
+  return <Overlay key="overlay" />;
 };
 
 export default FocusOverlay;

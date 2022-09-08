@@ -265,7 +265,7 @@ const TokenMouseEvents = ({
   ); // hack to notice if device uses touch (because single touch somehow triggers mouseup)
 
   const storeMouseTokenSelection = useCallback(
-    (currentNode) => {
+    (currentNode: any) => {
       // select tokens that the mouse/touch is currently pointing at
       setCurrentToken((state) => {
         if (state.i === currentNode.index) return state;
@@ -280,7 +280,7 @@ const TokenMouseEvents = ({
   );
 
   const onTouchDown = useCallback(
-    (event) => {
+    (event: TouchEvent) => {
       istouch.current = true;
       // store token from touch down, but process on touch up, so that we cna set a max
       // time passed (to ignore holding touch when scrolling)
@@ -290,7 +290,7 @@ const TokenMouseEvents = ({
   );
 
   const onTouchUp = useCallback(
-    (e) => {
+    (e: TouchEvent) => {
       if (!touch.current?.time) return;
       const now = new Date();
       const timepassed = now.getTime() - touch.current.time.getTime();
@@ -316,7 +316,7 @@ const TokenMouseEvents = ({
       // first check if there is a tokenselection (after double tab). If so, this completes the selection
       if (tokenSelection.length > 0 && tokenSelection[0] === tapped.current) {
         // if a single token, and an annotation already exists, open create/edit mode
-        const currentNode = storeMouseTokenSelection(token);
+        const currentNode: number = storeMouseTokenSelection(token);
         setTokenSelection((state: TokenSelection) =>
           updateSelection(state, tokens, currentNode, true)
         );
@@ -359,7 +359,7 @@ const TokenMouseEvents = ({
   );
 
   const onMouseDown = useCallback(
-    (event) => {
+    (event: MouseEvent) => {
       if (istouch.current) return; // suppress mousedown triggered by quick tap
       // When left button pressed, start new selection
       if (event.which === 1) {
@@ -371,7 +371,7 @@ const TokenMouseEvents = ({
   );
 
   const onMouseMove = useCallback(
-    (event) => {
+    (event: MouseEvent) => {
       // If mousemove only happens if mouse is used (which you can't be sure of, because chaos),
       // this would work to prevent odd cases where a touchscreen could disable mouse
       //if (istouch.current) return;
@@ -404,7 +404,7 @@ const TokenMouseEvents = ({
   );
 
   const onMouseUp = useCallback(
-    (event) => {
+    (event: MouseEvent) => {
       if (istouch.current) return;
       // When left mouse key is released, create the annotation
       // note that in case of a single click, the token has not been selected (this happens on move)

@@ -9,7 +9,6 @@ const swipeControl = (
   triggerdist: number = 110
 ) => {
   if (!question) return {};
-  if (!refs?.text?.current) return {};
   const swipeable = ["annotinder", "confirm"];
   if (!swipeable.includes(question.type)) return {};
 
@@ -28,7 +27,6 @@ const swipeControl = (
   }
 
   const transitionTime = 250;
-  const container = refs.text.current.getElementsByClassName("BodyContainer")[0];
   let scrolloffset = 0;
   // const blockSwipe = useRef()
 
@@ -40,7 +38,9 @@ const swipeControl = (
     rotationAngle: 0, // set a rotation angle
   };
 
+  let container: Element;
   const getDeltas = (d: SwipeEventData) => {
+    if (!container) container = refs.text.current.getElementsByClassName("BodyContainer")[0];
     let deltaX = d.deltaX;
     let deltaY = d.deltaY;
     if (Math.abs(deltaX) > Math.abs(deltaY) + 10) deltaY = 0;
@@ -58,6 +58,7 @@ const swipeControl = (
 
   return {
     onSwiping: (d: SwipeEventData) => {
+      if (!refs?.text?.current) return;
       const [deltaX, deltaY] = getDeltas(d);
       if (deltaX > 0 && !swipeOptions.right) return;
       if (deltaX < 0 && !swipeOptions.left) return;
@@ -87,6 +88,7 @@ const swipeControl = (
       refs.code.current.style.textAlign = talign;
     },
     onSwiped: (d: SwipeEventData) => {
+      if (!refs?.text?.current) return;
       const [deltaX, deltaY] = getDeltas(d);
       if (deltaX > 0 && !swipeOptions.right) return;
       if (deltaX < 0 && !swipeOptions.left) return;
