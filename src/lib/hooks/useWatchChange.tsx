@@ -2,7 +2,11 @@ import { useRef } from "react";
 
 /**
  * Watch for (shallow) changes in an array of dependencies.
- * Returns a boolean for whether stuff has changed
+ * Returns a boolean for whether stuff has changed. Lets you do thinks like:
+ *
+ * if (useWatchChange([foo, bar])) {
+ *    setSomeState(0)
+ * }
  *
  * @param deps an Array of things to watch, similar to the deps array in useEffects, useMemo, etc.
  * @param first should the value be true the first time?

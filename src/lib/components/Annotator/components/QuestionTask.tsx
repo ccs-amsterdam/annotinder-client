@@ -105,13 +105,11 @@ const QuestionTask = ({
     lowerTextSize: 1,
   });
 
-  console.log("before watch");
   if (useWatchChange([unit])) {
     setQuestionIndex(0);
     setConditionReport(unit.report || { evaluation: {}, damage: {} });
     hideUnit(refs.text, refs.box, refs.code); // hide unit until ready
   }
-  console.log("after watch");
 
   const onNewUnit = useCallback(() => {
     // this is called in the onReady callback in Document
