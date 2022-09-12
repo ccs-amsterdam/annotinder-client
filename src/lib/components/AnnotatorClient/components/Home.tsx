@@ -103,7 +103,7 @@ const MenuBar = ({ backend, authForm, menuItem, setMenuItem }: MenuBarProps) => 
             </List.Item>
             <List.Item>
               <List.Icon name="user" />
-              <List.Content>{backend.email}</List.Content>
+              <List.Content>{backend.name}</List.Content>
             </List.Item>
           </List>
           {authForm}

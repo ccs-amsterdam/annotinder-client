@@ -119,24 +119,15 @@ interface SignInProps {
 
 const SignIn = ({ recHost, setLogin }: SignInProps) => {
   const [host, setHost] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [invalidEmail, setInvalidEmail] = useState(false);
   const [invalidPassword, setInvalidPassword] = useState(false);
   const navigate = useNavigate();
 
   const tryPasswordLogin = async () => {
-    const notEmail = !email.match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-    if (notEmail) {
-      setInvalidEmail(true);
-      return;
-    }
-
     setPassword("");
     try {
-      const token = await passwordLogin(host, email, password);
+      const token = await passwordLogin(host, name, password);
       setLogin(host, token);
     } catch (e) {
       setLogin(null, null);
@@ -186,31 +177,27 @@ const SignIn = ({ recHost, setLogin }: SignInProps) => {
                   label="Host"
                   value={host}
                   onChange={(e, d) => {
-                    if (d.value.length < 100) setHost(d.value);
+                    setHost(d.value);
                   }}
                   icon="home"
                   iconPosition="left"
                   autoFocus
                 />
                 <Form.Input
-                  placeholder="email adress"
-                  error={invalidEmail ? "Please enter a valid email adress" : false}
-                  name="email"
-                  label="Email"
-                  icon="mail"
+                  placeholder="Username"
+                  name="user"
+                  label="Username"
+                  icon="user"
                   iconPosition="left"
-                  value={email}
+                  value={name}
                   onChange={(e, d) => {
-                    if (d.value.length < 100) {
-                      setInvalidEmail(false);
-                      setEmail(d.value);
-                    }
+                    setName(d.value);
                   }}
                 />
                 <Form.Input
                   placeholder="password"
                   name="password"
-                  error={invalidPassword ? "Invalid password for this host & email" : false}
+                  error={invalidPassword ? "Invalid password for this Host & Username" : false}
                   label="Password"
                   type="password"
                   icon="lock"

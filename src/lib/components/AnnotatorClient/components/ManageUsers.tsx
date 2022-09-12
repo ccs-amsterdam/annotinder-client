@@ -16,9 +16,8 @@ import UsersTable from "./UsersTable";
 import { SetState, User } from "../../../types";
 
 interface AddUser {
-  email: string;
+  name: string;
   exists: boolean;
-  validEmail: boolean;
 }
 
 interface ManageUsersProps {
@@ -31,14 +30,11 @@ export default function ManageUsers({ backend }: ManageUsersProps) {
   const [addUsers, setAddUsers] = useState<AddUser[]>([]);
 
   const onCreate = () => {
-    const newUsers = text.split(/[\s,;\n]/).reduce((newUsers, email) => {
-      email = email.trim();
-      if (email === "") return newUsers;
-      const validEmail = email.match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-      const exists = !!users.find((u) => u.email === email);
-      newUsers.push({ email, validEmail, exists });
+    const newUsers = text.split(/[\s,;\n]/).reduce((newUsers, name) => {
+      name = name.trim();
+      if (name === "") return newUsers;
+      const exists = !!users.find((u) => u.name === name);
+      newUsers.push({ name, exists });
 
       return newUsers;
     }, []);
@@ -61,7 +57,7 @@ export default function ManageUsers({ backend }: ManageUsersProps) {
         <Header>Create new users</Header>
 
         <TextArea
-          placeholder="List email addresses, separated by newline, space, comma or semicolon"
+          placeholder="List usernames, separated by newline, space, comma or semicolon"
           value={text}
           rows="10"
           style={{ width: "100%" }}
@@ -88,8 +84,8 @@ const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }: CreateUse
 
   const onSubmit = async () => {
     const users = addUsers.reduce((submitUsers, user) => {
-      if (!user.validEmail || user.exists) return submitUsers;
-      submitUsers.push({ email: user.email, admin: asAdmin, password: "test" });
+      if (user.exists) return submitUsers;
+      submitUsers.push({ name: user.name, admin: asAdmin, password: "test" });
       return submitUsers;
     }, []);
     try {
@@ -107,17 +103,16 @@ const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }: CreateUse
   const listUsers = () => {
     const ul = addUsers.map((user) => {
       let cannotAdd = "";
-      if (!user.validEmail) cannotAdd = "Invalid email address: ";
       if (user.exists) cannotAdd = "User already exists: ";
       return (
-        <List.Item key={user.email}>
+        <List.Item key={user.name}>
           <List.Icon
             name={cannotAdd ? "exclamation" : "check"}
             style={{ color: cannotAdd ? "red" : "green" }}
           />
           <List.Content>
             <span style={{ color: "red" }}>{cannotAdd}</span>
-            {user.email}
+            {user.name}
           </List.Content>
         </List.Item>
       );

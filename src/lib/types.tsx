@@ -355,7 +355,7 @@ export interface Progress {
   seek_forwards?: boolean;
 }
 
-///// UNIT DATA
+///// UNIT DATAF
 
 export type UnitType = "pre" | "train" | "test" | "unit" | "post";
 
@@ -659,7 +659,7 @@ export interface ButtonComponentProps {
 ///// MANAGE USERS
 
 export interface User {
-  email: string;
+  name: string;
   admin: boolean;
   password?: string;
 }
@@ -675,7 +675,6 @@ export interface Job {
   restricted?: boolean;
   users?: User[];
   jobset_details?: JobSet[];
-  rules?: Rules;
   n_total: number;
 }
 
@@ -684,6 +683,7 @@ export interface JobSet {
   units?: RawUnit[];
   codebook?: CodeBook;
   n_units?: number;
+  rules?: Rules;
 }
 
 export interface Rules {

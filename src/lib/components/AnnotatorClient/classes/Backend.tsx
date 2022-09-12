@@ -10,9 +10,9 @@ import {
   ConditionReport,
 } from "../../../types";
 
-export async function passwordLogin(host: string, email: string, password: string) {
+export async function passwordLogin(host: string, name: string, password: string) {
   const d = new FormData();
-  d.append("username", email);
+  d.append("username", name);
   d.append("password", password);
   const response = await Axios.post(`${host}/users/me/token`, d);
   return response.data.token;
@@ -26,7 +26,7 @@ export async function redeemJobToken(host: string, token: string, user_id: strin
 
 interface AuthToken {
   token: string;
-  email: string;
+  name: string;
   is_admin: boolean;
   restricted_job: number;
 }
@@ -36,7 +36,7 @@ class Backend {
   token: string;
   api: AxiosInstance;
   is_admin: boolean;
-  email: string;
+  name: string;
   restricted_job: number;
 
   constructor(host: string, token: string) {
@@ -50,7 +50,7 @@ class Backend {
 
   async init() {
     const d = await this.getToken();
-    this.email = d.email;
+    this.name = d.name;
     this.is_admin = d.is_admin;
     this.token = d.token; //getToken should give a refreshed token, which is set to localstorage in useBackend
     this.restricted_job = d.restricted_job;

@@ -8,7 +8,7 @@ import Backend from "../classes/Backend";
 
 const columns: Column[] = [
   { name: "role", width: 2, f: (row) => (row.is_admin ? "admin" : "coder") },
-  { name: "email", width: 11, title: true },
+  { name: "name", width: 11, title: true },
 ];
 
 interface UsersTableProps {
@@ -57,7 +57,7 @@ const LoginLinkButton = ({ row, backend, style }: LoginLinkButtonProps) => {
     // to just load this if it's being requested
     if (!open) return;
     backend
-      .getToken(row.email)
+      .getToken(row.name)
       .then((token) => {
         const qrhost = backend.host.replace(":", "%colon%");
         setLink({
@@ -94,7 +94,7 @@ const LoginLinkButton = ({ row, backend, style }: LoginLinkButtonProps) => {
           textAlign: "center",
         }}
       >
-        <Header style={{ fontSize: "1.5em" }}>Login link for {row.email}</Header>
+        <Header style={{ fontSize: "1.5em" }}>Login link for {row.name}</Header>
         <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
         <br />
         <br />

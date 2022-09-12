@@ -154,17 +154,11 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
                   {i === 0 ? "Job sets" : ""}
                 </Table.Cell>
                 <Table.Cell key="value">
-                  {js.name} <i>({js.n_units}</i>)
+                  {js.name} <i>({js.n_units + ", " + js.rules.ruleset}</i>)
                 </Table.Cell>
               </Table.Row>
             );
           })}
-          <Table.Row key="ruleset">
-            <Table.Cell key="name" style={leftColStyle}>
-              Rule set
-            </Table.Cell>
-            <Table.Cell key="value">{job?.rules?.ruleset}</Table.Cell>
-          </Table.Row>
 
           <Table.Row key="archived">
             <Table.Cell key="name" style={leftColStyle}>
@@ -253,7 +247,7 @@ const JobUsers = ({ backend, job }: JobUsersProps) => {
     backend
       .getUsers()
       .then((users: User[]) => {
-        const options = users.map((u) => ({ key: u.email, value: u.email, text: u.email }));
+        const options = users.map((u) => ({ key: u.name, value: u.name, text: u.name }));
         setOptions(options);
       })
       .catch((e: Error) => setOptions([]));
@@ -374,7 +368,6 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
   const [link, setLink] = useState(null);
   const [open, setOpen] = useState(false);
 
-  console.log(window.location);
   useEffect(() => {
     // to just load this if it's being requested
     if (!open) return;
