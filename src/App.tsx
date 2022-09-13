@@ -7,6 +7,7 @@ import AnnotatorRClient from "./lib/components/AnnotatorClient/AnnotatorRClient"
 import DemoJobOverview from "./lib/components/DemoJob/DemoJobOverview";
 import GuestCoder from "./lib/components/GuestCoder/GuestCoder";
 import ResponsiveContainer from "./lib/components/Common/ResponsiveContainer";
+import Login from "./lib/components/Login/Login";
 
 // just for quick testing
 const App = () => {
@@ -15,6 +16,7 @@ const App = () => {
       <ResponsiveContainer>
         <Routes>
           <Route path="/" exact element={<AnnotatorPythonClient />} />
+          <Route path="/login" exact element={<Login />} />
           <Route path="/demo" exact element={<DemoJobOverview />} />
           <Route path="/guest" exact element={<GuestCoder />} />
           <Route path="/r" exact element={<AnnotatorRClient />} />

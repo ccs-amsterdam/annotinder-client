@@ -10,6 +10,11 @@ import {
   ConditionReport,
 } from "../../../types";
 
+export async function getHostInfo(host: string) {
+  const res = await Axios.get(`${host}/host`);
+  return res.data;
+}
+
 export async function passwordLogin(host: string, name: string, password: string) {
   const d = new FormData();
   d.append("username", name);

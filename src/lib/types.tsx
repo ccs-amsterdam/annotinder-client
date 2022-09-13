@@ -314,6 +314,15 @@ export type ConditionalAction = "retry" | "block" | "applaud";
 
 ///// JOBSERVER
 
+export interface HostInfo {
+  host?: string;
+  oauthClients: OauthClients;
+}
+
+export interface OauthClients {
+  github?: { client_id: string };
+}
+
 /**
  * A class providing everthing needed to run the Annotator component.
  * In particular, it needs to have a codebook and progress
