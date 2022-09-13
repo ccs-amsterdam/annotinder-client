@@ -7,7 +7,7 @@ import {
   CSSProperties,
 } from "react";
 import { SemanticWIDTHS } from "semantic-ui-react";
-import Backend from "./components/AnnotatorClient/classes/Backend";
+import Backend from "./components/Login/Backend";
 // common interfaces
 
 ///// UTIL

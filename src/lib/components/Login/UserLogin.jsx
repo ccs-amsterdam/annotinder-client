@@ -1,55 +1,56 @@
-import React, { useState, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
-import { Segment, Grid, Button, Form } from "semantic-ui-react";
-import { OauthClients, HostInfo } from "../../types";
-import Backend, { getHostInfo } from "../AnnotatorClient/classes/Backend";
-import useWatchChange from "../../hooks/useWatchChange";
+import React, { useState, useEffect } from "react";
+import { Header, Divider, Segment, Grid, Button, Form, Icon } from "semantic-ui-react";
+import { HostInfo, SetState } from "../../types";
 import useLocalStorage from "../../hooks/useLocalStorage";
+import Backend, { passwordLogin, redeemJobToken } from "./Backend";
 
-function useBackend(hostInfo: HostInfo, searchParams): Backend {
-  const [backend, setBackend] = useState(null);
-  //const [guestAuth, setGuestAuth] = useLocalStorage("guest_auth", {});
-  const [storageToken, setStorageToken] = useLocalStorage("token", "");
-
-  const userId = searchParams.get("user_id");
-  const jobtoken = searchParams.get("jobtoken");
-  const asGuest = searchParams.get("guest");
-  const logintoken = searchParams.get("logintoken");
-
-  const login = useCallback(
-    async (token) => {
-      if (!hostInfo?.host) return null;
-      const b = new Backend(hostInfo.host, token);
-      try {
-        await b.init();
-        if (userId && b.name !== userId) {
-          setBackend(null);
-          return;
-        }
-        setStorageToken(token);
-        setBackend(b);
-      } catch (e) {
-        setBackend(null);
-      }
-    },
-    [hostInfo, userId]
-  );
-
-  if (useWatchChange([hostInfo])) {
-    if (!backend && storageToken) tryToken(storageToken);
-  }
-
-  const userlogin = <UserLogin hostInfo={hostInfo} login={login} />;
-  return token;
+interface UserLoginProps {
+  setToken: SetState<string>;
+  hostInfo: HostInfo;
+  searchParams: URLSearchParams;
+  setSearchParams: any;
 }
 
-const UserLogin = ({ hostInfo, login }) => {
+const UserLogin = ({
+  setToken,
+  hostInfo,
+  setHostInfo,
+  searchParams,
+  setSearchParams,
+}: UserLoginProps) => {
+  const host = hostInfo.host;
+  const userId = searchParams.get("user_id");
+  const jobtoken = searchParams.get("jobtoken");
+  const asGuest = searchParams.get("as_guest");
+
   return (
     <Segment placeholder attached="bottom" style={{ borderRadius: "10px", position: "relative" }}>
       <Grid textAlign="center">
         <Grid.Row>
-          <AsGuest host={hostInfo.host} userId={userId} jobtoken={jobtoken} asGuest={asGuest} />
-          <AsUser host={host} userId={userId} jobtoken={jobtoken} />
+          <Grid.Column style={{ fontSize: "1.5em", fontWeight: "bold" }}>
+            {hostInfo.host}
+            {"  "}
+            <Icon
+              color="blue"
+              name="undo"
+              onClick={() => {
+                searchParams.delete("host");
+                setSearchParams(searchParams);
+                setHostInfo();
+              }}
+              style={{ cursor: "pointer" }}
+            />
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          <AsGuest
+            setToken={setToken}
+            host={hostInfo.host}
+            userId={userId}
+            jobtoken={jobtoken}
+            asGuest={asGuest}
+          />
+          <AsUser setToken={setToken} host={host} />
           <Divider vertical>Or</Divider>
         </Grid.Row>
       </Grid>
@@ -57,23 +58,23 @@ const UserLogin = ({ hostInfo, login }) => {
   );
 };
 
-const AsGuest = ({ host, jobtoken, asGuest }) => {
+const AsGuest = ({ setToken, host, userId, jobtoken, asGuest }) => {
   const [guestAuth, setGuestAuth] = useLocalStorage("guest_auth", {});
-
-  const userId = searchParams.get("user_id");
-  const navigate = useNavigate();
 
   const key = `host:${host};user_id:${userId};jobtoken:${jobtoken}`;
   const alreadyGuest = !!guestAuth[key];
 
   useEffect(() => {
     if (!asGuest) return;
-    redeemShuffle(host, userId, jobtoken, guestAuth, setGuestAuth, navigate)
-      .then()
+    redeemShuffle(host, userId, jobtoken, guestAuth, setGuestAuth)
+      .then((token) => {
+        setToken(token);
+      })
       .catch((e) => {
+        setToken("");
         console.log("show error message or something");
       });
-  }, [guestAuth, host, userId, jobtoken, navigate, setGuestAuth, asGuest]);
+  }, [setToken, guestAuth, host, userId, jobtoken, setGuestAuth, asGuest]);
 
   return (
     <Grid.Column width="8">
@@ -97,8 +98,10 @@ const AsGuest = ({ host, jobtoken, asGuest }) => {
           fluid
           style={{ marginTop: "20px" }}
           onClick={() => {
-            redeemShuffle(host, userId, jobtoken, guestAuth, setGuestAuth, navigate)
-              .then()
+            redeemShuffle(host, userId, jobtoken, guestAuth, setGuestAuth)
+              .then((token) => {
+                setToken(token);
+              })
               .catch((e) => {
                 console.log("show error message or something");
               });
@@ -111,8 +114,7 @@ const AsGuest = ({ host, jobtoken, asGuest }) => {
   );
 };
 
-const AsUser = ({ host, userId, jobtoken }) => {
-  //const navigate = useNavigate();
+const AsUser = ({ setToken, host }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [invalidPassword, setInvalidPassword] = useState(false);
@@ -121,9 +123,9 @@ const AsUser = ({ host, userId, jobtoken }) => {
     setPassword("");
     try {
       const token = await passwordLogin(host, name, password);
-      setLogin(host, token);
+      setToken(token);
     } catch (e) {
-      setLogin(null, null);
+      setToken("");
       setInvalidPassword(true);
       console.error(e);
     }
@@ -167,7 +169,7 @@ const AsUser = ({ host, userId, jobtoken }) => {
   );
 };
 
-const redeemShuffle = async (host, userId, jobtoken, guestAuth, setGuestAuth, navigate) => {
+const redeemShuffle = async (host, userId, jobtoken, guestAuth, setGuestAuth) => {
   const key = `host:${host};user_id:${userId};jobtoken:${jobtoken}`;
 
   if (guestAuth[key]) {
@@ -176,23 +178,24 @@ const redeemShuffle = async (host, userId, jobtoken, guestAuth, setGuestAuth, na
     try {
       await backend.init();
       // token still works
-      navigate(`/?host=${host}&token=${data.token}&job_id=${data.job_id}`);
+      return backend.token;
     } catch (e) {
+      // TODO check if e is forbidden. If so, delete token. But don't delete if just server down or
+      console.log(e);
       // there is a token but it no longer works. (typically happens when resetting db in dev)
       delete guestAuth[key];
       setGuestAuth(guestAuth);
     }
   }
 
-  if (!guestAuth[key]) {
-    try {
-      const data = await redeemJobToken(host, jobtoken, userId);
-      setGuestAuth({ ...guestAuth, [key]: data });
-      navigate(`/?host=${host}&token=${data.token}&job_id=${data.job_id}`);
-    } catch (e) {
-      console.error(e);
-    }
+  try {
+    const data = await redeemJobToken(host, jobtoken, userId);
+    setGuestAuth({ ...guestAuth, [key]: data });
+    return data.token;
+  } catch (e) {
+    console.error(e);
+    return "";
   }
 };
 
-export default useBackend;
+export default UserLogin;

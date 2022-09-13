@@ -1,8 +1,7 @@
 import React, { ReactElement } from "react";
 import { Popup, Button, Icon } from "semantic-ui-react";
 
-import { useNavigate } from "react-router-dom";
-import useLocalStorage from "../../../hooks/useLocalStorage";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import IndexController from "./IndexController";
 import Finished from "./Finished";
 import { FullScreenNode, JobServer, SetState } from "../../../types";
@@ -101,8 +100,7 @@ interface UserButtonProps {
 }
 
 const UserButton = ({ fullScreenNode, jobServer }: UserButtonProps) => {
-  const [auth, setAuth] = useLocalStorage("auth", {});
-  const loggedIn = auth?.host && auth?.[auth?.host + "__token__"];
+  const [searchParams, setSearchParams] = useSearchParams();
 
   return (
     <Popup
@@ -126,18 +124,18 @@ const UserButton = ({ fullScreenNode, jobServer }: UserButtonProps) => {
       <Popup.Content>
         <Button.Group vertical fluid>
           <BackToOverview jobServer={jobServer} />
-          {loggedIn ? (
-            <Button
-              secondary
-              icon="user"
-              content="Log out"
-              style={{ marginTop: "0" }}
-              onClick={() => {
-                setAuth({ ...auth, [auth.host + "__token__"]: null });
-                window.location.reload();
-              }}
-            />
-          ) : null}
+          <Button
+            secondary
+            icon="user"
+            content="Close job"
+            style={{ marginTop: "0" }}
+            onClick={() => {
+              searchParams.delete("job_id");
+              setSearchParams(searchParams);
+              jobServer.setJobServer(null);
+              //window.location.reload();
+            }}
+          />
         </Button.Group>
       </Popup.Content>
     </Popup>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, CSSProperties } from "react";
 import { Button, Grid, Header, Icon } from "semantic-ui-react";
 import { QRCodeCanvas } from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
-import Backend from "../../AnnotatorClient/classes/Backend";
+import Backend from "../../Login/Backend";
 import { Debriefing, JobServer } from "../../../types";
 import Markdown from "../../Common/Markdown";
 
@@ -93,8 +93,12 @@ const JobLink = ({ jobId, backend, style = {} }: JobLinkProps) => {
       .then((token: string) => {
         const qrhost = backend.host.replace(":", "%colon%");
         setLink({
-          url: `${window.location.origin + window.location.pathname}guest/?host=${backend.host}&jobtoken=${token}`,
-          qrUrl: `${window.location.origin + window.location.pathname}guest/?host=${qrhost}&jobtoken=${token}`,
+          url: `${window.location.origin + window.location.pathname}guest/?host=${
+            backend.host
+          }&jobtoken=${token}`,
+          qrUrl: `${
+            window.location.origin + window.location.pathname
+          }guest/?host=${qrhost}&jobtoken=${token}`,
         });
       })
       .catch((e: Error) => {

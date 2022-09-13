@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Pagination, Table, Icon, Search } from "semantic-ui-react";
 import { ButtonComponentProps, Column, RowObj, SetState } from "../../../types";
-import Backend from "../classes/Backend";
+import Backend from "../../Login/Backend";
 
 const headerStyle = {
   color: "white",

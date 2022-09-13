@@ -8,7 +8,7 @@ import {
   Status,
   User,
   ConditionReport,
-} from "../../../types";
+} from "../../types";
 
 export async function getHostInfo(host: string) {
   const res = await Axios.get(`${host}/host`);
@@ -57,7 +57,7 @@ class Backend {
     const d = await this.getToken();
     this.name = d.name;
     this.is_admin = d.is_admin;
-    this.token = d.token; //getToken should give a refreshed token, which is set to localstorage in useBackend
+    this.token = d.token; 
     this.restricted_job = d.restricted_job;
   }
 

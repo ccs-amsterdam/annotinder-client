@@ -15,7 +15,7 @@ import { useCSVDownloader } from "react-papaparse";
 import JobsTable from "./JobsTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
-import Backend from "../classes/Backend";
+import Backend from "../../Login/Backend";
 import { Job, User, SetState } from "../../../types";
 
 interface ManageJobsProps {
@@ -376,12 +376,12 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
       .then((token: string) => {
         const qrhost = backend.host.replace(":", "%colon%");
         setLink({
-          url: `${window.location.origin + window.location.pathname}guest/?host=${
+          url: `${window.location.origin + window.location.pathname}?host=${
             backend.host
           }&jobtoken=${token}`,
           qrUrl: `${
             window.location.origin + window.location.pathname
-          }/guest/?host=${qrhost}&jobtoken=${token}`,
+          }/?host=${qrhost}&jobtoken=${token}`,
         });
       })
       .catch((e: Error) => {

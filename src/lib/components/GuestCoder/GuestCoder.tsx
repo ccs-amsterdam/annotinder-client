@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import useLocalStorage from "../../hooks/useLocalStorage";
 
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Backend, { redeemJobToken } from "../AnnotatorClient/classes/Backend";
+import Backend, { redeemJobToken } from "../Login/Backend";
 import { Button, Divider, Form, Grid, Header, Segment } from "semantic-ui-react";
 
 // store redeemed tokens in localstorage

@@ -2,7 +2,7 @@ import React, { CSSProperties, useEffect } from "react";
 import FullDataTable from "./FullDataTable";
 import { Button } from "semantic-ui-react";
 import { Column, Job, JobSettings, RowObj, SetState } from "../../../types";
-import Backend from "../classes/Backend";
+import Backend from "../../Login/Backend";
 
 const columns: Column[] = [
   { name: "id", title: true, width: 2 },

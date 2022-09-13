@@ -8,7 +8,7 @@ import {
   SetState,
   Status,
 } from "../../../types";
-import Backend from "./Backend";
+import Backend from "../../Login/Backend";
 
 class JobServerAPI implements JobServer {
   backend: Backend;

@@ -11,7 +11,7 @@ import {
   Loader,
   Checkbox,
 } from "semantic-ui-react";
-import Backend from "../classes/Backend";
+import Backend from "../../Login/Backend";
 import UsersTable from "./UsersTable";
 import { SetState, User } from "../../../types";
 

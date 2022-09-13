@@ -1,41 +1,39 @@
 import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import { Segment, Grid, Button, Form } from "semantic-ui-react";
-import { OauthClients, HostInfo } from "../../types";
-import { getHostInfo } from "../AnnotatorClient/classes/Backend";
+import { getHostInfo } from "./Backend";
 import useWatchChange from "../../hooks/useWatchChange";
-import useLocalStorage from "../../hooks/useLocalStorage";
 
-function useHost(paramHost: string, storedHost: string): [HostInfo, ReactNode] {
-  const [hostInfo, setHostInfo] = useState(null);
-  const [storageHost, setStorageHost] = useLocalStorage("host", "");
+const HostLogin = ({ setHostInfo, sessionHost, searchParams, setSearchParams }) => {
+  const [host, setHost] = useState(sessionHost);
+  const [error, setError] = useState("");
+  const paramHost = searchParams.get("host");
+  const [waitForParam, setWaitForParam] = useState(false);
 
   const tryHost = (host) => {
-    getHostInfo(host)
+    setHost(host);
+    return getHostInfo(host)
       .then((hostinfo) => {
         hostinfo.host = host;
+        searchParams.set("host", host);
+        setSearchParams(searchParams);
         setHostInfo(hostinfo);
-        setStorageHost(host);
+        setError("");
       })
       .catch((e) => {
         console.error(e);
         setHostInfo(null);
+        setError("Invalid host");
       });
   };
 
   if (useWatchChange([paramHost])) {
-    if (!hostInfo && paramHost) tryHost(paramHost);
-  }
-  if (useWatchChange([storageHost])) {
-    if (!hostInfo && !paramHost && storageHost) tryHost(storageHost);
+    if (paramHost) {
+      setWaitForParam(true);
+      tryHost(paramHost).finally(() => setWaitForParam(false));
+    }
   }
 
-  const hostlogin = <HostLogin tryHost={tryHost} />;
-  return [hostInfo, hostlogin];
-}
-
-const HostLogin = ({ tryHost }) => {
-  const [host, setHost] = useState("");
+  if (waitForParam) return null;
 
   return (
     <Segment
@@ -56,6 +54,7 @@ const HostLogin = ({ tryHost }) => {
                 placeholder="Host"
                 name="host"
                 label="Host"
+                error={error || null}
                 value={host}
                 onChange={(e, d) => {
                   setHost(d.value);
@@ -66,7 +65,7 @@ const HostLogin = ({ tryHost }) => {
               />
 
               <Button disabled={host.length === 0} primary fluid onClick={() => tryHost(host)}>
-                Sign in
+                Select host
               </Button>
             </Form>
           </Grid.Column>
@@ -87,4 +86,4 @@ const HostLogin = ({ tryHost }) => {
   );
 };
 
-export default useHost;
+export default HostLogin;

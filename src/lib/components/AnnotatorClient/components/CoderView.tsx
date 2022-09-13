@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import FullDataTable from "./FullDataTable";
 import { Grid, Header } from "semantic-ui-react";
-import Backend from "../classes/Backend";
+import Backend from "../../Login/Backend";
 import { RowObj, Job } from "../../../types";
 
 const columns = [

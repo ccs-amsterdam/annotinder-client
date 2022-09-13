@@ -4,7 +4,7 @@ import FullDataTable from "./FullDataTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
 import { Column, RowObj, SetState } from "../../../types";
-import Backend from "../classes/Backend";
+import Backend from "../../Login/Backend";
 
 const columns: Column[] = [
   { name: "role", width: 2, f: (row) => (row.is_admin ? "admin" : "coder") },

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 // Main pages. Use below in items to include in header menu
 import Annotator from "../Annotator/Annotator";
-import Backend from "./classes/Backend";
+import Backend from "../Login/Backend";
 import JobServerAPI from "./classes/JobServerAPI";
 import { Grid, Header, Icon } from "semantic-ui-react";
 import { JobServer, SetState } from "../../types";
