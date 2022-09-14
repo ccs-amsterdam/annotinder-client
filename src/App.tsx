@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AnnotatorPythonClient from "./lib/components/AnnotatorClient/AnnotatorPythonClient";
 import AnnotatorRClient from "./lib/components/AnnotatorClient/AnnotatorRClient";
 import DemoJobOverview from "./lib/components/DemoJob/DemoJobOverview";
-import GuestCoder from "./lib/components/GuestCoder/GuestCoder";
 import ResponsiveContainer from "./lib/components/Common/ResponsiveContainer";
 
 // just for quick testing
@@ -16,7 +15,6 @@ const App = () => {
         <Routes>
           <Route path="/" exact element={<AnnotatorPythonClient />} />
           <Route path="/demo" exact element={<DemoJobOverview />} />
-          <Route path="/guest" exact element={<GuestCoder />} />
           <Route path="/r" exact element={<AnnotatorRClient />} />
         </Routes>
       </ResponsiveContainer>

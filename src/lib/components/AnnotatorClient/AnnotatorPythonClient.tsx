@@ -31,8 +31,8 @@ const useJobServer = (backend: Backend): [JobServer, boolean] => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [initializing, setInitializing] = useState(true);
   //let jobId = backend?.restricted_job || searchParams.get("job_id");
-  let jobId = Number(searchParams.get("job_id"));
-  jobId = jobId != null ? Number(jobId) : null;
+  const jobIdParam = searchParams.get("job_id");
+  const jobId = jobIdParam != null ? Number(jobIdParam) : null;
 
   useEffect(() => {
     if (!backend) {
