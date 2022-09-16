@@ -40,6 +40,8 @@ const Annotator = ({ jobServer, askFullScreen = false, cantLeave = false }: Anno
     setUnitIndex(-1);
   }, [jobServer, setUnitIndex]);
 
+  console.log(jobServer);
+
   return (
     <FullScreenWindow askFullScreen={askFullScreen}>
       {(fullScreenNode, fullScreenButton) => (
@@ -51,7 +53,7 @@ const Annotator = ({ jobServer, askFullScreen = false, cantLeave = false }: Anno
           unitProgress={unitProgress}
           fullScreenButton={fullScreenButton}
           fullScreenNode={fullScreenNode}
-          cantLeave={cantLeave || !!jobServer.job_id}
+          cantLeave={cantLeave}
         >
           <Segment basic style={{ height: "100%", padding: "0", margin: "0" }}>
             <AnnotateUnit

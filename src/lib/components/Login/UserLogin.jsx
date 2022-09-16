@@ -42,16 +42,21 @@ const UserLogin = ({
             />
           </Grid.Column>
         </Grid.Row>
+
         <Grid.Row>
-          <AsGuest
-            setToken={setToken}
-            host={hostInfo.host}
-            userId={userId}
-            jobtoken={jobtoken}
-            asGuest={asGuest}
-          />
+          {jobtoken ? (
+            <>
+              <Divider vertical>Or</Divider>
+              <AsGuest
+                setToken={setToken}
+                host={hostInfo.host}
+                userId={userId}
+                jobtoken={jobtoken}
+                asGuest={asGuest}
+              />
+            </>
+          ) : null}
           <AsUser setToken={setToken} host={host} />
-          <Divider vertical>Or</Divider>
         </Grid.Row>
       </Grid>
     </Segment>
@@ -65,15 +70,9 @@ const AsGuest = ({ setToken, host, userId, jobtoken, asGuest }) => {
   const alreadyGuest = !!guestAuth[key];
 
   useEffect(() => {
-    if (!asGuest) return;
-    redeemShuffle(host, userId, jobtoken, guestAuth, setGuestAuth)
-      .then((token) => {
-        setToken(token);
-      })
-      .catch((e) => {
-        setToken("");
-        console.log("show error message or something");
-      });
+    //if (!asGuest) return;
+    if (!jobtoken) return;
+    redeemShuffle(host, userId, jobtoken, setToken, guestAuth, setGuestAuth);
   }, [setToken, guestAuth, host, userId, jobtoken, setGuestAuth, asGuest]);
 
   return (
@@ -98,13 +97,7 @@ const AsGuest = ({ setToken, host, userId, jobtoken, asGuest }) => {
           fluid
           style={{ marginTop: "20px" }}
           onClick={() => {
-            redeemShuffle(host, userId, jobtoken, guestAuth, setGuestAuth)
-              .then((token) => {
-                setToken(token);
-              })
-              .catch((e) => {
-                console.log("show error message or something");
-              });
+            redeemShuffle(host, userId, jobtoken, setToken, guestAuth, setGuestAuth);
           }}
         >
           {alreadyGuest ? "Continue" : "Log in"}
@@ -169,7 +162,7 @@ const AsUser = ({ setToken, host }) => {
   );
 };
 
-const redeemShuffle = async (host, userId, jobtoken, guestAuth, setGuestAuth) => {
+const redeemShuffle = async (host, userId, jobtoken, setToken, guestAuth, setGuestAuth) => {
   const key = `host:${host};user_id:${userId};jobtoken:${jobtoken}`;
 
   if (guestAuth[key]) {
@@ -178,7 +171,7 @@ const redeemShuffle = async (host, userId, jobtoken, guestAuth, setGuestAuth) =>
     try {
       await backend.init();
       // token still works
-      return backend.token;
+      setToken(backend.token);
     } catch (e) {
       // TODO check if e is forbidden. If so, delete token. But don't delete if just server down or
       console.log(e);
@@ -191,10 +184,9 @@ const redeemShuffle = async (host, userId, jobtoken, guestAuth, setGuestAuth) =>
   try {
     const data = await redeemJobToken(host, jobtoken, userId);
     setGuestAuth({ ...guestAuth, [key]: data });
-    return data.token;
+    setToken(data.token);
   } catch (e) {
     console.error(e);
-    return "";
   }
 };
 

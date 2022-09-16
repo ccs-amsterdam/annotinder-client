@@ -41,6 +41,12 @@ const LoginWindow = styled.div`
 // job_id = registerJobUser(backend.name, jobtoken)
 // and job_id can then be added to searchParams to directly navigate to the job.
 
+// make all jobs closed by default.
+// Coders get access via invite links, and authenticated users can be added
+// admins can't see users (nobody can)
+// after entering host, immediately see jobs based on guest tokens and
+// and
+
 const useLogin = (): [Backend, ReactNode] => {
   const [backend, setBackend] = useState();
   const [session, setSession] = useLocalStorage("session", { host: "", token: "" });
@@ -48,7 +54,6 @@ const useLogin = (): [Backend, ReactNode] => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [hostInfo, setHostInfo] = useState();
-
   useEffect(() => {
     if (!session.host || !session.token) {
       setBackend(null);
@@ -62,7 +67,7 @@ const useLogin = (): [Backend, ReactNode] => {
       .init()
       .then(() => {
         setBackend(backend);
-        setSearchParams({ host: session.host });
+        setSearchParams({ host: session.host, job_id: backend?.restricted_job });
       })
       .catch((e) => {
         console.error(e);
@@ -74,6 +79,7 @@ const useLogin = (): [Backend, ReactNode] => {
 
   const setToken = useCallback(
     (token) => {
+      console.log("whaaat");
       setSession({ host: hostInfo?.host, token });
     },
     [hostInfo, setSession]
