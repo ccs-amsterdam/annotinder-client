@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import UserLogin from "./UserLogin";
 import HostLogin from "./HostLogin";
-import Backend, { getHostInfo } from "./Backend";
+import Backend from "./Backend";
 import { Loader, Button } from "semantic-ui-react";
 
 const Container = styled.div`
@@ -44,65 +44,43 @@ const LoginWindow = styled.div`
 const useLogin = (): [Backend, ReactNode] => {
   const [backend, setBackend] = useState();
   const [session, setSession] = useLocalStorage("session", { host: "", token: "" });
-  const [tryAutoLogin, setTryAutoLogin] = useState(true);
+  const [tryResumeSession, setTryResumeSession] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [hostInfo, setHostInfo] = useState();
-  const [token, setToken] = useState("");
 
-  const login = useCallback(
-    async (host, token) => {
-      if (!host || !token) return null;
-      if (backend) return null;
+  useEffect(() => {
+    if (!session.host || !session.token) {
+      setBackend(null);
+      setHostInfo(null);
+      setTryResumeSession(false);
+      return;
+    }
 
-      const b = new Backend(host, token);
-      try {
-        await b.init();
-        setSession({ host: host, token: token });
-        setBackend(b);
-        searchParams.delete("user_id");
-        searchParams.delete("jobtoken");
-        searchParams.delete("as_guest");
-        setSearchParams(searchParams);
-      } catch (e) {
-        try {
-          // if login failed, check if host is valid. If so, set hostInfo immediately
-          // so HostLogin doesn't need to render
-          const hostInfo = await getHostInfo(host);
-          hostInfo.host = host;
-          setHostInfo(hostInfo);
-        } catch (e) {
-          setHostInfo();
-        }
-        setToken(false);
+    const backend = new Backend(session.host, session.token);
+    backend
+      .init()
+      .then(() => {
+        setBackend(backend);
+        setSearchParams({ host: session.host });
+      })
+      .catch((e) => {
+        console.error(e);
         setBackend(null);
-      }
+        setHostInfo();
+      })
+      .finally(() => setTryResumeSession(false));
+  }, [session, setSession, setSearchParams]);
+
+  const setToken = useCallback(
+    (token) => {
+      setSession({ host: hostInfo?.host, token });
     },
-    [searchParams, backend, setSearchParams, setSession]
+    [hostInfo, setSession]
   );
 
-  useEffect(() => {
-    // Will only run once on mount if session has both host and token
-    if (!tryAutoLogin) return;
-    setTryAutoLogin(false);
-
-    // Never continue session if a user_id is provided.
-    if (searchParams.get("user_id")) return;
-
-    login(session.host, session.token);
-  }, [login, tryAutoLogin, searchParams, session.host, session.token]);
-
-  useEffect(() => {
-    // Will never infinite loop, because login either succeeds and sets backend, or fails
-    // and removes token (in which case login immediately stops)
-    if (tryAutoLogin) return;
-    login(hostInfo?.host, token);
-  }, [login, tryAutoLogin, hostInfo, token]);
-
-  console.log(tryAutoLogin.current);
-
   const render = () => {
-    if (!backend && tryAutoLogin) return <Loader active />;
+    if (!backend && tryResumeSession) return <Loader active />;
     if (!backend && !hostInfo)
       return (
         <HostLogin
@@ -112,7 +90,7 @@ const useLogin = (): [Backend, ReactNode] => {
           setSearchParams={setSearchParams}
         />
       );
-    if (!backend && !token)
+    if (!backend)
       return (
         <UserLogin
           setToken={setToken}
