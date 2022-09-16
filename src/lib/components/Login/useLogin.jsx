@@ -67,7 +67,9 @@ const useLogin = (): [Backend, ReactNode] => {
       .init()
       .then(() => {
         setBackend(backend);
-        setSearchParams({ host: session.host, job_id: backend?.restricted_job });
+        const params = { host: session.host };
+        if (backend?.restricted_job != null) params.job_id = backend.restricted_job;
+        setSearchParams(params);
       })
       .catch((e) => {
         console.error(e);
@@ -79,7 +81,6 @@ const useLogin = (): [Backend, ReactNode] => {
 
   const setToken = useCallback(
     (token) => {
-      console.log("whaaat");
       setSession({ host: hostInfo?.host, token });
     },
     [hostInfo, setSession]
