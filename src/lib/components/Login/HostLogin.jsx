@@ -1,88 +1,49 @@
 import React, { useState } from "react";
-import { Segment, Grid, Button, Form } from "semantic-ui-react";
+import { Icon, Grid, Button, Form } from "semantic-ui-react";
 import { getHostInfo } from "./Backend";
 import useWatchChange from "../../hooks/useWatchChange";
 
-const HostLogin = ({ setHostInfo, sessionHost, searchParams, setSearchParams }) => {
-  const [host, setHost] = useState(sessionHost);
-  const [error, setError] = useState("");
-  const paramHost = searchParams.get("host");
-  const [waitForParam, setWaitForParam] = useState(false);
+interface HostLoginProps {
+  setHost: SetState<string>;
+  hostInfoQuery: UseQueryResult;
+  session: { host: string, token: string };
+  searchParams: URLSearchParams;
+}
 
-  const tryHost = (host) => {
-    setHost(host);
-    return getHostInfo(host)
-      .then((hostinfo) => {
-        hostinfo.host = host;
-        searchParams.set("host", host);
-        setSearchParams(searchParams);
-        setHostInfo(hostinfo);
-        setError("");
-      })
-      .catch((e) => {
-        console.error(e);
-        setHostInfo(null);
-        setError("Invalid host");
-      });
-  };
+export const HostLogin = ({ setHost, hostInfoQuery, session, searchParams }: HostLoginProps) => {
+  const paramHost = searchParams.get("host");
+  const [hostInput, setHostInput] = useState(session.host);
 
   if (useWatchChange([paramHost])) {
     if (paramHost) {
-      setWaitForParam(true);
-      tryHost(paramHost).finally(() => setWaitForParam(false));
+      setHostInput(paramHost);
+      setHost(paramHost);
     }
   }
 
-  if (waitForParam) return null;
-
   return (
-    <Segment
-      placeholder
-      attached="bottom"
-      style={{
-        backdropFilter: "blur(3px)",
-        background: "#aaaaaaaa",
-        borderRadius: "10px",
-        position: "relative",
-      }}
-    >
-      <Grid stackable textAlign="center">
-        <Grid.Row>
-          <Grid.Column>
-            <Form>
-              <Form.Input
-                placeholder="Host"
-                name="host"
-                label="Host"
-                error={error || null}
-                value={host}
-                onChange={(e, d) => {
-                  setHost(d.value);
-                }}
-                icon="home"
-                iconPosition="left"
-                autoFocus
-              />
+    <div>
+      <Form loading={hostInfoQuery.isFetching} onSubmit={() => setHost(hostInput)}>
+        <Form.Input
+          placeholder="Host"
+          name="host"
+          label="Host"
+          error={hostInfoQuery.isError ? "Could not connect to server" : null}
+          value={hostInput}
+          onChange={(e, d) => {
+            setHostInput(d.value);
+          }}
+          icon="home"
+          iconPosition="left"
+          autoFocus
+          style={{ width: "260px" }}
+        />
 
-              <Button disabled={host.length === 0} primary fluid onClick={() => tryHost(host)}>
-                Select host
-              </Button>
-            </Form>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-      <span
-        style={{
-          position: "absolute",
-          color: "grey",
-          fontSize: "10px",
-          left: "5px",
-          bottom: "-20px",
-        }}
-      >
-        Version 0.3.4
-      </span>
-    </Segment>
+        <Button disabled={hostInput.length === 0} primary fluid>
+          Connect to server
+        </Button>
+      </Form>
+    </div>
   );
 };
 

@@ -16,9 +16,9 @@ export async function getHostInfo(host: string) {
   return res.data;
 }
 
-export async function passwordLogin(host: string, name: string, password: string) {
+export async function passwordLogin(host: string, email: string, password: string) {
   const d = new FormData();
-  d.append("username", name);
+  d.append("username", email);
   d.append("password", password);
   const response = await Axios.post(`${host}/users/me/token`, d);
   return response.data.token;
@@ -30,7 +30,12 @@ export async function redeemJobToken(host: string, token: string, user_id: strin
   return res.data;
 }
 
-interface AuthToken {
+export async function requestMagicLink(host: string, email: string) {
+  const res = await Axios.get(`${host}/users/${email}/magiclink`);
+  return res.data;
+}
+
+interface LoginDetails {
   token: string;
   name: string;
   is_admin: boolean;
@@ -55,7 +60,7 @@ class Backend {
   }
 
   async init() {
-    const d = await this.getToken();
+    const d = await this.login();
     this.name = d.name;
     this.is_admin = d.is_admin;
     this.token = d.token;
@@ -64,10 +69,16 @@ class Backend {
 
   // GET
 
-  async getToken(user: string = undefined): Promise<AuthToken> {
-    const path = `users/${user || "me"}/token`;
+  async login(user: string = undefined): Promise<LoginDetails> {
+    const path = `users/me/login`;
     const res = await this.api.get(path);
     return res.data;
+  }
+
+  async getToken(user: string = undefined): Promise<string> {
+    const path = `users/${user || "me"}/token`;
+    const res = await this.api.get(path);
+    return res.data.token;
   }
   async getJobToken(job_id: number): Promise<string> {
     const res = await this.api.get(`codingjob/${job_id}/token`);

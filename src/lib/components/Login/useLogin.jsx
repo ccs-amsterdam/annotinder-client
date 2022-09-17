@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import UserLogin from "./UserLogin";
 import HostLogin from "./HostLogin";
+import Login from "./Login";
 import Backend from "./Backend";
 import { Loader, Button } from "semantic-ui-react";
 
@@ -50,34 +51,21 @@ const LoginWindow = styled.div`
 const useLogin = (): [Backend, ReactNode] => {
   const [backend, setBackend] = useState();
   const [session, setSession] = useLocalStorage("session", { host: "", token: "" });
-  const [tryResumeSession, setTryResumeSession] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [hostInfo, setHostInfo] = useState();
-  useEffect(() => {
-    if (!session.host || !session.token) {
-      setBackend(null);
-      setHostInfo(null);
-      setTryResumeSession(false);
-      return;
-    }
+  const has_jobtoken = !!searchParams.get("jobtoken");
+  const [tryResumeSession, setTryResumeSession] = useState(!has_jobtoken);
 
-    const backend = new Backend(session.host, session.token);
-    backend
-      .init()
-      .then(() => {
-        setBackend(backend);
-        const params = { host: session.host };
-        if (backend?.restricted_job != null) params.job_id = backend.restricted_job;
-        setSearchParams(params);
-      })
-      .catch((e) => {
-        console.error(e);
-        setBackend(null);
-        setHostInfo();
-      })
-      .finally(() => setTryResumeSession(false));
-  }, [session, setSession, setSearchParams]);
+  const [hostInfo, setHostInfo] = useState();
+
+  // need login here as well...
+  // make as separate hook
+  // also let session carry a job_id (which can be given by jobtoken)
+
+  // useEffect(() => {
+  //   if (!tryResumeSession) return
+  //   setTryResumeSession(false)
+  //   if (!session.host || !session.token) return
 
   const setToken = useCallback(
     (token) => {
@@ -87,26 +75,8 @@ const useLogin = (): [Backend, ReactNode] => {
   );
 
   const render = () => {
-    if (!backend && tryResumeSession) return <Loader active />;
-    if (!backend && !hostInfo)
-      return (
-        <HostLogin
-          setHostInfo={setHostInfo}
-          sessionHost={session.host}
-          searchParams={searchParams}
-          setSearchParams={setSearchParams}
-        />
-      );
-    if (!backend)
-      return (
-        <UserLogin
-          setToken={setToken}
-          setHostInfo={setHostInfo}
-          hostInfo={hostInfo}
-          searchParams={searchParams}
-          setSearchParams={setSearchParams}
-        />
-      );
+    //if (!backend && tryResumeSession) return <Loader active />;
+    if (!backend) return <Login backend={backend} setBackend={setBackend} />;
     return (
       <Logout
         setBackend={setBackend}

@@ -7,6 +7,7 @@ import { Column, RowObj, SetState } from "../../../types";
 import Backend from "../../Login/Backend";
 
 const columns: Column[] = [
+  { name: "id", width: 2 },
   { name: "role", width: 2, f: (row) => (row.is_admin ? "admin" : "coder") },
   { name: "name", width: 11, title: true },
 ];
@@ -57,16 +58,16 @@ const LoginLinkButton = ({ row, backend, style }: LoginLinkButtonProps) => {
     // to just load this if it's being requested
     if (!open) return;
     backend
-      .getToken(row.name)
+      .getToken(row.id)
       .then((token) => {
         const qrhost = backend.host.replace(":", "%colon%");
         setLink({
-          url: `${window.location.origin + window.location.pathname}?host=${backend.host}&token=${
-            token.token
-          }`,
-          qrUrl: `${window.location.origin + window.location.pathname}?host=${qrhost}&token=${
-            token.token
-          }`,
+          url: `${window.location.origin + window.location.pathname}?host=${
+            backend.host
+          }&token=${token}`,
+          qrUrl: `${
+            window.location.origin + window.location.pathname
+          }?host=${qrhost}&token=${token}`,
         });
       })
       .catch((e) => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Header, Divider, Segment, Grid, Button, Form, Icon } from "semantic-ui-react";
 import { HostInfo, SetState } from "../../types";
 import useLocalStorage from "../../hooks/useLocalStorage";
-import Backend, { passwordLogin, redeemJobToken } from "./Backend";
+import Backend, { passwordLogin, redeemJobToken, requestMagicLink } from "./Backend";
 
 interface UserLoginProps {
   setToken: SetState<string>;
@@ -11,59 +11,126 @@ interface UserLoginProps {
   setSearchParams: any;
 }
 
-const UserLogin = ({
-  setToken,
-  hostInfo,
-  setHostInfo,
-  searchParams,
-  setSearchParams,
-}: UserLoginProps) => {
+const UserLogin = ({ setToken, hostInfo, searchParams, setSearchParams }: UserLoginProps) => {
   const host = hostInfo.host;
   const userId = searchParams.get("user_id");
   const jobtoken = searchParams.get("jobtoken");
   const asGuest = searchParams.get("as_guest");
 
   return (
-    <Segment placeholder attached="bottom" style={{ borderRadius: "10px", position: "relative" }}>
-      <Grid textAlign="center">
-        <Grid.Row>
-          <Grid.Column style={{ fontSize: "1.5em", fontWeight: "bold" }}>
-            {hostInfo.host}
-            {"  "}
-            <Icon
-              color="blue"
-              name="undo"
-              onClick={() => {
-                searchParams.delete("host");
-                setSearchParams(searchParams);
-                setHostInfo();
-              }}
-              style={{ cursor: "pointer" }}
-            />
-          </Grid.Column>
-        </Grid.Row>
-
-        <Grid.Row>
-          {jobtoken ? (
-            <>
-              <Divider vertical>Or</Divider>
-              <AsGuest
-                setToken={setToken}
-                host={hostInfo.host}
-                userId={userId}
-                jobtoken={jobtoken}
-                asGuest={asGuest}
-              />
-            </>
-          ) : null}
-          <AsUser setToken={setToken} host={host} />
-        </Grid.Row>
-      </Grid>
-    </Segment>
+    <>
+      {jobtoken ? (
+        <>
+          <Divider vertical>Or</Divider>
+          <GuestLogin
+            setToken={setToken}
+            host={hostInfo.host}
+            userId={userId}
+            jobtoken={jobtoken}
+            asGuest={asGuest}
+          />
+        </>
+      ) : null}
+      <RegisteredLogin setToken={setToken} host={host} />
+    </>
   );
 };
 
-const AsGuest = ({ setToken, host, userId, jobtoken, asGuest }) => {
+const RegisteredLogin = ({ setToken, host }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [invalidEmail, setInvalidEmail] = useState(false);
+  const [invalidPassword, setInvalidPassword] = useState(false);
+  const [mode, setMode] = useState("magiclink");
+
+  // const hostInfoQuery = useQuery(["hostInfo", host], () => getHostInfo(host), {
+  //   enabled: !!host,
+  //   retry: false,
+  // });
+
+  const validEmail = () => {
+    const notEmail = !email.match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+
+    if (notEmail) {
+      setInvalidEmail(true);
+      return false;
+    }
+    return true;
+  };
+
+  const tryPasswordLogin = async () => {
+    if (!validEmail()) return;
+
+    setPassword("");
+    try {
+      const token = await passwordLogin(host, email, password);
+      setToken(token);
+    } catch (e) {
+      setToken("");
+      setInvalidPassword(true);
+      console.error(e);
+    }
+  };
+
+  const magicLink = async (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    console.log(e);
+    if (!validEmail()) return;
+    const ml = await requestMagicLink(host, email);
+    console.log(ml);
+  };
+
+  return (
+    <div>
+      <Form onSubmit={() => tryPasswordLogin()}>
+        <Form.Input
+          placeholder="email"
+          name="email"
+          autoComplete="email"
+          error={invalidEmail ? "Please enter a valid email adress" : false}
+          label="Email"
+          icon="mail"
+          iconPosition="left"
+          value={email}
+          onChange={(e, d) => {
+            setEmail(d.value);
+          }}
+          style={{ width: "260px" }}
+        />
+
+        <div>
+          <Form.Input
+            placeholder="password"
+            name="password"
+            autoComplete="current-password"
+            error={invalidPassword ? "Invalid password for this Host & Username" : false}
+            label="Password"
+            type="password"
+            icon="lock"
+            iconPosition="left"
+            value={password}
+            onChange={(e, d) => {
+              setInvalidPassword(false);
+              setPassword(d.value);
+            }}
+            style={{ width: "260px" }}
+          />
+          <Button key="password" disabled={password.length === 0} primary fluid>
+            Sign in
+          </Button>
+        </div>
+        <Button key="magiclink" fluid secondary onClick={magicLink}>
+          Send Email link
+        </Button>
+      </Form>
+    </div>
+  );
+};
+
+const GuestLogin = ({ setToken, host, userId, jobtoken, asGuest }) => {
   const [guestAuth, setGuestAuth] = useLocalStorage("guest_auth", {});
 
   const key = `host:${host};user_id:${userId};jobtoken:${jobtoken}`;
@@ -103,61 +170,6 @@ const AsGuest = ({ setToken, host, userId, jobtoken, asGuest }) => {
           {alreadyGuest ? "Continue" : "Log in"}
         </Button>
       </div>
-    </Grid.Column>
-  );
-};
-
-const AsUser = ({ setToken, host }) => {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [invalidPassword, setInvalidPassword] = useState(false);
-
-  const tryPasswordLogin = async () => {
-    setPassword("");
-    try {
-      const token = await passwordLogin(host, name, password);
-      setToken(token);
-    } catch (e) {
-      setToken("");
-      setInvalidPassword(true);
-      console.error(e);
-    }
-  };
-
-  return (
-    <Grid.Column width="8">
-      <Header style={{ color: "rgb(33, 133, 208)" }}>User login</Header>
-
-      <Form>
-        <Form.Input
-          placeholder="Username"
-          name="user"
-          label="Username"
-          icon="user"
-          iconPosition="left"
-          value={name}
-          onChange={(e, d) => {
-            setName(d.value);
-          }}
-        />
-        <Form.Input
-          placeholder="password"
-          name="password"
-          error={invalidPassword ? "Invalid password for this Host & Username" : false}
-          label="Password"
-          type="password"
-          icon="lock"
-          iconPosition="left"
-          value={password}
-          onChange={(e, d) => {
-            setInvalidPassword(false);
-            setPassword(d.value);
-          }}
-        />
-        <Button disabled={password.length === 0} primary fluid onClick={tryPasswordLogin}>
-          Sign in
-        </Button>
-      </Form>
     </Grid.Column>
   );
 };

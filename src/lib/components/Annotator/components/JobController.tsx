@@ -100,7 +100,7 @@ interface UserButtonProps {
 }
 
 const UserButton = ({ fullScreenNode, jobServer }: UserButtonProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  //const [searchParams, setSearchParams] = useSearchParams();
 
   return (
     <Popup
@@ -124,7 +124,7 @@ const UserButton = ({ fullScreenNode, jobServer }: UserButtonProps) => {
       <Popup.Content>
         <Button.Group vertical fluid>
           <BackToOverview jobServer={jobServer} />
-          <Button
+          {/* <Button
             secondary
             icon="user"
             content="Close job"
@@ -135,7 +135,7 @@ const UserButton = ({ fullScreenNode, jobServer }: UserButtonProps) => {
               jobServer.setJobServer(null);
               //window.location.reload();
             }}
-          />
+          /> */}
         </Button.Group>
       </Popup.Content>
     </Popup>
@@ -148,6 +148,7 @@ interface BackToOverviewProps {
 
 const BackToOverview = ({ jobServer }: BackToOverviewProps) => {
   const navigate = useNavigate();
+  console.log(jobServer);
   if (!jobServer?.return_link) return null;
   return (
     <Button
