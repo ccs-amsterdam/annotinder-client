@@ -1,25 +1,39 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 // https://blog.logrocket.com/using-localstorage-react-hooks/
-import { SetState } from "../types";
 
 function getStorageValue(key: string, defaultValue: any): any {
   // getting stored value
   const saved = localStorage.getItem(key);
   const initial = JSON.parse(saved);
+  if (key === "guest_auth") console.log(initial, saved);
   return initial || defaultValue;
 }
 
-const useLocalStorage = (key: string, defaultValue: any): [any, SetState<any>] => {
+const useLocalStorage = (key: string, defaultValue: any): [any, (value: any) => void] => {
   const [value, setValue] = useState(() => {
     return getStorageValue(key, defaultValue);
   });
 
-  useEffect(() => {
-    // storing input name
-    localStorage.setItem(key, JSON.stringify(value));
-  }, [key, value]);
+  // This way the local storage is updated immediately, to prevent this step being skipped
+  // when component unmounts first (which happened with guest_auth)
+  const setLocalStorage = useCallback(
+    (newvalue: any) => {
+      if (typeof newvalue === "function") {
+        newvalue = newvalue(value);
+      }
+      localStorage.setItem(key, JSON.stringify(newvalue));
+      setValue(newvalue);
+    },
+    [key, value, setValue]
+  );
 
-  return [value, setValue];
+  // useEffect(() => {
+  //   // storing input name
+  //   if (key === "guest_auth") console.log(JSON.stringify(value));
+  //   localStorage.setItem(key, JSON.stringify(value));
+  // }, [key, value]);
+
+  return [value, setLocalStorage];
 };
 
 export default useLocalStorage;

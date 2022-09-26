@@ -275,9 +275,7 @@ const SettingsPopup = ({
                   max={80}
                   type="range"
                   value={settings.splitHeight}
-                  onChange={(e, d) =>
-                    setSettings((state: any) => ({ ...state, splitHeight: d.value }))
-                  }
+                  onChange={(e, d) => setSettings({ ...settings, splitHeight: d.value })}
                 />
               </Form.Field>
             )}
@@ -293,9 +291,7 @@ const SettingsPopup = ({
                 max={1.6}
                 type="range"
                 value={settings.upperTextSize}
-                onChange={(e, d) =>
-                  setSettings((state: any) => ({ ...state, upperTextSize: d.value }))
-                }
+                onChange={(e, d) => setSettings({ ...settings, upperTextSize: d.value })}
               />
             </Form.Field>
             <Form.Field>
@@ -310,9 +306,7 @@ const SettingsPopup = ({
                 max={1.6}
                 type="range"
                 value={settings.lowerTextSize}
-                onChange={(e, d) =>
-                  setSettings((state: any) => ({ ...state, lowerTextSize: d.value }))
-                }
+                onChange={(e, d) => setSettings({ ...settings, lowerTextSize: d.value })}
               />
             </Form.Field>
           </Form.Group>

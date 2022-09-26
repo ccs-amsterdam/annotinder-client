@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, ReactElement } from "react";
 import { Segment } from "semantic-ui-react";
 import AnnotateUnit from "./components/AnnotateUnit";
 import FullScreenWindow from "./components/FullScreenWindow";
@@ -23,9 +23,15 @@ interface AnnotatorProps {
   jobServer: JobServer;
   askFullScreen?: boolean;
   cantLeave?: boolean;
+  authForm?: ReactElement;
 }
 
-const Annotator = ({ jobServer, askFullScreen = false, cantLeave = false }: AnnotatorProps) => {
+const Annotator = ({
+  jobServer,
+  askFullScreen = false,
+  cantLeave = false,
+  authForm,
+}: AnnotatorProps) => {
   const [indexedUnit, setIndexedUnit] = useState<IndexedUnit>({ unit: null, index: -1 });
   const [unitProgress, setUnitProgress] = useState(0);
 
@@ -54,6 +60,7 @@ const Annotator = ({ jobServer, askFullScreen = false, cantLeave = false }: Anno
           fullScreenButton={fullScreenButton}
           fullScreenNode={fullScreenNode}
           cantLeave={cantLeave}
+          authForm={authForm}
         >
           <Segment basic style={{ height: "100%", padding: "0", margin: "0" }}>
             <AnnotateUnit

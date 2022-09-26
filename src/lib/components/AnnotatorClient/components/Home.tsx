@@ -99,7 +99,7 @@ const MenuBar = ({ backend, authForm, menuItem, setMenuItem }: MenuBarProps) => 
           <List>
             <List.Item>
               <List.Icon name="home" />
-              <List.Content>{backend.host}</List.Content>
+              <List.Content>{backend.host.replace(/http[s]?:\/\//, "")}</List.Content>
             </List.Item>
             <List.Item>
               <List.Icon name="user" />

@@ -282,7 +282,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
               max={1.6}
               type="range"
               value={settings.textSize}
-              onChange={(e, d) => setSettings((state: any) => ({ ...state, textSize: d.value }))}
+              onChange={(e, d) => setSettings({ ...settings, textSize: d.value })}
             />
           </Form.Field>
         </Form.Group>

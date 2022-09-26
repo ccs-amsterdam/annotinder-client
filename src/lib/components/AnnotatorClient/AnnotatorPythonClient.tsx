@@ -11,28 +11,29 @@ import { JobServer } from "../../types";
 import useLogin from "../Login/useLogin";
 
 const AnnotatorPythonClient = () => {
-  const [backend, loginscreen] = useLogin();
+  const [backend, authForm] = useLogin();
   const [jobServer, initJobServer] = useJobServer(backend);
-  if (!backend) return loginscreen;
+  if (!backend) return authForm;
 
   if (initJobServer) return <Loader active content="Looking for codingjob" />;
 
   if (!jobServer) {
     // if backend is connected, but there is no jobServer (because no job_id was passed in the url)
     // show a screen with some relevant info for the user on this host. Like current / new jobs
-    return <Home backend={backend} authForm={loginscreen} />;
+    return <Home backend={backend} authForm={authForm} />;
   }
 
-  return <Annotator jobServer={jobServer} />;
+  return <Annotator jobServer={jobServer} authForm={authForm} />;
 };
 
 const useJobServer = (backend: Backend): [JobServer, boolean] => {
   const [jobServer, setJobServer] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [initializing, setInitializing] = useState(true);
-  //let jobId = backend?.restricted_job || searchParams.get("job_id");
+
+  let jobId = backend?.restricted_job;
   const jobIdParam = searchParams.get("job_id");
-  const jobId = jobIdParam != null ? Number(jobIdParam) : null;
+  if (jobId == null && jobIdParam) jobId = Number(jobIdParam);
 
   useEffect(() => {
     if (!backend) {

@@ -120,6 +120,6 @@ span.token.annotated.allRight > span.text {
 }
 
 .menu > .selected {
-  background: #1678c2 !important;
+  background: var(--primary) !important;
   color: white !important;
 }

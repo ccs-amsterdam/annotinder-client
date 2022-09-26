@@ -1,9 +1,8 @@
-import React, { memo, useState, useCallback, useEffect } from "react";
+import { memo, ReactElement, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import Backend, { getHostInfo } from "./Backend";
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { getHostInfo } from "./Backend";
+import { useQuery } from "@tanstack/react-query";
 import { SetState } from "../../types";
-import useLocalStorage from "../../hooks/useLocalStorage";
 import UserLogin from "./UserLogin";
 import HostLogin from "./HostLogin";
 import styled from "styled-components";
@@ -33,72 +32,61 @@ const FormBox = styled.div`
   overflow: auto;
 `;
 
+const Title = styled.h1`
+  color: var(--primary);
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+`;
+
 interface LoginProps {
-  backend: Backend;
-  setBackend: SetState<Backend>;
+  login: (host: string, token: string) => void;
+  sessionList: ReactElement;
 }
 
-const Login = ({ backend, setBackend }: LoginProps) => {
-  const [session, setSession] = useLocalStorage("session", { host: "", token: "" });
+const Login = ({ login, sessionList }: LoginProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [host, setHost] = useState("");
-  const hostInfoQuery = useQuery(["hostInfo", host], () => getHostInfo(host), {
+  const [host, setHost] = useState(searchParams.get("host") || "");
+  const [email, setEmail] = useState("");
+  const has_jobtoken = !!searchParams.get("jobtoken");
+  const canRegister = false; // placeholder for if at some point we want to enable registering
+  const hostInfoQuery = useQuery(["hostInfo", host, email], () => getHostInfo(host, email), {
     enabled: !!host,
     retry: false,
   });
 
-  const login = useCallback(
-    (token: string) => {
-      if (!host || !token) {
-        setBackend(null);
-        return;
-      }
-      const backend = new Backend(host, token);
-      backend
-        .init()
-        .then(() => {
-          setBackend(backend);
-          setSession({ host, token });
-        })
-        .catch((e: Error) => {
-          console.error(e);
-          setBackend(null);
-        });
-    },
-
-    [host, setBackend]
-  );
+  let hostLoginSuccess =
+    canRegister || has_jobtoken ? hostInfoQuery.data != null : hostInfoQuery.data?.user != null;
 
   const render = () => {
-    if (!hostInfoQuery.data)
+    if (!hostLoginSuccess)
       return (
         <HostLogin
+          host={host}
+          email={email}
           setHost={setHost}
+          setEmail={setEmail}
+          canRegister={canRegister}
           hostInfoQuery={hostInfoQuery}
-          session={session}
-          searchParams={searchParams}
         />
       );
-    return (
-      <UserLogin
-        setToken={login}
-        hostInfo={hostInfoQuery.data}
-        searchParams={searchParams}
-        setSearchParams={setSearchParams}
-      />
-    );
+    return <UserLogin login={login} hostInfo={hostInfoQuery.data} searchParams={searchParams} />;
   };
 
   return (
     <LoginContainer>
+      <Title>AnnoTinder</Title>
       {hostInfoQuery.data ? (
         <HostLogout
           host={host}
+          email={email}
           setHost={setHost}
+          setEmail={setEmail}
           searchParams={searchParams}
           setSearchParams={setSearchParams}
         />
-      ) : null}
+      ) : (
+        sessionList
+      )}
       <FormBox>
         <div>{render()}</div>
       </FormBox>
@@ -108,26 +96,40 @@ const Login = ({ backend, setBackend }: LoginProps) => {
 
 const HostLogoutDiv = styled.div`
   margin: auto;
-  margin-bottom: 15px;
+  margin-bottom: 2rem;
   padding: 5px 10px;
-  border-radius: 10px;
-  border: 1px solid #2185d0;
   display: flex;
+  text-align: left;
+  justify-content: space-between;
   color: #666666;
 `;
 
 interface HostLogoutProps {
   host: string;
+  email: string;
   setHost: SetState<string>;
+  setEmail: SetState<string>;
   searchParams: URLSearchParams;
   setSearchParams: any;
 }
 
-export const HostLogout = ({ host, setHost, searchParams, setSearchParams }: HostLogoutProps) => {
+export const HostLogout = ({
+  host,
+  email,
+  setHost,
+  setEmail,
+  searchParams,
+  setSearchParams,
+}: HostLogoutProps) => {
   if (!host) return null;
+
   return (
     <HostLogoutDiv>
-      <span>{host}</span>
+      <div>
+        <b>{host.replace(/http[s]?:\/\//, "")}</b>
+        <br />
+        <span>{email}</span>
+      </div>
       <Icon
         color="blue"
         name="cancel"
@@ -135,8 +137,9 @@ export const HostLogout = ({ host, setHost, searchParams, setSearchParams }: Hos
           searchParams.delete("host");
           setSearchParams(searchParams);
           setHost("");
+          setEmail("");
         }}
-        style={{ cursor: "pointer", paddingLeft: "4px" }}
+        style={{ cursor: "pointer", paddingLeft: "4px", fontSize: "1.5rem" }}
       />
     </HostLogoutDiv>
   );

@@ -10,8 +10,8 @@ import {
   ConditionReport,
 } from "../../types";
 
-export async function getHostInfo(host: string) {
-  const res = await Axios.get(`${host}/host`);
+export async function getHostInfo(host: string, email: string) {
+  const res = await Axios.get(`${host}/host`, { params: { email } });
   res.data.host = host;
   return res.data;
 }
@@ -38,8 +38,10 @@ export async function requestMagicLink(host: string, email: string) {
 interface LoginDetails {
   token: string;
   name: string;
+  email: string;
   is_admin: boolean;
   restricted_job: number;
+  restricted_job_label: string;
 }
 
 class Backend {
@@ -48,7 +50,9 @@ class Backend {
   api: AxiosInstance;
   is_admin: boolean;
   name: string;
+  email: string;
   restricted_job: number;
+  restricted_job_label: string;
 
   constructor(host: string, token: string) {
     this.host = host;
@@ -62,9 +66,11 @@ class Backend {
   async init() {
     const d = await this.login();
     this.name = d.name;
+    this.email = d.email;
     this.is_admin = d.is_admin;
     this.token = d.token;
     this.restricted_job = d.restricted_job;
+    this.restricted_job_label = d.restricted_job_label;
   }
 
   // GET

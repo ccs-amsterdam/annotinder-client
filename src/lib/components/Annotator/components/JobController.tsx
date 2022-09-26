@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { Popup, Button, Icon } from "semantic-ui-react";
 
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import IndexController from "./IndexController";
 import Finished from "./Finished";
 import { FullScreenNode, JobServer, SetState } from "../../../types";
@@ -15,6 +15,7 @@ interface JobControllerProps {
   fullScreenButton: ReactElement;
   fullScreenNode: FullScreenNode;
   cantLeave: boolean;
+  authForm?: ReactElement;
   health?: any;
 }
 
@@ -32,6 +33,7 @@ const JobController = ({
   fullScreenButton,
   fullScreenNode,
   cantLeave,
+  authForm,
   health,
 }: JobControllerProps) => {
   const [maxHeight, maxWidth] = getWindowSize(jobServer);
@@ -81,7 +83,11 @@ const JobController = ({
             <Button.Group>
               {fullScreenButton}
               {cantLeave ? null : (
-                <UserButton fullScreenNode={fullScreenNode} jobServer={jobServer} />
+                <UserButton
+                  fullScreenNode={fullScreenNode}
+                  jobServer={jobServer}
+                  authForm={authForm}
+                />
               )}
             </Button.Group>
           </div>
@@ -97,9 +103,10 @@ const JobController = ({
 interface UserButtonProps {
   fullScreenNode: FullScreenNode;
   jobServer: JobServer;
+  authForm: ReactElement;
 }
 
-const UserButton = ({ fullScreenNode, jobServer }: UserButtonProps) => {
+const UserButton = ({ fullScreenNode, jobServer, authForm }: UserButtonProps) => {
   //const [searchParams, setSearchParams] = useSearchParams();
 
   return (
@@ -123,7 +130,8 @@ const UserButton = ({ fullScreenNode, jobServer }: UserButtonProps) => {
     >
       <Popup.Content>
         <Button.Group vertical fluid>
-          <BackToOverview jobServer={jobServer} />
+          {jobServer?.return_link ? <BackToOverview jobServer={jobServer} /> : authForm}
+
           {/* <Button
             secondary
             icon="user"

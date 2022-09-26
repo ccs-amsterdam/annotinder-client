@@ -1,0 +1,15 @@
+body {
+  --primary: #1678c2 !important;
+  --primary-light: #7bb6ea !important;
+  --secondary: #1b1c1d !important;
+}
+
+.ui.primary.button {
+  background: var(--primary) !important;
+  color: white !important;
+}
+
+.ui.secondary.button {
+  background: var(--secondary) !important;
+  color: white !important;
+}

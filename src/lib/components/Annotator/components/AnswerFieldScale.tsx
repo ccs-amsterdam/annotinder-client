@@ -234,7 +234,7 @@ const Items = ({
               <div style={{ color: "black", width: "100%", textAlign: "center", padding: "0 5px" }}>
                 <b>{itemlabel}</b>
               </div>
-              <div style={{ width: "100%", textAlign: "center", color: "#1678c2" }}>
+              <div style={{ width: "100%", textAlign: "center", color: "var(--primary)" }}>
                 <i>
                   {answerItems?.[itemIndex]?.values?.[0]
                     ? answerItems[itemIndex].values?.[0]
