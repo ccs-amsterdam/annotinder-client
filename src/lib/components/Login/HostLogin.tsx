@@ -53,43 +53,46 @@ export const HostLogin = ({
   };
 
   return (
-    <div>
-      <Form loading={hostInfoQuery.isFetching} onSubmit={submit}>
-        <h3 style={{ color: "var(--primary)", marginBottom: "0" }}>Sign-in</h3>
-        <i>provide host and email address</i>
-        <Form.Input
-          placeholder="Host"
-          name="host"
-          error={hostInfoQuery.isError ? "Could not connect to server" : null}
-          value={hostInput}
-          onChange={(e, d) => {
-            setHostInput(d.value);
-          }}
-          icon="home"
-          iconPosition="left"
-          autoFocus
-          style={{ width: "260px", marginTop: "0.5rem" }}
-        />
-        <Form.Input
-          placeholder="email"
-          name="email"
-          autoComplete="email"
-          error={emailError()}
-          icon="mail"
-          iconPosition="left"
-          value={emailInput}
-          onChange={(e, d) => {
-            setEmailInput(d.value);
-            setInvalidEmail(false);
-          }}
-          style={{ width: "260px" }}
-        />
+    <Form
+      loading={hostInfoQuery.isFetching}
+      onSubmit={submit}
+      style={{ width: "250px", maxWidth: "100%" }}
+    >
+      <h3 style={{ color: "var(--primary)", marginBottom: "0" }}>Sign-in</h3>
+      <i>provide host and email address</i>
+      <Form.Input
+        fluid
+        placeholder="Host"
+        name="host"
+        error={hostInfoQuery.isError ? "Could not connect to server" : null}
+        value={hostInput}
+        onChange={(e, d) => {
+          setHostInput(d.value);
+        }}
+        icon="home"
+        iconPosition="left"
+        autoFocus
+        style={{ marginTop: "0.5rem" }}
+      />
+      <Form.Input
+        fluid
+        placeholder="email"
+        name="email"
+        autoComplete="email"
+        error={emailError()}
+        icon="mail"
+        iconPosition="left"
+        value={emailInput}
+        onChange={(e, d) => {
+          setEmailInput(d.value);
+          setInvalidEmail(false);
+        }}
+      />
 
-        <Button primary disabled={hostInput.length === 0} fluid>
-          Connect to server
-        </Button>
-      </Form>
-    </div>
+      <Button primary disabled={hostInput.length === 0} fluid>
+        Connect to server
+      </Button>
+    </Form>
   );
 };
 

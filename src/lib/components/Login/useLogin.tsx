@@ -14,13 +14,15 @@ const Container = styled.div`
 `;
 
 const LoginWindow = styled.div`
+  width: 400px;
+  max-width: 100%;
+  padding: 2rem 1rem;
   position: relative;
   margin: auto;
 `;
 
 const useLogin = (): [Backend, ReactElement] => {
   const [session, login, logout, storeSession, sessionList] = useSessions();
-
   const backendQuery = useQuery<Backend>(
     ["backend", session],
     async () => {
@@ -31,6 +33,8 @@ const useLogin = (): [Backend, ReactElement] => {
       return backend;
     },
     {
+      retry: 2,
+      refetchOnWindowFocus: false,
       enabled: !!session.host,
     }
   );

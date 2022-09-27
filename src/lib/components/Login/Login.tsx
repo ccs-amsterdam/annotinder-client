@@ -11,15 +11,13 @@ import { Icon } from "semantic-ui-react";
 // make separate useSession hook that returns the current session and tries auto login
 
 const LoginContainer = styled.div`
-  & {
-    backdrop-filter: blur(3px);
-    border-radius: 10px;
-    position: relative;
-    text-align: center;
-    display: flex;
-    max-width: 280px;
-    flex-direction: column;
-  }
+  backdrop-filter: blur(3px);
+  border-radius: 10px;
+  position: relative;
+  text-align: center;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
 `;
 
 const FormBox = styled.div`
@@ -27,8 +25,6 @@ const FormBox = styled.div`
   display: grid;
   align-items: center;
   justify-items: center;
-  maxheight: 100%;
-  maxwidth: 100%;
   overflow: auto;
 `;
 
@@ -96,18 +92,19 @@ const Login = ({ login, sessionList }: LoginProps) => {
 
 const HostLogoutDiv = styled.div`
   margin: auto;
+  width: 100%;
   margin-bottom: 2rem;
   padding: 5px 10px;
   display: flex;
-  text-align: left;
+  text-align: center;
   justify-content: space-between;
   color: #666666;
 `;
 
 const HostDetails = styled.div`
   overflow: auto;
-
-  max-width: 260px;
+  width: 400px;
+  max-width: 100%;
 `;
 
 interface HostLogoutProps {
@@ -135,18 +132,19 @@ export const HostLogout = ({
         <b>{host.replace(/http[s]?:\/\//, "")}</b>
         <br />
         <span>{email}</span>
+        <br />
+        <Icon
+          color="blue"
+          name="cancel"
+          onClick={() => {
+            searchParams.delete("host");
+            setSearchParams(searchParams);
+            setHost("");
+            setEmail("");
+          }}
+          style={{ cursor: "pointer", padding: "0.5rem", fontSize: "1.5rem" }}
+        />
       </HostDetails>
-      <Icon
-        color="blue"
-        name="cancel"
-        onClick={() => {
-          searchParams.delete("host");
-          setSearchParams(searchParams);
-          setHost("");
-          setEmail("");
-        }}
-        style={{ cursor: "pointer", paddingLeft: "4px", fontSize: "1.5rem" }}
-      />
     </HostLogoutDiv>
   );
 };

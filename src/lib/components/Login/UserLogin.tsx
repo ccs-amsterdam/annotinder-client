@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Form, Input, Message } from "semantic-ui-react";
 import styled from "styled-components";
-import { HostInfo } from "../../types";
+import { HostInfo, SetState } from "../../types";
 import { passwordLogin, redeemMagicLink, requestMagicLink } from "./Backend";
 import JobTokenLogin from "./JobTokenLogin";
 
@@ -46,10 +46,20 @@ interface RegisteredLoginProps {
 }
 
 const RegisteredLogin = ({ login, host, email, hasPassword }: RegisteredLoginProps) => {
+  const [useMagicLink, setUseMagicLink] = useState(false);
+
   return (
     <div>
-      <PasswordLogin host={host} email={email} login={login} hasPassword={hasPassword} />
-      <MagicLinkLogin host={host} email={email} login={login} />
+      {hasPassword && !useMagicLink ? (
+        <PasswordLogin host={host} email={email} login={login} />
+      ) : null}
+      <MagicLinkLogin
+        host={host}
+        email={email}
+        login={login}
+        useMagicLink={useMagicLink}
+        setUseMagicLink={setUseMagicLink}
+      />
     </div>
   );
 };
@@ -58,10 +68,9 @@ interface PasswordLoginProps {
   host: string;
   email: string;
   login: (host: string, token: string) => void;
-  hasPassword: boolean;
 }
 
-const PasswordLogin = ({ host, email, login, hasPassword }: PasswordLoginProps) => {
+const PasswordLogin = ({ host, email, login }: PasswordLoginProps) => {
   const [loginError, setLoginError] = useState("");
   const [password, setPassword] = useState("");
 
@@ -80,8 +89,6 @@ const PasswordLogin = ({ host, email, login, hasPassword }: PasswordLoginProps) 
       console.error(e);
     }
   };
-
-  if (!hasPassword) return null;
 
   return (
     <Form onSubmit={() => tryPasswordLogin()}>
@@ -139,12 +146,19 @@ interface MagicLinkLoginProps {
   host: string;
   email: string;
   login: (host: string, token: string) => void;
+  useMagicLink: boolean;
+  setUseMagicLink: SetState<boolean>;
 }
 
-const MagicLinkLogin = ({ host, email, login }: MagicLinkLoginProps) => {
+const MagicLinkLogin = ({
+  host,
+  email,
+  login,
+  useMagicLink,
+  setUseMagicLink,
+}: MagicLinkLoginProps) => {
   const [secret, setSecret] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [send, setSend] = useState(false);
   const [loginError, setLoginError] = useState("");
 
   const tryMagicLinkLogin = (e: any) => {
@@ -171,18 +185,18 @@ const MagicLinkLogin = ({ host, email, login }: MagicLinkLoginProps) => {
     e.stopPropagation();
     e.preventDefault();
     try {
-      setSend(true);
+      setUseMagicLink(true);
       await requestMagicLink(host, email);
     } catch (e) {
       console.error(e);
       // response status 429 means mail has already been sent
       if (e.response.status === 429) {
-        setSend(true);
+        setUseMagicLink(true);
       }
     }
   };
 
-  if (send)
+  if (useMagicLink)
     return (
       <SecretForm onSubmit={tryMagicLinkLogin}>
         <p>An email was send with a sign-in secret</p>

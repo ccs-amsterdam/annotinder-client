@@ -20,7 +20,7 @@ const JobTokenLogin = ({ login, host, userId, jobtoken, asGuest }: JobTokenLogin
   const alreadyGuest = !!guestAuth[key];
 
   useEffect(() => {
-    if (!asGuest) return;
+    if (!asGuest && userId == null) return;
     if (!jobtoken) return;
     redeemShuffle(host, userId, jobtoken, login, guestAuth, setGuestAuth).then(() => {
       searchParams.delete("jobtoken");
