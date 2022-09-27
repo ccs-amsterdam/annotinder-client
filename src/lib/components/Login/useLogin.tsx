@@ -5,6 +5,7 @@ import Backend from "./Backend";
 // import GuestJobs from "./GuestJobs";
 import useSessions from "./useSessions";
 import { Loader, Button } from "semantic-ui-react";
+import { ReactElement } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -17,10 +18,10 @@ const LoginWindow = styled.div`
   margin: auto;
 `;
 
-const useLogin = (): [Backend, ReactNode] => {
+const useLogin = (): [Backend, ReactElement] => {
   const [session, login, logout, storeSession, sessionList] = useSessions();
 
-  const backendQuery = useQuery(
+  const backendQuery = useQuery<Backend>(
     ["backend", session],
     async () => {
       if (!session.host || !session.token) return null;
@@ -38,6 +39,7 @@ const useLogin = (): [Backend, ReactNode] => {
     if (backendQuery.isFetching)
       return <Loader active style={{ minWidth: "200px" }} content="Connecting to server" />;
     if (!backendQuery.data) return <Login login={login} sessionList={sessionList} />;
+
     return <Logout logout={logout} />;
   };
 
@@ -53,7 +55,11 @@ const useLogin = (): [Backend, ReactNode] => {
   return [backendQuery.data, authForm];
 };
 
-const Logout = ({ logout }) => {
+interface LogoutProps {
+  logout: () => void;
+}
+
+const Logout = ({ logout }: LogoutProps) => {
   // need to think about naming. Now not technically logout,
   // because the session is not immediately removed
   // (maybe add second button for logout that does immediately remove)

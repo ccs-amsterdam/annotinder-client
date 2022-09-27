@@ -15,7 +15,7 @@ const UserLogin = ({ login, hostInfo, searchParams }: UserLoginProps) => {
   const host = hostInfo.host;
   const userId = searchParams.get("user_id");
   const jobtoken = searchParams.get("jobtoken");
-  const asGuest = searchParams.get("as_guest");
+  const asGuest = !!searchParams.get("as_guest");
 
   if (jobtoken) {
     return (
@@ -38,7 +38,14 @@ const UserLogin = ({ login, hostInfo, searchParams }: UserLoginProps) => {
   );
 };
 
-const RegisteredLogin = ({ login, host, email, hasPassword }) => {
+interface RegisteredLoginProps {
+  login: (host: string, token: string) => void;
+  host: string;
+  email: string;
+  hasPassword: boolean;
+}
+
+const RegisteredLogin = ({ login, host, email, hasPassword }: RegisteredLoginProps) => {
   return (
     <div>
       <PasswordLogin host={host} email={email} login={login} hasPassword={hasPassword} />
@@ -47,7 +54,14 @@ const RegisteredLogin = ({ login, host, email, hasPassword }) => {
   );
 };
 
-const PasswordLogin = ({ host, email, login, hasPassword }) => {
+interface PasswordLoginProps {
+  host: string;
+  email: string;
+  login: (host: string, token: string) => void;
+  hasPassword: boolean;
+}
+
+const PasswordLogin = ({ host, email, login, hasPassword }: PasswordLoginProps) => {
   const [loginError, setLoginError] = useState("");
   const [password, setPassword] = useState("");
 
@@ -121,13 +135,19 @@ const SecretInput = styled.input`
   color: var(--secondary-light);
 `;
 
-const MagicLinkLogin = ({ host, email, login }) => {
+interface MagicLinkLoginProps {
+  host: string;
+  email: string;
+  login: (host: string, token: string) => void;
+}
+
+const MagicLinkLogin = ({ host, email, login }: MagicLinkLoginProps) => {
   const [secret, setSecret] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [send, setSend] = useState(false);
   const [loginError, setLoginError] = useState("");
 
-  const tryMagicLinkLogin = (e) => {
+  const tryMagicLinkLogin = (e: any) => {
     e.preventDefault();
     if (secret.length !== 6) return;
     if (newPassword) {
@@ -147,7 +167,7 @@ const MagicLinkLogin = ({ host, email, login }) => {
       });
   };
 
-  const sendMagicLink = async (e) => {
+  const sendMagicLink = async (e: any) => {
     e.stopPropagation();
     e.preventDefault();
     try {
@@ -182,8 +202,6 @@ const MagicLinkLogin = ({ host, email, login }) => {
             placeholder="new password"
             name="password"
             type="password"
-            label="set password"
-            labelPosition="top"
             value={newPassword}
             onChange={(e, d) => {
               setLoginError("");

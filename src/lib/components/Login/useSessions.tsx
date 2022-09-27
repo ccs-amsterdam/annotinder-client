@@ -1,11 +1,17 @@
-import { useCallback, useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useRef, ReactElement } from "react";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { useSearchParams } from "react-router-dom";
 import Backend from "./Backend";
 import SessionList from "./SessionList";
 import { Sessions, ActiveSession } from "../../types";
 
-const useSessions = () => {
+const useSessions = (): [
+  { host: string; token: string },
+  (host: string, token: string) => void,
+  () => void,
+  (backend: Backend) => void,
+  ReactElement
+] => {
   const [session, setSession] = useState({ host: "", token: "" });
   const [sessions, setSessions] = useLocalStorage("sessions", {});
   const [activeSession, setActiveSession] = useLocalStorage("activeSession", {
@@ -55,7 +61,7 @@ const useSessions = () => {
     [setSession]
   );
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setSession({ host: "", token: "" });
     setActiveSession({
       host: "",
@@ -65,7 +71,7 @@ const useSessions = () => {
     searchParams.delete("host");
     searchParams.delete("job_id");
     setSearchParams(searchParams);
-  };
+  }, [setSession, setActiveSession, searchParams, setSearchParams]);
 
   useEffect(() => {
     // autologin. Only try once and only if there is no jobtoken

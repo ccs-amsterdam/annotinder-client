@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Button, Form } from "semantic-ui-react";
+import { UseQueryResult } from "@tanstack/react-query";
+import { HostInfo, SetState } from "../../types";
 
 interface HostLoginProps {
   host: String;
   email: String;
-  setHost: SetState<string>;
-  setEmail: SetState<string>;
+  setHost: SetState<String>;
+  setEmail: SetState<String>;
   canRegister: Boolean;
   hostInfoQuery: UseQueryResult;
 }
@@ -35,7 +37,7 @@ export const HostLogin = ({
   };
 
   const submit = () => {
-    if (validEmail(emailInput)) {
+    if (validEmail()) {
       setHost(hostInput);
       setEmail(emailInput);
     }
@@ -44,8 +46,8 @@ export const HostLogin = ({
   const emailError = () => {
     if (invalidEmail) return "Please enter a valid email adress";
     if (hostInfoQuery.data) {
-      if (!canRegister && !hostInfoQuery.data?.user)
-        return "This user is not registered on this server";
+      const hostInfo: HostInfo = hostInfoQuery.data;
+      if (!canRegister && !hostInfo.user) return "This user is not registered on this server";
     }
     return false;
   };

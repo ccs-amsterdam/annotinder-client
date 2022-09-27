@@ -349,7 +349,18 @@ export type ConditionalAction = "retry" | "block" | "applaud";
 
 export interface HostInfo {
   host?: string;
-  oauthClients: OauthClients;
+  oauthClients?: OauthClients;
+  user?: HostUserInfo;
+}
+
+export interface HostUserInfo {
+  user_id: number;
+  name: string;
+  email: string;
+  is_admin: boolean;
+  has_password: boolean;
+  restricted_job: number;
+  restricted_job_label: string;
 }
 
 export interface OauthClients {
