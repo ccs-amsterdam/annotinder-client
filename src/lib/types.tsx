@@ -46,6 +46,39 @@ export interface Annotation {
   color?: string;
 }
 
+////// LOGIN
+
+/**
+ * An active session on a server. (should be hooked up to a react-query)
+ */
+export interface ActiveSession {
+  /** A unique key for a session, consisting of user_id @ host */
+  key: string;
+  /** The url of a host server */
+  host: string;
+  /** A valid token for the host server */
+  token: string;
+}
+
+/**
+ * For keeping multiple sessions in local storage. Keys are "user_id @ host",
+ * and the values are Session objects
+ */
+export interface Sessions {
+  [token: string]: Session;
+}
+
+/** Information about a session */
+export interface Session {
+  host: string;
+  user_id: number;
+  token: string;
+  email: string;
+  name: string;
+  restricted_job: number;
+  restricted_job_label: string;
+}
+
 /** Annotations, but quickly accessible by their (unique) variable + '.' + value
  */
 export interface AnnotationMap {

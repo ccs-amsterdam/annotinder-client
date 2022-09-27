@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Icon, Segment } from "semantic-ui-react";
+import useWatchChange from "../../../hooks/useWatchChange";
 import { SetState } from "../../../types";
 
 const sliderColor = "#d3dfe9";
@@ -36,13 +37,12 @@ const IndexController = ({
   // also keep track of slider as a ref, because touchevents suck (see onTouchEnd below for explanation)
   const slider = useRef(0);
 
-  useEffect(() => {
-    // if index changes on the outside, update the active page shown in the controller
+  if (useWatchChange([index, n])) {
     if (index < 0) return;
     const page = index === null ? n + 1 : Math.min(index + 1, n + 1);
     setActivePage(page);
     setSliderPage(page);
-  }, [index, n, setActivePage]);
+  }
 
   const updatePage = (page: number) => {
     if (page !== activePage) {

@@ -104,6 +104,12 @@ const HostLogoutDiv = styled.div`
   color: #666666;
 `;
 
+const HostDetails = styled.div`
+  overflow: auto;
+
+  max-width: 260px;
+`;
+
 interface HostLogoutProps {
   host: string;
   email: string;
@@ -125,11 +131,11 @@ export const HostLogout = ({
 
   return (
     <HostLogoutDiv>
-      <div>
+      <HostDetails>
         <b>{host.replace(/http[s]?:\/\//, "")}</b>
         <br />
         <span>{email}</span>
-      </div>
+      </HostDetails>
       <Icon
         color="blue"
         name="cancel"

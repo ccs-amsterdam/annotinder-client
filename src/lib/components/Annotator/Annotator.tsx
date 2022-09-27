@@ -33,7 +33,7 @@ const Annotator = ({
   authForm,
 }: AnnotatorProps) => {
   const [indexedUnit, setIndexedUnit] = useState<IndexedUnit>({ unit: null, index: -1 });
-  const [unitProgress, setUnitProgress] = useState(0);
+  const [unitProgress, setUnitProgress] = useState(jobServer.progress.n_coded);
 
   const setUnitIndex: SetUnitIndex = useCallback(
     (index) => updateIndexedUnit(jobServer, index, setIndexedUnit, setUnitProgress),
@@ -45,8 +45,6 @@ const Annotator = ({
     // -1 tells backend to determine what the next unit is.
     setUnitIndex(-1);
   }, [jobServer, setUnitIndex]);
-
-  console.log(jobServer);
 
   return (
     <FullScreenWindow askFullScreen={askFullScreen}>

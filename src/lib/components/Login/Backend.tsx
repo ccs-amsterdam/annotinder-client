@@ -37,6 +37,7 @@ export async function requestMagicLink(host: string, email: string) {
 
 interface LoginDetails {
   token: string;
+  user_id: number;
   name: string;
   email: string;
   is_admin: boolean;
@@ -49,6 +50,7 @@ class Backend {
   token: string;
   api: AxiosInstance;
   is_admin: boolean;
+  user_id: number;
   name: string;
   email: string;
   restricted_job: number;
@@ -65,6 +67,7 @@ class Backend {
 
   async init() {
     const d = await this.login();
+    this.user_id = d.user_id;
     this.name = d.name;
     this.email = d.email;
     this.is_admin = d.is_admin;
