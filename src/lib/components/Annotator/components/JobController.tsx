@@ -156,7 +156,6 @@ interface BackToOverviewProps {
 
 const BackToOverview = ({ jobServer }: BackToOverviewProps) => {
   const navigate = useNavigate();
-  console.log(jobServer);
   if (!jobServer?.return_link) return null;
   return (
     <Button

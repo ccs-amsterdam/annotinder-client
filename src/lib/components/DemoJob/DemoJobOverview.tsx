@@ -12,7 +12,6 @@ const DemoJobOverview = () => {
   const [job, setJob] = useState(null);
   const [searchParams] = useSearchParams();
 
-  console.log("1");
   useEffect(() => {
     let codebook = searchParams.get("codebook");
     let units = searchParams.get("units");

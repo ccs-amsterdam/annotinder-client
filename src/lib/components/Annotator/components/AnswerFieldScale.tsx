@@ -303,15 +303,14 @@ const Item = ({
             <Ref key={option.code} innerRef={option.ref}>
               <Button
                 fluid
-                primary
                 style={{
                   padding: "5px 0",
-                  backgroundColor: isCurrent ? null : option.color || bgcolor,
+                  backgroundColor: isCurrent ? "var(--secondary)" : option.color || bgcolor,
                   fontWeight: "bold",
                   fontSize: "1em",
                   textShadow: "0px 0px 5px #ffffff77",
                   borderRadius: "10px",
-                  color: isCurrent ? null : option.color ? "#1B1C1D" : color,
+                  color: isCurrent ? "white" : option.color ? "#1B1C1D" : color,
                   border: `3px solid ${bordercolor}`,
                 }}
                 key={option.code}

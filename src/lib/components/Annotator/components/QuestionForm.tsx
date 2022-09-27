@@ -121,7 +121,7 @@ const QuestionForm = ({
     if (questions) setAnswers(getAnswersFromAnnotations(unit, questions));
   }
 
-  if (useWatchChange([unit, questions, answers])) {
+  if (useWatchChange([unit, questions, answers, questionIndex])) {
     if (!questions?.[questionIndex] || !unit) {
       setQuestionIndex(0);
     } else {

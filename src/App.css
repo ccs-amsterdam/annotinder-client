@@ -2,6 +2,7 @@ body {
   --primary: #1678c2 !important;
   --primary-light: #7bb6ea !important;
   --secondary: #1b1c1d !important;
+  --secondary-light: #7b7c7d !important;
 }
 
 .ui.primary.button {

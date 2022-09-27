@@ -102,7 +102,6 @@ const redeemShuffle = async (
     try {
       const data = await redeemJobToken(host, jobtoken, userId);
       const newGuestAuth = { ...guestAuth, [key]: data };
-      console.log(newGuestAuth);
       setGuestAuth(newGuestAuth);
       login(host, data.token);
     } catch (e) {

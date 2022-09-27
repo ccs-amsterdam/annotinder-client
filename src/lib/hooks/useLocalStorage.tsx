@@ -27,12 +27,6 @@ const useLocalStorage = (key: string, defaultValue: any): [any, (value: any) => 
     [key, value, setValue]
   );
 
-  // useEffect(() => {
-  //   // storing input name
-  //   if (key === "guest_auth") console.log(JSON.stringify(value));
-  //   localStorage.setItem(key, JSON.stringify(value));
-  // }, [key, value]);
-
   return [value, setLocalStorage];
 };
 

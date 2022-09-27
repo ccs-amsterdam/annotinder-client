@@ -35,6 +35,18 @@ export async function requestMagicLink(host: string, email: string) {
   return res.data;
 }
 
+export async function redeemMagicLink(
+  host: string,
+  email: string,
+  secret: string,
+  password?: string
+) {
+  const params: { secret: string; password?: string } = { secret };
+  if (password) params.password = password;
+  const res = await Axios.get(`${host}/users/${email}/secret`, { params });
+  return res.data.token;
+}
+
 interface LoginDetails {
   token: string;
   user_id: number;
