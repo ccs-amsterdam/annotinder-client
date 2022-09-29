@@ -5,7 +5,7 @@ import Backend from "./Backend";
 // import GuestJobs from "./GuestJobs";
 import useSessions from "./useSessions";
 import { Loader, Button } from "semantic-ui-react";
-import { ReactElement } from "react";
+import { ReactElement, useCallback } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -23,9 +23,11 @@ const LoginWindow = styled.div`
 
 const useLogin = (): [Backend, ReactElement] => {
   const [session, login, logout, storeSession, sessionList] = useSessions();
+
   const backendQuery = useQuery<Backend>(
     ["backend", session],
     async () => {
+      console.log("yo");
       if (!session.host || !session.token) return null;
       const backend = new Backend(session.host, session.token);
       await backend.init();
@@ -39,13 +41,13 @@ const useLogin = (): [Backend, ReactElement] => {
     }
   );
 
-  const render = () => {
+  const render = useCallback(() => {
     if (backendQuery.isFetching)
       return <Loader active style={{ minWidth: "200px" }} content="Connecting to server" />;
     if (!backendQuery.data) return <Login login={login} sessionList={sessionList} />;
 
     return <Logout logout={logout} />;
-  };
+  }, [backendQuery, login, logout, sessionList]);
 
   const authForm = (
     <Container>

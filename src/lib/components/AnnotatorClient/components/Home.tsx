@@ -86,7 +86,6 @@ const MenuBar = ({ backend, authForm, menuItem, setMenuItem }: MenuBarProps) => 
       })}
 
       <Popup
-        wide
         position="bottom right"
         on="click"
         trigger={
@@ -106,7 +105,7 @@ const MenuBar = ({ backend, authForm, menuItem, setMenuItem }: MenuBarProps) => 
               <List.Content>{backend.name}</List.Content>
             </List.Item>
           </List>
-          {authForm}
+          <div style={{ width: "200px" }}>{authForm}</div>
         </Popup.Content>
       </Popup>
     </Menu>
