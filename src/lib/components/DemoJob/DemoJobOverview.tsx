@@ -69,6 +69,11 @@ const demo_files: DemoFile[] = [
     units: "stance_swiping",
     codebook: "stance_swiping",
   },
+  {
+    label: "Coding of threads",
+    units: "thread_coding",
+    codebook: "dummy",
+  },
 ];
 
 const columns = [{ name: "label", label: "Select unit set" }];

@@ -12,6 +12,7 @@ import {
   RawCodeBook,
 } from "../types";
 import standardizeColor from "./standardizeColor";
+import { assertParenthesizedExpression } from "@babel/types";
 
 export function importCodebook(codebook: RawCodeBook): CodeBook {
   if (codebook.type === "annotate")
@@ -46,7 +47,12 @@ const importQuestions = (questions: Question[]): Question[] => {
     const codeMap = codeBookEdgesToMap(question.codes, fillMissingColor);
     let cta = getCodeTreeArray(codeMap);
     const [options, swipeOptions] = getOptions(cta);
-    return { ...question, options, swipeOptions }; // it's important that this deep copies question
+
+    const out = { ...question, options, swipeOptions }; // it's important that this deep copies question
+    if (out.fields && !Array.isArray(out.fields)) out.fields = [out.fields];
+    if (out.perAnnotation && !Array.isArray(out.perAnnotation))
+      out.perAnnotation = [out.perAnnotation];
+    return out;
   });
 };
 

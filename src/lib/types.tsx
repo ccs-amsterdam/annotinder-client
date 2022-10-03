@@ -136,6 +136,7 @@ export interface Question {
   options?: AnswerOption[];
   showAnnotations?: string[];
   fields?: string[];
+  perAnnotation?: string[];
 }
 
 export interface Transition {

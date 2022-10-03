@@ -68,7 +68,7 @@ const Body = ({
     if (!tokens) return null;
     setText(renderText(tokens, text_fields, containerRef, fieldRefs));
     setImages(renderImages(image_fields, containerRef));
-    setMarkdown(renderMarkdown(markdown_fields));
+    setMarkdown(renderMarkdown(markdown_fields, fieldRefs));
     setTimeout(() => onReady(), 50);
   }, [tokens, text_fields, image_fields, markdown_fields, onReady, fieldRefs]);
 

@@ -68,7 +68,7 @@ const QuestionMenu = styled.div<{
   fontSize: number;
 }>`
   height: ${(props) => (props.minifiedAnswerForm ? null : props.formHeight)};
-  min-height: ${(props) => (props.minifiedAnswerForm ? null : "200px")};
+  min-height: ${(props) => (props.minifiedAnswerForm ? null : "150px")};
   font-size: ${(props) => props.fontSize}em;
   transition: max-height 1s;
 `;
@@ -102,7 +102,7 @@ const QuestionTask = ({
   const [settings, setSettings] = useLocalStorage("questionTaskSettings", {
     splitHeight: 70,
     upperTextSize: 1,
-    lowerTextSize: 1,
+    lowerTextSize: 1.2,
   });
 
   if (useWatchChange([unit])) {

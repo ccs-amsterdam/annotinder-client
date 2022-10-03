@@ -38,8 +38,11 @@ const AnnotateUnit = ({
   // codebook is the default codebook applied to all units
   // unit.codebook is a unit specific codebook that overrides the default
   if (unitIndex < 0) return null;
-  const codebook = unit?.codebook || jobServer?.codebook;
+  let codebook = unit?.codebook || jobServer?.codebook;
   if (!codebook || !unit) return null;
+
+  codebook = unfoldCodebook(codebook, unit);
+  console.log(codebook);
 
   return (
     <Task
@@ -50,6 +53,35 @@ const AnnotateUnit = ({
       fullScreenNode={fullScreenNode}
     />
   );
+};
+
+/**
+ * Codebooks can indicate that certain questions need to be asked
+ * multiple times, e.g., per annotation. If so, the questions
+ * need to be 'unfolded'.
+ *
+ * @param codebook
+ * @param unit
+ * @returns
+ */
+const unfoldCodebook = (codebook: CodeBook, unit: Unit) => {
+  if (codebook.type === "annotate") return codebook;
+
+  let needsUnfold = false;
+  for (let question of codebook.questions) {
+    if (question.perAnnotation && unit.importedAnnotations) needsUnfold = true;
+  }
+  if (!needsUnfold) return codebook;
+
+  const questions = [];
+  for (let question of codebook.questions) {
+    if (!question.perAnnotation) {
+      questions.push(question);
+      continue;
+    }
+  }
+
+  return codebook;
 };
 
 interface TaskProps {
