@@ -33,27 +33,110 @@
           "style": { "fontSize": "1.5em" }
         }
       ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "message",
+            "fields": "message",
+            "type": "select code",
+            "question": "Is this message relevant?",
+            "codes": [
+              { "code": "No", "color": "crimson", "makes_irrelevant": "REMAINING" },
+              { "code": "Yes", "color": "lightgreen" }
+            ]
+          },
+          {
+            "name": "comment1_1",
+            "perField": "comment",
+            "focusAnnotations": true,
+            "type": "select code",
+            "question": "First question about this comment",
+            "codes": [
+              { "code": "Some answer", "color": "lightblue" },
+              { "code": "Some other answer", "color": "lightgreen" }
+            ]
+          },
+          {
+            "name": "comment1_2",
+            "fields": "comment",
+            "type": "select code",
+            "question": "Second question about this comment",
+            "codes": [
+              { "code": "Some answer", "color": "yellow" },
+              { "code": "Some other answer", "color": "orange" }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "focus",
+    "type": "unit",
+    "unit": {
+      "grid": {
+        "areas": [
+          ["message", "message", "message", ".", "."],
+          [".", "comment1", "comment1", "comment1", "."],
+          [".", "comment2", "comment2", "comment2", "."],
+          [".", ".", "comment3", "comment3", "comment3"]
+        ]
+      },
+      "text_fields": [
+        {
+          "name": "message",
+          "value": "The first message in a thread. This could for instance be a Tweet",
+          "style": { "fontSize": "1.5em" }
+        },
+        {
+          "name": "comment1",
+          "value": "Some comment to the original message.",
+          "style": { "fontSize": "1.5em" }
+        },
+        {
+          "name": "comment2",
+          "value": "Some other comment.",
+          "style": { "fontSize": "1.5em" }
+        },
+        {
+          "name": "comment3",
+          "value": "A comment on comment 2",
+          "style": { "fontSize": "1.5em" }
+        }
+      ],
       "importedAnnotations": [
         {
           "field": "comment1",
           "variable": "some variable",
           "value": "Some label",
           "offset": 10,
-          "length": 5
+          "length": 5,
+          "color": "blue"
         },
         {
           "field": "comment2",
           "variable": "some variable",
           "value": "Some label",
           "offset": 0,
-          "length": 5
+          "length": 5,
+          "color": "blue"
         },
         {
           "field": "comment3",
           "variable": "some variable",
           "value": "Some label",
           "offset": 0,
-          "length": 5
+          "length": 5,
+          "color": "blue"
+        },
+        {
+          "field": "comment1",
+          "variable": "some variable",
+          "value": "Some label",
+          "offset": 10,
+          "length": 5,
+          "color": "blue"
         }
       ],
       "codebook": {
@@ -72,6 +155,7 @@
           {
             "name": "comment1_1",
             "perAnnotation": "some variable",
+            "focusAnnotations": true,
             "type": "select code",
             "question": "First question about this comment",
             "codes": [

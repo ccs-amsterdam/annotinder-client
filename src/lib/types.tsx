@@ -35,7 +35,7 @@ export type Status = "DONE" | "IN_PROGRESS";
 
 export interface Annotation {
   variable: string;
-  value: string | number;
+  value?: string | number;
   field?: string;
   offset?: number;
   length?: number;
@@ -134,9 +134,22 @@ export interface Question {
   button?: string;
   swipeOptions?: SwipeOptions;
   options?: AnswerOption[];
-  showAnnotations?: string[];
   fields?: string[];
+  annotations?: Annotation[];
+  /** An array of variable names. If given, unit annotations of this variable are
+   * highlighted when this question is asked
+   */
+  showAnnotations?: string[];
+  /** An array of variable names. If given, this question will be asked for each
+   * individual annotation of this variable.
+   */
   perAnnotation?: string[];
+  /** If true, than each annotation in perAnnotation is focussed on */
+  focusAnnotations: boolean;
+  /** An array of arrays with field names. names can also be partial matches,
+   * so that you can for instance match comment1, comment2, etc. with "comment"
+   */
+  perField?: string[];
 }
 
 export interface Transition {
@@ -429,6 +442,7 @@ export interface Unit {
   /** A unit can carry its own codebook. This will then be used instead of the codebook at the codingjob level */
   codebook?: CodeBook;
   variables?: UnitVariables;
+  grid?: FieldGrid;
 }
 
 /**
@@ -546,7 +560,20 @@ export interface MetaField {
 
 export interface Code {
   code: string;
-  [key: string]: any;
+  parent: string;
+  color: string;
+  active: boolean;
+  activeParent: any;
+  folded: boolean;
+  children: string[];
+  foldToParent: any;
+  totalChildren: number;
+  totalActiveChildren: number;
+  tree?: any;
+  /** An array with names of questions (or all "REMAINING" question) that become irrelevant if this options is chosen */
+  makes_irrelevant?: string[];
+  /** Like makes_irrelevant, but the questions become irrelevant if this option is NOT chosen */
+  required_for?: string[];
 }
 
 export interface CodeMap {
@@ -623,7 +650,6 @@ export interface RawTokenColumn {
 
 export interface UnitStates {
   doc: Doc;
-  importedCodes: VariableValueMap;
   spanAnnotations: SpanAnnotations | null;
   setSpanAnnotations: SetState<SpanAnnotations | null>;
   fieldAnnotations: SpanAnnotations | null;

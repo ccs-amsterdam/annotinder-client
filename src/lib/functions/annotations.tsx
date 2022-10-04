@@ -104,7 +104,7 @@ export const importFieldAnnotations = (annotationsArray: Annotation[]) => {
   const fieldAnnotations: FieldAnnotations = {};
   for (let a of annotationsArray || []) {
     const field = a.field || "";
-    if (!a.offset) {
+    if (a.offset == null) {
       if (!fieldAnnotations[field]) fieldAnnotations[field] = {};
       const key = a.variable + "." + a.value;
       fieldAnnotations[field][key] = {

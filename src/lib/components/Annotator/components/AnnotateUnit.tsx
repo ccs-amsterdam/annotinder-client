@@ -70,16 +70,55 @@ const unfoldCodebook = (codebook: CodeBook, unit: Unit) => {
   let needsUnfold = false;
   for (let question of codebook.questions) {
     if (question.perAnnotation && unit.importedAnnotations) needsUnfold = true;
+    if (question.perField) needsUnfold = true;
   }
   if (!needsUnfold) return codebook;
 
   const questions = [];
   for (let question of codebook.questions) {
-    if (!question.perAnnotation) {
+    if (!question.perAnnotation && !question.perField) {
       questions.push(question);
       continue;
     }
+
+    // perAnnotation
+    for (let a of unit.importedAnnotations || []) {
+      if (!question.perAnnotation.includes(a.variable)) continue;
+      const q = { ...question, annotations: [a] };
+      if (question.focusAnnotations) q.fields = [a.field];
+      questions.push(q);
+    }
+
+    console.log(question.perField);
+    // perField
+    if (question.perField) {
+      if (!Array.isArray(question.perField)) question.perField = [question.perField];
+
+      const fields = new Set([]);
+      if (unit.grid?.areas) {
+        for (let row of unit.grid.areas) {
+          for (let column of row) {
+            if (column !== ".") fields.add(column);
+          }
+        }
+      } else {
+        for (let f of unit.text_fields || []) fields.add(f.name);
+        for (let f of unit.markdown_fields || []) fields.add(f.name);
+        for (let f of unit.image_fields || []) fields.add(f.name);
+      }
+
+      for (let field of fields) {
+        for (let fieldmatch of question.perField) {
+          console.log(field, fieldmatch);
+          if (field.toLowerCase().includes(fieldmatch.toLowerCase())) {
+            questions.push({ ...question, fields: [field] });
+            break;
+          }
+        }
+      }
+    }
   }
+  codebook.questions = questions;
 
   return codebook;
 };

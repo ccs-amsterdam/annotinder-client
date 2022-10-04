@@ -79,10 +79,11 @@ span.token.annotated.allLeft > span.pre {
   background: none;
 }
 span.token.annotated.allLeft > span.text {
+  padding-left: 3px;
   border-left: solid;
   border-left-width: 1px;
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
 }
 
 span.token.annotated.anyRight > span.text {
@@ -93,10 +94,11 @@ span.token.annotated.allRight > span.post {
   background: none;
 }
 span.token.annotated.allRight > span.text {
+  padding-right: 3px;
   border-right: solid;
   border-right-width: 1px;
-  border-bottom-right-radius: 3px;
-  border-top-right-radius: 3px;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .noselect {

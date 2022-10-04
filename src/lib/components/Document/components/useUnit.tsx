@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
-import { getDocAndAnnotations } from "../functions/prepareDocumentContent";
+import { getDoc, getAnnotations } from "../functions/prepareDocumentContent";
 import {
-  Doc,
   CodeHistory,
   SetState,
   Annotation,
@@ -20,52 +19,34 @@ import { exportFieldAnnotations, exportSpanAnnotations } from "../../../function
  * It also uses the returnTokens and onChangeAnnotation callback functions to give the
  * parent of Document access to the tokens and (new) annotations.
  * @param unit
- * @param safetyCheck
  * @param returnTokens
  * @param onChangeAnnotations
  * @returns
  */
 const useUnit = (
   unit: Unit,
-  safetyCheck: any,
+  annotations: Annotation[],
   returnTokens: (value: Token[]) => void,
   onChangeAnnotations: (value: Annotation[]) => void
 ): UnitStates => {
   // Create a bunch of states
-  const [doc, setDoc] = useState<Doc>({});
-  const [importedCodes, setImportedCodes] = useState<VariableValueMap>({});
+  //const [doc, setDoc] = useState<Doc>({});
   const [codeHistory, setCodeHistory] = useState<CodeHistory>({});
   const [spanAnnotations, setSpanAnnotations] = useState<SpanAnnotations | null>(null);
   const [fieldAnnotations, setFieldAnnotations] = useState<FieldAnnotations | null>(null);
+  const [safetyCheck, setSafetyCheck] = useState<Token[]>(null);
 
-  // Set all the states when the unit changes
-  if (useWatchChange([unit])) {
-    if (!unit.annotations) unit.annotations = [];
-    if (unit.importedAnnotations) {
-      if (unit.annotations.length === 0 && unit.status !== "DONE") {
-        unit.annotations = unit.importedAnnotations;
-      }
+  const doc = useMemo(() => getDoc(unit), [unit]);
 
-      const importedCodes: VariableValueMap = {};
-      for (let a of unit.importedAnnotations) {
-        if (!importedCodes[a.variable]) {
-          importedCodes[a.variable] = { [a.value]: true };
-        } else {
-          importedCodes[a.variable][a.value] = true;
-        }
-      }
-      setImportedCodes(importedCodes);
-    }
-
+  if (useWatchChange([unit, annotations])) {
+    const unitAnnotations = annotations || unit.annotations || [];
+    unit = { ...unit, annotations: [...unitAnnotations] };
+    const [spanAnnotations, fieldAnnotations] = getAnnotations(doc, unit.annotations);
     initializeCodeHistory(unit.annotations, setCodeHistory);
-
-    const [document, spanAnnotations, fieldAnnotations] = getDocAndAnnotations(unit);
-
-    safetyCheck.current = { tokens: document.tokens };
-
-    setDoc(document);
+    console.log(spanAnnotations, fieldAnnotations);
     setSpanAnnotations(spanAnnotations);
     setFieldAnnotations(fieldAnnotations);
+    setSafetyCheck(doc.tokens);
   }
 
   useEffect(() => {
@@ -86,7 +67,7 @@ const useUnit = (
     // side effect to pass annotations back to the parent
     if (!onChangeAnnotations) return;
     // check if same unit, to prevent annotations from spilling over due to race conditions
-    if (safetyCheck.current.tokens !== doc.tokens) return;
+    if (safetyCheck !== doc.tokens) return;
     onChangeAnnotations([...exportedSpanAnnotations, ...exportedFieldAnnotations]);
   }, [
     doc.tokens,
@@ -98,7 +79,6 @@ const useUnit = (
 
   return {
     doc,
-    importedCodes,
     spanAnnotations,
     setSpanAnnotations,
     fieldAnnotations,

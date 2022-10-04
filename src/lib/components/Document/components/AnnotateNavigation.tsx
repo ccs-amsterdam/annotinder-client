@@ -22,7 +22,7 @@ interface AnnotateNavigationProps {
   editMode: boolean;
   triggerCodeSelector: TriggerCodePopup;
   eventsBlocked: boolean;
-  showAnnotations?: string[];
+  showAll: boolean;
   fullScreenNode: FullScreenNode;
 }
 
@@ -38,7 +38,7 @@ const AnnotateNavigation = ({
   disableAnnotations,
   editMode,
   triggerCodeSelector,
-  showAnnotations,
+  showAll,
   eventsBlocked,
   fullScreenNode,
 }: AnnotateNavigationProps) => {
@@ -46,8 +46,8 @@ const AnnotateNavigation = ({
   const [tokenSelection, setTokenSelection] = useState<TokenSelection>([]);
 
   useEffect(() => {
-    highlightAnnotations(tokens, annotations, variableMap, editMode, showAnnotations);
-  }, [tokens, annotations, variableMap, editMode, showAnnotations]);
+    highlightAnnotations(tokens, annotations, variableMap, editMode, showAll);
+  }, [tokens, annotations, variableMap, editMode, showAll]);
 
   useEffect(() => {
     showSelection(tokens, tokenSelection);
@@ -94,7 +94,7 @@ const highlightAnnotations = (
   annotations: SpanAnnotations,
   variableMap: VariableMap,
   editMode: boolean,
-  showAnnotations: string[]
+  showAll: boolean
 ) => {
   // loop over tokens. Do some styling. Then get the (allowed) annotations for this token,
   // and apply styling to annotated tokens
@@ -108,11 +108,7 @@ const highlightAnnotations = (
       if (token.ref.current.style.cursor !== "text") token.ref.current.style.cursor = "text";
     }
 
-    let tokenAnnotations = allowedAnnotations(
-      annotations?.[token.index],
-      variableMap,
-      showAnnotations
-    );
+    let tokenAnnotations = allowedAnnotations(annotations?.[token.index], variableMap, showAll);
     if (!tokenAnnotations || Object.keys(tokenAnnotations).length === 0) {
       if (token.ref.current.classList.contains("annotated")) {
         token.ref.current.classList.remove("annotated");
@@ -133,22 +129,22 @@ const highlightAnnotations = (
 const allowedAnnotations = (
   annotations: AnnotationMap,
   variableMap: VariableMap,
-  showAnnotations: string[]
+  showAll: boolean
 ) => {
   // get all annotations that are currently 'allowed', meaning that the variable is selected
   // and the codes are valid and active codes in the codebook
   if (!annotations) return null;
+  if (showAll) return annotations;
   if (annotations) {
     annotations = { ...annotations };
     for (let id of Object.keys(annotations)) {
-      const variable = annotations[id].variable;
-      if (showAnnotations && showAnnotations.find((v) => v === variable)) continue;
+      const a = annotations[id];
 
-      if (!variableMap?.[variable]) {
+      if (!variableMap?.[a.variable]) {
         delete annotations[id];
         continue;
       }
-      const codeMap = variableMap[variable].codeMap;
+      const codeMap = variableMap[a.variable].codeMap;
       const code = annotations[id].value;
       if (!codeMap[code] || !codeMap[code].active || !codeMap[code].activeParent)
         if (code !== "EMPTY") delete annotations[id];

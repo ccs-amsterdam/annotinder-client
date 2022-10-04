@@ -1,4 +1,4 @@
-import { importTokens, importTokenAnnotations, parseTokens } from "../../../functions/tokens";
+import { importTokens,  parseTokens } from "../../../functions/tokens";
 import { importFieldAnnotations, importSpanAnnotations } from "../../../functions/annotations";
 import {
   Doc,
@@ -8,6 +8,7 @@ import {
   TextField,
   Unit,
   FieldAnnotations,
+  Annotation,
 } from "../../../types";
 
 /**
@@ -16,7 +17,7 @@ import {
  * @param codes This is
  * @returns
  */
-export const getDocAndAnnotations = (unit: Unit): [Doc, SpanAnnotations, FieldAnnotations] => {
+export const getDoc = (unit: Unit): Doc => {
   // d is an intermediate object to do some processing on the Unit and extract the document and annotations
   const d: any = { ...unit };
 
@@ -80,15 +81,39 @@ export const getDocAndAnnotations = (unit: Unit): [Doc, SpanAnnotations, FieldAn
     grid: d?.grid,
   };
 
-  // ImportSpanAnnotations transforms the array format annotations to an object format.
-  // More importantly, it matches the annotations to token indices (based on the char offset)
+  return doc;
+  // // ImportSpanAnnotations transforms the array format annotations to an object format.
+  // // More importantly, it matches the annotations to token indices (based on the char offset)
+  // let spanAnnotations: SpanAnnotations = {};
+  // //if (d.importedAnnotations)
+  // //  spanAnnotations = importSpanAnnotations([...d.importedAnnotations], d.tokens, spanAnnotations);
+  // if (d.annotations)
+  //   spanAnnotations = importSpanAnnotations([...d.annotations], d.tokens, spanAnnotations);
+
+  // const tokenAnnotations = importTokenAnnotations(d.tokens);
+  // if (tokenAnnotations.length > 0)
+  //   spanAnnotations = importSpanAnnotations(tokenAnnotations, d.tokens, spanAnnotations);
+
+  // const fieldAnnotations: FieldAnnotations = importFieldAnnotations(d.annotations);
+
+  // return [doc, spanAnnotations, fieldAnnotations];
+};
+
+export const getAnnotations = (
+  doc: Doc,
+  annotations: Annotation[]
+): [SpanAnnotations, FieldAnnotations] => {
   let spanAnnotations: SpanAnnotations = {};
-  if (d.annotations) spanAnnotations = importSpanAnnotations([...d.annotations], d.tokens);
-  const tokenAnnotations = importTokenAnnotations(d.tokens);
-  if (tokenAnnotations.length > 0)
-    spanAnnotations = importSpanAnnotations(tokenAnnotations, d.tokens, spanAnnotations);
+  //if (d.importedAnnotations)
+  //  spanAnnotations = importSpanAnnotations([...d.importedAnnotations], d.tokens, spanAnnotations);
+  if (annotations)
+    spanAnnotations = importSpanAnnotations([...annotations], doc.tokens, spanAnnotations);
 
-  const fieldAnnotations: FieldAnnotations = importFieldAnnotations(d.annotations);
+  // const tokenAnnotations = importTokenAnnotations(d.tokens);
+  // if (tokenAnnotations.length > 0)
+  //   spanAnnotations = importSpanAnnotations(tokenAnnotations, d.tokens, spanAnnotations);
 
-  return [doc, spanAnnotations, fieldAnnotations];
+  const fieldAnnotations: FieldAnnotations = importFieldAnnotations(annotations);
+
+  return [spanAnnotations, fieldAnnotations];
 };

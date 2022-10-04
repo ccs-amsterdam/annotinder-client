@@ -7,6 +7,7 @@ import swipeControl from "../functions/swipeControl";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import styled from "styled-components";
 import {
+  Annotation,
   CodeBook,
   ConditionReport,
   FullScreenNode,
@@ -99,11 +100,13 @@ const QuestionTask = ({
   const refs = useMemo(() => {
     return { text: textref, box: boxref, code: coderef };
   }, []);
+
   const [settings, setSettings] = useLocalStorage("questionTaskSettings", {
     splitHeight: 70,
     upperTextSize: 1,
     lowerTextSize: 1.2,
   });
+  const question = codebook?.questions?.[questionIndex];
 
   if (useWatchChange([unit])) {
     setQuestionIndex(0);
@@ -133,12 +136,8 @@ const QuestionTask = ({
   // swipe controlls need to be up in the QuestionTask component due to working on the div containing the question screen
   // use separate swipe for text (document) and menu rows, because swiping up in the text is only possible if scrolled all the way down
   const [swipe, setSwipe] = useState<Swipes>(null);
-  const textSwipe = useSwipeable(
-    swipeControl(codebook?.questions?.[questionIndex], refs, setSwipe, false)
-  );
-  const menuSwipe = useSwipeable(
-    swipeControl(codebook?.questions?.[questionIndex], refs, setSwipe, true)
-  );
+  const textSwipe = useSwipeable(swipeControl(question, refs, setSwipe, false));
+  const menuSwipe = useSwipeable(swipeControl(question, refs, setSwipe, true));
 
   if (!unit) return null;
 
@@ -152,6 +151,16 @@ const QuestionTask = ({
   for (let question of codebook?.questions || [])
     if (!minifiable.includes(question.type)) minifiedAnswerForm = false;
 
+  // two modes for highlighting annotations: if they are included in question.annotations and
+  // in question.showAnnotations. Passing an array of annotations to Document highlights the spans
+  let annotations: Annotation[] = question?.annotations || [];
+  if (question?.showAnnotations && unit.annotations) {
+    const addAnnotations = unit.annotations.filter((a) =>
+      question.showAnnotations.includes(a.variable)
+    );
+    annotations = [...annotations, ...addAnnotations];
+  }
+
   return (
     <Container ref={divref}>
       <FeedbackPortal
@@ -160,6 +169,7 @@ const QuestionTask = ({
         setConditionReport={setConditionReport}
         fullScreenNode={fullScreenNode}
       />
+
       <ContentWindow {...textSwipe}>
         <SwipeableBox ref={refs.box}>
           {/* This div moves around behind the div containing the document to show the swipe code  */}
@@ -167,10 +177,12 @@ const QuestionTask = ({
           <Content ref={refs.text} fontSize={settings.upperTextSize}>
             <Document
               unit={unit}
+              annotations={annotations}
+              showAll={true}
               onReady={onNewUnit}
-              showAnnotations={codebook?.questions?.[questionIndex]?.showAnnotations || []}
               fullScreenNode={fullScreenNode}
-              focus={codebook?.questions?.[questionIndex]?.fields}
+              // focusAnnotations={focusAnnotations}
+              focus={question?.fields}
               centered
             />
           </Content>

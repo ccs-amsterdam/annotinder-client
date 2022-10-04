@@ -8,6 +8,7 @@ import renderMarkdown from "../functions/renderMarkdown";
 import FocusOverlay from "./FocusOverlay";
 
 import {
+  Annotation,
   FieldGrid,
   FieldRefs,
   ImageField,
@@ -29,7 +30,7 @@ interface BodyProps {
   grid?: FieldGrid;
   onReady: () => any;
   bodyStyle: CSSProperties;
-  focus: string[];
+  focus: (string | Annotation)[];
   centered: boolean;
 }
 

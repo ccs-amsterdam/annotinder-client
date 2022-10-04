@@ -11,8 +11,6 @@ import { CodeMap } from "../types";
 export const getColor = (annotationCode: string | number, codeMap: CodeMap) => {
   if (codeMap[annotationCode]) {
     let color;
-    const foldTo = codeMap[annotationCode].foldToParent;
-    if (foldTo && codeMap[foldTo]) color = codeMap[foldTo].color;
     color = codeMap[annotationCode].color;
     return standardizeColor(color, "50");
   } else {

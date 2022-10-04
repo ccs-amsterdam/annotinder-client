@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, CSSProperties } from "react";
+import React, { useState, useEffect, CSSProperties } from "react";
 import AnnotateNavigation from "./components/AnnotateNavigation";
 import Body from "./components/Body";
 import useCodeSelector from "./components/useCodeSelector";
@@ -16,19 +16,31 @@ import {
   Token,
   SetState,
   FullScreenNode,
+  VariableValueMap,
 } from "../../types";
 import { useCallback } from "react";
 
 interface DocumentProps {
   /** A unit object, as created in JobServerClass (or standardizeUnit) */
   unit: Unit;
+  /** An array of annotations */
+  annotations: Annotation[];
   /** An array of variables */
   variables?: Variable[];
+  /** A VariableValueMap with codes per variable. If given, only these codes
+   *  can be used
+   */
+  restrictedCodes?: VariableValueMap;
   /** An object with settings. Supports "editAll" (and probably more to come) */
   settings?: {
     [key: string]: any;
     editAll?: boolean;
   };
+  /** If true, always show all annotations. This makes sense if the annotations property
+   * is already the selection you need. But when coding multiple variables, it can be
+   * better to set to false, so coders only see annotations of the variable they're working on
+   */
+  showAll?: boolean;
   /** for getting acces to annotations from the parent component
    *  If not given, Document is automatically in read only mode (i.e. cannot make annotations) */
   onChangeAnnotations?: (value: Annotation[]) => void;
@@ -44,10 +56,10 @@ interface DocumentProps {
   blockEvents?: boolean;
   /** in fullscreenmode popups require a mountNode */
   fullScreenNode?: FullScreenNode;
-  /** An array of variable names, to indicate that annotations of this variable should be highlighted */
-  showAnnotations?: string[];
-  /** Names of fields to focus on */
-  focus?: string[];
+  /** Annotations to focus on */
+  focusAnnotations?: Annotation[];
+  /** Names of fields to focus on, or Annotation objects to focus on */
+  focus?: (string | Annotation)[];
   /** Should the text be centered? */
   centered?: boolean;
   /** CSSProperties for the body container  */
@@ -60,24 +72,26 @@ interface DocumentProps {
  */
 const Document = ({
   unit,
+  annotations,
   variables,
+  restrictedCodes,
   settings,
+  showAll,
   onChangeAnnotations,
   returnTokens,
   returnVariableMap,
   onReady,
   blockEvents,
   fullScreenNode,
-  showAnnotations,
+  focusAnnotations,
   focus,
   centered,
   bodyStyle,
 }: DocumentProps) => {
-  const safetyCheck = useRef(null); // ensures only new annotations for the current unit are passed to onChangeAnnotations
   const [variable, setVariable] = useState(null);
 
-  const unitStates = useUnit(unit, safetyCheck, returnTokens, onChangeAnnotations);
-  const [variableMap, editMode] = useVariableMap(variables, variable, unitStates.importedCodes);
+  const unitStates = useUnit(unit, annotations, returnTokens, onChangeAnnotations);
+  const [variableMap, editMode] = useVariableMap(variables, variable, restrictedCodes);
   const [codeSelector, triggerCodeSelector, codeSelectorOpen] = useCodeSelector(
     unitStates,
     variableMap,
@@ -134,7 +148,7 @@ const Document = ({
         editMode={editMode}
         triggerCodeSelector={triggerCodeSelector}
         eventsBlocked={codeSelectorOpen || blockEvents}
-        showAnnotations={showAnnotations}
+        showAll={showAll}
         fullScreenNode={fullScreenNode}
       />
       {codeSelector || null}

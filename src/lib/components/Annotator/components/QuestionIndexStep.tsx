@@ -62,6 +62,9 @@ export default function QuestionIndexStep({
     <>
       {questions.map((q: Question, i: number) => {
         if (hide) return null;
+
+        // size question buttons so that those near the selected question are largest
+        const size = 24 * Math.pow(1.25, -Math.abs(questionIndex - i));
         return (
           <Button
             key={i}
@@ -69,7 +72,8 @@ export default function QuestionIndexStep({
             size="mini"
             active={i === questionIndex}
             style={{
-              padding: "6px 15px",
+              transition: "padding 0.2s",
+              padding: `6px ${size}px`,
               border: `1px solid`,
               borderColor: i === questionIndex ? "black" : "white",
               background: getColor(i),

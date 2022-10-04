@@ -12,7 +12,6 @@ import {
   RawCodeBook,
 } from "../types";
 import standardizeColor from "./standardizeColor";
-import { assertParenthesizedExpression } from "@babel/types";
 
 export function importCodebook(codebook: RawCodeBook): CodeBook {
   if (codebook.type === "annotate")
@@ -86,9 +85,10 @@ const getOptions = (cta: CodeTree[]): [AnswerOption[], SwipeOptions] => {
 
 export const standardizeCodes = (codes: Code[] | string[], fillMissingColor: boolean): Code[] => {
   if (!codes) return [];
-  return codes.map((code, i) => {
+  return codes.map((code: any, i) => {
     if (typeof code !== "object") code = { code };
     if (code.active == null) code.active = true;
+    if (code.activeParent == null) code.activeParent = true;
     if (code.tree == null) code.tree = [];
     if (code.parent == null) code.parent = "";
     if (code.makes_irrelevant == null) code.makes_irrelevant = [];

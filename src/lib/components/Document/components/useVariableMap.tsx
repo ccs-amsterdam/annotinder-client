@@ -1,10 +1,11 @@
 import { useMemo } from "react";
+import { standardizeCodes } from "../../../functions/codebook";
 import { VariableValueMap, Variable, VariableMap } from "../../../types";
 
 export default function useVariableMap(
   variables: Variable[],
   selectedVariable: string,
-  importedCodes: VariableValueMap
+  restrictedCodes: VariableValueMap
 ): [VariableMap, boolean] {
   const fullVariableMap: VariableMap = useMemo(() => {
     // creates fullVariableMap
@@ -37,16 +38,26 @@ export default function useVariableMap(
       vmap = { [selectedVariable]: fullVariableMap[selectedVariable] };
     }
 
-    // if there are importedCodes, add them to variablemap
+    // also add restricted codes if they are missing.
+    // this way even if restricted codes are not in the codebook,
+    // they can still be used
+    for (let variable of Object.keys(restrictedCodes)) {
+      if (!vmap[variable]) continue;
+      for (let value of Object.keys(restrictedCodes[variable])) {
+        if (value === "EMPTY") continue;
+        if (!vmap[variable].codeMap[value])
+          vmap[variable].codeMap[value] = standardizeCodes([value], true)[0];
+      }
+    }
 
     // !! be carefull when changing to not break copying (otherwise fullVariableMap gets affected)
     vmap = { ...vmap };
     for (let variable of Object.keys(vmap)) {
       vmap[variable] = { ...vmap[variable] };
-      if (vmap[variable]?.onlyImported) {
+      if (restrictedCodes[variable]) {
         vmap[variable].codeMap = Object.keys(vmap[variable].codeMap).reduce(
           (imported: any, code) => {
-            if (importedCodes?.[variable]?.[code])
+            if (restrictedCodes?.[variable]?.[code])
               imported[code] = { ...vmap[variable].codeMap[code] };
             return imported;
           },
@@ -56,7 +67,7 @@ export default function useVariableMap(
     }
 
     return vmap;
-  }, [importedCodes, fullVariableMap, selectedVariable]);
+  }, [restrictedCodes, fullVariableMap, selectedVariable]);
 
   const editMode: boolean = useMemo(() => {
     return variableMap?.[selectedVariable]?.editMode || selectedVariable === "EDIT ALL";
