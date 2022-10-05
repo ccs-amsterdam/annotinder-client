@@ -57,14 +57,13 @@ export default function QuestionIndexStep({
   // hide if only 1 question that is not yet done
 
   const hide = questions.length === 1;
-
   return (
     <>
       {questions.map((q: Question, i: number) => {
         if (hide) return null;
 
         // size question buttons so that those near the selected question are largest
-        const size = 24 * Math.pow(1.25, -Math.abs(questionIndex - i));
+        const dist = Math.pow(1.2, -Math.abs(questionIndex - i));
         return (
           <Button
             key={i}
@@ -72,10 +71,12 @@ export default function QuestionIndexStep({
             size="mini"
             active={i === questionIndex}
             style={{
-              transition: "padding 0.2s",
-              padding: `6px ${size}px`,
+              transition: "padding 0.2s opacity 0.2s background 0.2s",
+              opacity: Math.max(dist, 0.2),
+              padding: `6px ${dist * 24}px`,
+              height: `${15 * dist}px`,
               border: `1px solid`,
-              borderColor: i === questionIndex ? "black" : "white",
+              borderColor: i === questionIndex ? "#000000" : "#ffffff",
               background: getColor(i),
               color: "white",
             }}

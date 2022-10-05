@@ -103,7 +103,7 @@ const renderField = (
           <span
             key={field + paragraph_key}
             className="noselect"
-            style={{ textAlign: "justify", ...(textField.style || {}) }}
+            //style={{ textAlign: "justify", ...(textField.style || {}) }}
           >
             {paragraphs}
           </span>
@@ -123,6 +123,9 @@ const renderField = (
         gridArea: textField.grid_area,
         padding: "10px 0px 10px 0px",
         margin: "0px 10px 0px 10px",
+        textAlign: "justify",
+        alignSelf: "center",
+        ...(textField.style || {}),
       }}
     >
       {fontstyle(paragraphs)}

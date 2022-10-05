@@ -56,8 +56,6 @@ interface DocumentProps {
   blockEvents?: boolean;
   /** in fullscreenmode popups require a mountNode */
   fullScreenNode?: FullScreenNode;
-  /** Annotations to focus on */
-  focusAnnotations?: Annotation[];
   /** Names of fields to focus on, or Annotation objects to focus on */
   focus?: string[];
   /** Should the text be centered? */
@@ -83,7 +81,6 @@ const Document = ({
   onReady,
   blockEvents,
   fullScreenNode,
-  focusAnnotations,
   focus,
   centered,
   bodyStyle,

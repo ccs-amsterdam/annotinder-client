@@ -13,6 +13,7 @@ import {
 } from "../../../types";
 import useWatchChange from "../../../hooks/useWatchChange";
 import { exportFieldAnnotations, exportSpanAnnotations } from "../functions/annotations";
+import { scrollToMiddle } from "../../../functions/scroll";
 
 /**
  * This dude prepares a bunch of states for the Unit, including the current annotations.
@@ -46,6 +47,16 @@ const useUnit = (
     setSpanAnnotations(spanAnnotations);
     setFieldAnnotations(fieldAnnotations);
     setSafetyCheck(doc.tokens);
+
+    if (spanAnnotations && Object.keys(spanAnnotations).length > 0) {
+      // the select function is only available if the input annotations have
+      // changed but the doc is the same.
+      const index = Object.keys(spanAnnotations)[0];
+      const token = doc.tokens[index];
+      if (token?.containerRef && token?.ref)
+        scrollToMiddle(token.containerRef.current, token.ref.current, 1 / 3);
+      //keepInView(token.containerRef.current, token.ref.current);
+    }
   }
 
   useEffect(() => {

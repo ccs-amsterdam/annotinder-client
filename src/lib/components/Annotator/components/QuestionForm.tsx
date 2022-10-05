@@ -1,5 +1,5 @@
 import React, { useState, useRef, ReactElement, useCallback } from "react";
-import { Header, Segment, Icon } from "semantic-ui-react";
+import { Header, Icon } from "semantic-ui-react";
 import styled from "styled-components";
 import useWatchChange from "../../../hooks/useWatchChange";
 import {
@@ -71,16 +71,20 @@ const iconStyle = {
   transform: "scale(3)",
 };
 
-const segmentStyle = {
-  flex: "0.5 1 auto",
-  padding: "0",
-  overflowY: "auto",
-  height: "100%",
-  minHeight: "50px", // safety net for when mobile keyboard pops up
-  width: "100%",
-  margin: "0",
-  fontSize: "inherit",
-};
+const AnswerDiv = styled.div`
+  position: relative;
+  flex: 0.5 1 auto;
+  padding: 0;
+  overflow-y: auto;
+  height: 100%;
+  min-height: 50px;
+  width: 100%;
+  margin: 0;
+  font-size: inherit;
+  background: white;
+  border-radius: 5px;
+  border: 0.5px solid white;
+`;
 
 interface QuestionFormProps {
   /** Buttons can be passed as children, that will be shown on the topleft of the question form */
@@ -192,11 +196,11 @@ const QuestionForm = ({
 
       <BodyDiv>
         <HeaderDiv>
-          <Header as="h3" textAlign="center" style={{ color: COLOR, fontSize: "1.2em" }}>
+          <Header as="h2" textAlign="center" style={{ color: COLOR, fontSize: "1.4em" }}>
             {questionText}
           </Header>
         </HeaderDiv>
-        <Segment style={segmentStyle}>
+        <AnswerDiv>
           <AnswerField
             answers={answers}
             questions={questions}
@@ -205,7 +209,7 @@ const QuestionForm = ({
             swipe={swipe}
             blockEvents={blockEvents}
           />
-        </Segment>
+        </AnswerDiv>{" "}
       </BodyDiv>
     </QuestionDiv>
   );
@@ -288,7 +292,6 @@ const processAnswer = async (
     );
 
     unit.annotations = addAnnotationsFromAnswer(answers[questionIndex], unit.annotations);
-    console.table(unit.annotations);
 
     const irrelevantQuestions = processIrrelevantBranching(unit, questions, answers, questionIndex);
 

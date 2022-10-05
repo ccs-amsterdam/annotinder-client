@@ -1,13 +1,13 @@
-import { useRef, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const useSpeedBump = (watch: any, time: number = 500) => {
-  const speedbump = useRef(false);
+  const [speedbump, setSpeedBump] = useState(false);
 
   useEffect(() => {
-    speedbump.current = true;
-    setTimeout(() => (speedbump.current = false), time);
+    setSpeedBump(true);
+    setTimeout(() => setSpeedBump(false), time);
     return () => {
-      speedbump.current = false;
+      setSpeedBump(false);
     };
   }, [time, watch]);
 

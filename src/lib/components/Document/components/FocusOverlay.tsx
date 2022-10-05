@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import styled from "styled-components";
-import { keepInView } from "../../../functions/scroll";
+import { scrollToMiddle } from "../../../functions/scroll";
 import { FieldRefs } from "../../../types";
 
 const Overlay = styled.div`
@@ -24,10 +24,10 @@ interface FocusOverlayProps {
 const FocusOverlay = ({ fieldRefs, focus, containerRef }: FocusOverlayProps) => {
   useEffect(() => {
     let first = true;
-    //if (!focus || focus.length === 0) return;
-
     for (const field of Object.keys(fieldRefs)) {
+      console.log(1);
       if (!fieldRefs[field].current) continue;
+      console.log(2);
       let nomatch = true;
       const cl = fieldRefs[field].current.classList;
       for (let f of focus || []) {
@@ -37,7 +37,10 @@ const FocusOverlay = ({ fieldRefs, focus, containerRef }: FocusOverlayProps) => 
           cl.add("focus");
           if (first) {
             containerRef.current.style.scrollBehavior = "smooth";
-            setTimeout(() => keepInView(containerRef.current, fieldRefs[field].current), 0);
+            setTimeout(
+              () => scrollToMiddle(containerRef.current, fieldRefs[field].current, 1 / 2),
+              0
+            );
             first = false;
           }
         }
@@ -45,6 +48,7 @@ const FocusOverlay = ({ fieldRefs, focus, containerRef }: FocusOverlayProps) => 
       if (nomatch) cl.remove("focus");
     }
   });
+
   if (!focus || focus.length === 0) return null;
   return <Overlay key="overlay" />;
 };

@@ -58,7 +58,7 @@ export default function unfoldCodebook(codebook: CodeBook, unit: Unit): CodeBook
         for (let f of unit.image_fields || []) fields.add(f.name);
       }
 
-      for (let field of fields) {
+      for (let field of Array.from(fields)) {
         // perField can match on both the exact field and field ignoring any \.[0-9]+ extension.
         // this allows e.g., matching 'comment' on fields 'comment.1','comment.2', etc.
         const fieldWithoutNr = field.replace(/[.][0-9]+$/, "");

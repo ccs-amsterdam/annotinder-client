@@ -59,7 +59,6 @@ class JobServerDemo implements JobServer {
     annotation: Annotation[],
     status: Status
   ): Promise<ConditionReport> {
-    console.log(annotation);
     try {
       let unit_index = Number(unit_id); // in demo job, we use the index as id
       this.demodata.units[unit_index].annotation = annotation;

@@ -231,15 +231,15 @@ const Items = ({
         return (
           <div key={itemIndex} style={{ paddingTop: "10px", margin }}>
             <div>
-              <div style={{ color: "black", width: "100%", textAlign: "center", padding: "0 5px" }}>
+              <div
+                style={{
+                  color: "black",
+                  width: "100%",
+                  textAlign: "center",
+                  padding: "0px 5px 5px 5px",
+                }}
+              >
                 <b>{itemlabel}</b>
-              </div>
-              <div style={{ width: "100%", textAlign: "center", color: "var(--primary)" }}>
-                <i>
-                  {answerItems?.[itemIndex]?.values?.[0]
-                    ? answerItems[itemIndex].values?.[0]
-                    : "..."}
-                </i>
               </div>
             </div>
             <div
@@ -248,7 +248,7 @@ const Items = ({
                 display: "flex",
                 maxWidth: "100%",
                 padding: "0px 15px",
-                paddingBottom: "10px",
+                paddingBottom: "5px",
               }}
             >
               <Item
@@ -259,6 +259,18 @@ const Items = ({
                 selectedButton={selectedButton}
                 onSelect={onSelect}
               />
+            </div>
+            <div
+              style={{
+                width: "100%",
+                textAlign: "center",
+                fontSize: "0.8em",
+                color: "var(--primary)",
+              }}
+            >
+              <i>
+                {answerItems?.[itemIndex]?.values?.[0] ? answerItems[itemIndex].values?.[0] : "..."}
+              </i>
             </div>
           </div>
         );

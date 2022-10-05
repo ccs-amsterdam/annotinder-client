@@ -97,7 +97,7 @@ const SelectCode = React.memo(
         if (event.keyCode === 32 || event.keyCode === 13) {
           event.preventDefault();
           event.stopPropagation();
-          if (speedbump.current) return;
+          if (speedbump) return;
 
           if (selected === options.length) {
             // this would be the finish button
@@ -164,11 +164,13 @@ const SelectCode = React.memo(
             <Ref key={option.code} innerRef={option.ref}>
               <Button
                 fluid
+                loading={speedbump}
                 style={{
                   overflowWrap: "break-word",
                   backgroundColor: option.color,
                   height: "100%",
                   padding: "5px 5px",
+                  transition: "padding 0.2s",
                   paddingTop: isCurrent ? "10px" : "5px",
                   fontWeight: "bold",
                   textShadow: "0px 0px 5px #ffffff77",
@@ -183,7 +185,7 @@ const SelectCode = React.memo(
                 compact
                 //onMouseOver={() => setSelected(i)}
                 onClick={(e, d) => {
-                  if (speedbump.current) return;
+                  if (speedbump) return;
 
                   onSelect({
                     value: d.value,
@@ -246,7 +248,7 @@ const SelectCode = React.memo(
                   }`,
                 }}
                 onClick={() => {
-                  if (speedbump.current) return;
+                  if (speedbump) return;
 
                   onSelect({ value: values, itemIndex: 0, finish: true });
                 }}

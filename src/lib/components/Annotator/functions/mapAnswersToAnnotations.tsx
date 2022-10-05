@@ -27,7 +27,6 @@ export const getAnswersFromAnnotations = (unit: Unit, questions: Question[]): An
     answer.items = getAnswerValues(unit.annotations, answer, q);
     answers.push(answer);
   }
-  console.log(answers);
   return answers;
 };
 

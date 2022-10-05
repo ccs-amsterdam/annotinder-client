@@ -1,5 +1,5 @@
 import useSpeedBump from "../../../hooks/useSpeedBump";
-import React, { RefObject, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Button, Ref, Icon, SemanticICONS } from "semantic-ui-react";
 import { SwipeOptions, Swipes, AnswerItem, OnSelectParams, AnswerOption } from "../../../types";
 
@@ -38,7 +38,7 @@ const Annotinder = React.memo(
 
     const onKeydown = React.useCallback(
       (event: KeyboardEvent) => {
-        if (speedbump.current) return;
+        if (speedbump) return;
         // any arrowkey
         if (arrowKeys.includes(event.key)) {
           event.preventDefault();
@@ -103,7 +103,7 @@ interface AnnotinderButtonProps {
   direction: "left" | "right" | "up";
   value: string | number;
   onSelect: (params: OnSelectParams) => void;
-  speedbump: RefObject<boolean>;
+  speedbump: boolean;
 }
 
 const AnnotinderButton = ({
@@ -129,8 +129,9 @@ const AnnotinderButton = ({
     <Ref key={option.code} innerRef={option.ref}>
       <Button
         disabled={option == null}
+        loading={speedbump}
         onClick={(e, d) => {
-          if (speedbump.current) return;
+          if (speedbump) return;
 
           onSelect({
             value: option?.code,

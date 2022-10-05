@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { keepInView } from "../../../functions/scroll";
+import { keepInView, scrollToMiddle } from "../../../functions/scroll";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
 import getToken from "../functions/getToken";
 import {
@@ -81,7 +81,8 @@ export const AnnotationEvents = ({
         if (!span) span = [token.index, token.index];
         if (token?.containerRef?.current && token?.ref?.current) {
           token.containerRef.current.style.scrollBehavior = "smooth";
-          keepInView(token.containerRef.current, token.ref.current);
+          scrollToMiddle(token.containerRef.current, token.ref.current, 1 / 2);
+          //keepInView(token.containerRef.current, token.ref.current);
         }
         setCurrentToken({ i: token.index });
         setTokenSelection(span);

@@ -425,7 +425,7 @@ export interface Progress {
   seek_forwards?: boolean;
 }
 
-///// UNIT DATAF
+///// UNIT DATA
 
 export type UnitType = "pre" | "train" | "test" | "unit" | "post";
 
@@ -505,6 +505,13 @@ export interface BackendUnit {
 }
 
 export type UnitStatus = "DONE" | "IN_PROGRESS";
+
+export interface fieldGridInput {
+  areas?: string[][];
+  rows?: string[];
+  columns?: string[];
+  autoflow?: string;
+}
 
 export interface FieldGrid {
   areas: string;

@@ -4,6 +4,7 @@
     "type": "unit",
     "unit": {
       "grid": {
+        "rows": "repeat(4, 100px)",
         "areas": [
           ["message", "message", "message", ".", "."],
           [".", "comment1", "comment1", "comment1", "."],

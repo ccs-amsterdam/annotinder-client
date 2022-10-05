@@ -62,10 +62,10 @@ const Body = ({
     if (firstTextUnitToken?.ref?.current && containerRef.current) {
       scrollToMiddle(containerRef.current, firstTextUnitToken.ref.current, 1 / 3);
     }
-  });
+  }, [tokens]);
 
   useEffect(() => {
-    if (!tokens) return null;
+    if (!tokens) return;
     setText(renderText(tokens, text_fields, containerRef, fieldRefs));
     setImages(renderImages(image_fields, containerRef));
     setMarkdown(renderMarkdown(markdown_fields, fieldRefs));
