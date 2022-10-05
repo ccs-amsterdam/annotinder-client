@@ -59,7 +59,7 @@ interface DocumentProps {
   /** Annotations to focus on */
   focusAnnotations?: Annotation[];
   /** Names of fields to focus on, or Annotation objects to focus on */
-  focus?: (string | Annotation)[];
+  focus?: string[];
   /** Should the text be centered? */
   centered?: boolean;
   /** CSSProperties for the body container  */

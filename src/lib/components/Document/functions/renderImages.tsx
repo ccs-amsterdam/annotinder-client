@@ -57,7 +57,7 @@ const AnnotatableImage = React.forwardRef(({ image_field }: AnnotatableImageProp
   return (
     <figure
       style={{
-        gridArea: image_field.name,
+        gridArea: image_field.grid_area,
         display: "flex",
         flexDirection: "column",
         textAlign: "center",

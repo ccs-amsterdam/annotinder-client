@@ -135,7 +135,6 @@ export interface Question {
   swipeOptions?: SwipeOptions;
   options?: AnswerOption[];
   fields?: string[];
-  annotations?: Annotation[];
   /** An array of variable names. If given, unit annotations of this variable are
    * highlighted when this question is asked
    */
@@ -146,9 +145,13 @@ export interface Question {
   perAnnotation?: string[];
   /** If true, than each annotation in perAnnotation is focussed on */
   focusAnnotations: boolean;
-  /** An array of arrays with field names. names can also be partial matches,
-   * so that you can for instance match comment1, comment2, etc. with "comment"
+  /** An array of arrays with field names. A name can also refer to a
+   * numbered field, so that 'comment' would e.g., match 'comment.1', 'comment.2', etc.
    */
+  /** This is not to be passed via the codebook, but is automatically generated if perAnnotation is used.
+   * The annotatino can then be highlighted, and the field, offset and length are stored in the answer
+   */
+  annotation?: Annotation;
   perField?: string[];
 }
 
@@ -519,6 +522,7 @@ export interface TextField {
   context_before?: string;
   context_after?: string;
   paragraphs?: boolean;
+  grid_area?: string;
   style?: CSSProperties;
 }
 
@@ -532,6 +536,7 @@ export interface ImageField {
   alt?: string;
   base64?: boolean;
   caption?: string;
+  grid_area?: string;
   style?: CSSProperties;
 }
 
@@ -542,6 +547,7 @@ export interface RenderedImages {
 export interface MarkdownField {
   name: string;
   value: string;
+  grid_area?: string;
   style?: CSSProperties;
 }
 

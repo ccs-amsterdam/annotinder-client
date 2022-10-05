@@ -17,7 +17,7 @@ export default function renderMarkdown(
         key={"markdown-" + markdown_field.name}
         className="field"
         style={{
-          gridArea: markdown_field.name,
+          gridArea: markdown_field.grid_area,
           padding: "15px",
           margin: "0px 10px 0px 10px",
           //width: "100%",

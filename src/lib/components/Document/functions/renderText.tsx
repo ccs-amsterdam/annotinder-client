@@ -119,7 +119,11 @@ const renderField = (
       ref={fieldRefs[field]}
       className="field"
       key={"tokens-" + field}
-      style={{ gridArea: field, padding: "10px 0px 10px 0px", margin: "0px 10px 0px 10px" }}
+      style={{
+        gridArea: textField.grid_area,
+        padding: "10px 0px 10px 0px",
+        margin: "0px 10px 0px 10px",
+      }}
     >
       {fontstyle(paragraphs)}
     </div>

@@ -153,7 +153,7 @@ const QuestionTask = ({
 
   // two modes for highlighting annotations: if they are included in question.annotations and
   // in question.showAnnotations. Passing an array of annotations to Document highlights the spans
-  let annotations: Annotation[] = question?.annotations || [];
+  let annotations: Annotation[] = question?.annotation ? [question.annotation] : [];
   if (question?.showAnnotations && unit.annotations) {
     const addAnnotations = unit.annotations.filter((a) =>
       question.showAnnotations.includes(a.variable)
@@ -181,7 +181,6 @@ const QuestionTask = ({
               showAll={true}
               onReady={onNewUnit}
               fullScreenNode={fullScreenNode}
-              // focusAnnotations={focusAnnotations}
               focus={question?.fields}
               centered
             />

@@ -13,51 +13,23 @@ export const getAnswersFromAnnotations = (unit: Unit, questions: Question[]): An
   const answers = [];
   if (!unit.annotations) unit.annotations = [];
   for (let i = 0; i < questions.length; i++) {
+    const q = questions[i];
     //const answer = createAnswer(tokens, questions[i]);
-    const answer: Answer = { variable: questions[i].name, items: null };
-    answer.items = getAnswerValues(unit.annotations, answer, questions[i]);
+    const answer: Answer = { variable: q.name, items: null };
+
+    if (q.fields) answer.field = q.fields.join("+");
+    if (q.annotation) {
+      answer.field = q.annotation.field;
+      answer.offset = q.annotation.offset;
+      answer.length = q.annotation.length;
+    }
+
+    answer.items = getAnswerValues(unit.annotations, answer, q);
     answers.push(answer);
   }
+  console.log(answers);
   return answers;
 };
-
-// const createAnswer = (tokens: Token[], question: Question): Answer => {
-//   // creates an object with the variable, field, offset and length of the annotation
-//   // that corresponds to this answer.
-
-//   let answer: Answer = { variable: question.name, items: null };
-//   if (tokens.length === 0) return answer;
-
-//   const fields: any = {};
-//   const lastToken = tokens[tokens.length - 1];
-
-//   const charspan = [0, lastToken.offset + lastToken.length];
-//   const indexspan = [0, tokens.length - 1];
-//   let [unitStarted, unitEnded] = [false, false];
-
-//   let i = 0;
-//   for (let token of tokens) {
-//     if (token.codingUnit && !fields[token.field]) fields[token.field] = 1;
-//     if (!unitStarted && token.codingUnit) {
-//       unitStarted = true;
-//       charspan[0] = token.offset;
-//       indexspan[0] = i;
-//     }
-//     if (!unitEnded && !token.codingUnit && unitStarted) {
-//       unitEnded = true;
-//       charspan[1] = tokens[i - 1].offset + tokens[i - 1].length;
-//       indexspan[1] = i - 1;
-//     }
-//     i++;
-//   }
-
-//   return {
-//     ...answer,
-//     field: Object.keys(fields).join(" + "),
-//     offset: charspan[0],
-//     length: charspan[1] - charspan[0],
-//   };
-// };
 
 const getAnswerValues = (
   annotations: Annotation[],

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import styled from "styled-components";
 import { keepInView } from "../../../functions/scroll";
-import { Annotation, FieldRefs } from "../../../types";
+import { FieldRefs } from "../../../types";
 
 const Overlay = styled.div`
   background: linear-gradient(135deg, #aaa8 25%, #ddd9 50%, #bbb7 75%, #ccc8 100%);
@@ -17,43 +17,32 @@ const Overlay = styled.div`
 
 interface FocusOverlayProps {
   fieldRefs: FieldRefs;
-  focus: (string | Annotation)[];
+  focus: string[];
   containerRef: any;
 }
 
 const FocusOverlay = ({ fieldRefs, focus, containerRef }: FocusOverlayProps) => {
   useEffect(() => {
     let first = true;
-    if (!focus || focus.length === 0) return;
+    //if (!focus || focus.length === 0) return;
 
-    for (const key of Object.keys(fieldRefs)) {
-      if (!fieldRefs[key].current) continue;
-      const cl = fieldRefs[key].current.classList;
+    for (const field of Object.keys(fieldRefs)) {
+      if (!fieldRefs[field].current) continue;
       let nomatch = true;
-      for (let f of focus) {
-        const field = typeof f === "string" ? f : f.field;
-        if (field === key) {
+      const cl = fieldRefs[field].current.classList;
+      for (let f of focus || []) {
+        const fieldWithoutNr = field.replace(/[.][0-9]+$/, "");
+        if (f === field || f === fieldWithoutNr) {
           nomatch = false;
           cl.add("focus");
           if (first) {
             containerRef.current.style.scrollBehavior = "smooth";
-            setTimeout(() => keepInView(containerRef.current, fieldRefs[key].current), 0);
+            setTimeout(() => keepInView(containerRef.current, fieldRefs[field].current), 0);
             first = false;
           }
         }
       }
       if (nomatch) cl.remove("focus");
-
-      // if (focus.includes(key)) {
-      //   cl.add("focus");
-      //   if (first) {
-      //     containerRef.current.style.scrollBehavior = "smooth";
-      //     setTimeout(() => keepInView(containerRef.current, fieldRefs[key].current), 0);
-      //     first = false;
-      //   }
-      // } else {
-      //   cl.remove("focus");
-      // }
     }
   });
   if (!focus || focus.length === 0) return null;

@@ -27,7 +27,6 @@ const useLogin = (): [Backend, ReactElement] => {
   const backendQuery = useQuery<Backend>(
     ["backend", session],
     async () => {
-      console.log("yo");
       if (!session.host || !session.token) return null;
       const backend = new Backend(session.host, session.token);
       await backend.init();

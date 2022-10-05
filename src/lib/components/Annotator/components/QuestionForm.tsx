@@ -288,6 +288,7 @@ const processAnswer = async (
     );
 
     unit.annotations = addAnnotationsFromAnswer(answers[questionIndex], unit.annotations);
+    console.table(unit.annotations);
 
     const irrelevantQuestions = processIrrelevantBranching(unit, questions, answers, questionIndex);
 

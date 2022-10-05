@@ -5,7 +5,6 @@ function getStorageValue(key: string, defaultValue: any): any {
   // getting stored value
   const saved = localStorage.getItem(key);
   const initial = JSON.parse(saved);
-  if (key === "guest_auth") console.log(initial, saved);
   return initial || defaultValue;
 }
 

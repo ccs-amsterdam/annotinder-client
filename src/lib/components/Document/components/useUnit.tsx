@@ -43,7 +43,6 @@ const useUnit = (
     unit = { ...unit, annotations: [...unitAnnotations] };
     const [spanAnnotations, fieldAnnotations] = getAnnotations(doc, unit.annotations);
     initializeCodeHistory(unit.annotations, setCodeHistory);
-    console.log(spanAnnotations, fieldAnnotations);
     setSpanAnnotations(spanAnnotations);
     setFieldAnnotations(fieldAnnotations);
     setSafetyCheck(doc.tokens);

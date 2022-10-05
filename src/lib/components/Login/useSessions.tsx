@@ -22,10 +22,6 @@ const useSessions = (): [
   const has_jobtoken = !!searchParams.get("jobtoken");
   const triedAutoLogin = useRef(false);
 
-  useEffect(() => {
-    console.log(session);
-  }, [session]);
-
   const storeSession = useCallback(
     (backend: Backend) => {
       const sessionData = {
