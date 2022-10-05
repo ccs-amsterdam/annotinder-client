@@ -1,3 +1,5 @@
+import { Token } from "../types";
+
 /**
  * Get an array of all tokens that are currenly visible (not outside of scroll) in TokenContainer
  *
@@ -5,7 +7,7 @@
  * @param {*} tokens           tokens array where each token has a .ref
  * @returns
  */
-const getVisibleTokens = (tokens) => {
+const getVisibleTokens = (tokens: Token[]) => {
   if (tokens.length === 0) return [];
   const container = tokens[0]?.containerRef?.current?.getBoundingClientRect();
   const visibleTokens = [];

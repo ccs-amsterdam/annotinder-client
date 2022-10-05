@@ -431,7 +431,7 @@ export type UnitType = "pre" | "train" | "test" | "unit" | "post";
 
 /** A unit after it has been prepared by the jobServer. This is for internal use */
 export interface Unit {
-  jobServer: any;
+  jobServer?: any;
   unitId: number | string; // this is the backend id, not the external id
   annotations: Annotation[];
   status: UnitStatus;

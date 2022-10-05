@@ -20,9 +20,9 @@ const App = () => {
       <Router basename={process.env.REACT_APP_PUBLIC_URL || process.env.PUBLIC_URL}>
         <ResponsiveContainer>
           <Routes>
-            <Route path="/" exact element={<AnnotatorPythonClient />} />
-            <Route path="/demo" exact element={<DemoJobOverview />} />
-            <Route path="/r" exact element={<AnnotatorRClient />} />
+            <Route path="/" element={<AnnotatorPythonClient />} />
+            <Route path="/demo" element={<DemoJobOverview />} />
+            <Route path="/r" element={<AnnotatorRClient />} />
           </Routes>
         </ResponsiveContainer>
       </Router>

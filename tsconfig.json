@@ -2,15 +2,22 @@
   "files": ["src/lib/index.tsx", "src/lib/types.tsx", "src/global.d.ts"],
   "compilerOptions": {
     "outDir": "./dist/",
-    "noImplicitAny": true,
-    "module": "es6",
-    "target": "es6",
-    "jsx": "react-jsx",
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "moduleResolution": "node",
-    "lib": ["ES2021.String", "DOM"],
-    "declaration": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "sourceMap": true
-  }
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

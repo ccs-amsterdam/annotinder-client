@@ -1,8 +1,19 @@
-import { prepareDocument } from "./createDocuments";
+import { getDoc, getAnnotations } from "./prepareDocumentContent";
 import { exportSpanAnnotations, importSpanAnnotations, toggleSpanAnnotation } from "./annotations";
+import { Annotation, Unit } from "../../../types";
 
-const unit = {
-  text: "All these investments, in innovation, education, and infrastructure, will make America a better place to do business and create jobs. But to help our companies compete, we also have to knock down barriers that stand in the way of their success.",
+const unit: Unit = {
+  unitId: "test",
+  annotations: [],
+  status: "IN_PROGRESS",
+  text_fields: [
+    {
+      name: "text",
+      label: "text",
+      value:
+        "All these investments, in innovation, education, and infrastructure, will make America a better place to do business and create jobs. But to help our companies compete, we also have to knock down barriers that stand in the way of their success.",
+    },
+  ],
 };
 
 const spanAnnotations = [
@@ -23,8 +34,8 @@ const spanAnnotations = [
 ];
 
 test("importing annotations", () => {
-  const doc = prepareDocument(unit);
-  const annotations = importSpanAnnotations(spanAnnotations, doc.tokens);
+  const doc = getDoc(unit);
+  const [annotations] = getAnnotations(doc, spanAnnotations);
 
   // test if offset based annotations are correctly linked to token indices
   const ann1 = annotations["0"]["testvar|match"];
@@ -38,10 +49,9 @@ test("importing annotations", () => {
 });
 
 test("toggling annotations", () => {
-  const doc = prepareDocument(unit);
-  const annotations = importSpanAnnotations(spanAnnotations, doc.tokens);
-
-  const addAnnotation = {
+  const doc = getDoc(unit);
+  const [annotations] = getAnnotations(doc, spanAnnotations);
+  const addAnnotation: Annotation = {
     index: 0,
     variable: "testvar",
     span: [4, 4],
@@ -51,10 +61,10 @@ test("toggling annotations", () => {
     offset: 24,
   };
 
-  let newAnnotations = toggleSpanAnnotation(annotations, addAnnotation);
-  expect(Object.keys(newAnnotations).length).toBe(4); // should add 1 annotation
+  let newAnnotations = toggleSpanAnnotation(annotations, addAnnotation, false, false);
+  expect(Object.keys(newAnnotations).length).toBe(4); // one additional word (the 4th) annotated
 
-  const overwriteAnnotation = {
+  const overwriteAnnotation: Annotation = {
     index: 0,
     variable: "testvar",
     span: [0, 0],
@@ -64,13 +74,16 @@ test("toggling annotations", () => {
     offset: 0,
   };
 
-  newAnnotations = toggleSpanAnnotation(annotations, overwriteAnnotation);
-  expect(Object.keys(newAnnotations).length).toBe(3); // should overwrite a length 2 annotations with a length 1 annotation
+  newAnnotations = toggleSpanAnnotation(newAnnotations, overwriteAnnotation, false, false);
+
+  // this overwrites the first annotation, which covered 2 tokens (offset 0, length 9)
+  // the new annotations covers 1 token, so we should have one annotated token less
+  expect(Object.keys(newAnnotations).length).toBe(3);
 });
 
 test("exporting annotations", () => {
-  const doc = prepareDocument(unit);
-  const annotations = importSpanAnnotations(spanAnnotations, doc.tokens);
+  const doc = getDoc(unit);
+  const [annotations] = getAnnotations(doc, spanAnnotations);
 
   const expAnnotations = exportSpanAnnotations(annotations, doc.tokens);
 

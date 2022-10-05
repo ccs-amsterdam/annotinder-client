@@ -1,4 +1,4 @@
-import { Token, Annotation, SpanAnnotations, FieldAnnotations } from "../types";
+import { Token, Annotation, SpanAnnotations, FieldAnnotations } from "../../../types";
 
 export const createId = (annotation: any): string => {
   return annotation.variable + "|" + annotation.value;
@@ -131,7 +131,7 @@ export const toggleSpanAnnotation = (
     // Check if there exists an annotation with the same variable+value at this position and if so delete it
     if (annotations[index]) {
       if (annotations[index][id]) {
-        // if an annotation with the same id exists, iterating over it's span to remove entirely
+        // if the new annotation overlaps with an existing annotations, loop over the existing annotation to remove it entirely
         const old = annotations[index][id];
         const oldSpan = old.span;
         for (let i = oldSpan[0]; i <= oldSpan[1]; i++) {
@@ -139,14 +139,6 @@ export const toggleSpanAnnotation = (
           // but we just double check for stability
           if (annotations[i]) {
             if (annotations[i][id]) {
-              if (i < newSpan[0] || i > newSpan[1]) {
-                // if the old annotation is outside of the new annotation span, don't delete this part, but
-                // update it's span to exclude the part covered by the new annotation
-                if (i > newSpan[1]) annotations[i][id].span[0] = newSpan[1] + 1;
-                if (i < newSpan[0]) annotations[i][id].span[1] = newSpan[0] - 1;
-                continue;
-              }
-
               if (
                 keep_empty &&
                 Object.values(annotations[i]).filter((a) => a.variable === old.variable).length ===

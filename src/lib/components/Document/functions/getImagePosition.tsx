@@ -1,4 +1,4 @@
-export default function getImagePosition(e) {
+export default function getImagePosition(e: any) {
   const [image, position] = getPosition(e);
   if (!image) return {};
   const borderOffset = 2; // offset for border around img
@@ -12,7 +12,7 @@ export default function getImagePosition(e) {
   };
 }
 
-const getPosition = (e) => {
+const getPosition = (e: any) => {
   try {
     // sometimes e is Restricted, and I have no clue why,
     // nor how to check this in a condition. hence the try clause

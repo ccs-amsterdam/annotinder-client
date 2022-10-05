@@ -1,5 +1,9 @@
-import nlp from "compromise/one";
-import { TextField, Token, RawToken, RawTokenColumn } from "../types";
+import nlp from "compromise";
+
+// would be better, but jest doesn't allow it.
+//import nlp from "compromise/one";
+
+import { TextField, Token, RawToken, RawTokenColumn } from "../../../types";
 
 /**
  * Tokenize a document, but allowing for multiple text fields to be concatenated as different fields.

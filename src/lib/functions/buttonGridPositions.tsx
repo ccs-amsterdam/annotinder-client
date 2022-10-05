@@ -8,7 +8,7 @@
  * @param {*} perRow approximate nubmer of items per row
  * @returns An object with positions, cols and rows settings, used to set the style of the grid container and boxes
  */
-const buttonGridPositions = (n, perRow, divideEqually) => {
+const buttonGridPositions = (n: number, perRow: number, divideEqually: boolean) => {
   let cols, width, rows, rowsizes, maxrowsize, colsize;
   for (let i = 20; i <= 36; i++) {
     // calculate the number of items per row for different grid sizes (in terms of the number of columns).

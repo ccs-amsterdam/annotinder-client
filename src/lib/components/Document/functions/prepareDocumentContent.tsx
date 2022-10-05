@@ -1,5 +1,5 @@
-import { importTokens, parseTokens } from "../../../functions/tokens";
-import { importFieldAnnotations, importSpanAnnotations } from "../../../functions/annotations";
+import { importTokens, parseTokens } from "./tokens";
+import { importFieldAnnotations, importSpanAnnotations } from "./annotations";
 import {
   Doc,
   ImageField,
@@ -50,21 +50,6 @@ export const getDoc = (unit: Unit): Doc => {
   };
 
   return doc;
-  // // ImportSpanAnnotations transforms the array format annotations to an object format.
-  // // More importantly, it matches the annotations to token indices (based on the char offset)
-  // let spanAnnotations: SpanAnnotations = {};
-  // //if (d.importedAnnotations)
-  // //  spanAnnotations = importSpanAnnotations([...d.importedAnnotations], d.tokens, spanAnnotations);
-  // if (d.annotations)
-  //   spanAnnotations = importSpanAnnotations([...d.annotations], d.tokens, spanAnnotations);
-
-  // const tokenAnnotations = importTokenAnnotations(d.tokens);
-  // if (tokenAnnotations.length > 0)
-  //   spanAnnotations = importSpanAnnotations(tokenAnnotations, d.tokens, spanAnnotations);
-
-  // const fieldAnnotations: FieldAnnotations = importFieldAnnotations(d.annotations);
-
-  // return [doc, spanAnnotations, fieldAnnotations];
 };
 
 export const getAnnotations = (

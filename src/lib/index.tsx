@@ -6,7 +6,7 @@ import AnnotatorRClient from "./components/AnnotatorClient/AnnotatorRClient";
 import ResponsiveContainer from "./components/Common/ResponsiveContainer";
 
 import { standardizeCodes, getCodeTreeArray, codeBookEdgesToMap } from "./functions/codebook";
-import { exportSpanAnnotations } from "./functions/annotations";
+import { exportSpanAnnotations } from "./components/Document/functions/annotations";
 
 export {
   Annotator as default,

@@ -12,7 +12,7 @@ import {
   UnitStates,
 } from "../../../types";
 import useWatchChange from "../../../hooks/useWatchChange";
-import { exportFieldAnnotations, exportSpanAnnotations } from "../../../functions/annotations";
+import { exportFieldAnnotations, exportSpanAnnotations } from "../functions/annotations";
 
 /**
  * This dude prepares a bunch of states for the Unit, including the current annotations.
