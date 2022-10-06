@@ -139,7 +139,9 @@ const AnnotinderButton = ({
             transition: { direction, color: option.color },
           });
         }}
+        size="mini"
         style={{
+          height: "100%",
           fontSize: "inherit",
           borderRadius: "10px",
           border: `4px solid ${value === option?.code ? "#0c4f83" : "white"}`,

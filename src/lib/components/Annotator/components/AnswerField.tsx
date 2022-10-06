@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Annotinder from "./AnswerFieldAnnotinder";
 import Confirm from "./AnswerFieldConfirm";
 import Scale from "./AnswerFieldScale";
@@ -6,6 +6,21 @@ import SearchCode from "./AnswerFieldSearchCode";
 import SelectCode from "./AnswerFieldSelectCode";
 import Inputs from "./AnswerFieldInputs";
 import { AnswerItem, OnSelectParams, Swipes, Question, Answer, Transition } from "../../../types";
+import styled from "styled-components";
+
+const AnswerDiv = styled.div`
+  transition: all 0.2s;
+  position: relative;
+  padding: 0;
+  overflow-y: auto;
+  height: 0px;
+  width: 100%;
+  margin: 0;
+  font-size: inherit;
+  background: white;
+  border-radius: 5px;
+  border: 0.5px solid white;
+`;
 
 interface AnswerFieldProps {
   answers: Answer[];
@@ -26,6 +41,7 @@ const AnswerField = ({
 }: AnswerFieldProps) => {
   const [question, setQuestion] = useState(null);
   const [answerItems, setAnswerItems] = useState(null);
+  const answerRef = useRef(null);
 
   useEffect(() => {
     const currentAnswer = answers?.[questionIndex]?.items;
@@ -54,6 +70,34 @@ const AnswerField = ({
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [answers, questionIndex, answerItems]);
+
+  useLayoutEffect(() => {
+    // Manually handle the sizing of the answerfield,
+    // so that we can add transitions
+    const timer = setTimeout(() => {
+      let maxframes = 60;
+      requestAnimationFrame(function animate() {
+        if (!answerRef.current) return;
+        if (maxframes < 0) {
+          answerRef.current.style.opacity = 1;
+          return;
+        }
+        maxframes--;
+
+        answerRef.current.style.opacity = 0;
+        if (answerRef.current.scrollHeight > answerRef.current.offsetHeight) {
+          answerRef.current.style["min-height"] =
+            Math.max(100, answerRef.current.scrollHeight + 10) + "px";
+          answerRef.current.style.opacity = 1;
+        } else {
+          answerRef.current.style["min-height"] = "60px";
+          if (answerRef.current.clientHeight > 60) return requestAnimationFrame(animate);
+        }
+        answerRef.current.style.opacity = 1;
+      });
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [answerRef, onAnswer]);
 
   const onFinish = () => {
     onAnswer(answerItems, false);
@@ -112,8 +156,9 @@ const AnswerField = ({
   // values         array of values
   // answerItems     object with items as keys and values array as value
 
+  let answerfield = null;
   if (question.type === "select code")
-    return (
+    answerfield = (
       <SelectCode
         options={question.options}
         values={answerItems[0].values} // only use first because selectCode doesn't support items
@@ -128,7 +173,7 @@ const AnswerField = ({
     );
 
   if (question.type === "search code")
-    return (
+    answerfield = (
       <SearchCode
         options={question.options}
         values={answerItems[0].values}
@@ -140,7 +185,7 @@ const AnswerField = ({
     );
 
   if (question.type === "scale")
-    return (
+    answerfield = (
       <Scale
         answerItems={answerItems}
         items={question.items || [""]}
@@ -153,7 +198,7 @@ const AnswerField = ({
     );
 
   if (question.type === "annotinder")
-    return (
+    answerfield = (
       <Annotinder
         answerItems={answerItems}
         swipeOptions={question.swipeOptions}
@@ -164,7 +209,7 @@ const AnswerField = ({
     );
 
   if (question.type === "confirm")
-    return (
+    answerfield = (
       <Confirm
         onSelect={onSelect}
         button={question?.button}
@@ -174,7 +219,7 @@ const AnswerField = ({
     );
 
   if (question.type === "inputs")
-    return (
+    answerfield = (
       <Inputs
         items={question.items || [null]}
         answerItems={answerItems}
@@ -185,7 +230,7 @@ const AnswerField = ({
       />
     );
 
-  return null;
+  return <AnswerDiv ref={answerRef}>{answerfield}</AnswerDiv>;
 };
 
 export default React.memo(AnswerField);

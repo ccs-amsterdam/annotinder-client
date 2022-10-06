@@ -65,13 +65,11 @@ const Content = styled.div<{ fontSize: number }>`
 
 const QuestionMenu = styled.div<{
   minifiedAnswerForm: boolean;
-  formHeight: string;
+  formHeight: number;
   fontSize: number;
 }>`
-  height: ${(props) => (props.minifiedAnswerForm ? null : props.formHeight)};
-  min-height: ${(props) => (props.minifiedAnswerForm ? null : "150px")};
+  height: auto;
   font-size: ${(props) => props.fontSize}em;
-  transition: max-height 1s;
 `;
 
 interface QuestionTaskProps {
@@ -94,9 +92,9 @@ const QuestionTask = ({
   const [questionIndex, setQuestionIndex] = useState(0);
   const [conditionReport, setConditionReport] = useState<ConditionReport>(null);
   const divref = useRef(null);
-  const textref = useRef();
-  const boxref = useRef();
-  const coderef = useRef();
+  const textref = useRef(null);
+  const boxref = useRef(null);
+  const coderef = useRef(null);
   const refs = useMemo(() => {
     return { text: textref, box: boxref, code: coderef };
   }, []);
@@ -142,8 +140,8 @@ const QuestionTask = ({
   if (!unit) return null;
 
   // The size of the text div, in pct compared to the answer div
-  let splitHeight = codebook?.settings?.text_window_size ?? settings.splitHeight;
-  const formHeight = splitHeight === "auto" ? "auto" : `${100 - splitHeight}%`;
+  //let splitHeight = codebook?.settings?.text_window_size ?? settings.splitHeight;
+  //const formHeight = splitHeight === "auto" ? "auto" : `${100 - splitHeight}%`;
 
   // if there are only annotinder or confirm questions, minify the answer form
   let minifiedAnswerForm = true;
@@ -191,7 +189,7 @@ const QuestionTask = ({
         {...menuSwipe}
         minifiedAnswerForm={minifiedAnswerForm}
         fontSize={settings.lowerTextSize}
-        formHeight={formHeight}
+        formHeight={0}
       >
         <QuestionForm
           unit={unit}

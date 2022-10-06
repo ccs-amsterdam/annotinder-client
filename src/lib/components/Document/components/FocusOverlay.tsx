@@ -25,9 +25,7 @@ const FocusOverlay = ({ fieldRefs, focus, containerRef }: FocusOverlayProps) => 
   useEffect(() => {
     let first = true;
     for (const field of Object.keys(fieldRefs)) {
-      console.log(1);
       if (!fieldRefs[field].current) continue;
-      console.log(2);
       let nomatch = true;
       const cl = fieldRefs[field].current.classList;
       for (let f of focus || []) {

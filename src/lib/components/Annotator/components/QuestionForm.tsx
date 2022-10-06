@@ -71,21 +71,6 @@ const iconStyle = {
   transform: "scale(3)",
 };
 
-const AnswerDiv = styled.div`
-  position: relative;
-  flex: 0.5 1 auto;
-  padding: 0;
-  overflow-y: auto;
-  height: 100%;
-  min-height: 50px;
-  width: 100%;
-  margin: 0;
-  font-size: inherit;
-  background: white;
-  border-radius: 5px;
-  border: 0.5px solid white;
-`;
-
 interface QuestionFormProps {
   /** Buttons can be passed as children, that will be shown on the topleft of the question form */
   children: ReactElement | ReactElement[];
@@ -195,21 +180,20 @@ const QuestionForm = ({
       </MenuDiv>
 
       <BodyDiv>
-        <HeaderDiv>
-          <Header as="h2" textAlign="center" style={{ color: COLOR, fontSize: "1.4em" }}>
+        <HeaderDiv className="AnswerHeader">
+          <Header as="h2" textAlign="center" style={{ color: COLOR, fontSize: "1.2em" }}>
             {questionText}
           </Header>
         </HeaderDiv>
-        <AnswerDiv>
-          <AnswerField
-            answers={answers}
-            questions={questions}
-            questionIndex={questionIndex}
-            onAnswer={onAnswer}
-            swipe={swipe}
-            blockEvents={blockEvents}
-          />
-        </AnswerDiv>{" "}
+
+        <AnswerField
+          answers={answers}
+          questions={questions}
+          questionIndex={questionIndex}
+          onAnswer={onAnswer}
+          swipe={swipe}
+          blockEvents={blockEvents}
+        />
       </BodyDiv>
     </QuestionDiv>
   );

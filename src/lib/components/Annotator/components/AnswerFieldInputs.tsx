@@ -164,7 +164,7 @@ const Items = ({
       ref={containerRef}
       style={{
         flex: "1 1 auto",
-        overflow: "auto",
+        //overflow: "auto",
         display: "flex",
         //flexDirection: "column",
         flexWrap: "wrap",

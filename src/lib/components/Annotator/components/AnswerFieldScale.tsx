@@ -112,10 +112,8 @@ const Scale = React.memo(
       >
         <div
           style={{
-            //zIndex: 1,
-            //position: "relative",
+            flex: "1 1 auto",
             display: "flex",
-            minHeight: "30px",
             justifyContent: "space-between",
             borderBottom: "1px solid black",
             background: "#7fb9eb",
@@ -125,7 +123,7 @@ const Scale = React.memo(
             size="large"
             style={{
               //position: "absolute",
-              maxWidth: "40%",
+              width: "50%",
               background: "transparent",
               color: "black",
             }}
@@ -138,10 +136,10 @@ const Scale = React.memo(
             size="large"
             style={{
               //position: "absolute",
-              maxWidth: "40%",
+              width: "50%",
               textAlign: "right",
-              background: "transparent",
-              color: "black",
+              background: "#0c293f",
+              color: "white",
             }}
           >
             {right.code}
@@ -218,7 +216,7 @@ const Items = ({
       ref={containerRef}
       style={{
         flex: "1 1 auto",
-        overflow: "auto",
+        //overflow: "auto",
         display: "flex",
         flexDirection: "column",
       }}

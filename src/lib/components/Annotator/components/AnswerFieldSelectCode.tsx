@@ -166,19 +166,18 @@ const SelectCode = React.memo(
                 fluid
                 loading={speedbump}
                 style={{
-                  overflowWrap: "break-word",
                   backgroundColor: option.color,
+                  overflowWrap: "break-word",
                   height: "100%",
                   padding: "5px 5px",
                   transition: "padding 0.2s",
-                  paddingTop: isCurrent ? "10px" : "5px",
                   fontWeight: "bold",
                   textShadow: "0px 0px 5px #ffffff77",
-                  borderRadius: "10px",
+                  borderRadius: "5px",
                   color: "#1B1C1D",
                   fontSize: "inherit",
                   position: "relative",
-                  border: `5px solid ${bordercolor}`,
+                  border: `3px solid ${bordercolor}`,
                 }}
                 key={option.code}
                 value={option.code}
@@ -205,8 +204,9 @@ const SelectCode = React.memo(
                     height: "100%",
                     width: "100%",
                     borderStyle: "solid",
+                    borderRadius: "5px",
                     borderColor: isCurrent ? "#444444" : "#00000066",
-                    borderWidth: isCurrent ? "10px 5px 5px 5px" : "5px 5px 10px 5px",
+                    borderWidth: isCurrent ? "3px" : "3px",
                   }}
                 ></div>
               </Button>
@@ -228,7 +228,7 @@ const SelectCode = React.memo(
             //alignItems: stretch ? "stretch" : "center",
             maxWidth: "100%",
             height: "100%",
-            overflow: "auto",
+            //overflow: "auto",
           }}
         >
           {mapButtons()}

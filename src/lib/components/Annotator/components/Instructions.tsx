@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Modal, Button, TransitionablePortal } from "semantic-ui-react";
+import { useEffect, useRef, useState } from "react";
+import { Modal, Button, Portal } from "semantic-ui-react";
 import { FullScreenNode, CodeBook, SessionData } from "../../../types";
 import Markdown from "../../Common/Markdown";
 
@@ -12,6 +12,7 @@ interface InstructionsProps {
 const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsProps) => {
   const [open, setOpen] = useState(false);
   const [instruction, setInstruction] = useState(null);
+  const modalRef = useRef(null);
 
   useEffect(() => {
     const inst = codebook?.settings?.instruction;
@@ -36,13 +37,30 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
     };
   }, [open]);
 
+  function fancyClose() {
+    const modal = modalRef?.current?.ref?.current;
+    if (!modal) {
+      setOpen(false);
+      return;
+    }
+    modal.style.transform = "translate(-32.5vw, 55vh) scale(0.001)";
+    setTimeout(() => {
+      setOpen(false);
+    }, 500);
+  }
+
   if (!instruction) return null;
 
   return (
-    <TransitionablePortal
+    <Portal
       closeOnTriggerClick
       transition={{ duration: 200 }}
       mountNode={fullScreenNode || undefined}
+      onOpen={() => {
+        const modal = modalRef?.current?.ref?.current;
+        if (!modal) return;
+        setTimeout(() => (modal.style.transform = ""), 0);
+      }}
       onClose={() => setOpen(false)}
       open={open}
       style={{ zIndex: 800 }}
@@ -64,17 +82,23 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
       }
     >
       <Modal
+        ref={modalRef}
         closeIcon
         mountNode={fullScreenNode || undefined}
         open={true}
-        onClose={() => setOpen(false)}
-        style={{ zIndex: 900 }}
+        dimmer="blurring"
+        onClose={fancyClose}
+        style={{ zIndex: 900, transition: "transform 0.5s" }}
       >
         <Modal.Content scrolling style={{ zIndex: 900 }}>
           <Markdown>{instruction}</Markdown>
+          <Markdown>{instruction}</Markdown>
+          <Markdown>{instruction}</Markdown>
+          <Markdown>{instruction}</Markdown>
+          <Markdown>{instruction}</Markdown>
         </Modal.Content>
       </Modal>
-    </TransitionablePortal>
+    </Portal>
   );
 };
 
