@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Modal, Button, Portal } from "semantic-ui-react";
+import { Modal, Button, TransitionablePortal } from "semantic-ui-react";
 import { FullScreenNode, CodeBook, SessionData } from "../../../types";
 import Markdown from "../../Common/Markdown";
 
@@ -37,30 +37,13 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
     };
   }, [open]);
 
-  function fancyClose() {
-    const modal = modalRef?.current?.ref?.current;
-    if (!modal) {
-      setOpen(false);
-      return;
-    }
-    modal.style.transform = "translate(-32.5vw, 55vh) scale(0.001)";
-    setTimeout(() => {
-      setOpen(false);
-    }, 500);
-  }
-
   if (!instruction) return null;
 
   return (
-    <Portal
+    <TransitionablePortal
       closeOnTriggerClick
       transition={{ duration: 200 }}
       mountNode={fullScreenNode || undefined}
-      onOpen={() => {
-        const modal = modalRef?.current?.ref?.current;
-        if (!modal) return;
-        setTimeout(() => (modal.style.transform = ""), 0);
-      }}
       onClose={() => setOpen(false)}
       open={open}
       style={{ zIndex: 800 }}
@@ -87,18 +70,14 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
         mountNode={fullScreenNode || undefined}
         open={true}
         dimmer="blurring"
-        onClose={fancyClose}
-        style={{ zIndex: 900, transition: "transform 0.5s" }}
+        onClose={() => setOpen(false)}
+        style={{ zIndex: 900 }}
       >
         <Modal.Content scrolling style={{ zIndex: 900 }}>
           <Markdown>{instruction}</Markdown>
-          <Markdown>{instruction}</Markdown>
-          <Markdown>{instruction}</Markdown>
-          <Markdown>{instruction}</Markdown>
-          <Markdown>{instruction}</Markdown>
         </Modal.Content>
       </Modal>
-    </Portal>
+    </TransitionablePortal>
   );
 };
 

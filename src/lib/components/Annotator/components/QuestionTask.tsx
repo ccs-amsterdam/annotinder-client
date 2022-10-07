@@ -100,7 +100,6 @@ const QuestionTask = ({
   }, []);
 
   const [settings, setSettings] = useLocalStorage("questionTaskSettings", {
-    splitHeight: 70,
     upperTextSize: 1,
     lowerTextSize: 1.2,
   });
@@ -138,10 +137,6 @@ const QuestionTask = ({
   const menuSwipe = useSwipeable(swipeControl(question, refs, setSwipe, true));
 
   if (!unit) return null;
-
-  // The size of the text div, in pct compared to the answer div
-  //let splitHeight = codebook?.settings?.text_window_size ?? settings.splitHeight;
-  //const formHeight = splitHeight === "auto" ? "auto" : `${100 - splitHeight}%`;
 
   // if there are only annotinder or confirm questions, minify the answer form
   let minifiedAnswerForm = true;
@@ -207,9 +202,6 @@ const QuestionTask = ({
             settings={settings}
             setSettings={setSettings}
             fullScreenNode={fullScreenNode}
-            cantChangeSplitHeight={
-              minifiedAnswerForm || codebook?.settings?.text_window_size != null
-            }
           />
           <Instructions
             codebook={codebook}
@@ -226,15 +218,9 @@ interface SettingsPopupProps {
   settings: { [key: string]: number | string };
   setSettings: SetState<{ [key: string]: number | string }>;
   fullScreenNode: FullScreenNode;
-  cantChangeSplitHeight: boolean;
 }
 
-const SettingsPopup = ({
-  settings,
-  setSettings,
-  fullScreenNode,
-  cantChangeSplitHeight,
-}: SettingsPopupProps) => {
+const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupProps) => {
   return (
     <Portal
       closeOnTriggerClick
@@ -271,23 +257,6 @@ const SettingsPopup = ({
       >
         <Form>
           <Form.Group grouped>
-            {cantChangeSplitHeight ? null : (
-              <Form.Field>
-                <label>
-                  Text window height{" "}
-                  <span style={{ color: "blue" }}>{`${settings.splitHeight}%`}</span>
-                </label>
-                <Input
-                  size="mini"
-                  step={2}
-                  min={20}
-                  max={80}
-                  type="range"
-                  value={settings.splitHeight}
-                  onChange={(e, d) => setSettings({ ...settings, splitHeight: d.value })}
-                />
-              </Form.Field>
-            )}
             <Form.Field>
               <label>
                 Content text size{" "}

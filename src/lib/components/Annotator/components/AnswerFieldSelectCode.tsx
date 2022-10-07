@@ -173,8 +173,8 @@ const SelectCode = React.memo(
                   transition: "padding 0.2s",
                   fontWeight: "bold",
                   textShadow: "0px 0px 5px #ffffff77",
-                  borderRadius: "5px",
                   color: "#1B1C1D",
+                  borderRadius: "13.5px",
                   fontSize: "inherit",
                   position: "relative",
                   border: `3px solid ${bordercolor}`,
@@ -204,9 +204,10 @@ const SelectCode = React.memo(
                     height: "100%",
                     width: "100%",
                     borderStyle: "solid",
-                    borderRadius: "5px",
+                    borderRadius: "10px",
+                    backgroundColor: i === selected ? "#00000033" : "transparent",
                     borderColor: isCurrent ? "#444444" : "#00000066",
-                    borderWidth: isCurrent ? "3px" : "3px",
+                    borderWidth: isCurrent ? "5px" : "3px",
                   }}
                 ></div>
               </Button>

@@ -13,7 +13,8 @@ const AnswerDiv = styled.div`
   position: relative;
   padding: 0;
   overflow-y: auto;
-  height: 0px;
+  height: 60px;
+
   width: 100%;
   margin: 0;
   font-size: inherit;
@@ -73,7 +74,10 @@ const AnswerField = ({
 
   useLayoutEffect(() => {
     // Manually handle the sizing of the answerfield,
-    // so that we can add transitions
+    // so that we can add transitions. This should run
+    // after rendering a new answer field (after onAnswer)
+    // just before updating layout, and then interject with
+    // changes to the answer field height
     const timer = setTimeout(() => {
       let maxframes = 60;
       requestAnimationFrame(function animate() {
@@ -86,10 +90,15 @@ const AnswerField = ({
 
         answerRef.current.style.opacity = 0;
         if (answerRef.current.scrollHeight > answerRef.current.offsetHeight) {
+          // if the field is scrollable, increase size to scroll height plus a margin
           answerRef.current.style["min-height"] =
             Math.max(100, answerRef.current.scrollHeight + 10) + "px";
           answerRef.current.style.opacity = 1;
         } else {
+          // if the field is not scrollable, scrollHeight can be too high if the previous
+          // height was higher than needed. Therefore set to minimum height, and then
+          // per animation frame check if the field become scrollable, at which point
+          // it again increases the height and breaks the loop
           answerRef.current.style["min-height"] = "60px";
           if (answerRef.current.clientHeight > 60) return requestAnimationFrame(animate);
         }
