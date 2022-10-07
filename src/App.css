@@ -1,4 +1,5 @@
 body {
+  overscroll-behavior: contain;
   --primary: #1678c2 !important;
   --primary-light: #7bb6ea !important;
   --secondary: #1b1c1d !important;

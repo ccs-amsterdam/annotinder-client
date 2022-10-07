@@ -64,11 +64,9 @@ const Content = styled.div<{ fontSize: number }>`
 `;
 
 const QuestionMenu = styled.div<{
-  minifiedAnswerForm: boolean;
-  formHeight: number;
   fontSize: number;
 }>`
-  height: auto;
+  max-height: 70%;
   font-size: ${(props) => props.fontSize}em;
 `;
 
@@ -138,12 +136,6 @@ const QuestionTask = ({
 
   if (!unit) return null;
 
-  // if there are only annotinder or confirm questions, minify the answer form
-  let minifiedAnswerForm = true;
-  const minifiable = ["annotinder", "confirm"];
-  for (let question of codebook?.questions || [])
-    if (!minifiable.includes(question.type)) minifiedAnswerForm = false;
-
   // two modes for highlighting annotations: if they are included in question.annotations and
   // in question.showAnnotations. Passing an array of annotations to Document highlights the spans
   let annotations: Annotation[] = question?.annotation ? [question.annotation] : [];
@@ -155,7 +147,7 @@ const QuestionTask = ({
   }
 
   return (
-    <Container ref={divref}>
+    <Container className="QuestionContainer" ref={divref}>
       <FeedbackPortal
         variable={codebook?.questions?.[questionIndex]?.name}
         conditionReport={conditionReport}
@@ -180,12 +172,7 @@ const QuestionTask = ({
           </Content>
         </SwipeableBox>
       </ContentWindow>
-      <QuestionMenu
-        {...menuSwipe}
-        minifiedAnswerForm={minifiedAnswerForm}
-        fontSize={settings.lowerTextSize}
-        formHeight={0}
-      >
+      <QuestionMenu {...menuSwipe} fontSize={settings.lowerTextSize}>
         <QuestionForm
           unit={unit}
           questions={codebook?.questions}

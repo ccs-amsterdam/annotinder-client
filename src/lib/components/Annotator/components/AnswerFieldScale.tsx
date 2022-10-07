@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, createRef } from "react";
+import React, { useState, useEffect, useRef, createRef, RefObject } from "react";
 import { Button, Ref, Icon, Label } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
 import { OnSelectParams, AnswerOption, AnswerItem, QuestionItem } from "../../../types";
@@ -20,10 +20,20 @@ interface ScaleProps {
   blockEvents: boolean;
   /** The index of the question.  */
   questionIndex: number;
+  scrollRef: RefObject<HTMLDivElement>;
 }
 
 const Scale = React.memo(
-  ({ items, answerItems, options, onSelect, onFinish, blockEvents, questionIndex }: ScaleProps) => {
+  ({
+    items,
+    answerItems,
+    options,
+    onSelect,
+    onFinish,
+    blockEvents,
+    questionIndex,
+    scrollRef,
+  }: ScaleProps) => {
     // render buttons for options (an array of objects with keys 'label' and 'color')
     // On selection perform onSelect function with the button label as input
     // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
@@ -154,6 +164,7 @@ const Scale = React.memo(
           options={options}
           selectedButton={selectedButton}
           onSelect={onSelect}
+          scrollRef={scrollRef}
         />
 
         <div>
@@ -189,6 +200,7 @@ interface ItemsProps {
   options: AnswerOption[];
   selectedButton: number;
   onSelect: (params: OnSelectParams) => void;
+  scrollRef: RefObject<HTMLDivElement>;
 }
 
 const Items = ({
@@ -198,8 +210,8 @@ const Items = ({
   options,
   selectedButton,
   onSelect,
+  scrollRef,
 }: ItemsProps) => {
-  const containerRef = useRef(null);
   const rowRefs = useRef([]);
 
   useEffect(() => {
@@ -208,12 +220,11 @@ const Items = ({
 
   useEffect(() => {
     if (selectedItem < 0) return;
-    scrollToMiddle(containerRef?.current, rowRefs?.current?.[selectedItem]?.current, 0.5);
-  }, [selectedItem, items, rowRefs]);
+    scrollToMiddle(scrollRef?.current, rowRefs?.current?.[selectedItem]?.current, 0.5);
+  }, [selectedItem, items, rowRefs, scrollRef]);
 
   return (
     <div
-      ref={containerRef}
       style={{
         flex: "1 1 auto",
         //overflow: "auto",
@@ -227,7 +238,7 @@ const Items = ({
         if (itemIndex === 0) margin = "auto 10px 10px 10px";
         if (itemIndex === items.length - 1) margin = "10px 10px auto 10px";
         return (
-          <div key={itemIndex} style={{ paddingTop: "10px", margin }}>
+          <div key={itemIndex} style={{ paddingTop: "0px", margin }}>
             <div>
               <div
                 style={{
@@ -245,7 +256,7 @@ const Items = ({
               style={{
                 display: "flex",
                 maxWidth: "100%",
-                padding: "0px 15px",
+                padding: "0px 5px",
                 paddingBottom: "5px",
               }}
             >

@@ -16,6 +16,7 @@ interface InputsProps {
   blockEvents: boolean;
   /** The index of the question.  */
   questionIndex: number;
+  scrollRef: RefObject<HTMLDivElement>;
 }
 
 /**
@@ -29,6 +30,7 @@ const Inputs = ({
   onFinish,
   blockEvents,
   questionIndex,
+  scrollRef,
 }: InputsProps) => {
   const [selectedItem, setSelectedItem] = useState(0);
 
@@ -61,6 +63,7 @@ const Inputs = ({
         selectedItem={selectedItem}
         setSelectedItem={setSelectedItem}
         blockEvents={blockEvents}
+        scrollRef={scrollRef}
       />
 
       <div>
@@ -74,9 +77,7 @@ const Inputs = ({
           style={{
             flex: "1 1 0px",
             textAlign: "center",
-            color: done ? null : "black",
             margin: "0",
-            background: done ? null : "white",
             border: `4px solid ${selectedItem === items.length ? "black" : "#00000044"}`,
           }}
           onClick={() => {
@@ -99,6 +100,7 @@ interface ItemsProps {
   selectedItem: number;
   setSelectedItem: SetState<number>;
   blockEvents: boolean;
+  scrollRef: RefObject<HTMLDivElement>;
 }
 
 const Items = ({
@@ -110,9 +112,8 @@ const Items = ({
   selectedItem,
   setSelectedItem,
   blockEvents,
+  scrollRef,
 }: ItemsProps) => {
-  const containerRef = useRef(null);
-
   useEffect(() => {
     const onKeydown = (e: KeyboardEvent) => {
       if (e.keyCode === 9) {
@@ -147,7 +148,7 @@ const Items = ({
   }, [blockEvents, done, items, onSelect, onFinish, answerItems, selectedItem, setSelectedItem]);
 
   useEffect(() => {
-    scrollToMiddle(containerRef?.current, items?.[selectedItem]?.ref?.current, 0.5);
+    scrollToMiddle(scrollRef?.current, items?.[selectedItem]?.ref?.current, 0.5);
     const selectedel = items?.[selectedItem]?.ref?.current;
     if (selectedel) {
       setTimeout(() => selectedel.focus(), 10); // otherwise react keeps complaining
@@ -156,12 +157,11 @@ const Items = ({
         if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
       }, 10);
     }
-  }, [selectedItem, containerRef, items]);
+  }, [selectedItem, items, scrollRef]);
 
   return (
     <div
       key="itemsdiv"
-      ref={containerRef}
       style={{
         flex: "1 1 auto",
         //overflow: "auto",

@@ -33,9 +33,9 @@ const QuestionDiv = styled.div`
   background-color: ${BACKGROUND};
   border-top: 3px double ${COLOR};
   box-shadow: 5px 5px 5px 1px grey;
-  overflow: auto;
   font-size: inherit;
   z-index: 9000;
+  overflow: auto;
 `;
 
 const MenuDiv = styled.div`
@@ -48,7 +48,6 @@ const BodyDiv = styled.div`
   flex-flow: column;
   height: calc(100% - 30px);
   width: 100%;
-  max-height: 100%;
   padding: 0px 10px 5px 10px;
   color: ${COLOR};
   font-size: inherit;

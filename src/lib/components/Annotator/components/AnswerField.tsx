@@ -14,7 +14,6 @@ const AnswerDiv = styled.div`
   padding: 0;
   overflow-y: auto;
   height: 60px;
-
   width: 100%;
   margin: 0;
   font-size: inherit;
@@ -91,8 +90,10 @@ const AnswerField = ({
         answerRef.current.style.opacity = 0;
         if (answerRef.current.scrollHeight > answerRef.current.offsetHeight) {
           // if the field is scrollable, increase size to scroll height plus a margin
-          answerRef.current.style["min-height"] =
-            Math.max(100, answerRef.current.scrollHeight + 10) + "px";
+          const minheight = Math.max(100, answerRef.current.scrollHeight + 10);
+          const container = answerRef.current?.closest(".QuestionContainer");
+          const maxheight = container ? container.clientHeight / 2 : 300;
+          answerRef.current.style["min-height"] = `min(${minheight}px, ${maxheight}px)`;
           answerRef.current.style.opacity = 1;
         } else {
           // if the field is not scrollable, scrollHeight can be too high if the previous
@@ -100,6 +101,7 @@ const AnswerField = ({
           // per animation frame check if the field become scrollable, at which point
           // it again increases the height and breaks the loop
           answerRef.current.style["min-height"] = "60px";
+
           if (answerRef.current.clientHeight > 60) return requestAnimationFrame(animate);
         }
         answerRef.current.style.opacity = 1;
@@ -178,6 +180,7 @@ const AnswerField = ({
         onFinish={onFinish}
         blockEvents={blockEvents} // for disabling key/click events
         questionIndex={questionIndex} // for use in useEffect for resetting values on question change
+        scrollRef={answerRef}
       />
     );
 
@@ -203,6 +206,7 @@ const AnswerField = ({
         onFinish={onFinish}
         blockEvents={blockEvents}
         questionIndex={questionIndex}
+        scrollRef={answerRef}
       />
     );
 
@@ -236,6 +240,7 @@ const AnswerField = ({
         onFinish={onFinish}
         blockEvents={blockEvents}
         questionIndex={questionIndex}
+        scrollRef={answerRef}
       />
     );
 

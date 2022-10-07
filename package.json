@@ -7,7 +7,7 @@
     "react",
     "annotation"
   ],
-  "version": "0.3.10",
+  "version": "0.3.13",
   "repository": {
     "type": "git",
     "url": "https://github.com/ccs-amsterdam/annotinder-client"
@@ -20,7 +20,6 @@
     "dist",
     "README.md"
   ],
-  "private": true,
   "dependencies": {
     "@tanstack/react-query": "^4.10.1",
     "axios": "^1.0.0",
