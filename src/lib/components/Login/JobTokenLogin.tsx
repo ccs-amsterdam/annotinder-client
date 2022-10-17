@@ -92,7 +92,7 @@ const redeemShuffle = async (
       login(host, backend.token);
     } catch (e) {
       // TODO check if e is forbidden. If so, delete token. But don't delete if just server down or
-      console.log(e);
+      console.error(e);
       // there is a token but it no longer works. (typically happens when resetting db in dev)
       // Need better solution, because we don't want people to lose their session by accident
       //   delete guestAuth[key];

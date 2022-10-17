@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Annotator from "../Annotator/Annotator";
 import { Loader } from "semantic-ui-react";
-import JobServerAPI from "./classes/JobServerAPI";
+import JobServerPython from "./classes/JobServerPython";
 import Home from "./components/Home";
 
 import { useSearchParams } from "react-router-dom";
@@ -47,7 +47,7 @@ const useJobServer = (backend: Backend): [JobServer, boolean] => {
     }
     setJobServer(null);
     const returnLink = backend?.restricted_job ? null : "/";
-    const js = new JobServerAPI(backend, jobId as number, setJobServer, returnLink);
+    const js = new JobServerPython(backend, jobId as number, setJobServer, returnLink);
     js.init()
       .then(() => {
         setJobServer(js);

@@ -12,10 +12,7 @@ import {
 } from "../../../types";
 
 /**
- *
- * @param unit
- * @param codes This is
- * @returns
+ * Prepare the document but performing several preprocessing steps.
  */
 export const getDoc = (unit: Unit): Doc => {
   // d is an intermediate object to do some processing on the Unit and extract the document and annotations
@@ -77,6 +74,7 @@ function prepareGrid(d: any) {
   // this is then used to create the grid-template-areas
   let template = [];
   let ncolumns = 1;
+
   for (let row of d.grid.areas) {
     // first get max row length (= n columns)
     if (Array.isArray(row)) ncolumns = Math.max(ncolumns, row.length);
@@ -114,10 +112,26 @@ function prepareGrid(d: any) {
   for (let f of d.image_fields) f.grid_area = areaNameMap[f.name];
   for (let f of d.markdown_fields) f.grid_area = areaNameMap[f.name];
 
-  d.grid = {
-    ...d.grid,
-    areas: template.join(" "),
-  };
+  d.grid.areas = template.join(" ");
+
+  // columns and rows are arrays of values for fr units. Transform here into strings, repeating
+  // last value if array shorter than number of rows/columns.
+  if (d.grid.rows) {
+    let rowString = "";
+    for (let i = 0; i < template.length; i++) {
+      const value = d.grid.rows[i] ?? d.grid.rows[d.grid.rows.length - 1];
+      rowString += value + "fr ";
+    }
+    d.grid.rows = rowString.trim();
+  }
+  if (d.grid.columns) {
+    let colString = "";
+    for (let i = 0; i < ncolumns; i++) {
+      const value = d.grid.columns[i] ?? d.grid.columns[d.grid.columns.length - 1];
+      colString += value + "fr ";
+    }
+    d.grid.columns = colString.trim();
+  }
 
   return d;
 }

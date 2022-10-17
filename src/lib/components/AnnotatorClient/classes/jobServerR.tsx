@@ -1,3 +1,4 @@
+import checkConditions from "../../../functions/checkConditions";
 import { importCodebook } from "../../../functions/codebook";
 import {
   Annotation,
@@ -10,18 +11,19 @@ import {
 } from "../../../types";
 import Backend from "../../Login/Backend";
 
-class JobServerAPI implements JobServer {
+class JobServerR implements JobServer {
   backend: Backend;
   job_id: number;
-  setJobServer: SetState<JobServerAPI>;
+  setJobServer: SetState<JobServerR>;
   progress: Progress;
   codebook: CodeBook;
   return_link: string;
+  unit: BackendUnit;
 
   constructor(
     backend: Backend,
     job_id: number,
-    setJobServer: SetState<JobServerAPI>,
+    setJobServer: SetState<JobServerR>,
     return_link: string = undefined
   ) {
     this.backend = backend;
@@ -37,12 +39,14 @@ class JobServerAPI implements JobServer {
   }
 
   async getUnit(i: number): Promise<BackendUnit> {
-    return await this.backend.getUnit(this.job_id, i);
+    this.unit = await this.backend.getUnit(this.job_id, i);
+    return this.unit;
   }
 
   async postAnnotations(unitId: number, annotation: Annotation[], status: Status) {
     try {
-      return await this.backend.postAnnotation(this.job_id, unitId, annotation, status);
+      await this.backend.postAnnotation(this.job_id, unitId, annotation, status);
+      return checkConditions({ ...this.unit, annotation });
     } catch (e) {
       if (this.setJobServer) this.setJobServer(null);
     }
@@ -53,4 +57,4 @@ class JobServerAPI implements JobServer {
   }
 }
 
-export default JobServerAPI;
+export default JobServerR;

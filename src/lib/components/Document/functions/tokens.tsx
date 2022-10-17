@@ -34,6 +34,9 @@ export const parseTokens = (text_fields: TextField[]): Token[] => {
     let offset = text_field.offset || 0;
 
     text = text_field.value;
+    // should be impossible for value to be an array due to unfoldFields, but typescript doesn't catch that
+    if (Array.isArray(text)) text = text.join("");
+
     if (text_field.context_before != null) {
       text = text_field.context_before + text;
       text_field.unit_start = text_field.context_before.length - 1;

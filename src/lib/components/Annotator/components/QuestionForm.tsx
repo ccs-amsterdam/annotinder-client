@@ -341,7 +341,7 @@ const processAnswer = async (
       blockAnswer.current = false;
     }
   } catch (e) {
-    console.log(e);
+    console.error(e);
     // just to make certain the annotator doesn't block if something goes wrong
     blockAnswer.current = false;
   }

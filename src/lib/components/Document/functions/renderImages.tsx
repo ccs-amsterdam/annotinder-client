@@ -52,7 +52,10 @@ const AnnotatableImage = React.forwardRef(({ image_field }: AnnotatableImageProp
     };
   }, [extraspace, container, img]);
 
-  let src = image_field.base64 ? `data:image/jpeg;base64,${image_field.value}` : image_field.value;
+  // value should not be an array, because this is resolved in unfoldFields,
+  // but typescript doesn't catch that.
+  const value = Array.isArray(image_field.value) ? image_field.value[0] : image_field.value;
+  let src = image_field.base64 ? `data:image/jpeg;base64,${value}` : value;
 
   return (
     <figure

@@ -6,6 +6,7 @@ import "./annotatorStyle.css";
 import JobController from "./components/JobController";
 import { SetState, JobServer, Unit, SetUnitIndex, BackendUnit } from "../../types";
 import { importCodebook } from "../../functions/codebook";
+import unfoldFields from "../../functions/unfoldFields";
 
 /**
  * Keep unit and index in same state to guarantee that they're synchronized
@@ -118,7 +119,7 @@ const getIndexedUnit = async (jobServer: any, unitIndex: number): Promise<Indexe
   if (backendunit.unit.codebook)
     backendunit.unit.codebook = importCodebook(backendunit.unit.codebook);
 
-  const unit: Unit = {
+  let unit: Unit = {
     jobServer,
     unitId: backendunit.id,
     annotations: backendunit.annotation,
@@ -126,6 +127,8 @@ const getIndexedUnit = async (jobServer: any, unitIndex: number): Promise<Indexe
     report: backendunit.report,
     ...backendunit.unit,
   };
+  unit = unfoldFields(unit);
+
   return { unit, index: backendunit.index ?? unitIndex };
 };
 

@@ -125,9 +125,15 @@ const IndexController = ({
             border: "1px solid white",
           }}
         >
-          <div style={{ minWidth: "1rem", height: "100%", color: "white" }}>{sliderPage}</div>
-          &frasl;
-          <div>{n}</div>
+          {sliderPage > n ? (
+            <div style={{ minWidth: "1rem", height: "100%", color: "white" }}>done</div>
+          ) : (
+            <>
+              <div style={{ minWidth: "1rem", height: "100%", color: "white" }}>{sliderPage}</div>
+              &frasl;
+              <div>{n}</div>
+            </>
+          )}
         </div>
         {canGoForward || canGoBack ? (
           <div style={{ height: "24px" }}>

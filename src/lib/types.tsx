@@ -508,9 +508,8 @@ export type UnitStatus = "DONE" | "IN_PROGRESS";
 
 export interface fieldGridInput {
   areas?: string[][];
-  rows?: string[];
-  columns?: string[];
-  autoflow?: string;
+  rows?: number[];
+  columns?: number[];
 }
 
 export interface FieldGrid {
@@ -521,7 +520,7 @@ export interface FieldGrid {
 
 export interface TextField {
   name: string;
-  value: string;
+  value: string | string[];
   label?: string;
   offset?: number;
   unit_start?: number;
@@ -539,7 +538,7 @@ export interface RenderedText {
 
 export interface ImageField {
   name: string;
-  value: string;
+  value: string | string[];
   alt?: string;
   base64?: boolean;
   caption?: string;
@@ -553,7 +552,7 @@ export interface RenderedImages {
 
 export interface MarkdownField {
   name: string;
-  value: string;
+  value: string | string[];
   grid_area?: string;
   style?: CSSProperties;
 }

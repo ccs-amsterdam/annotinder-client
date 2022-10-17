@@ -1,5 +1,5 @@
 import Annotator from "./components/Annotator/Annotator";
-import JobServerAPI from "./components/AnnotatorClient/classes/JobServerAPI";
+import JobServerPython from "./components/AnnotatorClient/classes/JobServerPython";
 import JobServerDemo from "./components/DemoJob/classes/JobServerDemo";
 import AnnotatorPythonClient from "./components/AnnotatorClient/AnnotatorPythonClient";
 import AnnotatorRClient from "./components/AnnotatorClient/AnnotatorRClient";
@@ -11,7 +11,7 @@ import { exportSpanAnnotations } from "./components/Document/functions/annotatio
 export {
   Annotator as default,
   ResponsiveContainer,
-  JobServerAPI,
+  JobServerPython,
   JobServerDemo,
   AnnotatorRClient,
   AnnotatorPythonClient,

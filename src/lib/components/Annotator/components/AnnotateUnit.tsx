@@ -42,10 +42,6 @@ const AnnotateUnit = ({
   let codebook = unit?.codebook || jobServer?.codebook;
   if (!codebook || !unit) return null;
 
-  // Codebooks can indicate that certain questions need to be asked
-  // multiple times (per annotation, per field). If so, the questions need to be 'unfolded'.
-  codebook = unfoldCodebook(codebook, unit);
-
   return (
     <Task
       unit={unit}
@@ -66,7 +62,11 @@ interface TaskProps {
 }
 
 const Task = ({ unit, codebook, nextUnit, sessionData, fullScreenNode }: TaskProps) => {
-  if (codebook.type === "questions")
+  if (codebook.type === "questions") {
+    // Codebooks can indicate that certain questions need to be asked
+    // multiple times (per annotation, per field). If so, the questions need to be 'unfolded'.
+    codebook = unfoldCodebook(codebook, unit);
+
     return (
       <QuestionTask
         unit={unit}
@@ -76,7 +76,7 @@ const Task = ({ unit, codebook, nextUnit, sessionData, fullScreenNode }: TaskPro
         sessionData={sessionData}
       />
     );
-
+  }
   if (codebook.type === "annotate")
     return (
       <AnnotateTask

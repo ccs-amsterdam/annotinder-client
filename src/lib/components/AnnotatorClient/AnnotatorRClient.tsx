@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 // Main pages. Use below in items to include in header menu
 import Annotator from "../Annotator/Annotator";
 import Backend from "../Login/Backend";
-import JobServerAPI from "./classes/JobServerAPI";
+import JobServerR from "./classes/jobServerR";
 import { Grid, Header, Icon } from "semantic-ui-react";
 import { JobServer, SetState } from "../../types";
 
@@ -49,7 +49,7 @@ const login = async (setJobServer: SetState<JobServer>) => {
   try {
     const backend = new Backend("http://localhost:" + PORT, null);
     await backend.init();
-    const js = new JobServerAPI(backend, 0, setJobServer);
+    const js = new JobServerR(backend, 0, setJobServer);
     await js.init();
     setJobServer(js);
   } catch (e) {}

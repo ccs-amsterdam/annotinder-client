@@ -10,8 +10,6 @@ import { CodeBook, Unit } from "../types";
  * @returns
  */
 export default function unfoldCodebook(codebook: CodeBook, unit: Unit): CodeBook {
-  if (codebook.type === "annotate") return codebook;
-
   let needsUnfold = false;
   for (let question of codebook.questions) {
     if (question.perAnnotation && unit.importedAnnotations) needsUnfold = true;
@@ -71,8 +69,4 @@ export default function unfoldCodebook(codebook: CodeBook, unit: Unit): CodeBook
   codebook.questions = questions;
 
   return codebook;
-}
-
-export function unfoldFields(unit: Unit) {
-  return unit;
 }
