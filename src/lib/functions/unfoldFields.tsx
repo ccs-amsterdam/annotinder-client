@@ -34,7 +34,10 @@ function unfold(fields, grid) {
     for (let i = 0; i < f.value.length; i++) {
       const name = `${f.name}.${i + 1}`;
       const value: string = f.value[i];
-      newFields.push({ ...f, name, value });
+      const newField = { ...f, name, value };
+      if (newField.context_before && i > 0) delete newField.context_before;
+      if (newField.context_after && i < value.length - 1) delete newField.context_after;
+      newFields.push(newField);
     }
     grid = unfoldGrid(grid, f.name, f.value.length);
   }
