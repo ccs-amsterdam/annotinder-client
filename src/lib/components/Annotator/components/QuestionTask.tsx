@@ -21,6 +21,7 @@ import {
 import Instructions from "./Instructions";
 import FeedbackPortal from "./FeedbackPortal";
 import useWatchChange from "../../../hooks/useWatchChange";
+import unfoldQuestions from "../../../functions/unfoldQuestions";
 
 const Container = styled.div`
   display: flex;
@@ -101,7 +102,9 @@ const QuestionTask = ({
     upperTextSize: 1,
     lowerTextSize: 1.2,
   });
-  const question = codebook?.questions?.[questionIndex];
+
+  const questions = useMemo(() => unfoldQuestions(codebook, unit), [unit, codebook]);
+  const question = questions[questionIndex];
 
   if (useWatchChange([unit])) {
     setQuestionIndex(0);
@@ -149,7 +152,7 @@ const QuestionTask = ({
   return (
     <Container className="QuestionContainer" ref={divref}>
       <FeedbackPortal
-        variable={codebook?.questions?.[questionIndex]?.name}
+        variable={questions?.[questionIndex]?.name}
         conditionReport={conditionReport}
         setConditionReport={setConditionReport}
         fullScreenNode={fullScreenNode}
@@ -175,7 +178,7 @@ const QuestionTask = ({
       <QuestionMenu {...menuSwipe} fontSize={settings.lowerTextSize}>
         <QuestionForm
           unit={unit}
-          questions={codebook?.questions}
+          questions={questions}
           questionIndex={questionIndex}
           setQuestionIndex={setQuestionIndex}
           nextUnit={nextUnit}

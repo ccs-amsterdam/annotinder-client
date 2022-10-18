@@ -10,7 +10,6 @@ import {
 } from "../../../types";
 import { useMemo } from "react";
 import { useCallback } from "react";
-import unfoldCodebook from "../../../functions/unfoldCodebook";
 
 interface AnnotateUnitProps {
   unit: Unit;
@@ -65,7 +64,6 @@ const Task = ({ unit, codebook, nextUnit, sessionData, fullScreenNode }: TaskPro
   if (codebook.type === "questions") {
     // Codebooks can indicate that certain questions need to be asked
     // multiple times (per annotation, per field). If so, the questions need to be 'unfolded'.
-    codebook = unfoldCodebook(codebook, unit);
 
     return (
       <QuestionTask

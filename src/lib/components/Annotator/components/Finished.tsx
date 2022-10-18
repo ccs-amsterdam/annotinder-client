@@ -21,7 +21,7 @@ const Finished = ({ jobServer }: FinishedProps) => {
         setDebriefing(data);
       })
       .catch((e: Error) => {
-        console.error(e);
+        //console.error(e);
       });
   }, [jobServer]);
 

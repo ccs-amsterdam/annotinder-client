@@ -1,4 +1,4 @@
-import { CodeBook, Unit } from "../types";
+import { CodeBook, Question, Unit } from "../types";
 
 /**
  * Codebooks can indicate that certain questions need to be asked
@@ -9,13 +9,14 @@ import { CodeBook, Unit } from "../types";
  * @param unit
  * @returns
  */
-export default function unfoldCodebook(codebook: CodeBook, unit: Unit): CodeBook {
+export default function unfoldQuestions(codebook: CodeBook, unit: Unit): Question[] {
+  if (!codebook) return null;
   let needsUnfold = false;
   for (let question of codebook.questions) {
     if (question.perAnnotation && unit.importedAnnotations) needsUnfold = true;
     if (question.perField) needsUnfold = true;
   }
-  if (!needsUnfold) return codebook;
+  if (!needsUnfold) return codebook.questions;
 
   const questions = [];
   for (let question of codebook.questions) {
@@ -66,7 +67,5 @@ export default function unfoldCodebook(codebook: CodeBook, unit: Unit): CodeBook
       }
     }
   }
-  codebook.questions = questions;
-
-  return codebook;
+  return questions;
 }

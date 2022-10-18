@@ -92,9 +92,9 @@ const renderField = (
             <span
               key={field + paragraph_key + "label"}
               style={{
+                paddingLeft: "10px",
                 color: "grey",
                 fontWeight: "bold",
-                textAlign: "center",
               }}
             >
               {textField.label}
