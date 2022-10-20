@@ -1,17 +1,53 @@
+html {
+  --primary: #1678c2;
+  --primary-light: #7bb6ea;
+  --background: white;
+  --background-inversed: #1b1c1d;
+  --secondary: #1b1c1d;
+  --secondary-light: #7b7c7d;
+  --text: black;
+  --text-light: grey;
+  --text-inversed: white;
+  --grey: grey;
+  --darkgrey: darkgrey;
+  --border: white;
+  --green: green;
+  --red: crimson;
+  --lightred: rgb(218, 151, 164);
+  --orange: orange;
+}
+
+html {
+  --primary: #1678c2;
+  --primary-light: #7bb6ea;
+  --background: white;
+  --background-inversed: #1b1c1d;
+  --secondary: #1b1c1d;
+  --secondary-light: #7b7c7d;
+  --text: black;
+  --text-light: grey;
+  --text-inversed: white;
+  --grey: grey;
+  --darkgrey: darkgrey;
+  --border: white;
+  --green: green;
+  --red: crimson;
+  --lightred: rgb(218, 151, 164);
+  --orange: orange;
+}
+
 body {
   overscroll-behavior: contain;
-  --primary: #1678c2 !important;
-  --primary-light: #7bb6ea !important;
-  --secondary: #1b1c1d !important;
-  --secondary-light: #7b7c7d !important;
+  background: var(--background);
+  color: var(--text);
 }
 
 .ui.primary.button {
   background: var(--primary) !important;
-  color: white !important;
+  color: var(--text-inversed) !important;
 }
-
 .ui.secondary.button {
   background: var(--secondary) !important;
-  color: white !important;
+  color: var(--text-inversed) !important;
+  color: #dfeffb;
 }

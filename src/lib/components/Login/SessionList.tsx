@@ -15,14 +15,14 @@ const SessionBox = styled.div`
   margin: 0.5rem 0.5rem 0.5rem 10%;
   padding: 5px 10px;
   border-radius: 10px;
-  border: 1px solid #2185d0;
-  color: #666666;
+  border: 1px solid var(--primary);
+  color: var(--text-light);
   transition: background 0.3s;
   cursor: pointer;
   overflow: auto;
   &:hover {
     background: var(--primary-light);
-    color: white;
+    color: var(--text-inversed);
   }
 `;
 

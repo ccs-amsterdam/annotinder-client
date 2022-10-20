@@ -3,16 +3,15 @@ import { Icon, Segment } from "semantic-ui-react";
 import useWatchChange from "../../../hooks/useWatchChange";
 import { SetState } from "../../../types";
 
-const sliderColor = "#d3dfe9";
-const progressColor = "#7fb9eb";
+const sliderColor = "var(--text-inversed)";
+const progressColor = "var(--primary-light)";
 const iconStyle = {
   cursor: "pointer",
   height: "24px",
   lineHeight: "24px",
   fontSize: "20px",
-  color: "white",
+  color: "var(--text-inversed)",
 };
-//const iconStyleHidden = { color: "white" };
 
 interface IndexControllerProps {
   n: number;
@@ -106,7 +105,6 @@ const IndexController = ({
           </div>
         ) : null}
         <div
-          color="blue"
           style={{
             height: "24px",
             padding: "0px 3px 0px 3px",
@@ -120,16 +118,16 @@ const IndexController = ({
             fontSize: "0.85rem",
             fontWeight: "bold",
             borderRadius: "2px",
-            background: "#2185d0",
-            color: "#ffffff99",
+            background: "var(--primary)",
+            color: "var(--text-inversed)",
             border: "1px solid white",
           }}
         >
           {sliderPage > n ? (
-            <div style={{ minWidth: "1rem", height: "100%", color: "white" }}>done</div>
+            <div style={{ minWidth: "1rem", height: "100%" }}>done</div>
           ) : (
             <>
-              <div style={{ minWidth: "1rem", height: "100%", color: "white" }}>{sliderPage}</div>
+              <div style={{ minWidth: "1rem", height: "100%" }}>{sliderPage}</div>
               &frasl;
               <div>{n}</div>
             </>

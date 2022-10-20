@@ -25,26 +25,26 @@
 span.token {
   /* vertical-align: bottom; */
   padding-bottom: 0px;
-  color: grey;
+  color: var(--text-light);
 }
 
 span.token.codingUnit {
   line-height: 1.4em;
   font-size: 1.2em;
   background-color: transparent;
-  color: black;
+  color: var(--text);
 }
 
 span.token.selected > span {
-  background-color: rgb(61, 61, 61) !important;
-  color: rgb(255, 255, 255);
-  border-color: black;
+  background-color: var(--text-light) !important;
+  color: var(--text-inversed);
+  border-color: var(--text);
 }
 span.token.selected.start > span.pre {
-  background-color: lightblue !important;
+  background-color: var(--primary-light) !important;
 }
 span.token.selected.end > span.post {
-  background-color: lightblue !important;
+  background-color: var(--primary-light) !important;
 }
 
 span.token.tapped > span {
@@ -114,14 +114,14 @@ span.token.annotated.allRight > span.text {
 .focus {
   transition: background-color 500ms;
   position: relative;
-  background-color: white;
-  border: 1px double black;
+  background-color: var(--background);
+  border: 1px double var(--border);
   border-radius: 20px;
-  box-shadow: 0px 1px 2px black;
+  box-shadow: 0px 1px 3px black;
   z-index: 20;
 }
 
 .menu > .selected {
   background: var(--primary) !important;
-  color: white !important;
+  color: var(--text-inversed) !important;
 }

@@ -77,6 +77,7 @@ const MenuBar = ({ backend, authForm, menuItem, setMenuItem }: MenuBarProps) => 
         if (item.onlyAdmin && !backend?.is_admin) return null;
         return (
           <Menu.Item
+            secondary
             key={item.label}
             name={item.label}
             active={menuItem === item.value}

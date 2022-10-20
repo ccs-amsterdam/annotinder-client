@@ -146,10 +146,10 @@ const SelectCode = React.memo(
       }
 
       return options.map((option, i) => {
-        let bordercolor = "#ece9e9";
+        let bordercolor = "var(--text)";
         const isCurrent = values.includes(option.code);
-        if (isCurrent) bordercolor = "white";
-        if (i === selected) bordercolor = "#1B1C1D";
+        if (isCurrent) bordercolor = "var(--background)";
+        if (i === selected) bordercolor = "var(--background)";
 
         return (
           <div
@@ -174,8 +174,8 @@ const SelectCode = React.memo(
                   padding: "5px 5px",
                   transition: "padding 0.2s",
                   fontWeight: "bold",
-                  textShadow: "0px 0px 5px #ffffff77",
-                  color: "#1B1C1D",
+                  textShadow: "0px 0px 5px var(--background-inversed)",
+                  color: "var(--text-inversed)",
                   borderRadius: "13.5px",
                   fontSize: "inherit",
                   position: "relative",
@@ -207,9 +207,9 @@ const SelectCode = React.memo(
                     width: "100%",
                     borderStyle: "solid",
                     borderRadius: "10px",
-                    backgroundColor: i === selected ? "#00000033" : "transparent",
-                    borderColor: isCurrent ? "#444444" : "#00000066",
-                    borderWidth: isCurrent ? "5px" : "3px",
+                    backgroundColor: i === selected ? "#ffffff33" : "transparent",
+                    borderColor: isCurrent ? "var(--background)" : "var(--background-inversed)",
+                    borderWidth: isCurrent ? "3px" : "3px",
                   }}
                 ></div>
               </Button>
@@ -247,7 +247,7 @@ const SelectCode = React.memo(
                 style={{
                   height: "100%",
                   border: `5px solid ${
-                    selected === options.length ? "black" : "rgb(211, 223, 233)"
+                    selected === options.length ? "var(--background)" : "var(--background-inversed)"
                   }`,
                 }}
                 onClick={() => {

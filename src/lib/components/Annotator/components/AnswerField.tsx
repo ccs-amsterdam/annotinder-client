@@ -17,9 +17,7 @@ const AnswerDiv = styled.div`
   width: 100%;
   margin: 0;
   font-size: inherit;
-  background: white;
-  border-radius: 5px;
-  border: 0.5px solid white;
+  color: var(--text-inversed);
 `;
 
 interface AnswerFieldProps {

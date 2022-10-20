@@ -42,7 +42,7 @@ const Confirm = ({ onSelect, button, swipe, blockEvents }: ConfirmProps) => {
       onSelect({
         value: "continue",
         finish: true,
-        transition: { direction: "up", color: "#2185d0" },
+        transition: { direction: "up", color: "var(--primary)" },
       });
     }
   }, [swipe, onSelect]);

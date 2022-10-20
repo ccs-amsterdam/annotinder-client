@@ -284,7 +284,7 @@ const JobUsers = ({ backend, job }: JobUsersProps) => {
         <Button icon="save" disabled={!changed} primary onClick={onSave} />
       </div>
       {changed ? (
-        <span style={{ float: "right", color: "orange" }}>
+        <span style={{ float: "right", color: "var(--orange)" }}>
           <i>Click save icon to confirm changes</i>
         </span>
       ) : null}

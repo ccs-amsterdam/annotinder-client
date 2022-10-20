@@ -126,7 +126,7 @@ const Scale = React.memo(
             display: "flex",
             justifyContent: "space-between",
             borderBottom: "1px solid black",
-            background: "#7fb9eb",
+            background: "var(--primary-light)",
           }}
         >
           <Label
@@ -135,7 +135,7 @@ const Scale = React.memo(
               //position: "absolute",
               width: "50%",
               background: "transparent",
-              color: "black",
+              color: "var(--text)",
             }}
           >
             <Icon name="arrow left" />
@@ -148,8 +148,8 @@ const Scale = React.memo(
               //position: "absolute",
               width: "50%",
               textAlign: "right",
-              background: "#0c293f",
-              color: "white",
+              background: "var(--secondary)",
+              color: "var(--text-inversed)",
             }}
           >
             {right.code}
@@ -178,7 +178,7 @@ const Scale = React.memo(
             style={{
               flex: "1 1 0px",
               textAlign: "center",
-              color: done ? null : "black",
+              color: done ? null : "var(--text)",
               margin: "0",
               background: done ? null : "white",
               border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
@@ -242,7 +242,7 @@ const Items = ({
             <div>
               <div
                 style={{
-                  color: "black",
+                  color: "var(--text)",
                   width: "100%",
                   textAlign: "center",
                   padding: "0px 5px 5px 5px",
@@ -309,15 +309,15 @@ const Item = ({
   return (
     <>
       {options.map((option, buttonIndex: number) => {
-        let bordercolor = "#ece9e9";
+        let bordercolor = "var(--text-inversed)";
         const isCurrent = options[buttonIndex].code === answerItems?.[itemIndex]?.values[0];
         const isSelected = buttonIndex === selectedButton && itemIndex === selectedItem;
-        if (isCurrent) bordercolor = "#2185d0";
-        if (isSelected) bordercolor = "#1B1C1D";
+        if (isCurrent) bordercolor = "var(--primary)";
+        if (isSelected) bordercolor = "var(--secondary)";
 
         const colorint = 255 - buttonIndex * colorstep;
         const bgcolor = `rgb(${colorint / 1.6},${colorint / 1.2},${colorint})`;
-        const color = colorint < 150 ? "white" : "black";
+        const color = colorint < 150 ? "var(--text-inversed)" : "var(--text)";
 
         return (
           <div key={option.code} style={{ margin: "auto", flex: "1 1 0px" }}>
@@ -331,7 +331,7 @@ const Item = ({
                   fontSize: "1em",
                   textShadow: "0px 0px 5px #ffffff77",
                   borderRadius: "10px",
-                  color: isCurrent ? "white" : option.color ? "#1B1C1D" : color,
+                  color: isCurrent ? "var(--text-inverssed)" : option.color ? "var(--text)" : color,
                   border: `3px solid ${bordercolor}`,
                 }}
                 key={option.code}

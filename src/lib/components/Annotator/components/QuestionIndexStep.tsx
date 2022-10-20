@@ -76,9 +76,9 @@ export default function QuestionIndexStep({
               padding: `6px ${dist * 24}px`,
               height: `${15 * dist}px`,
               border: `1px solid`,
-              borderColor: i === questionIndex ? "#000000" : "#ffffff",
+              borderColor: i === questionIndex ? "var(--text)" : "var(--text-inversed)",
               background: getColor(i),
-              color: "white",
+              color: "var(--text)",
             }}
             onClick={() => {
               if (canSelect?.[i]) {

@@ -98,7 +98,7 @@ const HostLogoutDiv = styled.div`
   display: flex;
   text-align: center;
   justify-content: space-between;
-  color: #666666;
+  color: var(--text-light);
 `;
 
 const HostDetails = styled.div`

@@ -76,7 +76,7 @@ const SearchCode = React.memo(
                     <>
                       {option.code}
                       <br />
-                      <span style={{ color: "grey" }}>{option.tree}</span>
+                      <span style={{ color: "var(--text-light)" }}>{option.tree}</span>
                     </>
                   ),
                 };

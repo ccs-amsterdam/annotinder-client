@@ -111,7 +111,7 @@ const FullScreenButton = ({ handle }: FullScreenButtonProps) => {
       icon={handle.active ? "compress" : "expand"}
       style={{
         background: "transparent",
-        color: "white",
+        color: "var(--text-inversed)",
         margin: "0",
         zIndex: 1000,
         padding: "4px 1px",

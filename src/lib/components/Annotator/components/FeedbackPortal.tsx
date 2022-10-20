@@ -68,8 +68,8 @@ const RetryPortal = ({ action, setConditionReport, fullScreenNode }: RetryPortal
           maxHeight: "50%",
           overflow: "auto",
           zIndex: 1000,
-          background: "#f7b5c2",
-          border: "1px solid #136bae",
+          background: "var(--lightred)",
+          border: "1px solid var(--primary)",
           textAlign: "center",
           fontSize: "1em",
           paddingBottom: "35px",
@@ -83,7 +83,7 @@ const RetryPortal = ({ action, setConditionReport, fullScreenNode }: RetryPortal
             fontSize: "30px",
           }}
         >
-          <Icon name="exclamation" style={{ color: "crimson" }} />
+          {/* <Icon name="exclamation" style={{ color: "crimson" }} /> */}
         </div>
         <Markdown>{action?.message}</Markdown>
         <List>
@@ -159,7 +159,7 @@ const CloseButton = ({ onClick }: CloseButtonProps) => {
         background: "crimson",
         height: "25px",
         padding: "0px",
-        color: "white",
+        color: "var(--text)",
         position: "absolute",
         left: "0%",
         bottom: "0%",

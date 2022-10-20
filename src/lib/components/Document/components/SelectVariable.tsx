@@ -78,10 +78,10 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
       <Segment
         attached="bottom"
         style={{
-          background: "#2185d0",
+          background: "var(--primary)",
           margin: "0",
           padding: "3px",
-          color: "white",
+          color: "var(--text-inversed)",
         }}
       >
         {helpText}
@@ -110,8 +110,8 @@ const VariableMenu = ({ variable, setVariable, variables, variableNames }: Varia
             wordWrap: "break-word",
             fontSize: "1.2em",
             fontWeight: "bold",
-            background: name === variable ? "#2185d0" : "rgb(127, 185, 235)",
-            color: name === variable ? "white" : "black",
+            background: name === variable ? "#var(--primary)" : "var(--primary-light)",
+            color: name === variable ? "var(--text-inversed)" : "var(--text)",
           }}
           onClick={() => setVariable(name)}
         >

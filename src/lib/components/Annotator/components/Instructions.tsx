@@ -55,7 +55,7 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
             position: "relative",
             background: "transparent",
             cursor: "pointer",
-            color: "white",
+            color: "var(--text-inversed)",
             padding: "4px 5px 4px 5px",
             maxWidth: "40px",
             zIndex: 800,
@@ -73,7 +73,7 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
         onClose={() => setOpen(false)}
         style={{ zIndex: 900 }}
       >
-        <Modal.Content scrolling style={{ zIndex: 900 }}>
+        <Modal.Content scrolling style={{ zIndex: 900, color: "var(--text)" }}>
           <Markdown>{instruction}</Markdown>
         </Modal.Content>
       </Modal>

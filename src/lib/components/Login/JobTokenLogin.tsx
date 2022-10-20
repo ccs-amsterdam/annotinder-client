@@ -48,7 +48,7 @@ const JobTokenLogin = ({ login, host, userId, jobtoken, asGuest }: JobTokenLogin
           justifyContent: "space-between",
         }}
       >
-        <Header style={{ color: "rgb(33, 133, 208)", marginBottom: "20px" }}>One-time login</Header>
+        <Header style={{ color: "var(--primary)", marginBottom: "20px" }}>One-time login</Header>
         <p style={{ marginLeft: "10%", marginRight: "10%" }}>
           {alreadyGuest
             ? "This device is already logged in. Click here to continue"

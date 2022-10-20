@@ -116,7 +116,7 @@ const JobLink = ({ jobId, backend, style = {} }: JobLinkProps) => {
           copyToClipboard(link?.url);
           setTimeout(() => alert("copied link!"), 50);
         }}
-        style={{ color: "blue", cursor: "copy" }}
+        style={{ color: "var(--primary)", cursor: "copy" }}
       >
         Share this job with others!
       </Header>

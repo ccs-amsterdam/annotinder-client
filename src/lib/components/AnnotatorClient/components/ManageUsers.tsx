@@ -108,7 +108,7 @@ const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }: CreateUse
         <List.Item key={user.name}>
           <List.Icon
             name={cannotAdd ? "exclamation" : "check"}
-            style={{ color: cannotAdd ? "red" : "green" }}
+            style={{ color: cannotAdd ? "var(--red)" : "var(--green)" }}
           />
           <List.Content>
             <span style={{ color: "red" }}>{cannotAdd}</span>

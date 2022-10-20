@@ -148,7 +148,7 @@ const NewCodePage = ({
           <>
             {code}
             <br />
-            <span style={{ color: "grey" }}>{tree}</span>
+            <span style={{ color: "var(--text-light)" }}>{tree}</span>
           </>
         ),
       });
@@ -185,14 +185,14 @@ const NewCodePage = ({
             label: '"' + getTextSnippet(tokens, o.span) + '"',
             color: getColor(o.value, codeMap),
             value: { ...o, delete: true },
-            textColor: "darkred",
+            textColor: "var(--red)",
           });
         } else {
           buttonOptions.push({
             label: o.value,
             color: getColor(o.value, codeMap),
             value: { ...o, delete: true },
-            textColor: "darkred",
+            textColor: "var(--red)",
           });
         }
       }
@@ -233,7 +233,7 @@ const NewCodePage = ({
           placeholder={"<type to search>"}
           style={{
             textAlign: "center",
-            color: "black",
+            color: "var(--text)",
             width: "100%",
             height: "20px",
             marginBottom: "5px",

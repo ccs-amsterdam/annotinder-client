@@ -120,7 +120,7 @@ const AnnotateTask = ({
           style={{
             padding: "0",
             height: "35px",
-            background: "#27292a",
+            background: "var(--secondary)",
             borderRadius: "5px",
           }}
         >
@@ -280,7 +280,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
           style={{
             background: "transparent",
             cursor: "pointer",
-            color: "white",
+            color: "var(--text-inversed)",
             padding: "4px 5px 4px 5px",
             maxWidth: "30px",
             zIndex: 900,
@@ -292,7 +292,8 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
         <Form.Group grouped>
           <Form.Field>
             <label>
-              text size scaling <span style={{ color: "blue" }}>{`${settings.textSize}`}</span>
+              text size scaling{" "}
+              <span style={{ color: "var(--primary)" }}>{`${settings.textSize}`}</span>
             </label>
             <Input
               size="mini"

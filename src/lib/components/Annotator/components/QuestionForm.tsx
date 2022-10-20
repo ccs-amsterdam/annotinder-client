@@ -24,15 +24,15 @@ import {
 import AnswerField from "./AnswerField";
 import QuestionIndexStep from "./QuestionIndexStep";
 
-const BACKGROUND = "#1B1C1D";
-const COLOR = "white";
+const BACKGROUND = "var(--background-inversed)";
+const COLOR = "var(--text-inversed)";
 
 const QuestionDiv = styled.div`
   height: 100%;
   width: 100%;
   background-color: ${BACKGROUND};
   border-top: 3px double ${COLOR};
-  box-shadow: 5px 5px 5px 1px grey;
+  box-shadow: 0px 5px 5px 1px grey;
   font-size: inherit;
   z-index: 9000;
   overflow: auto;
@@ -66,7 +66,7 @@ const iconStyle = {
   right: "12px",
   paddingTop: "4px",
   marginRight: "0",
-  color: "lightgreen",
+  color: "var(--green)",
   transform: "scale(3)",
 };
 
@@ -164,7 +164,9 @@ const QuestionForm = ({
   return (
     <QuestionDiv>
       <MenuDiv>
-        <div style={{ display: "flex", width: "60px" }}>{children}</div>
+        <div style={{ display: "flex", width: "60px", color: "var(--text-inversed)" }}>
+          {children}
+        </div>
         <div style={{ width: "100%", textAlign: "center" }}>
           <QuestionIndexStep
             questions={questions}
@@ -240,7 +242,10 @@ const markedString = (text: string) => {
           prev.push(current);
         } else {
           prev.push(
-            <mark key={i + current} style={{ color: "lightblue", backgroundColor: "transparent" }}>
+            <mark
+              key={i + current}
+              style={{ color: "var(--primary)", backgroundColor: "transparent" }}
+            >
               {current}
             </mark>
           );

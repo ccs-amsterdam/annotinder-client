@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Container, Pagination, Table, Icon, Search } from "semantic-ui-react";
+import { Container, Pagination, Table, Icon, Search, SemanticWIDTHS } from "semantic-ui-react";
 import { ButtonComponentProps, Column, RowObj, SetState } from "../../../types";
 import Backend from "../../Login/Backend";
 
 const headerStyle = {
-  color: "white",
-  background: "#2185d0",
+  background: "var(--primary)",
+  color: "var(--text-inversed)",
   borderBottom: "1px solid black",
   borderTop: "1px solid black",
   borderRadius: "0px",
@@ -24,13 +24,14 @@ const headerStyleRight = {
   borderBottomRightRadius: "0px",
   borderRight: "1px solid black",
 };
+const headerStyleSingleColumn = { ...headerStyleLeft, ...headerStyleRight };
 const rowStyle = {
   border: "none",
   borderBottom: "none",
   height: "30px",
 };
 const footerStyle = {
-  color: "black",
+  color: "var(--text)",
   background: "transparent",
   //borderTop: "2px solid black",
   borderTop: "0px",
@@ -77,6 +78,7 @@ const PaginationTable = ({
       let style = headerStyle;
       if (i === 0 && !buttons) style = headerStyleLeft;
       if (i === columns.length - 1) style = headerStyleRight;
+      if (columns.length === 1) style = headerStyleSingleColumn;
       return (
         <Table.HeaderCell key={i} width={col.width || null} style={style}>
           <span>{col.label || col.name}</span>
@@ -123,7 +125,10 @@ const PaginationTable = ({
     if (buttons) {
       const buttonsArray = Array.isArray(buttons) ? buttons : [buttons];
       cells = [
-        <Table.Cell key={"button." + rowObj.id} style={{ rowStyle, padding: "0px !important" }}>
+        <Table.Cell
+          key={"button." + rowObj.id}
+          style={{ width: "20px", rowStyle, padding: "0px !important" }}
+        >
           {buttonsArray.map((ButtonComponent: React.FC<ButtonComponentProps>, i) => (
             <ButtonComponent
               key={rowObj.id + "." + i}
@@ -137,6 +142,7 @@ const PaginationTable = ({
         ...cells,
       ];
     }
+    console.log(cells);
     return cells;
   };
   //if (data.length < 1) return null;
@@ -155,7 +161,11 @@ const PaginationTable = ({
         <Table.Header>
           <Table.Row>
             {buttons ? (
-              <Table.HeaderCell key="buttons" widths={nbuttons * 2} style={headerStyleLeft} />
+              <Table.HeaderCell
+                key="buttons"
+                width={(nbuttons * 2) as SemanticWIDTHS}
+                style={headerStyleLeft}
+              />
             ) : null}
             {createHeaderRow(data, columns)}
           </Table.Row>

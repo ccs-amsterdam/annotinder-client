@@ -17,7 +17,7 @@ const swipeControl = (
     // make confirm questions swipeable in any direction
     const confirmoption = {
       code: question.button || "Continue",
-      color: "#2185d0",
+      color: "var(--primary)",
     };
     swipeOptions = {
       left: confirmoption,

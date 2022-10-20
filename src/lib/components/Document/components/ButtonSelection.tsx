@@ -21,9 +21,9 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
     // add cancel button and (most importantly) add refs used for navigation
     const cancelOption: CodeSelectorOption = {
       label: "CLOSE",
-      color: "grey",
+      color: "var(--text-light)",
       value: { cancel: true },
-      textColor: "white",
+      textColor: "var(--text-inversed)",
     };
 
     let allOptions = [cancelOption, ...options];
@@ -89,10 +89,10 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
   }, [active, onKeydown]);
 
   const button = (option: CodeSelectorOption, i: number) => {
-    const textColor = option.value.delete ? "#682c2c" : "black";
-    const tagColor = option.value.delete ? option.color : "white";
+    const textColor = option.value.delete ? "var(--red)" : "var(--text)";
+    const tagColor = option.value.delete ? option.color : "var(--text-inversed)";
     const tagBorderColor = option.color.slice(0, 7);
-    const borderColor = option.value.delete ? "darkred" : "black";
+    const borderColor = option.value.delete ? "var(--red)" : "var(--text)";
     const bgColor = option.color;
 
     return (
@@ -105,7 +105,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
             background: bgColor,
             color: textColor,
             border: "3px solid",
-            borderColor: i === selected ? borderColor : "white",
+            borderColor: i === selected ? borderColor : "var(--text-inversed)",
             margin: "1px",
           }}
           key={option.label + "_" + i}
@@ -119,32 +119,6 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
             onSelect(d.value, e.ctrlKey || e.altKey);
           }}
         >
-          {/* {i <= 9 ? (
-            <div
-              style={{
-                position: "absolute",
-                display: "flex",
-                width: "100%",
-                left: "0",
-                top: "-10px",
-              }}
-            >
-              <div
-                style={{
-                  margin: "auto",
-                  color: "white",
-                  background: "black",
-                  height: "15px",
-                  width: "15px",
-                  fontSize: "10px",
-                  border: "2px solid white",
-                  borderRadius: "50%",
-                }}
-              >
-                {i}
-              </div>
-            </div>
-          ) : null} */}
           {option.tag ? (
             <span
               style={{
@@ -232,8 +206,8 @@ const CloseButton = ({ selected, onClick }: CloseButtonProps) => {
       size="huge"
       style={{
         padding: "0px",
-        background: selected ? "grey" : "white",
-        color: selected ? "white" : "grey",
+        background: selected ? "var(--text-light)" : "var(--text-inversed)",
+        color: selected ? "var(--text-inversed)" : "var(--text-light)",
         position: "absolute",
         left: "calc(50% - 15px)",
         top: "-15px",

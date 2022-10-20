@@ -168,7 +168,6 @@ const Items = ({
         display: "flex",
         //flexDirection: "column",
         flexWrap: "wrap",
-        background: "rgb(211, 223, 233)",
       }}
     >
       {items.map((itemObj, itemIndex: number) => {
@@ -180,10 +179,12 @@ const Items = ({
           >
             <Form onSubmit={(e, d) => setSelectedItem((current: number) => current + 1)}>
               <Form.Field>
-                <label style={{ color: "black" }}>
+                <label style={{ color: "var(--color)" }}>
                   <>
                     {itemlabel}
-                    <i style={{ color: "grey" }}>{itemObj?.optional ? " (optional)" : ""}</i>
+                    <i style={{ color: "var(--text-light)" }}>
+                      {itemObj?.optional ? " (optional)" : ""}
+                    </i>
                   </>
                 </label>
 
@@ -226,7 +227,7 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
         style={{
           maxWidth: "150px",
           textAlign: "center",
-          background: answerItems[itemIndex]?.invalid ? "#ff000088" : "white",
+          background: answerItems[itemIndex]?.invalid ? "var(--red)" : "var(--text-inversed)",
         }}
         onChange={(e) => {
           if (!answerItems?.[itemIndex]) return;
@@ -270,7 +271,7 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
         style={{
           maxWidth: "300px",
           textAlign: "center",
-          background: answerItems[itemIndex].invalid ? "#ff000088" : "white",
+          background: answerItems[itemIndex].invalid ? "var(--red)" : "white",
         }}
         onChange={(e) => {
           if (!answerItems?.[itemIndex]) return;

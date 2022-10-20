@@ -57,7 +57,7 @@ const Content = styled.div<{ fontSize: number }>`
   width: 100%;
   position: absolute;
   top: 0;
-  background-color: white;
+  background-color: var(--background);
   font-size: ${(props) => props.fontSize}em;
   box-shadow: 5px 5px 20px 5px;
   will-change: background, transform;
@@ -222,8 +222,8 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
           icon="setting"
           style={{
             background: "transparent",
+            color: "var(--text-inversed)",
             cursor: "pointer",
-            color: "white",
             padding: "4px 5px 4px 5px",
             margin: "0",
             width: "30px",
@@ -250,7 +250,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
             <Form.Field>
               <label>
                 Content text size{" "}
-                <span style={{ color: "blue" }}>{`${settings.upperTextSize}`}</span>
+                <span style={{ color: "var(--primary)" }}>{`${settings.upperTextSize}`}</span>
               </label>
               <Input
                 size="mini"
@@ -265,7 +265,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
             <Form.Field>
               <label>
                 Answer field text size{" "}
-                <span style={{ color: "blue" }}>{`${settings.lowerTextSize}`}</span>
+                <span style={{ color: "var(--primary)" }}>{`${settings.lowerTextSize}`}</span>
               </label>
               <Input
                 size="mini"

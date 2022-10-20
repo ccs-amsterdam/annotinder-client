@@ -25,7 +25,7 @@ const Meta = ({ meta_fields }: MetaProps) => {
             style={{
               borderTop: "none",
               textAlign: "right",
-              color: "#1768a6",
+              color: "var(--primary)",
             }}
           >
             <b>{label}</b>
@@ -61,7 +61,7 @@ const Meta = ({ meta_fields }: MetaProps) => {
             padding: "10px",
             paddingLeft: "10px",
             background: "#ffffff",
-            color: "black",
+            color: "var(--text)",
           }}
         >
           <Table.Body>{rows()}</Table.Body>
