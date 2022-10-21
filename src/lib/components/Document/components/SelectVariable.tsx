@@ -81,7 +81,7 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
           background: "var(--primary)",
           margin: "0",
           padding: "3px",
-          color: "var(--text-inversed)",
+          color: "var(--text)",
         }}
       >
         {helpText}
@@ -106,12 +106,13 @@ const VariableMenu = ({ variable, setVariable, variables, variableNames }: Varia
           active={name === variable}
           style={{
             flex: "1 1 auto",
-            padding: "0 3px",
+            padding: "0 5px",
             wordWrap: "break-word",
             fontSize: "1.2em",
             fontWeight: "bold",
-            background: name === variable ? "#var(--primary)" : "var(--primary-light)",
-            color: name === variable ? "var(--text-inversed)" : "var(--text)",
+            borderRadius: "0px",
+            background: name === variable ? "var(--primary)" : "var(--background)",
+            color: "var(--text)",
           }}
           onClick={() => setVariable(name)}
         >
@@ -137,7 +138,11 @@ const VariableMenu = ({ variable, setVariable, variables, variableNames }: Varia
       tabular
       compact
       size="mini"
-      style={{ width: "100%", display: "flex", justifyContent: "space-between" }}
+      style={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "space-between",
+      }}
     >
       {mapVariables()}
     </Menu>

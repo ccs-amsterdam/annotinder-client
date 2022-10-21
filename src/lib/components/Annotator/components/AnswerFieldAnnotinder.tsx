@@ -144,11 +144,13 @@ const AnnotinderButton = ({
           height: "100%",
           fontSize: "inherit",
           borderRadius: "10px",
-          border: `4px solid ${value === option?.code ? "var(--text-inversed)" : "var(--text)"}`,
-          background: option?.color || "var(--text-inversed)",
+          border: `4px solid ${
+            value === option?.code ? "var(--text-inversed-fixed)" : "var(--text-fixed)"
+          }`,
+          background: option?.color || "var(--text-inversed-fixed)",
         }}
       >
-        <div style={{ fontWeight: "bold", color: "var(--text-inversed)" }}>
+        <div style={{ fontWeight: "bold", color: "var(--text-inversed-fixed)" }}>
           <Icon name={option?.code ? (icon as SemanticICONS) : null} />
           <br />
           <span>{option?.code || ""}</span>

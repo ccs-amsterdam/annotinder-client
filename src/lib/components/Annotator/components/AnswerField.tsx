@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Annotinder from "./AnswerFieldAnnotinder";
 import Confirm from "./AnswerFieldConfirm";
 import Scale from "./AnswerFieldScale";
@@ -17,7 +17,11 @@ const AnswerDiv = styled.div`
   width: 100%;
   margin: 0;
   font-size: inherit;
-  color: var(--text-inversed);
+  color: var(--text-inversed-fixed);
+
+  &::before {
+    position: sticky;
+  }
 `;
 
 interface AnswerFieldProps {
@@ -69,43 +73,60 @@ const AnswerField = ({
     };
   }, [answers, questionIndex, answerItems]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     // Manually handle the sizing of the answerfield,
-    // so that we can add transitions. This should run
-    // after rendering a new answer field (after onAnswer)
-    // just before updating layout, and then interject with
-    // changes to the answer field height
-    const timer = setTimeout(() => {
-      let maxframes = 60;
-      requestAnimationFrame(function animate() {
-        if (!answerRef.current) return;
-        if (maxframes < 0) {
-          answerRef.current.style.opacity = 1;
+    // so that we can add transitions based on min-height.
+    let newMinHeight = null;
+    let resizeId;
+    let startHeight = null;
+    const minHeight = 60;
+    let shrinkchecks = 0;
+
+    function resize() {
+      if (!answerRef.current) {
+        resizeId = requestAnimationFrame(resize);
+        return;
+      }
+      const el = answerRef.current;
+      console.count(el.current);
+      if (startHeight === null) {
+        startHeight = el.clientHeight;
+        el.style["min-height"] = minHeight + "px";
+      }
+
+      if (el.clientHeight < startHeight || startHeight === minHeight) {
+        // if shrinking started, or if startheight is already the minimum
+
+        if (el.scrollHeight > el.clientHeight) {
+          // see if the container overflows. If so, we can calculate the required height
+          // and stop the loop
+          const container = el.closest(".QuestionContainer");
+          const maxheight = container ? container.clientHeight / 2 : 300;
+          const minheight = Math.max(100, el.scrollHeight + 10);
+          newMinHeight = Math.min(maxheight, minheight);
+
+          answerRef.current.style["min-height"] = newMinHeight + "px";
+          //answerRef.current.style.opacity = 1;
           return;
         }
-        maxframes--;
 
-        answerRef.current.style.opacity = 0;
-        if (answerRef.current.scrollHeight > answerRef.current.offsetHeight) {
-          // if the field is scrollable, increase size to scroll height plus a margin
-          const minheight = Math.max(100, answerRef.current.scrollHeight + 10);
-          const container = answerRef.current?.closest(".QuestionContainer");
-          const maxheight = container ? container.clientHeight / 2 : 300;
-          answerRef.current.style["min-height"] = `min(${minheight}px, ${maxheight}px)`;
-          answerRef.current.style.opacity = 1;
-        } else {
-          // if the field is not scrollable, scrollHeight can be too high if the previous
-          // height was higher than needed. Therefore set to minimum height, and then
-          // per animation frame check if the field become scrollable, at which point
-          // it again increases the height and breaks the loop
-          answerRef.current.style["min-height"] = "60px";
+        if (el.clientHeight === minHeight) {
+          // if minimum size is reached, and we know that shrinking started without overflowing
+          // the container, we can break the loop
+          if (startHeight !== minHeight) return;
 
-          if (answerRef.current.clientHeight > 60) return requestAnimationFrame(animate);
+          // if startHeight === minHeight, we can't tell whether shrinking started.
+          // In this case we just quit after checking max 10 frames
+          shrinkchecks++;
+          if (shrinkchecks > 10) return;
         }
-        answerRef.current.style.opacity = 1;
-      });
-    }, 0);
-    return () => clearTimeout(timer);
+      }
+
+      resizeId = requestAnimationFrame(resize);
+    }
+    resize();
+
+    return () => cancelAnimationFrame(resizeId);
   }, [answerRef, onAnswer]);
 
   const onFinish = () => {

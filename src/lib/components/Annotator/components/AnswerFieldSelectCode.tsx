@@ -146,10 +146,10 @@ const SelectCode = React.memo(
       }
 
       return options.map((option, i) => {
-        let bordercolor = "var(--background-inversed)";
+        let bordercolor = "var(--background-inversed-fixed)";
         const isCurrent = values.includes(option.code);
-        if (isCurrent) bordercolor = "var(--background)";
-        if (i === selected) bordercolor = "var(--background)";
+        if (isCurrent) bordercolor = "var(--background-fixed)";
+        if (i === selected) bordercolor = "var(--background-fixed)";
 
         return (
           <div
@@ -174,8 +174,8 @@ const SelectCode = React.memo(
                   padding: "5px 5px",
                   transition: "padding 0.2s",
                   fontWeight: "bold",
-                  textShadow: "0px 0px 5px var(--background-inversed)",
-                  color: "var(--text-inversed)",
+                  textShadow: "0px 0px 5px var(--background-inversed-fixed)",
+                  color: "var(--text-inversed-fixed)",
                   borderRadius: "13.5px",
                   fontSize: "inherit",
                   position: "relative",
@@ -208,7 +208,9 @@ const SelectCode = React.memo(
                     borderStyle: "solid",
                     borderRadius: "10px",
                     backgroundColor: i === selected ? "#ffffff33" : "transparent",
-                    borderColor: isCurrent ? "var(--background)" : "var(--background-inversed)",
+                    borderColor: isCurrent
+                      ? "var(--background-fixed)"
+                      : "var(--background-inversed-fixed)",
                     borderWidth: isCurrent ? "3px" : "3px",
                   }}
                 ></div>
@@ -247,7 +249,9 @@ const SelectCode = React.memo(
                 style={{
                   height: "100%",
                   border: `5px solid ${
-                    selected === options.length ? "var(--background)" : "var(--background-inversed)"
+                    selected === options.length
+                      ? "var(--background-fixed)"
+                      : "var(--background-inversed-fixed)"
                   }`,
                 }}
                 onClick={() => {

@@ -50,6 +50,8 @@ const Login = ({ login, sessionList }: LoginProps) => {
     retry: false,
   });
 
+  console.log(hostInfoQuery.data);
+
   let hostLoginSuccess =
     canRegister || has_jobtoken ? hostInfoQuery.data != null : hostInfoQuery.data?.user != null;
 

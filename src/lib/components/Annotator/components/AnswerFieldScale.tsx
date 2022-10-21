@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, createRef, RefObject } from "react";
 import { Button, Ref, Icon } from "semantic-ui-react";
-import { scrollToMiddle } from "../../../functions/scroll";
+import { keepInView } from "../../../functions/scroll";
 import { OnSelectParams, AnswerOption, AnswerItem, QuestionItem } from "../../../types";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
@@ -118,8 +118,8 @@ const Scale = React.memo(
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "var(--background-inversed)",
-          color: "var(--text-inversed)",
+          background: "var(--background-inversed-fixed)",
+          color: "var(--text-inversed-fixed)",
         }}
       >
         <div
@@ -127,7 +127,6 @@ const Scale = React.memo(
             flex: "1 1 auto",
             display: "flex",
             justifyContent: "space-between",
-            borderBottom: "1px solid black",
           }}
         >
           <div
@@ -175,7 +174,7 @@ const Scale = React.memo(
             style={{
               flex: "1 1 0px",
               textAlign: "center",
-              color: done ? null : "var(--text-inversed)",
+              color: done ? null : "var(--text-inversed-fixed)",
               margin: "0",
               background: done ? null : "white",
               border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
@@ -217,7 +216,7 @@ const Items = ({
 
   useEffect(() => {
     if (selectedItem < 0) return;
-    scrollToMiddle(scrollRef?.current, rowRefs?.current?.[selectedItem]?.current, 0.5);
+    keepInView(scrollRef?.current, rowRefs?.current?.[selectedItem]?.current);
   }, [selectedItem, items, rowRefs, scrollRef]);
 
   return (
@@ -269,8 +268,8 @@ const Items = ({
               style={{
                 width: "100%",
                 textAlign: "center",
-                fontSize: "0.8em",
-                color: "var(--primary)",
+                fontSize: "1em",
+                color: "var(--primary-light)",
               }}
             >
               <i>
@@ -301,22 +300,33 @@ const Item = ({
   selectedButton,
   onSelect,
 }: ItemProps) => {
-  const colorstep = 200 / options.length;
+  const colorstep = 90 / options.length;
   return (
     <>
       {options.map((option, buttonIndex: number) => {
-        let bordercolor = "var(--text-inversed)";
+        let bordercolor = "var(--background-inversed-fixed)";
         const isCurrent = options[buttonIndex].code === answerItems?.[itemIndex]?.values[0];
         const isSelected = buttonIndex === selectedButton && itemIndex === selectedItem;
-        if (isCurrent) bordercolor = "var(--primary)";
-        if (isSelected) bordercolor = "var(--secondary)";
+        if (isCurrent) bordercolor = "var(--background-fixed)";
+        if (isSelected) bordercolor = "var(--background-fixed)";
 
-        const colorint = 255 - buttonIndex * colorstep;
-        const bgcolor = `rgb(${colorint / 1.6},${colorint / 1.2},${colorint})`;
-        const color = colorint < 150 ? "var(--text-inversed)" : "var(--text)";
+        // if option doesn't have color, we use primary color as background and
+        // use opacity of buttoncolor to show a gradient
+        const background = option.color ? "transparent" : "var(--primary)";
+        const opacity = buttonIndex * colorstep;
+        const bgcolor = `rgb(0,0,0, ${opacity}%)`;
 
         return (
-          <div key={option.code} style={{ margin: "auto", flex: "1 1 0px" }}>
+          <div
+            key={option.code}
+            style={{
+              flex: "1 1 0px",
+              borderRadius: "10px",
+              border: `0.5px solid ${background}`,
+              margin: "0px 5px",
+              background,
+            }}
+          >
             <Ref key={option.code} innerRef={option.ref}>
               <Button
                 fluid
@@ -326,8 +336,8 @@ const Item = ({
                   fontWeight: "bold",
                   fontSize: "1em",
                   textShadow: "0px 0px 5px #ffffff77",
-                  borderRadius: "10px",
-                  color: isCurrent ? "var(--text-inverssed)" : option.color ? "var(--text)" : color,
+                  borderRadius: "inherit",
+                  color: "var(--text-inversed-fixed)",
                   border: `3px solid ${bordercolor}`,
                 }}
                 key={option.code}

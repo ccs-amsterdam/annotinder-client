@@ -4,7 +4,7 @@ import { scrollToMiddle } from "../../../functions/scroll";
 import { FieldRefs } from "../../../types";
 
 const Overlay = styled.div`
-  background: linear-gradient(135deg, #aaa8 25%, #ddd9 50%, #bbb7 75%, #ccc8 100%);
+  background: linear-gradient(135deg, #aaa5 25%, #ddd6 50%, #bbb4 75%, #ccc5 100%);
   position: absolute;
   top: 0;
   left: 0;

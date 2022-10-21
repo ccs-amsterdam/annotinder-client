@@ -179,10 +179,10 @@ const Items = ({
           >
             <Form onSubmit={(e, d) => setSelectedItem((current: number) => current + 1)}>
               <Form.Field>
-                <label style={{ color: "var(--color)" }}>
+                <label style={{ color: "var(--text-inversed-fixed)" }}>
                   <>
                     {itemlabel}
-                    <i style={{ color: "var(--text-light)" }}>
+                    <i style={{ color: "var(--text-light-fixed)" }}>
                       {itemObj?.optional ? " (optional)" : ""}
                     </i>
                   </>
@@ -227,7 +227,7 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
         style={{
           maxWidth: "150px",
           textAlign: "center",
-          background: answerItems[itemIndex]?.invalid ? "var(--red)" : "var(--text-inversed)",
+          background: answerItems[itemIndex]?.invalid ? "var(--red)" : "var(--text-inversed-fixed)",
         }}
         onChange={(e) => {
           if (!answerItems?.[itemIndex]) return;

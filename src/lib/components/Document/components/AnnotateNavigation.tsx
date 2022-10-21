@@ -189,8 +189,8 @@ const annotateToken = (token: Token, annotations: AnnotationMap, variableMap: Va
   anyRight && !allRight ? cl.add("anyRight") : cl.remove("anyRight");
 
   const textColor = getColorGradient(colors.text);
-  const preColor = allLeft ? "white" : getColorGradient(colors.pre);
-  const postColor = allRight ? "white" : getColorGradient(colors.post);
+  const preColor = allLeft ? "var(--background)" : getColorGradient(colors.pre);
+  const postColor = allRight ? "var(--background)" : getColorGradient(colors.post);
   setTokenColor(token, preColor, textColor, postColor);
   //setTokenLabels(token, ["test", "this"]);
 };
@@ -309,6 +309,8 @@ const AnnotationPopup = React.memo(
           padding: "0",
           border: "1px solid",
           zIndex: 100,
+          background: "var(--background)",
+          color: "var(--text)",
         }}
       >
         {content}

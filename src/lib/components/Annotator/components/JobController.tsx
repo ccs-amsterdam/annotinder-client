@@ -43,10 +43,11 @@ const JobController = ({
       style={{
         maxWidth,
         maxHeight,
-        background: "white",
         margin: "0 auto",
         height: "100%",
         width: "100%",
+        background: "var(--background)",
+        color: "var(--text)",
       }}
     >
       <div
@@ -56,9 +57,9 @@ const JobController = ({
           padding: "3px 5px 0px 5px",
           display: "flex",
           justifyContent: "space-between",
-          background: "var(--background-inversed)",
-          color: "var(--text-inversed)",
-          borderBottom: "3px double white",
+          background: "var(--background-inversed-fixed)",
+          color: "var(--text-inversed-fixed)",
+          borderBottom: "3px double var(--background-inversed)",
         }}
       >
         <div
@@ -122,7 +123,7 @@ const UserButton = ({ fullScreenNode, jobServer, authForm }: UserButtonProps) =>
           size="massive"
           style={{
             background: "transparent",
-            color: "white",
+            color: "var(--text-inversed-fixed)",
             cursor: "pointer",
             padding: "4px 1px",
           }}

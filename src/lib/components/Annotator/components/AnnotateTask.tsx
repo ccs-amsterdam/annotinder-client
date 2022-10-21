@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Grid, Button, Popup, Form, Input, Icon } from "semantic-ui-react";
+import { Grid, Button, Portal, Form, Input, Icon, Segment } from "semantic-ui-react";
 import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
 import useLocalStorage from "../../../hooks/useLocalStorage";
@@ -84,7 +84,14 @@ const AnnotateTask = ({
     <Grid
       centered
       stackable
-      style={{ height: "100%", width: "100%", paddingTop: "0", margin: "0" }}
+      style={{
+        height: "100%",
+        width: "100%",
+        paddingTop: "0",
+        margin: "0",
+        background: "var(--background)",
+        color: "var(--text)",
+      }}
       columns={2}
     >
       <Grid.Column
@@ -269,45 +276,61 @@ interface SettingsPopupProps {
 
 const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupProps) => {
   return (
-    <Popup
-      on="click"
+    <Portal
+      closeOnTriggerClick
       mountNode={fullScreenNode || undefined}
+      on="click"
       trigger={
         <Button
-          width={1}
           size="huge"
           icon="setting"
           style={{
-            background: "transparent",
-            cursor: "pointer",
-            color: "var(--text-inversed)",
             padding: "4px 5px 4px 5px",
             maxWidth: "30px",
-            zIndex: 900,
+            background: "transparent",
+            color: "var(--text-inversed-fixed)",
+            cursor: "pointer",
+            margin: "0",
+            width: "30px",
+            zIndex: 1000,
           }}
         />
       }
     >
-      <Form>
-        <Form.Group grouped>
-          <Form.Field>
-            <label>
-              text size scaling{" "}
-              <span style={{ color: "var(--primary)" }}>{`${settings.textSize}`}</span>
-            </label>
-            <Input
-              size="mini"
-              step={0.025}
-              min={0.4}
-              max={1.6}
-              type="range"
-              value={settings.textSize}
-              onChange={(e, d) => setSettings({ ...settings, textSize: d.value })}
-            />
-          </Form.Field>
-        </Form.Group>
-      </Form>
-    </Popup>
+      <Segment
+        style={{
+          bottom: "30%",
+          left: "10%",
+          position: "fixed",
+          width: "80%",
+          maxWidth: "400px",
+          zIndex: 10000,
+          background: "#dfeffbaa",
+          backdropFilter: "blur(2px)",
+          border: "1px solid #136bae",
+        }}
+      >
+        <Form>
+          <Form.Group grouped>
+            <Form.Field>
+              <label>
+                text size scaling{" "}
+                <span style={{ color: "var(--primary)" }}>{`${settings.textSize}`}</span>
+              </label>
+              <Input
+                size="mini"
+                step={0.025}
+                min={0.4}
+                max={1.6}
+                type="range"
+                value={settings.textSize}
+                onChange={(e, d) => setSettings({ ...settings, textSize: d.value })}
+              />
+            </Form.Field>
+          </Form.Group>
+        </Form>
+      </Segment>
+    </Portal>
   );
 };
 

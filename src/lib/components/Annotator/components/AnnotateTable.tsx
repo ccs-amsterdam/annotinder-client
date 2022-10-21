@@ -1,4 +1,5 @@
 import { SemanticWIDTHS, Table } from "semantic-ui-react";
+import styled from "styled-components";
 import { getColor } from "../../../functions/tokenDesign";
 import { Annotation, VariableMap, Span, Token } from "../../../types";
 
@@ -10,12 +11,45 @@ interface AnnotateTableProps {
   annotations: Annotation[];
 }
 
+const StyledTable = styled(Table)`
+  fontsize: 0.9em !important;
+  max-height: 100% !important;
+  border-radius: 0px !important;
+  background: transparent !important;
+
+  & thead {
+    border-bottom: 1px solid white;
+  }
+  & thead,
+  tbody,
+  tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  & tbody {
+    display: block;
+    overflow: auto;
+    height: 100%;
+  }
+  & th {
+    padding: 5px;
+    background: transparent !important;
+    color: var(--text) !important;
+  }
+`;
+
 const AnnotateTable = ({ tokens, variableMap, annotations }: AnnotateTableProps) => {
   if (!variableMap || Object.keys(variableMap).length === 0) return null;
 
   return (
-    <Table
-      style={{ fontSize: "10px", maxHeight: "100%", borderRadius: "0px" }}
+    <StyledTable
+      style={{
+        fontSize: "10px",
+        maxHeight: "100%",
+        borderRadius: "0px",
+        background: "transparent",
+      }}
       fixed
       role="grid"
       aria-labelledby="header"
@@ -24,39 +58,24 @@ const AnnotateTable = ({ tokens, variableMap, annotations }: AnnotateTableProps)
       compact="very"
       size="small"
     >
-      <Table.Header className="annotations-thead" style={{ height: "30px" }}>
+      <Table.Header
+        className="annotations-thead"
+        style={{ height: "30px", background: "transparent" }}
+      >
         <Table.Row>
-          <Table.HeaderCell
-            title="Variable"
-            width={COLWIDTHS[0] as SemanticWIDTHS}
-            style={{ padding: "5px" }}
-          >
+          <Table.HeaderCell title="Variable" width={COLWIDTHS[0] as SemanticWIDTHS}>
             Variable
           </Table.HeaderCell>
-          <Table.HeaderCell
-            title="Vale"
-            width={COLWIDTHS[1] as SemanticWIDTHS}
-            style={{ padding: "5px" }}
-          >
+          <Table.HeaderCell title="Vale" width={COLWIDTHS[1] as SemanticWIDTHS}>
             Value
           </Table.HeaderCell>
-          <Table.HeaderCell
-            title="Field"
-            width={COLWIDTHS[2] as SemanticWIDTHS}
-            style={{ padding: "5px" }}
-          >
+          <Table.HeaderCell title="Field" width={COLWIDTHS[2] as SemanticWIDTHS}>
             Field
           </Table.HeaderCell>
-          <Table.HeaderCell
-            title="Position"
-            width={COLWIDTHS[3] as SemanticWIDTHS}
-            style={{ padding: "5px" }}
-          >
+          <Table.HeaderCell title="Position" width={COLWIDTHS[3] as SemanticWIDTHS}>
             Position
           </Table.HeaderCell>
-          <Table.HeaderCell title="Text" style={{ padding: "5px" }}>
-            Text
-          </Table.HeaderCell>
+          <Table.HeaderCell title="Text">Text</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body
@@ -65,7 +84,7 @@ const AnnotateTable = ({ tokens, variableMap, annotations }: AnnotateTableProps)
       >
         {annotationRows(tokens, variableMap, annotations)}
       </Table.Body>
-    </Table>
+    </StyledTable>
   );
 };
 

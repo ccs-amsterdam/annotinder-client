@@ -82,6 +82,7 @@ const MenuBar = ({ backend, authForm, menuItem, setMenuItem }: MenuBarProps) => 
             name={item.label}
             active={menuItem === item.value}
             onClick={() => setMenuItem(item.value)}
+            style={{ background: "var(--background)", color: "var(--text)" }}
           />
         );
       })}

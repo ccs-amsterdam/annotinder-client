@@ -17,7 +17,7 @@ input[type="range"]::-webkit-slider-thumb {
   padding: 0;
   background: var(--primary);
   cursor: pointer;
-  border: 1px solid white;
+  border: 1px solid var(--background-inversed-fixed);
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -46,18 +46,4 @@ input[type="range"]::-moz-range-thumb {
     margin-left: 0rem !important;
     margin-right: 0rem !important;
   }
-}
-
-.annotations-tbody {
-  display: block;
-  overflow: auto;
-  height: 100%;
-}
-
-.annotations-thead,
-.annotations-tbody .annotations-tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-  border: 0px !important;
 }

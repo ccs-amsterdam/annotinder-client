@@ -1,17 +1,68 @@
 import { useRef, useState } from "react";
-import { Icon, Segment } from "semantic-ui-react";
+import { Icon } from "semantic-ui-react";
+import styled from "styled-components";
 import useWatchChange from "../../../hooks/useWatchChange";
 import { SetState } from "../../../types";
 
-const sliderColor = "var(--primary-verylight)";
-const progressColor = "var(--primary-light)";
-const iconStyle = {
-  cursor: "pointer",
-  height: "24px",
-  lineHeight: "24px",
-  fontSize: "20px",
-  color: "var(--text-inversed)",
-};
+const IndexControllerBar = styled.div`
+  position: relative;
+  display: flex;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  left-margin: 0px;
+  border-radius: 0;
+  font-size: 1em;
+  background: var(--background-inversed-fixed);
+
+  & > div {
+    margin-right: 3px;
+    display: flex;
+  }
+`;
+
+const Slider = styled.input<{ progress: number }>`
+  flex: 1 1 0px;
+  margin-top: 0px;
+  min-width: 1px;
+  border: 1px solid white;
+  background: linear-gradient(
+    to right,
+    ${(props) => `var(--primary-light) ${props.progress}%,
+    var(--primary-verylight) ${props.progress}% 100%,
+    var(--primary-verylight) 100%`}
+  );
+`;
+
+const IndexLabel = styled.div`
+  height: 24px;
+  padding: 0px 3px 0px 3px;
+  margin: 0 2.5px 0px 0px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr 0.7rem 1fr;
+  line-height: 24px;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: bold;
+  border-radius: 2px;
+  background: var(--primary);
+  color: var(--text-inversed-fixed);
+  border: 1px solid white;
+
+  & div {
+    minwidth: 1rem;
+  }
+`;
+
+const StyledIcon = styled(Icon)`
+  cursor: pointer !important;
+  height: 24px !important;
+  line-height: 24px !important;
+  font-size: 20px !important;
+  color: var(--text-inversed-fixed) !important;
+`;
 
 interface IndexControllerProps {
   n: number;
@@ -75,102 +126,42 @@ const IndexController = ({
   if (canGoForward) progress = 0; // linear progress is useless in this case.
 
   return (
-    <Segment
-      style={{
-        display: "flex",
-        border: "none",
-        boxShadow: "none",
-        padding: "0",
-        leftMargin: "0px",
-        borderRadius: "0",
-        fontSize: "1em",
-        background: "var(--background-inversed)",
-      }}
-    >
-      <div style={{ marginRight: "3px", display: "flex" }}>
+    <IndexControllerBar>
+      <div>
         {canGoBack || canGoForward ? (
-          <div style={{ height: "24px" }}>
-            {/* <Icon
-              name="fast backward"
-              onClick={() => updatePage(1)}
-              style={iconStyle}
-              disabled={!canGoBack || activePage === 1}
-            /> */}
-            <Icon
-              name="step backward"
-              onClick={() => updatePage(Math.max(1, activePage - 1))}
-              disabled={!canGoBack || activePage === 1}
-              style={iconStyle}
-            />
-          </div>
+          <StyledIcon
+            name="step backward"
+            onClick={() => updatePage(Math.max(1, activePage - 1))}
+            disabled={!canGoBack || activePage === 1}
+          />
         ) : null}
-        <div
-          style={{
-            height: "24px",
-            padding: "0px 3px 0px 3px",
-            margin: "0 2.5px 0px 0px",
-            display: "grid",
-            gridAutoFlow: "column",
-            gridAutoColumns: "1fr 0.7rem 1fr",
-            lineHeight: "24px",
-            textAlign: "center",
-            whiteSpace: "nowrap",
-            fontSize: "0.85rem",
-            fontWeight: "bold",
-            borderRadius: "2px",
-            background: "var(--primary)",
-            color: "var(--text-inversed)",
-            border: "1px solid white",
-          }}
-        >
+        <IndexLabel>
           {sliderPage > n ? (
-            <div style={{ minWidth: "1rem", height: "100%" }}>done</div>
+            <div>done</div>
           ) : (
             <>
-              <div style={{ minWidth: "1rem", height: "100%" }}>{sliderPage}</div>
+              <div>{sliderPage}</div>
               &frasl;
               <div>{n}</div>
             </>
           )}
-        </div>
+        </IndexLabel>
         {canGoForward || canGoBack ? (
-          <div style={{ height: "24px" }}>
-            <Icon
-              name="step forward"
-              onClick={() => {
-                if (canGoForward) {
-                  updatePage(activePage + 1);
-                } else {
-                  updatePage(Math.min(progressN + 1, activePage + 1));
-                }
-              }}
-              disabled={!canGoForward && activePage >= progressN + 1}
-              style={iconStyle}
-            />
-            {/* <Icon
-              name="fast forward"
-              onClick={() => {
-                if (canGoForward) {
-                  updatePage(Math.max(progressN + 1, activePage + 1));
-                } else {
-                  updatePage(progressN + 1);
-                }
-              }}
-              disabled={!canGoForward && activePage >= progressN + 1}
-              style={canGoForward ? iconStyleHidden : iconStyle}
-            /> */}
-          </div>
+          <StyledIcon
+            name="step forward"
+            onClick={() => {
+              if (canGoForward) {
+                updatePage(activePage + 1);
+              } else {
+                updatePage(Math.min(progressN + 1, activePage + 1));
+              }
+            }}
+            disabled={!canGoForward && activePage >= progressN + 1}
+          />
         ) : null}
       </div>
-      <input
-        style={{
-          flex: "1 1 0px",
-          marginTop: "0px",
-          minWidth: "1px",
-          //maxWidth: "500px",
-          border: "1px solid white",
-          background: `linear-gradient(to right, ${progressColor} ${progress}%, ${sliderColor} ${progress}% 100%, ${sliderColor} 100%)`,
-        }}
+      <Slider
+        progress={progress}
         min={1}
         max={n + 1}
         onChange={updateSliderPage}
@@ -186,7 +177,7 @@ const IndexController = ({
         type="range"
         value={sliderPage}
       />
-    </Segment>
+    </IndexControllerBar>
   );
 };
 

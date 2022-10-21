@@ -1,4 +1,3 @@
-import React from "react";
 import { Table } from "semantic-ui-react";
 import { MetaField } from "../../../types";
 
@@ -60,7 +59,7 @@ const Meta = ({ meta_fields }: MetaProps) => {
             lineHeight: "0.8",
             padding: "10px",
             paddingLeft: "10px",
-            background: "#ffffff",
+            background: "var(--background)",
             color: "var(--text)",
           }}
         >

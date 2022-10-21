@@ -27,6 +27,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  background: var(--background);
 `;
 
 const ContentWindow = styled.div`
@@ -57,11 +58,9 @@ const Content = styled.div<{ fontSize: number }>`
   width: 100%;
   position: absolute;
   top: 0;
-  background-color: var(--background);
   font-size: ${(props) => props.fontSize}em;
   box-shadow: 5px 5px 20px 5px;
   will-change: background, transform;
-  border-top: 1px solid #dddddd;
 `;
 
 const QuestionMenu = styled.div<{
@@ -222,7 +221,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
           icon="setting"
           style={{
             background: "transparent",
-            color: "var(--text-inversed)",
+            color: "var(--text-inversed-fixed)",
             cursor: "pointer",
             padding: "4px 5px 4px 5px",
             margin: "0",
@@ -286,14 +285,14 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
 
 const nextUnitTransition = (r: SwipeRefs, trans: Transition) => {
   const direction = trans?.direction;
-  const color = trans?.color || "white";
+  const color = trans?.color || "var(--background)";
   if (r?.box?.current?.style != null && r?.text?.current != null) {
     r.text.current.style.transition = `transform 2000ms`;
     r.text.current.style.transform = `translateX(${
       direction === "right" ? 100 : direction === "left" ? -100 : 0
     }%) translateY(${direction ? "-100" : "0"}%)`;
     r.box.current.style.transition = `opacity 250ms linear`;
-    r.box.current.style.background = color || "white";
+    r.box.current.style.background = color;
     r.box.current.style.opacity = "0";
   }
 };
@@ -315,7 +314,7 @@ const hideUnit = (
   code.current.innerText = "";
   text.current.style.transition = ``;
   box.current.style.transition = ``;
-  box.current.style.background = "white";
+  box.current.style.background = "var(--background)";
   box.current.style.opacity = "0";
   text.current.style.transform = "translateX(0%) translateY(0%)";
 };
@@ -331,7 +330,7 @@ const showUnit = (
   box.current.style.opacity = "1";
   text.current.style.transition = `background 300ms, opacity 200ms`;
   text.current.style.transform = "translateX(0%) translateY(0%)";
-  text.current.style.background = "white";
+  text.current.style.background = "var(--background)";
   text.current.style.opacity = "1";
   text.current.style.filter = "";
 };

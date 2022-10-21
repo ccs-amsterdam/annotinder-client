@@ -5,7 +5,7 @@ import Backend from "../../Login/Backend";
 
 const headerStyle = {
   background: "var(--primary)",
-  color: "var(--text-inversed)",
+  color: "var(--text-fixed)",
   borderBottom: "1px solid black",
   borderTop: "1px solid black",
   borderRadius: "0px",
@@ -241,7 +241,7 @@ const FooterContent = ({ pages, pageChange, setSearch }: FooterContentProps) => 
         defaultActivePage={1}
         totalPages={pages}
         onPageChange={(e, d) => pageChange(Number(d.activePage))}
-        style={{ padding: "0", fontSize: "0.9em" }}
+        style={{ padding: "0", fontSize: "0.9em", color: "white" }}
       ></Pagination>
     </div>
   );

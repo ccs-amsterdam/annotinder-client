@@ -116,6 +116,8 @@ const Document = ({
         height: "100%",
         maxHeight: "100%",
         flexDirection: "column",
+        color: "var(--text)",
+        background: "var(--background)",
       }}
     >
       <SelectVariable

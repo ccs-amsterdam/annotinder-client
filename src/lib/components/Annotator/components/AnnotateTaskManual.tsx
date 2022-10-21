@@ -1,6 +1,25 @@
 import React, { useState } from "react";
 import { Button, Container, Modal, Table, List, ListItem } from "semantic-ui-react";
+import styled from "styled-components";
 import { FullScreenNode } from "../../../types";
+
+const StyledModal = styled(Modal)`
+  border: 1px solid var(--background-inversed);
+
+  & .header,
+  .content,
+  .actions,
+  .container {
+    background: var(--background) !important;
+    color: var(--color) !important;
+  }
+
+  & table,
+  thead {
+    color: var(--text) !important;
+    background: var(--background) !important;
+  }
+`;
 
 interface AnnotateTaskManualProps {
   fullScreenNode: FullScreenNode;
@@ -10,7 +29,7 @@ const AnnotateTaskManual = ({ fullScreenNode }: AnnotateTaskManualProps) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <Modal
+    <StyledModal
       mountNode={fullScreenNode || undefined}
       open={open}
       onClose={() => setOpen(false)}
@@ -182,7 +201,7 @@ const AnnotateTaskManual = ({ fullScreenNode }: AnnotateTaskManualProps) => {
       <Modal.Actions>
         <Button content="Close" onClick={() => setOpen(false)} positive />
       </Modal.Actions>
-    </Modal>
+    </StyledModal>
   );
 };
 

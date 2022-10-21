@@ -97,7 +97,6 @@ const PasswordLogin = ({ host, email, login }: PasswordLoginProps) => {
         name="password"
         autoComplete="current-password"
         error={loginError ? loginError : false}
-        label="Password"
         type="password"
         icon="lock"
         iconPosition="left"

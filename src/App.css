@@ -23,12 +23,17 @@ html {
   --primary-light: #7bb6ea;
   --primary-verylight: #c5d7e7;
   --background: #1b1c1d;
+  --background-fixed: white;
   --background-inversed: white;
+  --background-inversed-fixed: #1b1c1d;
   --secondary: #1b1c1d;
   --secondary-light: #7b7c7d;
   --text: white;
+  --text-fixed: black;
   --text-light: darkgrey;
+  --text-light-fixed: darkgrey;
   --text-inversed: black;
+  --text-inversed-fixed: white;
   --grey: grey;
   --darkgrey: darkgrey;
   --border: white;
@@ -43,7 +48,6 @@ body {
   background: var(--background);
   color: var(--text);
 }
-
 .ui.primary.button {
   background: var(--primary) !important;
   color: white !important;
@@ -51,4 +55,13 @@ body {
 .ui.secondary.button {
   background: var(--secondary) !important;
   color: white !important;
+}
+.ui.header {
+  color: var(--text) !important;
+}
+.ui.table {
+  color: var(--text) !important;
+}
+.ui.pagination.menu .item {
+  color: var(--text) !important;
 }

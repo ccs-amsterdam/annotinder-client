@@ -24,14 +24,11 @@ import {
 import AnswerField from "./AnswerField";
 import QuestionIndexStep from "./QuestionIndexStep";
 
-const BACKGROUND = "var(--background-inversed)";
-const COLOR = "var(--text-inversed)";
-
 const QuestionDiv = styled.div`
   height: 100%;
   width: 100%;
-  background-color: ${BACKGROUND};
-  border-top: 3px double ${COLOR};
+  background-color: var(--background-inversed-fixed);
+  border-top: 3px double var(--text);
   box-shadow: 0px 5px 5px 1px grey;
   font-size: inherit;
   z-index: 9000;
@@ -49,7 +46,7 @@ const BodyDiv = styled.div`
   height: calc(100% - 30px);
   width: 100%;
   padding: 0px 10px 5px 10px;
-  color: ${COLOR};
+  color: var(--text-inversed-fixed);
   font-size: inherit;
 `;
 
@@ -164,7 +161,7 @@ const QuestionForm = ({
   return (
     <QuestionDiv>
       <MenuDiv>
-        <div style={{ display: "flex", width: "60px", color: "var(--text-inversed)" }}>
+        <div style={{ display: "flex", width: "60px", color: "var(--text-inversed-fixed)" }}>
           {children}
         </div>
         <div style={{ width: "100%", textAlign: "center" }}>
@@ -182,7 +179,11 @@ const QuestionForm = ({
 
       <BodyDiv>
         <HeaderDiv className="AnswerHeader">
-          <Header as="h2" textAlign="center" style={{ color: COLOR, fontSize: "1.2em" }}>
+          <Header
+            as="h2"
+            textAlign="center"
+            style={{ color: "var(--text-inversed-fixed)", fontSize: "1.2em" }}
+          >
             {questionText}
           </Header>
         </HeaderDiv>
@@ -244,7 +245,7 @@ const markedString = (text: string) => {
           prev.push(
             <mark
               key={i + current}
-              style={{ color: "var(--primary)", backgroundColor: "transparent" }}
+              style={{ color: "var(--primary-light)", backgroundColor: "transparent" }}
             >
               {current}
             </mark>

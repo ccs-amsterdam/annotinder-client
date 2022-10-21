@@ -99,7 +99,6 @@ const swipeControl = (
 
       if (Math.abs(deltaX) < triggerdist && Math.abs(deltaY) < triggerdist) {
         refs.text.current.style.transform = `translateX(0%) translateY(0%)`;
-        //refs.box.current.style.backgroundColor = "white";
       } else {
         refs.text.current.style.transform = `translateX(${
           deltaX > 0 ? 100 : deltaX < 0 ? -100 : 0
