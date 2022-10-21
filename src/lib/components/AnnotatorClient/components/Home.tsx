@@ -33,7 +33,9 @@ export default function Home({ backend, authForm }: HomeProps) {
   return (
     <div
       style={{
+        margin: "auto",
         height: "100%",
+        maxWidth: "1200px",
         width: "100%",
         backgroundImage: background ? `url(${background})` : "none",
         backgroundSize: `100vw 100vh`,
@@ -72,7 +74,7 @@ interface MenuBarProps {
 
 const MenuBar = ({ backend, authForm, menuItem, setMenuItem }: MenuBarProps) => {
   return (
-    <Menu pointing secondary style={{ marginBottom: "10px" }}>
+    <Menu pointing secondary style={{ marginBottom: "10px", borderBottom: "0px" }}>
       {menuItems.map((item) => {
         if (item.onlyAdmin && !backend?.is_admin) return null;
         return (
@@ -82,7 +84,7 @@ const MenuBar = ({ backend, authForm, menuItem, setMenuItem }: MenuBarProps) => 
             name={item.label}
             active={menuItem === item.value}
             onClick={() => setMenuItem(item.value)}
-            style={{ background: "var(--background)", color: "var(--text)" }}
+            style={{ background: "transparent", color: "var(--text)" }}
           />
         );
       })}

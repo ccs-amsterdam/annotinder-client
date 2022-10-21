@@ -36,7 +36,7 @@ const JobController = ({
   authForm,
   health,
 }: JobControllerProps) => {
-  const [maxHeight, maxWidth] = getWindowSize(jobServer);
+  const [maxHeight, maxWidth] = getMaxWindowSize(jobServer);
 
   return (
     <div
@@ -59,7 +59,7 @@ const JobController = ({
           justifyContent: "space-between",
           background: "var(--background-inversed-fixed)",
           color: "var(--text-inversed-fixed)",
-          borderBottom: "3px double var(--background-inversed)",
+          borderBottom: "3px double var(--background-fixed)",
         }}
       >
         <div
@@ -169,12 +169,12 @@ const BackToOverview = ({ jobServer }: BackToOverviewProps) => {
   );
 };
 
-const getWindowSize = (jobServer: JobServer) => {
+const getMaxWindowSize = (jobServer: JobServer) => {
   switch (jobServer?.codebook?.type) {
     case "questions":
-      return ["1200px", "1000px"];
+      return ["100%", "1000px"];
     case "annotate":
-      return ["2000px", "2000px"];
+      return ["100%", "2000px"];
     default:
       return ["100%", "100%"];
   }

@@ -22,6 +22,7 @@ import Instructions from "./Instructions";
 import FeedbackPortal from "./FeedbackPortal";
 import useWatchChange from "../../../hooks/useWatchChange";
 import unfoldQuestions from "../../../functions/unfoldQuestions";
+import ThemeSelector from "../../Common/Theme";
 
 const Container = styled.div`
   display: flex;
@@ -246,6 +247,10 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
       >
         <Form>
           <Form.Group grouped>
+            <Form.Field style={{ textAlign: "center" }}>
+              <label>Dark mode</label>
+              <ThemeSelector />
+            </Form.Field>
             <Form.Field>
               <label>
                 Content text size{" "}

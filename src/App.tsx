@@ -8,11 +8,14 @@ import AnnotatorPythonClient from "./lib/components/AnnotatorClient/AnnotatorPyt
 import AnnotatorRClient from "./lib/components/AnnotatorClient/AnnotatorRClient";
 import DemoJobOverview from "./lib/components/DemoJob/DemoJobOverview";
 import ResponsiveContainer from "./lib/components/Common/ResponsiveContainer";
+import { useTheme } from "./lib/components/Common/Theme";
 
 const queryClient = new QueryClient();
 
 // just for quick testing
 const App = () => {
+  useTheme();
+
   return (
     <QueryClientProvider client={queryClient}>
       <Router basename={process.env.REACT_APP_PUBLIC_URL || process.env.PUBLIC_URL}>

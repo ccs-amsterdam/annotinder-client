@@ -1,5 +1,5 @@
 import React, { useState, useRef, ReactElement, useCallback } from "react";
-import { Header, Icon } from "semantic-ui-react";
+import { Icon } from "semantic-ui-react";
 import styled from "styled-components";
 import useWatchChange from "../../../hooks/useWatchChange";
 import {
@@ -28,7 +28,7 @@ const QuestionDiv = styled.div`
   height: 100%;
   width: 100%;
   background-color: var(--background-inversed-fixed);
-  border-top: 3px double var(--text);
+  border-top: 3px double var(--text-inversed-fixed);
   box-shadow: 0px 5px 5px 1px grey;
   font-size: inherit;
   z-index: 9000;
@@ -179,13 +179,11 @@ const QuestionForm = ({
 
       <BodyDiv>
         <HeaderDiv className="AnswerHeader">
-          <Header
-            as="h2"
-            textAlign="center"
-            style={{ color: "var(--text-inversed-fixed)", fontSize: "1.2em" }}
+          <h2
+            style={{ color: "var(--text-inversed-fixed)", fontSize: "1.2em", textAlign: "center" }}
           >
             {questionText}
-          </Header>
+          </h2>
         </HeaderDiv>
 
         <AnswerField

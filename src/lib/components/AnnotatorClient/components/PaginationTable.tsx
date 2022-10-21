@@ -5,7 +5,7 @@ import Backend from "../../Login/Backend";
 
 const headerStyle = {
   background: "var(--primary)",
-  color: "var(--text-fixed)",
+  color: "var(--text-inversed-fixed)",
   borderBottom: "1px solid black",
   borderTop: "1px solid black",
   borderRadius: "0px",

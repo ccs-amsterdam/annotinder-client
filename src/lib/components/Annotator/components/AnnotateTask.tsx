@@ -15,6 +15,7 @@ import {
   SessionData,
 } from "../../../types";
 import Instructions from "./Instructions";
+import ThemeSelector from "../../Common/Theme";
 
 const NEXTDELAY = 500;
 const BODYSTYLE = {
@@ -311,6 +312,10 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
         }}
       >
         <Form>
+          <Form.Field style={{ textAlign: "center" }}>
+            <label>Dark mode</label>
+            <ThemeSelector />
+          </Form.Field>
           <Form.Group grouped>
             <Form.Field>
               <label>
