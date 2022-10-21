@@ -18,7 +18,7 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Router basename={process.env.REACT_APP_PUBLIC_URL || process.env.PUBLIC_URL}>
+      <Router>
         <ResponsiveContainer>
           <Routes>
             <Route path="/" element={<AnnotatorPythonClient />} />

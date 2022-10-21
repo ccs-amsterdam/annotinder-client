@@ -1,6 +1,5 @@
 {
   "name": "annotinder-client",
-  "homepage": "https://uva-climate.netlify.app/annotinder-client",
   "description": "The AnnoTinder React Client",
   "author": "Kasper Welbers",
   "keywords": [
