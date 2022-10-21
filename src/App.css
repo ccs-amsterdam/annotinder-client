@@ -1,6 +1,7 @@
 html {
   --primary: #1678c2;
   --primary-light: #7bb6ea;
+  --primary-verylight: #c5d7e7;
   --background: white;
   --background-inversed: #1b1c1d;
   --secondary: #1b1c1d;
@@ -20,13 +21,14 @@ html {
 html {
   --primary: #1678c2;
   --primary-light: #7bb6ea;
-  --background: white;
-  --background-inversed: #1b1c1d;
+  --primary-verylight: #c5d7e7;
+  --background: #1b1c1d;
+  --background-inversed: white;
   --secondary: #1b1c1d;
   --secondary-light: #7b7c7d;
-  --text: black;
-  --text-light: grey;
-  --text-inversed: white;
+  --text: white;
+  --text-light: darkgrey;
+  --text-inversed: black;
   --grey: grey;
   --darkgrey: darkgrey;
   --border: white;
@@ -44,10 +46,9 @@ body {
 
 .ui.primary.button {
   background: var(--primary) !important;
-  color: var(--text-inversed) !important;
+  color: white !important;
 }
 .ui.secondary.button {
   background: var(--secondary) !important;
-  color: var(--text-inversed) !important;
-  color: #dfeffb;
+  color: white !important;
 }

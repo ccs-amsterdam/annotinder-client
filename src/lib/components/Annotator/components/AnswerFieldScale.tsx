@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, createRef, RefObject } from "react";
-import { Button, Ref, Icon, Label } from "semantic-ui-react";
+import { Button, Ref, Icon } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
 import { OnSelectParams, AnswerOption, AnswerItem, QuestionItem } from "../../../types";
 
@@ -118,6 +118,8 @@ const Scale = React.memo(
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
+          background: "var(--background-inversed)",
+          color: "var(--text-inversed)",
         }}
       >
         <div
@@ -126,35 +128,30 @@ const Scale = React.memo(
             display: "flex",
             justifyContent: "space-between",
             borderBottom: "1px solid black",
-            background: "var(--primary-light)",
           }}
         >
-          <Label
-            size="large"
+          <div
             style={{
               //position: "absolute",
               width: "50%",
               background: "transparent",
-              color: "var(--text)",
             }}
           >
             <Icon name="arrow left" />
             {left.code}
-          </Label>
+          </div>
 
-          <Label
-            size="large"
+          <div
             style={{
               //position: "absolute",
               width: "50%",
+
               textAlign: "right",
-              background: "var(--secondary)",
-              color: "var(--text-inversed)",
             }}
           >
             {right.code}
             <Icon name="arrow right" style={{ marginLeft: "5px" }} />
-          </Label>
+          </div>
         </div>
 
         <Items
@@ -178,7 +175,7 @@ const Scale = React.memo(
             style={{
               flex: "1 1 0px",
               textAlign: "center",
-              color: done ? null : "var(--text)",
+              color: done ? null : "var(--text-inversed)",
               margin: "0",
               background: done ? null : "white",
               border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
@@ -242,7 +239,6 @@ const Items = ({
             <div>
               <div
                 style={{
-                  color: "var(--text)",
                   width: "100%",
                   textAlign: "center",
                   padding: "0px 5px 5px 5px",

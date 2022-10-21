@@ -146,7 +146,7 @@ const SelectCode = React.memo(
       }
 
       return options.map((option, i) => {
-        let bordercolor = "var(--text)";
+        let bordercolor = "var(--background-inversed)";
         const isCurrent = values.includes(option.code);
         if (isCurrent) bordercolor = "var(--background)";
         if (i === selected) bordercolor = "var(--background)";

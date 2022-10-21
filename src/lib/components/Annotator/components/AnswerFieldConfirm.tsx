@@ -54,7 +54,7 @@ const Confirm = ({ onSelect, button, swipe, blockEvents }: ConfirmProps) => {
         primary
         content={button || "Continue"}
         size="huge"
-        style={{ height: "100%" }}
+        style={{ height: "100%", border: "2px solid var(--background)" }}
         onClick={() => onSelect({ value: "continue", finish: true })}
       />
     </div>

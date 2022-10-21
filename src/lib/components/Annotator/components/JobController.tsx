@@ -56,7 +56,8 @@ const JobController = ({
           padding: "3px 5px 0px 5px",
           display: "flex",
           justifyContent: "space-between",
-          background: "#1B1C1D",
+          background: "var(--background-inversed)",
+          color: "var(--text-inversed)",
           borderBottom: "3px double white",
         }}
       >

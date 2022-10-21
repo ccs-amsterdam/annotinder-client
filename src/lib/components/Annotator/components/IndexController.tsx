@@ -3,7 +3,7 @@ import { Icon, Segment } from "semantic-ui-react";
 import useWatchChange from "../../../hooks/useWatchChange";
 import { SetState } from "../../../types";
 
-const sliderColor = "var(--text-inversed)";
+const sliderColor = "var(--primary-verylight)";
 const progressColor = "var(--primary-light)";
 const iconStyle = {
   cursor: "pointer",
@@ -84,7 +84,7 @@ const IndexController = ({
         leftMargin: "0px",
         borderRadius: "0",
         fontSize: "1em",
-        background: "transparent",
+        background: "var(--background-inversed)",
       }}
     >
       <div style={{ marginRight: "3px", display: "flex" }}>
