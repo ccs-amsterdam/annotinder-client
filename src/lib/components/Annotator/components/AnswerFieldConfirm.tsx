@@ -21,7 +21,7 @@ const Confirm = ({ onSelect, button, swipe, blockEvents }: ConfirmProps) => {
       if (event.keyCode === 32 || event.keyCode === 13) {
         event.preventDefault();
         event.stopPropagation();
-        onSelect({ value: "continue", finish: true });
+        onSelect({ value: "confirmed", finish: true });
       }
     },
     [onSelect]
@@ -40,7 +40,7 @@ const Confirm = ({ onSelect, button, swipe, blockEvents }: ConfirmProps) => {
   useEffect(() => {
     if (swipe) {
       onSelect({
-        value: "continue",
+        value: "confirmed",
         finish: true,
         transition: { direction: "up", color: "var(--primary)" },
       });
@@ -55,7 +55,7 @@ const Confirm = ({ onSelect, button, swipe, blockEvents }: ConfirmProps) => {
         content={button || "Continue"}
         size="huge"
         style={{ height: "100%", border: "2px solid var(--background)" }}
-        onClick={() => onSelect({ value: "continue", finish: true })}
+        onClick={() => onSelect({ value: "confirmed", finish: true })}
       />
     </div>
   );
