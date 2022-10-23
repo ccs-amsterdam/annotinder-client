@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "semantic-ui-react";
 import { Question, Answer, AnswerItem, SetState } from "../../../types";
+import { StyledButton } from "../../../styled/StyledSemantic";
 
 interface QuestionIndexStepProps {
   questions: Question[];
@@ -65,7 +65,7 @@ export default function QuestionIndexStep({
         // size question buttons so that those near the selected question are largest
         const dist = Math.pow(1.2, -Math.abs(questionIndex - i));
         return (
-          <Button
+          <StyledButton
             key={i}
             circular
             size="mini"

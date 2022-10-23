@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, RefObject } from "react";
-import { Button, Ref } from "semantic-ui-react";
+import { Ref } from "semantic-ui-react";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
 import { scrollToMiddle } from "../../../functions/scroll";
 import { AnswerOption, OnSelectParams } from "../../../types";
 import useSpeedBump from "../../../hooks/useSpeedBump";
+import { StyledButton } from "../../../styled/StyledSemantic";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -164,7 +165,7 @@ const SelectCode = React.memo(
             }}
           >
             <Ref key={option.code} innerRef={option.ref}>
-              <Button
+              <StyledButton
                 fluid
                 loading={speedbump}
                 style={{
@@ -214,7 +215,7 @@ const SelectCode = React.memo(
                     borderWidth: isCurrent ? "3px" : "3px",
                   }}
                 ></div>
-              </Button>
+              </StyledButton>
             </Ref>
           </div>
         );
@@ -241,7 +242,7 @@ const SelectCode = React.memo(
         {multiple ? (
           <div style={{ width: "60px", height: "100%" }}>
             <Ref key={"finishbutton"} innerRef={finishbutton}>
-              <Button
+              <StyledButton
                 primary
                 icon="play"
                 fluid

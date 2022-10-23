@@ -1,7 +1,27 @@
 import { useEffect, useMemo, useState } from "react";
-import { TransitionablePortal, Segment, Button, Icon, List } from "semantic-ui-react";
+import { TransitionablePortal, Icon } from "semantic-ui-react";
 import { FullScreenNode, SetState, ConditionReport, Action } from "../../../types";
 import Markdown from "../../Common/Markdown";
+import { StyledButton } from "../../../styled/StyledSemantic";
+import styled from "styled-components";
+
+const RetryPortalContent = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 1em;
+  padding-bottom: 35px;
+  width: 100%;
+  margin: 0;
+  max-height: 50%;
+  overflow: auto;
+  z-index: 1000;
+  color: var(--text-fixed);
+  background: var(--lightred);
+  border: 1px solid var(--primary);
+  text-align: center;
+  font-size: 1em;
+`;
 
 interface FeedbackPortalProps {
   variable: string;
@@ -58,24 +78,7 @@ const RetryPortal = ({ action, setConditionReport, fullScreenNode }: RetryPortal
       open={action?.action === "retry"}
       style={{ zIndex: 10000 }}
     >
-      <Segment
-        style={{
-          top: "0%",
-          left: "0%",
-          position: "fixed",
-          width: "100%",
-          margin: "0",
-          maxHeight: "50%",
-          overflow: "auto",
-          zIndex: 1000,
-          color: "var(--text-fixed)",
-          background: "var(--lightred)",
-          border: "1px solid var(--primary)",
-          textAlign: "center",
-          fontSize: "1em",
-          paddingBottom: "35px",
-        }}
-      >
+      <RetryPortalContent>
         <CloseButton onClick={() => setConditionReport({ evaluation: {}, damage: {} })} />
         <div
           style={{
@@ -87,18 +90,16 @@ const RetryPortal = ({ action, setConditionReport, fullScreenNode }: RetryPortal
           {/* <Icon name="exclamation" style={{ color: "crimson" }} /> */}
         </div>
         <Markdown>{action?.message}</Markdown>
-        <List>
+        <ul>
           {(action?.submessages || []).map((sm: string, i) => {
             return (
-              <List.Item key={i}>
-                <List.Content>
-                  <Markdown>{sm}</Markdown>
-                </List.Content>
-              </List.Item>
+              <li key={i}>
+                <Markdown>{sm}</Markdown>
+              </li>
             );
           })}
-        </List>
-      </Segment>
+        </ul>
+      </RetryPortalContent>
     </TransitionablePortal>
   );
 };
@@ -152,7 +153,7 @@ interface CloseButtonProps {
 
 const CloseButton = ({ onClick }: CloseButtonProps) => {
   return (
-    <Button
+    <StyledButton
       fluid
       icon="close"
       size="huge"

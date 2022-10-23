@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Button, Divider, Icon, Modal } from "semantic-ui-react";
+import { Divider, Icon } from "semantic-ui-react";
+import { StyledButton, StyledModal } from "../../styled/StyledSemantic";
 import { Sessions, Session } from "../../types";
 
 const SessionsContainer = styled.div``;
@@ -77,7 +78,7 @@ interface RemoveSessionProps {
 const RemoveSession = ({ session, sessionKey, rmSession }: RemoveSessionProps) => {
   const [open, setOpen] = useState(false);
   return (
-    <Modal
+    <StyledModal
       on="click"
       open={open}
       position="bottom right"
@@ -100,8 +101,8 @@ const RemoveSession = ({ session, sessionKey, rmSession }: RemoveSessionProps) =
         />
       }
     >
-      <Modal.Header>Sign-out</Modal.Header>
-      <Modal.Content>
+      <StyledModal.Header>Sign-out</StyledModal.Header>
+      <StyledModal.Content>
         {!session.email && (
           <>
             This session is not <i>registered</i> to an email address. Once signed-out, you will not
@@ -111,10 +112,10 @@ const RemoveSession = ({ session, sessionKey, rmSession }: RemoveSessionProps) =
           </>
         )}
         Are you sure you wish to sign out?
-      </Modal.Content>
-      <Modal.Actions>
-        <Button.Group fluid>
-          <Button
+      </StyledModal.Content>
+      <StyledModal.Actions>
+        <StyledButton.Group fluid>
+          <StyledButton
             onClick={() => {
               rmSession(sessionKey);
               setOpen(false);
@@ -122,11 +123,11 @@ const RemoveSession = ({ session, sessionKey, rmSession }: RemoveSessionProps) =
             color="red"
           >
             Sign out
-          </Button>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-        </Button.Group>
-      </Modal.Actions>
-    </Modal>
+          </StyledButton>
+          <StyledButton onClick={() => setOpen(false)}>Cancel</StyledButton>
+        </StyledButton.Group>
+      </StyledModal.Actions>
+    </StyledModal>
   );
 };
 

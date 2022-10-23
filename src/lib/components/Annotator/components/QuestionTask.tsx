@@ -2,7 +2,8 @@ import React, { useState, useRef, RefObject, useCallback, useMemo } from "react"
 import QuestionForm from "./QuestionForm";
 import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
-import { Button, Form, Input, Portal, Segment } from "semantic-ui-react";
+import { Form, Input, Portal } from "semantic-ui-react";
+import { StyledButton } from "../../../styled/StyledSemantic";
 import swipeControl from "../functions/swipeControl";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import styled from "styled-components";
@@ -204,6 +205,19 @@ const QuestionTask = ({
   );
 };
 
+const SettingsForm = styled.div`
+  bottom: 30%;
+  left: 10%;
+  padding: 1em;
+  position: fixed;
+  width: 80%;
+  max-width: 400px;
+  z-index: 10000;
+  background: #ffffffbb;
+  backdrop-filter: blur(2px);
+  border: 1px solid #136bae;
+`;
+
 interface SettingsPopupProps {
   settings: { [key: string]: number | string };
   setSettings: SetState<{ [key: string]: number | string }>;
@@ -214,10 +228,11 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
   return (
     <Portal
       closeOnTriggerClick
+      closeOnDocumentClick
       mountNode={fullScreenNode || undefined}
       on="click"
       trigger={
-        <Button
+        <StyledButton
           size="huge"
           icon="setting"
           style={{
@@ -232,19 +247,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
         />
       }
     >
-      <Segment
-        style={{
-          bottom: "30%",
-          left: "10%",
-          position: "fixed",
-          width: "80%",
-          maxWidth: "400px",
-          zIndex: 10000,
-          background: "#dfeffbaa",
-          backdropFilter: "blur(2px)",
-          border: "1px solid #136bae",
-        }}
-      >
+      <SettingsForm>
         <Form>
           <Form.Group grouped>
             <Form.Field style={{ textAlign: "center" }}>
@@ -283,7 +286,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
             </Form.Field>
           </Form.Group>
         </Form>
-      </Segment>
+      </SettingsForm>
     </Portal>
   );
 };

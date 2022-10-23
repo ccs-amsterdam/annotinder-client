@@ -1,10 +1,12 @@
-import React, { useState, useEffect, CSSProperties } from "react";
-import { Button, Header, Portal, Segment } from "semantic-ui-react";
+import { useState, useEffect, CSSProperties } from "react";
+import { Portal } from "semantic-ui-react";
+import { StyledButton } from "../../../styled/StyledSemantic";
 import FullDataTable from "./FullDataTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
 import { Column, RowObj, SetState } from "../../../types";
 import Backend from "../../Login/Backend";
+import styled from "styled-components";
 
 const columns: Column[] = [
   { name: "id", width: 2 },
@@ -44,6 +46,19 @@ export default function UsersTable({ backend, users, setUsers }: UsersTableProps
   );
 }
 
+const PortalContent = styled.div`
+  padding: 1em;
+  background: var(--background);
+  bottom: 25%;
+  left: 25%;
+  position: fixed;
+  min-width: 50%;
+  z-index: 1000,
+  background: #dfeffb;
+  border: 1px solid var(--background-inversed);
+  text-align: center;
+`;
+
 interface LoginLinkButtonProps {
   row: RowObj;
   backend: Backend;
@@ -81,21 +96,10 @@ const LoginLinkButton = ({ row, backend, style }: LoginLinkButtonProps) => {
       onOpen={() => setOpen(true)}
       hoverable
       mouseLeaveDelay={9999999}
-      trigger={<Button icon="linkify" style={{ padding: "5px", ...style }} />}
+      trigger={<StyledButton icon="linkify" style={{ padding: "5px", ...style }} />}
     >
-      <Segment
-        style={{
-          bottom: "25%",
-          left: "25%",
-          position: "fixed",
-          minWidth: "50%",
-          zIndex: 1000,
-          background: "#dfeffb",
-          border: "1px solid #136bae",
-          textAlign: "center",
-        }}
-      >
-        <Header style={{ fontSize: "1.5em" }}>Login link for {row.name}</Header>
+      <PortalContent>
+        <h2>Login link for {row.name}</h2>
         <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
         <br />
         <br />
@@ -104,10 +108,10 @@ const LoginLinkButton = ({ row, backend, style }: LoginLinkButtonProps) => {
         </a>
         <br />
         <br />
-        <Button secondary onClick={() => copyToClipboard(link?.url)}>
+        <StyledButton secondary onClick={() => copyToClipboard(link?.url)}>
           Copy link
-        </Button>
-      </Segment>
+        </StyledButton>
+      </PortalContent>
     </Portal>
   );
 };

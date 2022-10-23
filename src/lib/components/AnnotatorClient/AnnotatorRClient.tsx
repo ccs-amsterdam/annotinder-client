@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Annotator from "../Annotator/Annotator";
 import Backend from "../Login/Backend";
 import JobServerR from "./classes/jobServerR";
-import { Grid, Header, Icon } from "semantic-ui-react";
+import { Grid, Icon } from "semantic-ui-react";
 import { JobServer, SetState } from "../../types";
 
 const PORT = 8000;
@@ -36,7 +36,7 @@ export default function AnnotatorRClient() {
               animation: "rotation 5s infinite linear",
             }}
           />
-          <Header>{`Connecting to port ${PORT}. If this takes forever, please make sure the server is actually running`}</Header>
+          <h2>{`Connecting to port ${PORT}. If this takes forever, please make sure the server is actually running`}</h2>
         </Grid.Column>
       </Grid>
     );

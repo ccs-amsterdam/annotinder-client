@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Modal, Button, TransitionablePortal } from "semantic-ui-react";
+import { TransitionablePortal } from "semantic-ui-react";
 import { FullScreenNode, CodeBook, SessionData } from "../../../types";
 import Markdown from "../../Common/Markdown";
+import { StyledModal, StyledButton } from "../../../styled/StyledSemantic";
 
 interface InstructionsProps {
   codebook: CodeBook;
@@ -48,7 +49,7 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
       open={open}
       style={{ zIndex: 800 }}
       trigger={
-        <Button
+        <StyledButton
           size="huge"
           icon="help circle"
           style={{
@@ -64,7 +65,7 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
         />
       }
     >
-      <Modal
+      <StyledModal
         ref={modalRef}
         closeIcon
         mountNode={fullScreenNode || undefined}
@@ -73,7 +74,7 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
         onClose={() => setOpen(false)}
         style={{ zIndex: 900 }}
       >
-        <Modal.Content
+        <StyledModal.Content
           scrolling
           style={{
             zIndex: 900,
@@ -83,8 +84,8 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
           }}
         >
           <Markdown>{instruction}</Markdown>
-        </Modal.Content>
-      </Modal>
+        </StyledModal.Content>
+      </StyledModal>
     </TransitionablePortal>
   );
 };

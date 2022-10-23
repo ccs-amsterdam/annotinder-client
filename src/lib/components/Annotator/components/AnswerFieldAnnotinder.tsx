@@ -1,7 +1,8 @@
 import useSpeedBump from "../../../hooks/useSpeedBump";
 import React, { useEffect } from "react";
-import { Button, Ref, Icon, SemanticICONS } from "semantic-ui-react";
+import { Ref, Icon, SemanticICONS } from "semantic-ui-react";
 import { SwipeOptions, Swipes, AnswerItem, OnSelectParams, AnswerOption } from "../../../types";
+import { StyledButton } from "../../../styled/StyledSemantic";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -71,7 +72,7 @@ const Annotinder = React.memo(
     const value = answerItems?.[0]?.values?.[0];
 
     return (
-      <Button.Group
+      <StyledButton.Group
         fluid
         style={{
           display: "flex",
@@ -83,7 +84,7 @@ const Annotinder = React.memo(
       >
         {["left", "up", "right"].map((direction: "left" | "right" | "up") => {
           return (
-            <AnnotinderButton
+            <AnnotinderStyledButton
               key={direction}
               swipeOptions={swipeOptions}
               direction={direction}
@@ -93,12 +94,12 @@ const Annotinder = React.memo(
             />
           );
         })}
-      </Button.Group>
+      </StyledButton.Group>
     );
   }
 );
 
-interface AnnotinderButtonProps {
+interface AnnotinderStyledButtonProps {
   swipeOptions: SwipeOptions;
   direction: "left" | "right" | "up";
   value: string | number;
@@ -106,13 +107,13 @@ interface AnnotinderButtonProps {
   speedbump: boolean;
 }
 
-const AnnotinderButton = ({
+const AnnotinderStyledButton = ({
   swipeOptions,
   direction,
   value,
   onSelect,
   speedbump,
-}: AnnotinderButtonProps) => {
+}: AnnotinderStyledButtonProps) => {
   let icon: SemanticICONS = "arrow left";
   let option: AnswerOption = swipeOptions.left;
   if (direction === "up") {
@@ -127,7 +128,7 @@ const AnnotinderButton = ({
 
   return (
     <Ref key={option.code} innerRef={option.ref}>
-      <Button
+      <StyledButton
         disabled={option == null}
         loading={speedbump}
         onClick={(e, d) => {
@@ -155,7 +156,7 @@ const AnnotinderButton = ({
           <br />
           <span>{option?.code || ""}</span>
         </div>
-      </Button>
+      </StyledButton>
     </Ref>
   );
 };

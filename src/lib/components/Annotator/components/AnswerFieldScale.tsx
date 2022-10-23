@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, createRef, RefObject } from "react";
-import { Button, Ref, Icon } from "semantic-ui-react";
+import { Ref, Icon } from "semantic-ui-react";
 import { keepInView } from "../../../functions/scroll";
 import { OnSelectParams, AnswerOption, AnswerItem, QuestionItem } from "../../../types";
+import { StyledButton } from "../../../styled/StyledSemantic";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -164,7 +165,7 @@ const Scale = React.memo(
         />
 
         <div>
-          <Button
+          <StyledButton
             primary
             fluid
             size="mini"
@@ -328,7 +329,7 @@ const Item = ({
             }}
           >
             <Ref key={option.code} innerRef={option.ref}>
-              <Button
+              <StyledButton
                 fluid
                 style={{
                   padding: "5px 0",
@@ -348,7 +349,7 @@ const Item = ({
                 }}
               >
                 {buttonIndex + 1}
-              </Button>
+              </StyledButton>
             </Ref>
           </div>
         );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import FullDataTable from "./FullDataTable";
-import { Grid, Header } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 import Backend from "../../Login/Backend";
 import { RowObj, Job } from "../../../types";
 
@@ -25,7 +25,7 @@ export default function CoderView({ backend }: CoderViewProps) {
     <Grid centered stackable>
       <Grid.Row>
         <Grid.Column textAlign="center" width="10">
-          <Header>Coding jobs</Header>
+          <h2>Coding jobs</h2>
           <CoderJobsTable backend={backend} />
         </Grid.Column>
       </Grid.Row>

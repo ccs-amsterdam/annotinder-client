@@ -88,7 +88,6 @@ const AnswerField = ({
         return;
       }
       const el = answerRef.current;
-      console.count(el.current);
       if (startHeight === null) {
         startHeight = el.clientHeight;
         el.style["min-height"] = minHeight + "px";

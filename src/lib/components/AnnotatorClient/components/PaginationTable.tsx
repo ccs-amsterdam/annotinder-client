@@ -142,7 +142,6 @@ const PaginationTable = ({
         ...cells,
       ];
     }
-    console.log(cells);
     return cells;
   };
   //if (data.length < 1) return null;

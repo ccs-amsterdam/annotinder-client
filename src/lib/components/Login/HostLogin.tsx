@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Button, Form } from "semantic-ui-react";
+import { Form } from "semantic-ui-react";
+import { StyledButton } from "../../styled/StyledSemantic";
 import { UseQueryResult } from "@tanstack/react-query";
 import { HostInfo, SetState } from "../../types";
 
@@ -89,9 +90,9 @@ export const HostLogin = ({
         }}
       />
 
-      <Button primary disabled={hostInput.length === 0} fluid>
+      <StyledButton primary disabled={hostInput.length === 0} fluid>
         Connect to server
-      </Button>
+      </StyledButton>
     </Form>
   );
 };

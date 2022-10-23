@@ -4,24 +4,6 @@
   color: rgba(0, 0, 0, 0.87) !important;
 }
 
-.codes-table {
-  border-collapse: collapse;
-}
-
-.codes-tbody {
-  display: block;
-  overflow: auto;
-  margin-left: 1em;
-  margin-top: 1em;
-}
-
-.codes-thead,
-.codes-tbody .codes-tr .codes-td {
-  border: none;
-  table-layout: fixed;
-  padding: 1px;
-}
-
 span.token {
   /* vertical-align: bottom; */
   padding-bottom: 0px;

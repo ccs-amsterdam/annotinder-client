@@ -1,9 +1,6 @@
-import { SemanticWIDTHS, Table } from "semantic-ui-react";
 import styled from "styled-components";
 import { getColor } from "../../../functions/tokenDesign";
 import { Annotation, VariableMap, Span, Token } from "../../../types";
-
-const COLWIDTHS = [4, 4, 2, 2]; // for offset and text
 
 interface AnnotateTableProps {
   tokens: Token[];
@@ -11,14 +8,22 @@ interface AnnotateTableProps {
   annotations: Annotation[];
 }
 
-const StyledTable = styled(Table)`
-  fontsize: 0.9em !important;
-  max-height: 100% !important;
-  border-radius: 0px !important;
-  background: transparent !important;
+const StyledTable = styled.table`
+  fontsize: 1em;
+  max-height: 100%;
+  border-radius: 0px;
+  background: transparent;
+  border-collapse: collapse;
+  text-align: left;
 
   & thead {
-    border-bottom: 1px solid white;
+    height: 30px;
+    position: sticky;
+    background: var(--primary);
+    color: var(--text-inversed-fixed);
+    top: 0;
+    left: 0;
+    border: 1px solid var(--background-inversed);
   }
   & thead,
   tbody,
@@ -28,14 +33,34 @@ const StyledTable = styled(Table)`
     table-layout: fixed;
   }
   & tbody {
+    height: calc(100% - 40px);
     display: block;
     overflow: auto;
     height: 100%;
   }
   & th {
     padding: 5px;
-    background: transparent !important;
-    color: var(--text) !important;
+    background: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  & td {
+    padding: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  & .variable,
+  .value {
+    width: 20%;
+  }
+  & .field .position {
+    width: 15%;
+  }
+  & .text {
+    width: 30%;
   }
 `;
 
@@ -50,40 +75,27 @@ const AnnotateTable = ({ tokens, variableMap, annotations }: AnnotateTableProps)
         borderRadius: "0px",
         background: "transparent",
       }}
-      fixed
-      role="grid"
-      aria-labelledby="header"
-      unstackable
-      singleLine
-      compact="very"
-      size="small"
     >
-      <Table.Header
-        className="annotations-thead"
-        style={{ height: "30px", background: "transparent" }}
-      >
-        <Table.Row>
-          <Table.HeaderCell title="Variable" width={COLWIDTHS[0] as SemanticWIDTHS}>
+      <thead>
+        <tr>
+          <th title="Variable" className="variable">
             Variable
-          </Table.HeaderCell>
-          <Table.HeaderCell title="Vale" width={COLWIDTHS[1] as SemanticWIDTHS}>
+          </th>
+          <th title="Vale" className="value">
             Value
-          </Table.HeaderCell>
-          <Table.HeaderCell title="Field" width={COLWIDTHS[2] as SemanticWIDTHS}>
+          </th>
+          <th title="Field" className="field">
             Field
-          </Table.HeaderCell>
-          <Table.HeaderCell title="Position" width={COLWIDTHS[3] as SemanticWIDTHS}>
+          </th>
+          <th title="Position" className="position">
             Position
-          </Table.HeaderCell>
-          <Table.HeaderCell title="Text">Text</Table.HeaderCell>
-        </Table.Row>
-      </Table.Header>
-      <Table.Body
-        className="annotations-tbody"
-        style={{ overflow: "auto", height: "calc(100% - 40px)" }}
-      >
-        {annotationRows(tokens, variableMap, annotations)}
-      </Table.Body>
+          </th>
+          <th title="Text" className="text">
+            Text
+          </th>
+        </tr>
+      </thead>
+      <tbody>{annotationRows(tokens, variableMap, annotations)}</tbody>
     </StyledTable>
   );
 };
@@ -144,32 +156,27 @@ const AnnotationRow = ({
   const position = `${annotation.offset}-${annotation.offset + annotation.length}`;
 
   return (
-    <Table.Row
-      className="annotations-tr"
+    <tr
       onClick={() => onClick(annotation.token_span)}
-      style={{ cursor: "pointer", border: "0px !important" }}
+      style={{ cursor: "pointer", border: "0px !important", background: color || null }}
     >
-      <Table.Cell width={COLWIDTHS[0] as SemanticWIDTHS}>
+      <td className="variable" title={variable}>
         <span title={variable}>{variable}</span>
-      </Table.Cell>
+      </td>
 
-      <Table.Cell
-        title={label}
-        width={COLWIDTHS[1] as SemanticWIDTHS}
-        style={color ? { background: color } : null}
-      >
+      <td className="value" title={String(label)}>
         <span title={String(label)}>{label}</span>
-      </Table.Cell>
-      <Table.Cell title={annotation.field} width={COLWIDTHS[2] as SemanticWIDTHS}>
+      </td>
+      <td className="field" title={annotation.field}>
         {annotation.field}
-      </Table.Cell>
-      <Table.Cell title={position} width={COLWIDTHS[3] as SemanticWIDTHS}>
+      </td>
+      <td className="position" title={position}>
         {position}
-      </Table.Cell>
-      <Table.Cell>
+      </td>
+      <td className="text">
         <span title={text}>{text}</span>
-      </Table.Cell>
-    </Table.Row>
+      </td>
+    </tr>
   );
 };
 

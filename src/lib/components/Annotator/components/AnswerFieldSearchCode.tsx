@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Dropdown, Ref } from "semantic-ui-react";
+import { Dropdown, Ref } from "semantic-ui-react";
 import { OnSelectParams, AnswerOption } from "../../../types";
+import { StyledButton } from "../../../styled/StyledSemantic";
 
 interface SearchCodeProps {
   /** The options the user can choose from */
@@ -105,7 +106,7 @@ const SearchCode = React.memo(
         </div>
         {multiple ? (
           <div style={{ minWidth: "100px", height: "100%" }}>
-            <Button
+            <StyledButton
               primary
               icon="play"
               fluid

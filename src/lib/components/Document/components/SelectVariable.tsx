@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { Menu, Segment } from "semantic-ui-react";
+import styled from "styled-components";
 import { Variable, SetState } from "../../../types";
 
 interface SelectVariableProps {
@@ -8,6 +8,39 @@ interface SelectVariableProps {
   setVariable: SetState<string>;
   editAll: boolean;
 }
+
+const TaskDescription = styled.div`
+  border: 1px solid var(--background-inversed);
+  padding: 5px 5px 3px 5px;
+  background: var(--primary);
+  color: var(--text-inversed-fixed);
+  z-index: 1;
+`;
+
+const VariableButtons = styled.div`
+  display: flex;
+  margin-bottom: -1px;
+  z-index: 2;
+  word-wrap: break-word;
+  font-size: 1.2em;
+  font-weight: bold;
+  width: 100%;
+
+  & div {
+    padding: 0.2em 1em 0.2em 1em;
+    border: 1px solid var(--background-inversed);
+    border-left: 0px;
+    width: 100%;
+  }
+  &:first-child {
+    border-left: 1px solid var(--background-inversed);
+  }
+  & .selected {
+    background: var(--primary);
+    color: var(--text-inversed-fixed);
+    border-bottom: 0px;
+  }
+`;
 
 const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVariableProps) => {
   const variableNames: string[] = useMemo(() => {
@@ -75,17 +108,7 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
         variables={variables}
         variableNames={variableNames}
       />
-      <Segment
-        attached="bottom"
-        style={{
-          background: "var(--primary)",
-          margin: "0",
-          padding: "3px",
-          color: "var(--text)",
-        }}
-      >
-        {helpText}
-      </Segment>
+      <TaskDescription>{helpText} </TaskDescription>
     </div>
   );
 };
@@ -98,30 +121,6 @@ interface VariableMenuProps {
 }
 
 const VariableMenu = ({ variable, setVariable, variables, variableNames }: VariableMenuProps) => {
-  const mapVariables = () => {
-    return variableNames.map((name) => {
-      return (
-        <Menu.Item
-          key={name}
-          active={name === variable}
-          style={{
-            flex: "1 1 auto",
-            padding: "0 5px",
-            wordWrap: "break-word",
-            fontSize: "1.2em",
-            fontWeight: "bold",
-            borderRadius: "0px",
-            background: name === variable ? "var(--primary)" : "var(--background)",
-            color: "var(--text)",
-          }}
-          onClick={() => setVariable(name)}
-        >
-          <span style={{ textAlign: "center", width: "100%" }}>{name}</span>
-        </Menu.Item>
-      );
-    });
-  };
-
   useEffect(() => {
     if (!variables) return;
     if (variable && variables.length === 1) {
@@ -133,19 +132,15 @@ const VariableMenu = ({ variable, setVariable, variables, variableNames }: Varia
 
   if (variableNames?.length === 1) return null;
   return (
-    <Menu
-      attached="top"
-      tabular
-      compact
-      size="mini"
-      style={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "space-between",
-      }}
-    >
-      {mapVariables()}
-    </Menu>
+    <VariableButtons style={{}}>
+      {variableNames.map((name) => {
+        return (
+          <div className={name === variable ? "selected" : ""} onClick={() => setVariable(name)}>
+            <span style={{ textAlign: "center", width: "100%" }}>{name}</span>
+          </div>
+        );
+      })}
+    </VariableButtons>
   );
 };
 

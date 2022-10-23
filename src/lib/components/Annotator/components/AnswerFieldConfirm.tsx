@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { Button } from "semantic-ui-react";
 import { OnSelectParams, Swipes } from "../../../types";
+import { StyledButton } from "../../../styled/StyledSemantic";
 
 interface ConfirmProps {
   /** The function used to update the values */
@@ -49,7 +49,7 @@ const Confirm = ({ onSelect, button, swipe, blockEvents }: ConfirmProps) => {
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
-      <Button
+      <StyledButton
         fluid
         primary
         content={button || "Continue"}

@@ -1,10 +1,11 @@
 import React, { ReactElement } from "react";
-import { Popup, Button, Icon } from "semantic-ui-react";
+import { Popup, Icon } from "semantic-ui-react";
 
 import { useNavigate } from "react-router-dom";
 import IndexController from "./IndexController";
 import Finished from "./Finished";
 import { FullScreenNode, JobServer, SetState } from "../../../types";
+import { StyledButton } from "../../../styled/StyledSemantic";
 
 interface JobControllerProps {
   children: ReactElement;
@@ -82,7 +83,7 @@ const JobController = ({
         <HeartContainer damage={health?.damage} maxDamage={health?.maxDamage} />
         <div>
           <div>
-            <Button.Group>
+            <StyledButton.Group>
               {fullScreenButton}
               {cantLeave ? null : (
                 <UserButton
@@ -91,7 +92,7 @@ const JobController = ({
                   authForm={authForm}
                 />
               )}
-            </Button.Group>
+            </StyledButton.Group>
           </div>
         </div>
       </div>
@@ -118,7 +119,7 @@ const UserButton = ({ fullScreenNode, jobServer, authForm }: UserButtonProps) =>
       position="bottom right"
       on="click"
       trigger={
-        <Button
+        <StyledButton
           icon="cancel"
           size="massive"
           style={{
@@ -131,22 +132,9 @@ const UserButton = ({ fullScreenNode, jobServer, authForm }: UserButtonProps) =>
       }
     >
       <Popup.Content>
-        <Button.Group vertical fluid>
+        <StyledButton.Group vertical fluid>
           {jobServer?.return_link ? <BackToOverview jobServer={jobServer} /> : authForm}
-
-          {/* <Button
-            secondary
-            icon="user"
-            content="Close job"
-            style={{ marginTop: "0" }}
-            onClick={() => {
-              searchParams.delete("job_id");
-              setSearchParams(searchParams);
-              jobServer.setJobServer(null);
-              //window.location.reload();
-            }}
-          /> */}
-        </Button.Group>
+        </StyledButton.Group>
       </Popup.Content>
     </Popup>
   );
@@ -160,7 +148,7 @@ const BackToOverview = ({ jobServer }: BackToOverviewProps) => {
   const navigate = useNavigate();
   if (!jobServer?.return_link) return null;
   return (
-    <Button
+    <StyledButton
       primary
       icon="home"
       content="Close job"

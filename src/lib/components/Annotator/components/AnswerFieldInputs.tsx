@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, RefObject } from "react";
-import { Button, Form } from "semantic-ui-react";
+import { Form } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
+import { StyledButton } from "../../../styled/StyledSemantic";
 import { OnSelectParams, AnswerItem, QuestionItem, SetState } from "../../../types";
 
 interface InputsProps {
@@ -67,7 +68,7 @@ const Inputs = ({
       />
 
       <div>
-        <Button
+        <StyledButton
           primary
           fluid
           size="mini"

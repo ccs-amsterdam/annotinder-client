@@ -1,16 +1,6 @@
 import { useState } from "react";
-import {
-  Button,
-  Grid,
-  Header,
-  Icon,
-  List,
-  Modal,
-  TextArea,
-  Dimmer,
-  Loader,
-  Checkbox,
-} from "semantic-ui-react";
+import { Grid, Icon, List, Modal, TextArea, Dimmer, Loader, Checkbox } from "semantic-ui-react";
+import { StyledButton } from "../../../styled/StyledSemantic";
 import Backend from "../../Login/Backend";
 import UsersTable from "./UsersTable";
 import { SetState, User } from "../../../types";
@@ -50,11 +40,11 @@ export default function ManageUsers({ backend }: ManageUsersProps) {
         setUsers={setUsers}
       />
       <Grid.Column width="8">
-        <Header>Users</Header>
+        <h3>Users</h3>
         <UsersTable backend={backend} users={users} setUsers={setUsers} />
       </Grid.Column>
       <Grid.Column width="4">
-        <Header>Create new users</Header>
+        <h3>Create new users</h3>
 
         <TextArea
           placeholder="List usernames, separated by newline, space, comma or semicolon"
@@ -63,9 +53,9 @@ export default function ManageUsers({ backend }: ManageUsersProps) {
           style={{ width: "100%" }}
           onChange={(e, d) => setText(String(d.value))}
         ></TextArea>
-        <Button fluid primary onClick={() => onCreate()}>
+        <StyledButton fluid primary onClick={() => onCreate()}>
           Create users
-        </Button>
+        </StyledButton>
       </Grid.Column>
     </Grid>
   );
@@ -129,7 +119,9 @@ const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }: CreateUse
       }}
       onOpen={() => setStatus("idle")}
     >
-      <Header icon="users" content={`Create users`} />
+      <h3>
+        <Icon name="users" /> Create users
+      </h3>
       <Modal.Content>
         <p>Do you want to add the following users?</p>
         <List>{listUsers()}</List>
@@ -150,17 +142,17 @@ const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }: CreateUse
           </Dimmer>
         ) : (
           <>
-            <Button
+            <StyledButton
               color="red"
               onClick={() => {
                 setAddUsers([]);
               }}
             >
               <Icon name="remove" /> No
-            </Button>
-            <Button color="green" onClick={onSubmit}>
+            </StyledButton>
+            <StyledButton color="green" onClick={onSubmit}>
               <Icon name="checkmark" /> Yes
-            </Button>
+            </StyledButton>
           </>
         )}
       </Modal.Actions>

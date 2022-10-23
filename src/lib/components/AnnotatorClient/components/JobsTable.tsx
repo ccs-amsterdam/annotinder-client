@@ -1,8 +1,8 @@
 import React, { CSSProperties, useEffect } from "react";
 import FullDataTable from "./FullDataTable";
-import { Button } from "semantic-ui-react";
 import { Column, Job, JobSettings, RowObj, SetState } from "../../../types";
 import Backend from "../../Login/Backend";
+import { StyledButton } from "../../../styled/StyledSemantic";
 
 const columns: Column[] = [
   { name: "id", title: true, width: 2 },
@@ -92,7 +92,7 @@ const ArchiveButton = ({ row, backend, setData, style }: ArchiveButtonProps) => 
   if (!backend) return null;
 
   return (
-    <Button
+    <StyledButton
       icon={row.archived ? "eye slash" : "eye"}
       onClick={(e, d) => {
         //toggleJobArchived(row.id, backend, setData);

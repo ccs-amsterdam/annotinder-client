@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ReactElement } from "react";
 import { FullScreen, FullScreenHandle, useFullScreenHandle } from "react-full-screen";
-import { Modal, Button } from "semantic-ui-react";
 import { FullScreenNode } from "../../../types";
+import { StyledButton, StyledModal } from "../../../styled/StyledSemantic";
 
 interface FullSceenWindowProps {
   children: (fullSceenNode: FullScreenNode, fullSceenButton: ReactElement) => ReactElement;
@@ -64,15 +64,15 @@ const AskFullScreenModal = ({ handle, askFullScreenSetting }: AskFullScreenModal
   //askFullscreen = false;
 
   return (
-    <Modal open={askFullscreen}>
-      <Modal.Header>Fullscreen mode</Modal.Header>
-      <Modal.Content>
+    <StyledModal open={askFullscreen}>
+      <StyledModal.Header>Fullscreen mode</StyledModal.Header>
+      <StyledModal.Content>
         <p>
           We recommend working in fullscreen, especially on mobile devices. You can always change
           this with the button in the top-right corner. For some devices fullscreen might not work.
         </p>
         <div style={{ display: "flex", height: "30%" }}>
-          <Button
+          <StyledButton
             primary
             size="massive"
             onClick={() => {
@@ -82,8 +82,8 @@ const AskFullScreenModal = ({ handle, askFullScreenSetting }: AskFullScreenModal
             style={{ flex: "1 1 auto" }}
           >
             Fullscreen
-          </Button>
-          <Button
+          </StyledButton>
+          <StyledButton
             secondary
             size="massive"
             onClick={() => {
@@ -93,10 +93,10 @@ const AskFullScreenModal = ({ handle, askFullScreenSetting }: AskFullScreenModal
             style={{ flex: "1 1 auto" }}
           >
             Windowed
-          </Button>
+          </StyledButton>
         </div>
-      </Modal.Content>
-    </Modal>
+      </StyledModal.Content>
+    </StyledModal>
   );
 };
 
@@ -106,7 +106,7 @@ interface FullScreenButtonProps {
 
 const FullScreenButton = ({ handle }: FullScreenButtonProps) => {
   return (
-    <Button
+    <StyledButton
       size="massive"
       icon={handle.active ? "compress" : "expand"}
       style={{

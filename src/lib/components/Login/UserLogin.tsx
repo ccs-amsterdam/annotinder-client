@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Button, Form, Input, Message } from "semantic-ui-react";
+import { Form, Input, Message } from "semantic-ui-react";
+import { StyledButton } from "../../styled/StyledSemantic";
 import styled from "styled-components";
 import { HostInfo, SetState } from "../../types";
 import { passwordLogin, redeemMagicLink, requestMagicLink } from "./Backend";
@@ -107,9 +108,9 @@ const PasswordLogin = ({ host, email, login }: PasswordLoginProps) => {
         }}
         style={{ width: "260px" }}
       />
-      <Button primary key="password" disabled={password.length === 0} fluid>
+      <StyledButton primary key="password" disabled={password.length === 0} fluid>
         Sign in
-      </Button>
+      </StyledButton>
     </Form>
   );
 };
@@ -228,9 +229,9 @@ const MagicLinkLogin = ({
           />
         </div>
         {loginError ? <Message negative>{loginError}</Message> : null}
-        <Button primary fluid disabled={secret.length !== 6} onClick={tryMagicLinkLogin}>
+        <StyledButton primary fluid disabled={secret.length !== 6} onClick={tryMagicLinkLogin}>
           Sign-in
-        </Button>
+        </StyledButton>
       </SecretForm>
     );
 

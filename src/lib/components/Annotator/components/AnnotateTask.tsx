@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Grid, Button, Portal, Form, Input, Icon, Segment } from "semantic-ui-react";
+import { Portal, Form, Input, Icon, Segment } from "semantic-ui-react";
 import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import AnnotateTaskManual from "./AnnotateTaskManual";
+
 import {
   Annotation,
   FullScreenNode,
@@ -16,12 +17,43 @@ import {
 } from "../../../types";
 import Instructions from "./Instructions";
 import ThemeSelector from "../../Common/Theme";
+import { StyledButton } from "../../../styled/StyledSemantic";
+import styled from "styled-components";
 
 const NEXTDELAY = 500;
 const BODYSTYLE = {
   paddingTop: "10px",
   paddingBottom: "10px",
 };
+
+const AnnotateGrid = styled.div`
+  display: grid;
+  grid-gap: 1em;
+  grid-template-areas: "document table";
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+
+  @media screen and (max-width: 800px) {
+    grid-template-areas: "table" "document";
+    grid-template-columns: 1fr;
+    grid-template-rows: 30% 70%;
+    grid-gap: 0;
+  }
+
+  & .document {
+    grid-area: document;
+    overflow: auto;
+    height: 100%;
+  }
+  & .table {
+    grid-area: table;
+    overflow: auto;
+    border-bottom: 1px solid;
+  }
+`;
 
 interface AnnotateTaskProps {
   unit: Unit;
@@ -59,54 +91,18 @@ const AnnotateTask = ({
 
   if (!unit || codebook?.variables === null) return null;
 
-  const renderAnnotateTable = () => {
-    if (codebook?.settings?.no_table) return null;
-    return (
-      <Grid.Column
-        width={6}
-        style={{
-          padding: "0",
-          height: "100%",
-          paddingLeft: "10px",
-        }}
-      >
-        <div style={{ borderBottom: "1px solid", height: "calc(100%)", overflow: "auto" }}>
-          <AnnotateTable tokens={tokens} variableMap={variableMap} annotations={annotations} />
-        </div>
-      </Grid.Column>
-    );
-  };
-
   let ann = unit.annotations;
   if (unit.importedAnnotations && (!ann || ann.length === 0) && unit.status !== "DONE")
     ann = unit.importedAnnotations;
 
   return (
-    <Grid
-      centered
-      stackable
-      style={{
-        height: "100%",
-        width: "100%",
-        paddingTop: "0",
-        margin: "0",
-        background: "var(--background)",
-        color: "var(--text)",
-      }}
-      columns={2}
-    >
-      <Grid.Column
-        width={10}
-        style={{
-          padding: "0",
-          height: "100%",
-          //margin: "0",
-        }}
-      >
+    <AnnotateGrid>
+      <div className="document">
         <div
           style={{
             height: "calc(100% - 35px)",
             fontSize: `${settings.textSize}em`,
+            overflow: "auto",
           }}
         >
           <Document
@@ -123,7 +119,7 @@ const AnnotateTask = ({
             bodyStyle={BODYSTYLE}
           />
         </div>
-        <Button.Group
+        <StyledButton.Group
           fluid
           style={{
             padding: "0",
@@ -144,10 +140,14 @@ const AnnotateTask = ({
           />
           <AnnotateTaskManual fullScreenNode={fullScreenNode} />
           <NextUnitButton unit={unit} annotations={annotations} nextUnit={nextUnit} />
-        </Button.Group>
-      </Grid.Column>
-      {renderAnnotateTable()}
-    </Grid>
+        </StyledButton.Group>
+      </div>
+      <div className="table">
+        <div style={{}}>
+          <AnnotateTable tokens={tokens} variableMap={variableMap} annotations={annotations} />
+        </div>
+      </div>
+    </AnnotateGrid>
   );
 };
 
@@ -255,7 +255,7 @@ const NextUnitButton = ({ unit, annotations, nextUnit }: NextUnitButtonProps) =>
   });
 
   return (
-    <Button
+    <StyledButton
       disabled={tempDisable !== "ready"}
       loading={tempDisable === "loading"}
       primary
@@ -265,7 +265,7 @@ const NextUnitButton = ({ unit, annotations, nextUnit }: NextUnitButtonProps) =>
     >
       <Icon name="play" />
       Go to next unit
-    </Button>
+    </StyledButton>
   );
 };
 
@@ -282,7 +282,7 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
       mountNode={fullScreenNode || undefined}
       on="click"
       trigger={
-        <Button
+        <StyledButton
           size="huge"
           icon="setting"
           style={{
