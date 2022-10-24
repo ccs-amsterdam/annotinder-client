@@ -1,5 +1,5 @@
-import { Button, Menu, Modal, Table } from "semantic-ui-react";
-import styled from "styled-components";
+import { Button, Modal, Table } from "semantic-ui-react";
+import styled, { StyledComponent } from "styled-components";
 
 // Use styled components to customize semantic ui components.
 // Note that !important is still nicely contained, because styled components
@@ -9,7 +9,7 @@ import styled from "styled-components";
 // therefore we'll run all semantic ui components via custom styled versions,
 // so that we can gradually replace them.
 
-export const StyledButton = styled(Button)`
+const StyledButton = styled(Button)`
   &.primary {
     background: var(--primary) !important;
     color: white !important;
@@ -20,7 +20,7 @@ export const StyledButton = styled(Button)`
   }
 `;
 
-export const StyledModal = styled(Modal)`
+const StyledModal: StyledComponent<typeof Modal, any, {}, never> = styled(Modal)`
   border: 1px solid var(--background-inversed);
   font-size: 0.9em;
 
@@ -32,7 +32,7 @@ export const StyledModal = styled(Modal)`
   }
 `;
 
-export const StyledContainer = styled.div`
+const StyledContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
   width: 100%;
@@ -40,7 +40,7 @@ export const StyledContainer = styled.div`
   padding: 1em;
 `;
 
-export const StyledTable = styled(Table)`
+const StyledTable: StyledComponent<typeof Table, any, {}, never> = styled(Table)`
   color: var(--text) !important;
   background: var(--background) !important;
 
@@ -51,9 +51,9 @@ export const StyledTable = styled(Table)`
   }
 `;
 
-export const StyledSegment = styled.div`
+const StyledSegment = styled.div`
   position: relative;
   padding: 1em;
 `;
 
-export const StyledMenu = styled(Menu)``;
+export { StyledButton, StyledModal, StyledContainer, StyledTable, StyledSegment };

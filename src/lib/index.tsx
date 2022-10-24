@@ -5,6 +5,7 @@ import AnnotatorPythonClient from "./components/AnnotatorClient/AnnotatorPythonC
 import AnnotatorRClient from "./components/AnnotatorClient/AnnotatorRClient";
 import ResponsiveContainer from "./components/Common/ResponsiveContainer";
 
+import GlobalStyle from "./styled/GlobalStyle";
 import { standardizeCodes, getCodeTreeArray, codeBookEdgesToMap } from "./functions/codebook";
 import { exportSpanAnnotations } from "./components/Document/functions/annotations";
 
@@ -19,4 +20,5 @@ export {
   exportSpanAnnotations,
   getCodeTreeArray,
   codeBookEdgesToMap,
+  GlobalStyle,
 };

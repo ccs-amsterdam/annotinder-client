@@ -50,6 +50,8 @@ const GlobalStyle = createGlobalStyle`
   .ui.pagination.menu .item {
     color: var(--text) !important;
   }
+
+  
 `;
 
 export default GlobalStyle;

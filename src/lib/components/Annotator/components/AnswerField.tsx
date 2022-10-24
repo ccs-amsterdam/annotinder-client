@@ -99,7 +99,6 @@ const AnswerField = ({
       if (el.clientHeight < startHeight || startHeight === minHeight) {
         // if shrinking started, or if startheight is already the minimum
 
-        console.log(el.clientHeight, startHeight, el.scrollHeight);
         if (el.scrollHeight > el.clientHeight) {
           // see if the container overflows. If so, we can calculate the required height
           // and stop the loop

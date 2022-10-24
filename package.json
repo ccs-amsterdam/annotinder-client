@@ -6,7 +6,7 @@
     "react",
     "annotation"
   ],
-  "version": "0.3.15",
+  "version": "0.3.17",
   "repository": {
     "type": "git",
     "url": "https://github.com/ccs-amsterdam/annotinder-client"
