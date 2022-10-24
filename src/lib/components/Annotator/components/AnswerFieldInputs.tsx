@@ -222,7 +222,6 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
         style={{
           maxWidth: "150px",
           textAlign: "center",
-          background: answerItems[itemIndex]?.invalid ? "var(--red)" : "var(--text-inversed-fixed)",
         }}
         onChange={(e) => {
           if (!answerItems?.[itemIndex]) return;
@@ -266,7 +265,7 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
         style={{
           maxWidth: "300px",
           textAlign: "center",
-          background: answerItems[itemIndex].invalid ? "var(--red)" : "white",
+          background: answerItems[itemIndex].invalid ? "#fa1e1e4d" : "white",
         }}
         onChange={(e) => {
           if (!answerItems?.[itemIndex]) return;

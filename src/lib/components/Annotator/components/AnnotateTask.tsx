@@ -4,6 +4,7 @@ import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import AnnotateTaskManual from "./AnnotateTaskManual";
+import RelativePopup from "../../Common/RelativePopup";
 
 import {
   Annotation,
@@ -119,20 +120,16 @@ const AnnotateTask = ({
             bodyStyle={BODYSTYLE}
           />
         </div>
-        <StyledButton.Group
-          fluid
+        <div
           style={{
+            display: "flex",
             padding: "0",
             height: "35px",
             background: "var(--secondary)",
             borderRadius: "5px",
           }}
         >
-          <SettingsPopup
-            settings={settings}
-            setSettings={setSettings}
-            fullScreenNode={fullScreenNode}
-          />
+          <SettingsPopup settings={settings} setSettings={setSettings} />
           <Instructions
             codebook={codebook}
             sessionData={sessionData}
@@ -140,7 +137,7 @@ const AnnotateTask = ({
           />
           <AnnotateTaskManual fullScreenNode={fullScreenNode} />
           <NextUnitButton unit={unit} annotations={annotations} nextUnit={nextUnit} />
-        </StyledButton.Group>
+        </div>
       </div>
       <div className="table">
         <div style={{}}>
@@ -259,8 +256,9 @@ const NextUnitButton = ({ unit, annotations, nextUnit }: NextUnitButtonProps) =>
       disabled={tempDisable !== "ready"}
       loading={tempDisable === "loading"}
       primary
+      fluid
       size="tiny"
-      style={{ padding: "5px", marginLeft: "30px" }}
+      style={{ padding: "5px", marginLeft: "30px", marginRight: "0px" }}
       onClick={onNext}
     >
       <Icon name="play" />
@@ -272,21 +270,17 @@ const NextUnitButton = ({ unit, annotations, nextUnit }: NextUnitButtonProps) =>
 interface SettingsPopupProps {
   settings: Record<string, string | number>;
   setSettings: SetState<Record<string, string | number>>;
-  fullScreenNode: FullScreenNode;
 }
 
-const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupProps) => {
+const SettingsPopup = ({ settings, setSettings }: SettingsPopupProps) => {
   return (
-    <Portal
-      closeOnTriggerClick
-      mountNode={fullScreenNode || undefined}
-      on="click"
+    <RelativePopup
       trigger={
         <StyledButton
           size="huge"
           icon="setting"
           style={{
-            padding: "4px 5px 4px 5px",
+            padding: "8px 5px 4px 5px",
             maxWidth: "30px",
             background: "transparent",
             color: "var(--text-inversed-fixed)",
@@ -298,44 +292,30 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
         />
       }
     >
-      <Segment
-        style={{
-          bottom: "30%",
-          left: "10%",
-          position: "fixed",
-          width: "80%",
-          maxWidth: "400px",
-          zIndex: 10000,
-          background: "#dfeffbaa",
-          backdropFilter: "blur(2px)",
-          border: "1px solid #136bae",
-        }}
-      >
-        <Form>
-          <Form.Field style={{ textAlign: "center" }}>
-            <label>Dark mode</label>
-            <ThemeSelector />
+      <Form>
+        <Form.Field style={{ textAlign: "center" }}>
+          <label>Dark mode</label>
+          <ThemeSelector />
+        </Form.Field>
+        <Form.Group grouped>
+          <Form.Field>
+            <label>
+              text size scaling{" "}
+              <span style={{ color: "var(--primary)" }}>{`${settings.textSize}`}</span>
+            </label>
+            <Input
+              size="mini"
+              step={0.025}
+              min={0.4}
+              max={1.6}
+              type="range"
+              value={settings.textSize}
+              onChange={(e, d) => setSettings({ ...settings, textSize: d.value })}
+            />
           </Form.Field>
-          <Form.Group grouped>
-            <Form.Field>
-              <label>
-                text size scaling{" "}
-                <span style={{ color: "var(--primary)" }}>{`${settings.textSize}`}</span>
-              </label>
-              <Input
-                size="mini"
-                step={0.025}
-                min={0.4}
-                max={1.6}
-                type="range"
-                value={settings.textSize}
-                onChange={(e, d) => setSettings({ ...settings, textSize: d.value })}
-              />
-            </Form.Field>
-          </Form.Group>
-        </Form>
-      </Segment>
-    </Portal>
+        </Form.Group>
+      </Form>
+    </RelativePopup>
   );
 };
 

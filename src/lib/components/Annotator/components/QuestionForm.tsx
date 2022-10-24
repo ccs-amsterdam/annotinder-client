@@ -25,17 +25,20 @@ import AnswerField from "./AnswerField";
 import QuestionIndexStep from "./QuestionIndexStep";
 
 const QuestionDiv = styled.div`
+  position: relative;
   height: 100%;
   width: 100%;
   background-color: var(--background-inversed-fixed);
   border-top: 3px double var(--text-inversed-fixed);
   box-shadow: 0px 5px 5px 1px grey;
   font-size: inherit;
-  z-index: 9000;
+  z-index: 50;
   overflow: auto;
 `;
 
 const MenuDiv = styled.div`
+  position: relative;
+  z-index: 51;
   width: 100%;
   display: flex;
 `;
@@ -161,7 +164,15 @@ const QuestionForm = ({
   return (
     <QuestionDiv>
       <MenuDiv>
-        <div style={{ display: "flex", width: "60px", color: "var(--text-inversed-fixed)" }}>
+        <div
+          style={{
+            position: "relative",
+            zIndex: 100,
+            display: "flex",
+            width: "60px",
+            color: "var(--text-inversed-fixed)",
+          }}
+        >
           {children}
         </div>
         <div style={{ width: "100%", textAlign: "center" }}>

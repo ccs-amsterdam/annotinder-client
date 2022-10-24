@@ -1,4 +1,4 @@
-import React, { useState, useRef, RefObject, useCallback, useMemo } from "react";
+import React, { useState, useRef, RefObject, useCallback, useMemo, useEffect } from "react";
 import QuestionForm from "./QuestionForm";
 import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
@@ -24,6 +24,7 @@ import FeedbackPortal from "./FeedbackPortal";
 import useWatchChange from "../../../hooks/useWatchChange";
 import unfoldQuestions from "../../../functions/unfoldQuestions";
 import ThemeSelector from "../../Common/Theme";
+import RelativePopup from "../../Common/RelativePopup";
 
 const Container = styled.div`
   display: flex;
@@ -98,7 +99,7 @@ const QuestionTask = ({
   const refs = useMemo(() => {
     return { text: textref, box: boxref, code: coderef };
   }, []);
-  console.log(codebook);
+
   const [settings, setSettings] = useLocalStorage("questionTaskSettings", {
     upperTextSize: 1,
     lowerTextSize: 1.2,
@@ -189,11 +190,7 @@ const QuestionTask = ({
           startTransition={startTransition}
           blockEvents={blockEvents}
         >
-          <SettingsPopup
-            settings={settings}
-            setSettings={setSettings}
-            fullScreenNode={fullScreenNode}
-          />
+          <SettingsPopup settings={settings} setSettings={setSettings} />
           <Instructions
             codebook={codebook}
             sessionData={sessionData}
@@ -205,32 +202,14 @@ const QuestionTask = ({
   );
 };
 
-const SettingsForm = styled.div`
-  bottom: 30%;
-  left: 10%;
-  padding: 1em;
-  position: fixed;
-  width: 80%;
-  max-width: 400px;
-  z-index: 10000;
-  background: #ffffffbb;
-  backdrop-filter: blur(2px);
-  border: 1px solid #136bae;
-`;
-
 interface SettingsPopupProps {
   settings: { [key: string]: number | string };
   setSettings: SetState<{ [key: string]: number | string }>;
-  fullScreenNode: FullScreenNode;
 }
 
-const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupProps) => {
+const SettingsPopup = ({ settings, setSettings }: SettingsPopupProps) => {
   return (
-    <Portal
-      closeOnTriggerClick
-      closeOnDocumentClick
-      mountNode={fullScreenNode || undefined}
-      on="click"
+    <RelativePopup
       trigger={
         <StyledButton
           size="huge"
@@ -247,47 +226,45 @@ const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupP
         />
       }
     >
-      <SettingsForm>
-        <Form>
-          <Form.Group grouped>
-            <Form.Field style={{ textAlign: "center" }}>
-              <label>Dark mode</label>
-              <ThemeSelector />
-            </Form.Field>
-            <Form.Field>
-              <label>
-                Content text size{" "}
-                <span style={{ color: "var(--primary)" }}>{`${settings.upperTextSize}`}</span>
-              </label>
-              <Input
-                size="mini"
-                step={0.025}
-                min={0.4}
-                max={1.6}
-                type="range"
-                value={settings.upperTextSize}
-                onChange={(e, d) => setSettings({ ...settings, upperTextSize: d.value })}
-              />
-            </Form.Field>
-            <Form.Field>
-              <label>
-                Answer field text size{" "}
-                <span style={{ color: "var(--primary)" }}>{`${settings.lowerTextSize}`}</span>
-              </label>
-              <Input
-                size="mini"
-                step={0.025}
-                min={0.4}
-                max={1.6}
-                type="range"
-                value={settings.lowerTextSize}
-                onChange={(e, d) => setSettings({ ...settings, lowerTextSize: d.value })}
-              />
-            </Form.Field>
-          </Form.Group>
-        </Form>
-      </SettingsForm>
-    </Portal>
+      <Form>
+        <Form.Group grouped>
+          <Form.Field style={{ textAlign: "center" }}>
+            <label>Dark mode</label>
+            <ThemeSelector />
+          </Form.Field>
+          <Form.Field>
+            <label>
+              Content text size{" "}
+              <span style={{ color: "var(--primary)" }}>{`${settings.upperTextSize}`}</span>
+            </label>
+            <Input
+              size="mini"
+              step={0.025}
+              min={0.4}
+              max={1.6}
+              type="range"
+              value={settings.upperTextSize}
+              onChange={(e, d) => setSettings({ ...settings, upperTextSize: d.value })}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>
+              Answer field text size{" "}
+              <span style={{ color: "var(--primary)" }}>{`${settings.lowerTextSize}`}</span>
+            </label>
+            <Input
+              size="mini"
+              step={0.025}
+              min={0.4}
+              max={1.6}
+              type="range"
+              value={settings.lowerTextSize}
+              onChange={(e, d) => setSettings({ ...settings, lowerTextSize: d.value })}
+            />
+          </Form.Field>
+        </Form.Group>
+      </Form>
+    </RelativePopup>
   );
 };
 

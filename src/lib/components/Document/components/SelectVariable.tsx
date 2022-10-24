@@ -135,7 +135,11 @@ const VariableMenu = ({ variable, setVariable, variables, variableNames }: Varia
     <VariableButtons style={{}}>
       {variableNames.map((name) => {
         return (
-          <div className={name === variable ? "selected" : ""} onClick={() => setVariable(name)}>
+          <div
+            key={name}
+            className={name === variable ? "selected" : ""}
+            onClick={() => setVariable(name)}
+          >
             <span style={{ textAlign: "center", width: "100%" }}>{name}</span>
           </div>
         );
