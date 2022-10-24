@@ -98,7 +98,7 @@ const QuestionTask = ({
   const refs = useMemo(() => {
     return { text: textref, box: boxref, code: coderef };
   }, []);
-
+  console.log(codebook);
   const [settings, setSettings] = useLocalStorage("questionTaskSettings", {
     upperTextSize: 1,
     lowerTextSize: 1.2,

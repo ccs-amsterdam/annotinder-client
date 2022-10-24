@@ -76,6 +76,9 @@ const Inputs = ({
           icon={done ? "play" : null}
           content={done ? "Continue" : "Please complete the form to continue"}
           style={{
+            position: "sticky",
+            bottom: 0,
+            left: 0,
             flex: "1 1 0px",
             textAlign: "center",
             margin: "0",

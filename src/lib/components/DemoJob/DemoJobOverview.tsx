@@ -12,7 +12,7 @@ import { SetState } from "../../types";
 const DemoJobOverview = () => {
   const [job, setJob] = useState(null);
   const [searchParams] = useSearchParams();
-
+  console.log("wtf");
   useEffect(() => {
     let codebook = searchParams.get("codebook");
     let units = searchParams.get("units");
