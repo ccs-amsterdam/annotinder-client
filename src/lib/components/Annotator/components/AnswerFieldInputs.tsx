@@ -50,9 +50,6 @@ const Inputs = ({
       style={{
         width: "100%",
         height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
       }}
     >
       <Items
@@ -66,31 +63,25 @@ const Inputs = ({
         blockEvents={blockEvents}
         scrollRef={scrollRef}
       />
-
-      <div>
-        <StyledButton
-          primary
-          fluid
-          size="mini"
-          disabled={!done}
-          icon={done ? "play" : null}
-          content={done ? "Continue" : "Please complete the form to continue"}
-          style={{
-            position: "sticky",
-            bottom: 0,
-            left: 0,
-            flex: "1 1 0px",
-            textAlign: "center",
-            margin: "0",
-            border: `4px solid ${selectedItem === items.length ? "black" : "#00000044"}`,
-          }}
-          onClick={() => {
-            // this is a bit of an odd one out. We didn't anticipate having multiple answers,
-            // so some of the previous logic doesn't hold
-            onFinish();
-          }}
-        />
-      </div>
+      <StyledButton
+        primary
+        fluid
+        size="mini"
+        disabled={!done}
+        icon={done ? "play" : null}
+        content={done ? "Continue" : "Please complete the form to continue"}
+        style={{
+          minHeight: "30px",
+          textAlign: "center",
+          margin: "10px 0 0 0",
+          border: `4px solid ${selectedItem === items.length ? "black" : "#00000044"}`,
+        }}
+        onClick={() => {
+          // this is a bit of an odd one out. We didn't anticipate having multiple answers,
+          // so some of the previous logic doesn't hold
+          onFinish();
+        }}
+      />
     </div>
   );
 };

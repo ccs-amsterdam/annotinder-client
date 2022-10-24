@@ -116,9 +116,8 @@ const Scale = React.memo(
       <div
         style={{
           height: "100%",
-          display: "flex",
+          position: "relative",
           flexDirection: "column",
-          justifyContent: "space-between",
           background: "var(--background-inversed-fixed)",
           color: "var(--text-inversed-fixed)",
         }}
@@ -164,30 +163,24 @@ const Scale = React.memo(
           scrollRef={scrollRef}
         />
 
-        <div>
-          <StyledButton
-            primary
-            fluid
-            size="mini"
-            disabled={!done}
-            icon={done ? "play" : null}
-            content={done ? "Continue" : `${nAnswered} / ${answerItems.length}`}
-            style={{
-              position: "sticky",
-              bottom: 0,
-              left: 0,
-              flex: "1 1 0px",
-              textAlign: "center",
-              color: done ? null : "var(--text-inversed-fixed)",
-              margin: "0",
-              background: done ? null : "white",
-              border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
-            }}
-            onClick={() => {
-              onFinish();
-            }}
-          />
-        </div>
+        <StyledButton
+          primary
+          fluid
+          size="mini"
+          disabled={!done}
+          icon={done ? "play" : null}
+          content={done ? "Continue" : `${nAnswered} / ${answerItems.length}`}
+          style={{
+            textAlign: "center",
+            color: done ? null : "var(--text-inversed-fixed)",
+            margin: "10px 0 0 0",
+            background: done ? null : "white",
+            border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
+          }}
+          onClick={() => {
+            onFinish();
+          }}
+        />
       </div>
     );
   }

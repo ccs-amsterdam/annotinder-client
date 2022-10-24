@@ -81,6 +81,7 @@ const AnswerField = ({
     let startHeight = null;
     const minHeight = 60;
     let shrinkchecks = 0;
+    let maxheight = null;
 
     function resize() {
       if (!answerRef.current) {
@@ -89,18 +90,19 @@ const AnswerField = ({
       }
       const el = answerRef.current;
       if (startHeight === null) {
-        startHeight = Math.max(60, el.clientHeight);
+        const container = el.closest(".QuestionContainer");
+        maxheight = container ? container.clientHeight / 2 : 300;
+        startHeight = Math.max(60, Math.min(maxheight, el.clientHeight));
         el.style["min-height"] = minHeight + "px";
       }
 
       if (el.clientHeight < startHeight || startHeight === minHeight) {
         // if shrinking started, or if startheight is already the minimum
 
+        console.log(el.clientHeight, startHeight, el.scrollHeight);
         if (el.scrollHeight > el.clientHeight) {
           // see if the container overflows. If so, we can calculate the required height
           // and stop the loop
-          const container = el.closest(".QuestionContainer");
-          const maxheight = container ? container.clientHeight / 2 : 300;
           const minheight = Math.max(100, el.scrollHeight + 10);
           newMinHeight = Math.min(maxheight, minheight);
 
@@ -123,7 +125,11 @@ const AnswerField = ({
 
       resizeId = requestAnimationFrame(resize);
     }
-    resize();
+
+    // add a small delay, because safari is somehow too slow in recalculating the
+    // scrollheight, so that sometimes after the contains starts shrinking it still
+    // has the scrollheight from the previous question
+    setTimeout(() => resize(), 50);
 
     return () => cancelAnimationFrame(resizeId);
   }, [answerRef, onAnswer]);
