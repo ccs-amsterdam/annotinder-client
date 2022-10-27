@@ -71,9 +71,9 @@ export default function QuestionIndexStep({
             size="mini"
             active={i === questionIndex}
             style={{
-              transition: "padding 0.2s opacity 0.2s background 0.2s",
+              transition: "all 0.2s",
               opacity: Math.max(dist, 0.2),
-              padding: `6px ${dist * 24}px`,
+              padding: `7px ${dist * 24}px`,
               height: `${15 * dist}px`,
               border: `1px solid`,
               borderColor: i === questionIndex ? "var(--text)" : "var(--text-inversed)",

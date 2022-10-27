@@ -290,13 +290,15 @@ const processAnswer = async (
     );
 
     unit.unit.annotations = addAnnotationsFromAnswer(answers[questionIndex], unit.unit.annotations);
-
     const irrelevantQuestions = processIrrelevantBranching(unit, questions, answers, questionIndex);
 
     // next (non-irrelevant) question in unit (null if no remaining)
     let newQuestionIndex: number = null;
     for (let i = questionIndex + 1; i < questions.length; i++) {
-      if (irrelevantQuestions[i]) continue;
+      if (irrelevantQuestions[i]) {
+        unit.unit.annotations = addAnnotationsFromAnswer(answers[i], unit.unit.annotations);
+        continue;
+      }
       newQuestionIndex = i;
       break;
     }
