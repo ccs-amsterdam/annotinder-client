@@ -19,7 +19,6 @@ import {
   TextField,
   Token,
 } from "../../../types";
-import { relative } from "path";
 
 interface BodyProps {
   tokens: Token[];

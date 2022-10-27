@@ -11,7 +11,7 @@ import { Answer, AnswerItem, Question, Annotation, Unit, QuestionItem } from "..
 
 export const getAnswersFromAnnotations = (unit: Unit, questions: Question[]): Answer[] => {
   const answers = [];
-  if (!unit.annotations) unit.annotations = [];
+  if (!unit.unit.annotations) unit.unit.annotations = [];
   for (let i = 0; i < questions.length; i++) {
     const q = questions[i];
     //const answer = createAnswer(tokens, questions[i]);
@@ -24,7 +24,7 @@ export const getAnswersFromAnnotations = (unit: Unit, questions: Question[]): An
       answer.length = q.annotation.length;
     }
 
-    answer.items = getAnswerValues(unit.annotations, answer, q);
+    answer.items = getAnswerValues(unit.unit.annotations, answer, q);
     answers.push(answer);
   }
   return answers;

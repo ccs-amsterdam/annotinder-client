@@ -398,7 +398,7 @@ export interface JobServer {
   demodata?: DemoData;
 
   init: () => void;
-  getUnit: (i: number) => Promise<BackendUnit>;
+  getUnit: (i: number) => Promise<RawUnit>;
   postAnnotations: (
     unitId: number,
     annotation: Annotation[],
@@ -408,7 +408,7 @@ export interface JobServer {
 }
 
 export interface DemoData {
-  units?: BackendUnit[];
+  units?: RawUnit[];
 }
 
 /**
@@ -431,18 +431,21 @@ export type UnitType = "pre" | "train" | "test" | "unit" | "post";
 
 /** A unit after it has been prepared by the jobServer. This is for internal use */
 export interface Unit {
-  jobServer?: any;
   unitId: number | string; // this is the backend id, not the external id
-  annotations: Annotation[];
+  unit: UnitContent;
+  jobServer?: any;
   status: UnitStatus;
   report?: ConditionReport;
-  tokens?: RawToken[];
+}
+
+export interface UnitContent {
   text_fields?: TextField[];
-  meta_fields?: MetaField[];
+  tokens?: Token[];
   image_fields?: ImageField[];
   markdown_fields?: MarkdownField[];
+  meta_fields?: MetaField[];
+  annotations?: Annotation[];
   importedAnnotations?: Annotation[];
-  /** A unit can carry its own codebook. This will then be used instead of the codebook at the codingjob level */
   codebook?: CodeBook;
   variables?: UnitVariables;
   grid?: FieldGrid;
@@ -453,23 +456,6 @@ export interface Unit {
  * Use index -1 to tell the backend to decide what unit comes next  */
 export type SetUnitIndex = (index: number) => void;
 
-/** A unit in the raw JSON structure. This is also the same structure in which it should be uploaded to the backend  */
-export interface RawUnit {
-  id: string; // The external id. A unique id provided when creating the codingjob
-  type: UnitType;
-  conditionals: Conditional[];
-  unit: {
-    text_fields?: TextField[];
-    meta_fields?: MetaField[];
-    image_fields?: ImageField[];
-    markdown_field?: MarkdownField[];
-    annotations?: Annotation[];
-    importedAnnotations?: Annotation[];
-    codebook?: RawCodeBook;
-    variables?: UnitVariables;
-  };
-}
-
 /** Units can have an object of variables, where keys are the variable names and values are pieces of text.
  *  These can be used in questions like: "is this text about [variable]"?.
  */
@@ -477,26 +463,16 @@ export interface UnitVariables {
   [key: string]: string;
 }
 
-/** A unit as it can be served by the backend. Basically extends rawunit (but not exactly), adding index and status.
+/** A unit as it can be served by the backend.
  * Note that some parts (conditionals, damage) will normally not be visible to the frontend, but are included
  * here for jobserverdemo
  */
-export interface BackendUnit {
+export interface RawUnit {
   index: number;
   status: UnitStatus;
   id: number | string; // this is the backend id, not the external id
   external_id?: string;
-  unit: {
-    text_fields?: TextField[];
-    meta_fields?: MetaField[];
-    image_fields?: ImageField[];
-    markdown_field?: MarkdownField[];
-    annotations?: Annotation[];
-    importedAnnotations?: Annotation[];
-    codebook?: RawCodeBook;
-    variables?: UnitVariables;
-    grid?: FieldGrid;
-  };
+  unit: RawUnitContent;
   type: UnitType;
   conditionals?: Conditional[];
   damage?: number;
@@ -504,23 +480,45 @@ export interface BackendUnit {
   annotation?: Annotation[]; // backend calls the annotations array annotation. Should probably change this
 }
 
+export interface RawUnitContent {
+  text_fields?: RawTextField[];
+  tokens?: RawToken[] | RawTokenColumn;
+  image_fields?: RawImageField[];
+  markdown_fields?: RawMarkdownField[];
+  meta_fields?: MetaField[];
+  importedAnnotations?: Annotation[];
+  codebook?: RawCodeBook;
+  variables?: UnitVariables;
+  grid?: FieldGridInput;
+}
+
 export type UnitStatus = "DONE" | "IN_PROGRESS";
 
-export interface fieldGridInput {
+export interface FieldGridInput {
   areas?: string[][];
   rows?: number[];
   columns?: number[];
 }
 
 export interface FieldGrid {
-  areas: string;
-  columns: string;
-  rows: string;
+  areas?: string;
+  columns?: string;
+  rows?: string;
 }
 
-export interface TextField {
+export interface Field {
   name: string;
-  value: string | string[];
+  value: string;
+  grid_area?: string;
+  style?: CSSProperties;
+}
+
+export interface SubField {
+  value: string;
+  style?: CSSProperties;
+}
+
+export interface TextField extends Field {
   label?: string;
   offset?: number;
   unit_start?: number;
@@ -528,33 +526,34 @@ export interface TextField {
   context_before?: string;
   context_after?: string;
   paragraphs?: boolean;
-  grid_area?: string;
-  style?: CSSProperties;
+}
+
+export interface RawTextField extends Omit<TextField, "value"> {
+  value: string | (string | SubField)[];
 }
 
 export interface RenderedText {
   [key: string]: ReactElement[];
 }
 
-export interface ImageField {
-  name: string;
-  value: string | string[];
+export interface ImageField extends Field {
   alt?: string;
   base64?: boolean;
   caption?: string;
-  grid_area?: string;
-  style?: CSSProperties;
+}
+
+export interface RawImageField extends Omit<ImageField, "value"> {
+  value: string | (string | SubField)[];
 }
 
 export interface RenderedImages {
   [key: string]: ReactElement;
 }
 
-export interface MarkdownField {
-  name: string;
-  value: string | string[];
-  grid_area?: string;
-  style?: CSSProperties;
+export interface MarkdownField extends Field {}
+
+export interface RawMarkdownField extends Omit<MarkdownField, "value"> {
+  value: string | (string | SubField)[];
 }
 
 export interface RenderedMarkdown {

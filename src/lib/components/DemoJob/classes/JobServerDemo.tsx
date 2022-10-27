@@ -2,11 +2,11 @@ import {
   Annotation,
   RawCodeBook,
   CodeBook,
-  RawUnit,
   Status,
   Progress,
   JobServer,
   DemoData,
+  RawUnit,
   ConditionReport,
 } from "../../../types";
 import { importCodebook } from "../../../functions/codebook";
@@ -24,7 +24,7 @@ class JobServerDemo implements JobServer {
       units: units.map((u, i) => {
         return {
           id: i,
-          external_id: u.id,
+          external_id: String(u.id),
           unit: u.unit,
           type: u.type,
           conditionals: u.conditionals,

@@ -14,6 +14,7 @@ import {
 import standardizeColor from "./standardizeColor";
 
 export function importCodebook(codebook: RawCodeBook): CodeBook {
+  if (!codebook) return null;
   if (codebook.type === "annotate")
     return {
       type: "annotate",

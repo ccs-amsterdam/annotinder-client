@@ -78,6 +78,7 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
           scrolling
           style={{
             zIndex: 900,
+            maxHeight: "calc(100vh - 10rem)",
             background: "var(--background)",
             color: "var(--text)",
             border: "1px solid var(--background-inversed)",

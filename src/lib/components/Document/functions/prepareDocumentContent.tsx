@@ -1,4 +1,3 @@
-import { importTokens, parseTokens } from "./tokens";
 import { importFieldAnnotations, importSpanAnnotations } from "./annotations";
 import {
   Doc,
@@ -9,6 +8,7 @@ import {
   Unit,
   FieldAnnotations,
   Annotation,
+  UnitContent,
 } from "../../../types";
 
 /**
@@ -16,33 +16,16 @@ import {
  */
 export const getDoc = (unit: Unit): Doc => {
   // d is an intermediate object to do some processing on the Unit and extract the document and annotations
-  let d: any = { ...unit };
-
-  if (!d.text_fields) {
-    d.text_fields = d.text ? [{ name: "text", value: d.text }] : [];
-  }
-  if (!d.image_fields) {
-    d.image_fields = d.image ? [{ name: "image", value: d.image }] : [];
-  }
-  if (!d.meta_fields) d.meta_fields = [];
-  if (!d.markdown_fields) d.markdown_fields = [];
+  let d: UnitContent = { ...unit.unit };
 
   if (d.grid?.areas) d = prepareGrid(d); // actually updates d internally (by reference)
 
-  if (d.tokens) {
-    d.importedTokens = true;
-    d.tokens = importTokens(d.tokens);
-  } else {
-    d.importedTokens = false;
-    d.tokens = parseTokens([...d.text_fields]);
-  }
-
   const doc: Doc = {
     tokens: d.tokens,
-    text_fields: d.text_fields,
-    meta_fields: d.meta_fields,
-    image_fields: d.image_fields,
-    markdown_fields: d.markdown_fields,
+    text_fields: d.text_fields || [],
+    meta_fields: d.meta_fields || [],
+    image_fields: d.image_fields || [],
+    markdown_fields: d.markdown_fields || [],
     grid: d?.grid,
   };
 

@@ -4,9 +4,8 @@ import AnnotateUnit from "./components/AnnotateUnit";
 import FullScreenWindow from "./components/FullScreenWindow";
 import "./annotatorStyle.css";
 import JobController from "./components/JobController";
-import { SetState, JobServer, Unit, SetUnitIndex, BackendUnit } from "../../types";
-import { importCodebook } from "../../functions/codebook";
-import unfoldFields from "../../functions/unfoldFields";
+import { SetState, JobServer, Unit, SetUnitIndex, RawUnit, UnitContent } from "../../types";
+import processUnitContent from "../../functions/processUnitContent";
 
 /**
  * Keep unit and index in same state to guarantee that they're synchronized
@@ -104,32 +103,22 @@ const updateIndexedUnit = async (
 const getIndexedUnit = async (jobServer: any, unitIndex: number): Promise<IndexedUnit> => {
   if (unitIndex >= jobServer.progress.n_total) return { unit: null, index: unitIndex };
 
-  const backendunit: BackendUnit = await jobServer.getUnit(unitIndex);
-  if (backendunit.id == null) return { unit: null, index: backendunit?.index ?? unitIndex };
+  const rawUnit: RawUnit = await jobServer.getUnit(unitIndex);
+  if (rawUnit.id == null) return { unit: null, index: rawUnit?.index ?? unitIndex };
 
-  if (!backendunit.unit.variables) backendunit.unit.variables = {};
-  for (let a of backendunit.unit.importedAnnotations || []) {
-    if (!backendunit.unit.variables[a.variable]) {
-      backendunit.unit.variables[a.variable] = String(a.value);
-    } else {
-      backendunit.unit.variables[a.variable] += `, ${a.value}`;
-    }
-  }
-
-  if (backendunit.unit.codebook)
-    backendunit.unit.codebook = importCodebook(backendunit.unit.codebook);
+  const unitContent: UnitContent = processUnitContent(rawUnit.unit);
+  unitContent.annotations = rawUnit.annotation;
 
   let unit: Unit = {
     jobServer,
-    unitId: backendunit.id,
-    annotations: backendunit.annotation,
-    status: backendunit.status,
-    report: backendunit.report,
-    ...backendunit.unit,
+    unitId: rawUnit.id,
+    status: rawUnit.status,
+    report: rawUnit.report,
+    unit: unitContent,
   };
-  unit = unfoldFields(unit);
+  console.log(unit);
 
-  return { unit, index: backendunit.index ?? unitIndex };
+  return { unit, index: rawUnit.index ?? unitIndex };
 };
 
 export default React.memo(Annotator);

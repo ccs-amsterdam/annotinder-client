@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Portal, Form, Input, Icon, Segment } from "semantic-ui-react";
+import { Form, Input, Icon } from "semantic-ui-react";
 import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
 import useLocalStorage from "../../../hooks/useLocalStorage";
@@ -83,7 +83,7 @@ const AnnotateTask = ({
     for (let v of codebook.variables) {
       if (v.onlyImported) restrictedCodes[v.name] = {};
     }
-    for (let a of unit.importedAnnotations || []) {
+    for (let a of unit.unit.importedAnnotations || []) {
       if (!restrictedCodes[a.variable]) continue;
       restrictedCodes[a.variable][a.value] = true;
     }
@@ -92,9 +92,9 @@ const AnnotateTask = ({
 
   if (!unit || codebook?.variables === null) return null;
 
-  let ann = unit.annotations;
-  if (unit.importedAnnotations && (!ann || ann.length === 0) && unit.status !== "DONE")
-    ann = unit.importedAnnotations;
+  let ann = unit.unit.annotations;
+  if (unit.unit.importedAnnotations && (!ann || ann.length === 0) && unit.status !== "DONE")
+    ann = unit.unit.importedAnnotations;
 
   return (
     <AnnotateGrid>
@@ -161,7 +161,7 @@ const useAnnotations = (unit: Unit): [Annotation[], (value: Annotation[]) => voi
     }
     safeWrite.current = unit.unitId;
     //hasChanged.current = false;
-    setAnnotations(unit.annotations || []);
+    setAnnotations(unit.unit.annotations || []);
     // if (!unit.annotations || unit.annotations.length === 0)
     //   unit.jobServer.postAnnotations(unit.unitId, [], "IN_PROGRESS");
   }, [unit, setAnnotations]);
@@ -171,7 +171,7 @@ const useAnnotations = (unit: Unit): [Annotation[], (value: Annotation[]) => voi
       if (unit.unitId !== safeWrite.current) return;
       setAnnotations(newAnnotations);
       const cleanAnnotations = getCleanAnnotations(newAnnotations);
-      if (!annotationsHaveChanged(unit.annotations || [], cleanAnnotations)) return;
+      if (!annotationsHaveChanged(unit.unit.annotations || [], cleanAnnotations)) return;
       const newStatus = unit?.status === "DONE" ? "DONE" : "IN_PROGRESS";
       unit.jobServer.postAnnotations(unit.unitId, cleanAnnotations, newStatus);
     },

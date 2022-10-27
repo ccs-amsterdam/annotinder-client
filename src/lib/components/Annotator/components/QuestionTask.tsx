@@ -1,8 +1,8 @@
-import React, { useState, useRef, RefObject, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useRef, RefObject, useCallback, useMemo } from "react";
 import QuestionForm from "./QuestionForm";
 import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
-import { Form, Input, Portal } from "semantic-ui-react";
+import { Form, Input } from "semantic-ui-react";
 import { StyledButton } from "../../../styled/StyledSemantic";
 import swipeControl from "../functions/swipeControl";
 import useLocalStorage from "../../../hooks/useLocalStorage";
@@ -144,8 +144,8 @@ const QuestionTask = ({
   // two modes for highlighting annotations: if they are included in question.annotations and
   // in question.showAnnotations. Passing an array of annotations to Document highlights the spans
   let annotations: Annotation[] = question?.annotation ? [question.annotation] : [];
-  if (question?.showAnnotations && unit.annotations) {
-    const addAnnotations = unit.annotations.filter((a) =>
+  if (question?.showAnnotations && unit.unit.annotations) {
+    const addAnnotations = unit.unit.annotations.filter((a) =>
       question.showAnnotations.includes(a.variable)
     );
     annotations = [...annotations, ...addAnnotations];

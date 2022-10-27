@@ -2,7 +2,7 @@ import checkConditions from "../../../functions/checkConditions";
 import { importCodebook } from "../../../functions/codebook";
 import {
   Annotation,
-  BackendUnit,
+  RawUnit,
   CodeBook,
   JobServer,
   Progress,
@@ -18,7 +18,7 @@ class JobServerR implements JobServer {
   progress: Progress;
   codebook: CodeBook;
   return_link: string;
-  unit: BackendUnit;
+  unit: RawUnit;
 
   constructor(
     backend: Backend,
@@ -38,7 +38,7 @@ class JobServerR implements JobServer {
     this.progress = await this.backend.getProgress(this.job_id);
   }
 
-  async getUnit(i: number): Promise<BackendUnit> {
+  async getUnit(i: number): Promise<RawUnit> {
     this.unit = await this.backend.getUnit(this.job_id, i);
     return this.unit;
   }

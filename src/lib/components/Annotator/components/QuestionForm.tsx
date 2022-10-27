@@ -224,8 +224,8 @@ const prepareQuestion = (unit: Unit, question: Question, answers: Answer[]) => {
       const m0: string = m[0];
       const m1: string = m[1];
       let answer;
-      if (unit.variables) {
-        answer = { variable: m1, items: [{ values: [unit.variables[m1]] }] };
+      if (unit.unit.variables) {
+        answer = { variable: m1, items: [{ values: [unit.unit.variables[m1]] }] };
       }
       if (answers) {
         answer = answers.find((a) => a.variable === m1) || answer;
@@ -289,7 +289,7 @@ const processAnswer = async (
       questions[questionIndex].options
     );
 
-    unit.annotations = addAnnotationsFromAnswer(answers[questionIndex], unit.annotations);
+    unit.unit.annotations = addAnnotationsFromAnswer(answers[questionIndex], unit.unit.annotations);
 
     const irrelevantQuestions = processIrrelevantBranching(unit, questions, answers, questionIndex);
 
@@ -302,7 +302,7 @@ const processAnswer = async (
     }
 
     const status = newQuestionIndex === null ? "DONE" : "IN_PROGRESS";
-    const cleanAnnotations = unit.annotations.map((a: Annotation) => {
+    const cleanAnnotations = unit.unit.annotations.map((a: Annotation) => {
       const { field, offset, length, variable, value } = a;
       return { field, offset, length, variable, value };
     });

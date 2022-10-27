@@ -1,4 +1,4 @@
-import { BackendUnit, ConditionReport, Annotation, Status, ConditionalAction } from "../types";
+import { RawUnit, ConditionReport, Annotation, Status, ConditionalAction } from "../types";
 
 /**
  * If unit.conditionals exists, check whether an annotation satistfies the conditions.
@@ -10,7 +10,7 @@ import { BackendUnit, ConditionReport, Annotation, Status, ConditionalAction } f
  * When using the python backend, the conditionals are checked server-side. The main reason
  * for including this client-side version is for demoing and testing with the R backend.
  */
-export default function checkConditions(unit: BackendUnit): ConditionReport {
+export default function checkConditions(unit: RawUnit): ConditionReport {
   const type = unit.type;
   const cr: ConditionReport = { evaluation: {}, damage: {} };
 
