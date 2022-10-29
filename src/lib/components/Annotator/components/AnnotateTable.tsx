@@ -9,15 +9,14 @@ interface AnnotateTableProps {
 }
 
 const StyledTable = styled.table`
-  fontsize: 1em;
+  font-size: 0.7rem;
   max-height: 100%;
   border-radius: 0px;
-  background: transparent;
   border-collapse: collapse;
   text-align: left;
 
   & thead {
-    height: 30px;
+    line-height: 1rem;
     position: sticky;
     background: var(--primary);
     color: var(--text-inversed-fixed);
@@ -50,6 +49,9 @@ const StyledTable = styled.table`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border: 0px;
   }
 
   & .variable,
@@ -68,14 +70,7 @@ const AnnotateTable = ({ tokens, variableMap, annotations }: AnnotateTableProps)
   if (!variableMap || Object.keys(variableMap).length === 0) return null;
 
   return (
-    <StyledTable
-      style={{
-        fontSize: "10px",
-        maxHeight: "100%",
-        borderRadius: "0px",
-        background: "transparent",
-      }}
-    >
+    <StyledTable>
       <thead>
         <tr>
           <th title="Variable" className="variable">

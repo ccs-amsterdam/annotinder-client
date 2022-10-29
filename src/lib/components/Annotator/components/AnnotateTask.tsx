@@ -27,28 +27,42 @@ const BODYSTYLE = {
   paddingBottom: "10px",
 };
 
-const AnnotateGrid = styled.div`
+const AnnotateGrid = styled.div<{ textSize: number }>`
   display: grid;
   grid-gap: 1em;
-  grid-template-areas: "document table";
+  grid-template-areas: "documentContainer table";
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 1fr;
   height: 100%;
   width: 100%;
   overflow: auto;
 
-  @media screen and (max-width: 800px) {
-    grid-template-areas: "table" "document";
+  @media screen and (max-width: 700px) {
+    grid-template-areas: "table" "documentContainer";
     grid-template-columns: 1fr;
-    grid-template-rows: 30% 70%;
+    grid-template-rows: 0% 100%;
     grid-gap: 0;
   }
 
-  & .document {
-    grid-area: document;
+  & .documentContainer {
+    grid-area: documentContainer;
     overflow: auto;
     height: 100%;
+
+    .document {
+      height: calc(100% - 35px);
+      overflow: auto;
+      font-size: ${(props) => props.textSize}em;
+    }
+    .bottomBar {
+      display: flex;
+      padding: 0;
+      height: 35px;
+      background: var(--secondary);
+      border-radius: 5px;
+    }
   }
+
   & .table {
     grid-area: table;
     overflow: auto;
@@ -97,15 +111,9 @@ const AnnotateTask = ({
     ann = unit.unit.importedAnnotations;
 
   return (
-    <AnnotateGrid>
-      <div className="document">
-        <div
-          style={{
-            height: "calc(100% - 35px)",
-            fontSize: `${settings.textSize}em`,
-            overflow: "auto",
-          }}
-        >
+    <AnnotateGrid textSize={settings.textSize}>
+      <div className="documentContainer">
+        <div className="document">
           <Document
             unit={unit}
             annotations={ann}
@@ -120,15 +128,7 @@ const AnnotateTask = ({
             bodyStyle={BODYSTYLE}
           />
         </div>
-        <div
-          style={{
-            display: "flex",
-            padding: "0",
-            height: "35px",
-            background: "var(--secondary)",
-            borderRadius: "5px",
-          }}
-        >
+        <div className="bottomBar">
           <SettingsPopup settings={settings} setSettings={setSettings} />
           <Instructions
             codebook={codebook}

@@ -1,4 +1,4 @@
-import { Button, Modal, Table } from "semantic-ui-react";
+import { Button, Modal, Pagination, Table } from "semantic-ui-react";
 import styled, { StyledComponent } from "styled-components";
 
 // Use styled components to customize semantic ui components.
@@ -41,13 +41,24 @@ const StyledContainer = styled.div`
 `;
 
 const StyledTable: StyledComponent<typeof Table, any, {}, never> = styled(Table)`
-  color: var(--text) !important;
-  background: var(--background) !important;
+  color: inherit !important;
+  background: inherit !important;
+  font-size: inherit !important;
 
   & thead,
-  tboy {
-    color: var(--text) !important;
-    background: var(--background) !important;
+  tbody {
+    color: inherit !important;
+    background: inherit !important;
+  }
+
+  & td {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    border: 0px !important;
+  }
+
+  & tr {
+    border: 0px !important;
   }
 `;
 
@@ -56,4 +67,10 @@ const StyledSegment = styled.div`
   padding: 1em;
 `;
 
-export { StyledButton, StyledModal, StyledContainer, StyledTable, StyledSegment };
+const StyledPagination = styled(Pagination)`
+  & .item {
+    color: var(--text) !important;
+  }
+`;
+
+export { StyledButton, StyledModal, StyledContainer, StyledTable, StyledSegment, StyledPagination };

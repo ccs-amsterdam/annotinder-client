@@ -1,7 +1,12 @@
 import { createGlobalStyle } from "styled-components";
+import DocumentStyle from "./DocumentStyle";
+import AnnotatorStyle from "./AnnotatorStyle";
 
 const GlobalStyle = createGlobalStyle`
-    html {
+    ${DocumentStyle}
+    ${AnnotatorStyle}
+
+    :root {
     --primary: #1678c2;
     --primary-light: #7bb6ea;
     --primary-verylight: #c5d7e7;
@@ -14,7 +19,6 @@ const GlobalStyle = createGlobalStyle`
     --background-inversed: #ffffff;
     --background-inversed-fixed: #1b1c1d;
   
-    
     --text: white;
     --text-fixed: black;
     --text-light: darkgrey;
@@ -41,17 +45,7 @@ const GlobalStyle = createGlobalStyle`
     text-align: center;
   }
   
-  .ui.header {
-    color: var(--text) !important;
-  }
-  .ui.table {
-    color: var(--text) !important;
-  }
-  .ui.pagination.menu .item {
-    color: var(--text) !important;
-  }
-
-  
+    
 `;
 
 export default GlobalStyle;

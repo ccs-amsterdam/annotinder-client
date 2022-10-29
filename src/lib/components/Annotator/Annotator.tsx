@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, ReactElement } from "react";
 import { Segment } from "semantic-ui-react";
 import AnnotateUnit from "./components/AnnotateUnit";
 import FullScreenWindow from "./components/FullScreenWindow";
-import "./annotatorStyle.css";
 import JobController from "./components/JobController";
 import { SetState, JobServer, Unit, SetUnitIndex, RawUnit, UnitContent } from "../../types";
 import processUnitContent from "../../functions/processUnitContent";

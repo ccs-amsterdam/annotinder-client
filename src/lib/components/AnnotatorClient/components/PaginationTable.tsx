@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Container, Pagination, Table, Icon, Search, SemanticWIDTHS } from "semantic-ui-react";
+import { Container, Icon, Search, SemanticWIDTHS } from "semantic-ui-react";
 import { ButtonComponentProps, Column, RowObj, SetState } from "../../../types";
 import Backend from "../../Login/Backend";
+import { StyledTable, StyledPagination } from "../../../styled/StyledSemantic";
 
 const headerStyle = {
   background: "var(--primary)",
@@ -80,9 +81,9 @@ const PaginationTable = ({
       if (i === columns.length - 1) style = headerStyleRight;
       if (columns.length === 1) style = headerStyleSingleColumn;
       return (
-        <Table.HeaderCell key={i} width={col.width || null} style={style}>
+        <StyledTable.HeaderCell key={i} width={col.width || null} style={style}>
           <span>{col.label || col.name}</span>
-        </Table.HeaderCell>
+        </StyledTable.HeaderCell>
       );
     });
   };
@@ -90,14 +91,14 @@ const PaginationTable = ({
   const createBodyRows = (data: RowObj[]) => {
     return data.map((rowObj, i) => {
       return (
-        <Table.Row
+        <StyledTable.Row
           key={i}
           active={isActive ? isActive(rowObj) : false}
           style={{ cursor: onClick ? "pointer" : "default" }}
           onClick={() => (onClick ? onClick(rowObj) : null)}
         >
           {createRowCells(rowObj)}
-        </Table.Row>
+        </StyledTable.Row>
       );
     });
   };
@@ -117,15 +118,15 @@ const PaginationTable = ({
         content = content.toISOString().slice(0, 19).replace(/T/g, " ");
       }
       return (
-        <Table.Cell key={i} style={rowStyle}>
+        <StyledTable.Cell key={i} style={rowStyle}>
           <span title={column.title ? content : null}>{content}</span>
-        </Table.Cell>
+        </StyledTable.Cell>
       );
     });
     if (buttons) {
       const buttonsArray = Array.isArray(buttons) ? buttons : [buttons];
       cells = [
-        <Table.Cell
+        <StyledTable.Cell
           key={"button." + rowObj.id}
           style={{ width: "20px", rowStyle, padding: "0px !important" }}
         >
@@ -138,7 +139,7 @@ const PaginationTable = ({
               style={{ padding: "2px" }}
             />
           ))}
-        </Table.Cell>,
+        </StyledTable.Cell>,
         ...cells,
       ];
     }
@@ -150,37 +151,37 @@ const PaginationTable = ({
 
   return (
     <Container>
-      <Table
+      <StyledTable
         unstackable
         fixed
         compact="very"
         size="small"
         style={{ border: "none", background: "transparent", backdropFilter: "blur(3px)" }}
       >
-        <Table.Header>
-          <Table.Row>
+        <StyledTable.Header>
+          <StyledTable.Row>
             {buttons ? (
-              <Table.HeaderCell
+              <StyledTable.HeaderCell
                 key="buttons"
                 width={(nbuttons * 2) as SemanticWIDTHS}
                 style={headerStyleLeft}
               />
             ) : null}
             {createHeaderRow(data, columns)}
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>{createBodyRows(data)}</Table.Body>
-        <Table.Footer>
-          <Table.Row>
-            <Table.HeaderCell
+          </StyledTable.Row>
+        </StyledTable.Header>
+        <StyledTable.Body>{createBodyRows(data)}</StyledTable.Body>
+        <StyledTable.Footer>
+          <StyledTable.Row>
+            <StyledTable.HeaderCell
               colSpan={buttons ? columns.length + 1 : columns.length}
               style={footerStyle}
             >
               <FooterContent pages={pages} pageChange={pageChange} setSearch={setSearch} />
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Footer>
-      </Table>
+            </StyledTable.HeaderCell>
+          </StyledTable.Row>
+        </StyledTable.Footer>
+      </StyledTable>
     </Container>
   );
 };
@@ -214,7 +215,7 @@ const FooterContent = ({ pages, pageChange, setSearch }: FooterContentProps) => 
         style={{ display: "inline-flex", borderRadius: "10px" }}
         onSearchChange={(e, d) => setDelayedSearch(d.value)}
       />
-      <Pagination
+      <StyledPagination
         size="mini"
         boundaryRange={1}
         siblingRange={1}
@@ -241,7 +242,7 @@ const FooterContent = ({ pages, pageChange, setSearch }: FooterContentProps) => 
         totalPages={pages}
         onPageChange={(e, d) => pageChange(Number(d.activePage))}
         style={{ padding: "0", fontSize: "0.9em", color: "white" }}
-      ></Pagination>
+      ></StyledPagination>
     </div>
   );
 };
