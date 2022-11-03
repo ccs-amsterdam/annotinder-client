@@ -23,6 +23,8 @@ import { importCodebook } from "./codebook";
  * @returns
  */
 export default function processUnitContent(ruc: RawUnitContent): UnitContent {
+  // explicitly add offset to RawTextUnits so that we can use it as a typeguard
+
   const content: UnitContent = {
     text_fields: unfold(ruc.text_fields, ruc.grid),
     image_fields: unfold(ruc.image_fields, ruc.grid),
@@ -75,13 +77,19 @@ function unfold(fields: RawField[], grid: FieldGridInput): ProcessedField[] {
           value = subField.value;
           newField = { ...f, name, value: subField.value };
           if (subField.style) newField.style = subField.style;
+          if (subField.caption) newField.caption = subField.caption;
+          if (subField.offset) newField.offset = subField.offset;
         } else {
           value = valueItem;
           newField = { ...f, name, value };
         }
 
-        if (newField.context_before && i > 0) delete newField.context_before;
+        if (newField.context_before && i > 0) {
+          if (newField.offset) newField.offset += newField.context_before.length;
+          delete newField.context_before;
+        }
         if (newField.context_after && i < value.length - 1) delete newField.context_after;
+
         newFields.push(newField);
       }
       grid = unfoldGrid(grid, f.name, values.length);

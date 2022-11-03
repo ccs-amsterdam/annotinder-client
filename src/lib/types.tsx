@@ -515,6 +515,8 @@ export interface Field {
 
 export interface SubField {
   value: string;
+  caption?: string;
+  offset?: number;
   style?: CSSProperties;
 }
 
