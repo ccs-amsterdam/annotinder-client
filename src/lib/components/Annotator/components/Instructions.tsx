@@ -57,8 +57,8 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
             background: "transparent",
             cursor: "pointer",
             color: "var(--text-inversed-fixed)",
-            padding: "4px 5px 4px 5px",
-            maxWidth: "40px",
+            padding: "4px 5px",
+            maxWidth: "20px",
             zIndex: 800,
           }}
           onClick={() => setOpen(true)}

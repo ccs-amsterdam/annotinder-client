@@ -19,6 +19,18 @@ import {
   TextField,
   Token,
 } from "../../../types";
+import styled from "styled-components";
+
+const DocumentContent = styled.div<{ grid: FieldGrid; centered: boolean }>`
+  display: ${(p) => (p.grid?.areas ? "grid" : null)};
+  grid-template-rows: ${(p) => p.grid?.rows};
+  grid-template-columns: ${(p) => p.grid?.columns};
+  grid-template-areas: ${(p) => p.grid?.areas};
+  margin: ${(p) => (p.centered ? "auto" : "")};
+  padding-top: 0px;
+  padding-bottom: 0px;
+  width: 100%;
+`;
 
 interface BodyProps {
   tokens: Token[];
@@ -106,23 +118,17 @@ const Body = ({
               focus={focus}
               containerRef={containerRef}
             />
-            <div
+            <DocumentContent
+              centered={centered}
+              grid={grid}
               key="content"
-              style={{
-                display: grid?.areas ? "grid" : null,
-                gridTemplateRows: grid?.rows,
-                gridTemplateColumns: grid?.columns,
-                gridTemplateAreas: grid?.areas,
-                margin: centered ? "auto" : "",
-                paddingTop: "0px",
-                paddingBottom: "0px",
-                width: "100%",
-              }}
+              className="DocumentContent"
+              style={{}}
             >
               {text_fields.map((tf) => text[tf.name])}
               {image_fields.map((imf) => images[imf.name])}
               {markdown_fields.map((md) => markdown[md.name])}
-            </div>
+            </DocumentContent>
           </div>
         </div>
       </Ref>

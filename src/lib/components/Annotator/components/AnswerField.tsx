@@ -91,8 +91,11 @@ const AnswerField = ({
       const el = answerRef.current;
       if (startHeight === null) {
         const container = el.closest(".QuestionContainer");
-        maxheight = container ? container.clientHeight / 2 : 300;
+        const content = container.querySelector(".DocumentContent");
+        const contentHeight = content ? content.clientHeight : container.clientHeight / 2;
+        maxheight = container ? container.clientHeight - contentHeight : 300;
         startHeight = Math.max(60, Math.min(maxheight, el.clientHeight));
+        answerRef.current.style["border-top"] = "";
         el.style["min-height"] = minHeight + "px";
       }
 
@@ -105,6 +108,8 @@ const AnswerField = ({
           const minheight = Math.max(100, el.scrollHeight + 10);
           newMinHeight = Math.min(maxheight, minheight);
 
+          if (maxheight < minheight)
+            answerRef.current.style["border-top"] = "1px solid var(--background-fixed)";
           answerRef.current.style["min-height"] = newMinHeight + "px";
           //answerRef.current.style.opacity = 1;
           return;
@@ -248,7 +253,7 @@ const AnswerField = ({
     answerfield = (
       <Confirm
         onSelect={onSelect}
-        button={question?.button}
+        button={question.options?.[0]?.code}
         swipe={swipe}
         blockEvents={blockEvents}
       />

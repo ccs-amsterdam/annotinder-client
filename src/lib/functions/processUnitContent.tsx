@@ -65,6 +65,7 @@ function unfold(fields: RawField[], grid: FieldGridInput): ProcessedField[] {
     } else {
       // if array, unfold
       const values: (string | SubField)[] = f.value;
+      console.log(values);
       for (let i = 0; i < values.length; i++) {
         const name = `${f.name}.${i + 1}`;
         // value in array can either be a string, or an object with

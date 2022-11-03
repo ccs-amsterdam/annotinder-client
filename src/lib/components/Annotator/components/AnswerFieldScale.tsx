@@ -40,6 +40,7 @@ const Scale = React.memo(
     // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
     const [selectedItem, setSelectedItem] = useState(0);
     const [selectedButton, setSelectedButton] = useState(null);
+    const continueButtonRef = useRef();
 
     const onKeydown = React.useCallback(
       (event: KeyboardEvent) => {
@@ -118,6 +119,7 @@ const Scale = React.memo(
           height: "100%",
           position: "relative",
           flexDirection: "column",
+          justifyContent: "space-between",
           background: "var(--background-inversed-fixed)",
           color: "var(--text-inversed-fixed)",
         }}
@@ -126,7 +128,9 @@ const Scale = React.memo(
           style={{
             flex: "1 1 auto",
             display: "flex",
+            padding: "5px",
             justifyContent: "space-between",
+            color: "var(--primary-light)",
           }}
         >
           <div
@@ -160,27 +164,29 @@ const Scale = React.memo(
           options={options}
           selectedButton={selectedButton}
           onSelect={onSelect}
+          continueButtonRef={continueButtonRef}
           scrollRef={scrollRef}
         />
-
-        <StyledButton
-          primary
-          fluid
-          size="mini"
-          disabled={!done}
-          icon={done ? "play" : null}
-          content={done ? "Continue" : `${nAnswered} / ${answerItems.length}`}
-          style={{
-            textAlign: "center",
-            color: done ? null : "var(--text-inversed-fixed)",
-            margin: "10px 0 0 0",
-            background: done ? null : "white",
-            border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
-          }}
-          onClick={() => {
-            onFinish();
-          }}
-        />
+        <div ref={continueButtonRef}>
+          <StyledButton
+            primary
+            fluid
+            size="mini"
+            disabled={!done}
+            icon={done ? "play" : null}
+            content={done ? "Continue" : `${nAnswered} / ${answerItems.length}`}
+            style={{
+              textAlign: "center",
+              color: done ? null : "var(--text-inversed-fixed)",
+              margin: "10px 0 0 0",
+              background: done ? null : "white",
+              border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
+            }}
+            onClick={() => {
+              onFinish();
+            }}
+          />
+        </div>
       </div>
     );
   }
@@ -193,6 +199,7 @@ interface ItemsProps {
   options: AnswerOption[];
   selectedButton: number;
   onSelect: (params: OnSelectParams) => void;
+  continueButtonRef: RefObject<HTMLDivElement>;
   scrollRef: RefObject<HTMLDivElement>;
 }
 
@@ -203,6 +210,7 @@ const Items = ({
   options,
   selectedButton,
   onSelect,
+  continueButtonRef,
   scrollRef,
 }: ItemsProps) => {
   const rowRefs = useRef([]);
@@ -212,9 +220,12 @@ const Items = ({
   }, [items, rowRefs]);
 
   useEffect(() => {
-    if (selectedItem < 0) return;
-    keepInView(scrollRef?.current, rowRefs?.current?.[selectedItem]?.current);
-  }, [selectedItem, items, rowRefs, scrollRef]);
+    if (selectedItem < 0) {
+      keepInView(scrollRef?.current, continueButtonRef?.current);
+    } else {
+      keepInView(scrollRef?.current, rowRefs?.current?.[selectedItem]?.current);
+    }
+  }, [selectedItem, items, rowRefs, continueButtonRef, scrollRef]);
 
   return (
     <div
@@ -227,9 +238,9 @@ const Items = ({
     >
       {items.map((itemObj, itemIndex: number) => {
         const itemlabel = itemObj.label || itemObj.name;
-        let margin = "10px";
-        if (itemIndex === 0) margin = "auto 10px 10px 10px";
-        if (itemIndex === items.length - 1) margin = "10px 10px auto 10px";
+        let margin = "5px";
+        //if (itemIndex === 0) margin = "auto 10px 10px 10px";
+        //if (itemIndex === items.length - 1) margin = "10px 10px auto 10px";
         return (
           <div key={itemIndex} style={{ paddingTop: "0px", margin }}>
             <div>
@@ -247,7 +258,8 @@ const Items = ({
               ref={rowRefs?.current?.[itemIndex]}
               style={{
                 display: "flex",
-                maxWidth: "100%",
+                margin: "auto",
+                maxWidth: "min(400px, 100%)",
                 padding: "0px 5px",
                 paddingBottom: "5px",
               }}
@@ -318,9 +330,9 @@ const Item = ({
             key={option.code}
             style={{
               flex: "1 1 0px",
-              borderRadius: "10px",
+              borderRadius: "5px",
               border: `0.5px solid ${background}`,
-              margin: "0px 5px",
+              //margin: "0px 5px",
               background,
             }}
           >
@@ -328,10 +340,10 @@ const Item = ({
               <StyledButton
                 fluid
                 style={{
-                  padding: "5px 0",
+                  padding: "2px 0",
                   backgroundColor: isCurrent ? "var(--secondary)" : option.color || bgcolor,
                   fontWeight: "bold",
-                  fontSize: "1em",
+                  fontSize: "0.8em",
                   textShadow: "0px 0px 5px #ffffff77",
                   borderRadius: "inherit",
                   color: "var(--text-inversed-fixed)",

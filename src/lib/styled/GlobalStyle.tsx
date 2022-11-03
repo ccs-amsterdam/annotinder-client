@@ -39,6 +39,8 @@ const GlobalStyle = createGlobalStyle`
     overscroll-behavior: contain;
     background: var(--background);
     color: var(--text);
+
+    font-family: Helvetica, Arial, sans-serif;
   }
 
   h1 {

@@ -2,8 +2,6 @@ import React, { useState, useRef, RefObject, useCallback, useMemo } from "react"
 import QuestionForm from "./QuestionForm";
 import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
-import { Form, Input } from "semantic-ui-react";
-import { StyledButton } from "../../../styled/StyledSemantic";
 import swipeControl from "../functions/swipeControl";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import styled from "styled-components";
@@ -13,7 +11,6 @@ import {
   ConditionReport,
   FullScreenNode,
   SessionData,
-  SetState,
   SwipeRefs,
   Swipes,
   Unit,
@@ -23,8 +20,6 @@ import Instructions from "./Instructions";
 import FeedbackPortal from "./FeedbackPortal";
 import useWatchChange from "../../../hooks/useWatchChange";
 import unfoldQuestions from "../../../functions/unfoldQuestions";
-import ThemeSelector from "../../Common/Theme";
-import RelativePopup from "../../Common/RelativePopup";
 
 const Container = styled.div`
   display: flex;
@@ -36,6 +31,28 @@ const Container = styled.div`
 const ContentWindow = styled.div`
   flex: 1 1 auto;
   position: relative;
+
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    height: 10px;
+    width: 100%;
+    background: linear-gradient(var(--background), transparent);
+    z-index: 1000;
+  }
+
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    height: 20px;
+    width: 100%;
+    background: linear-gradient(transparent, var(--background));
+    z-index: 1000;
+  }
 `;
 
 const SwipeableBox = styled.div`
@@ -69,9 +86,9 @@ const Content = styled.div<{ fontSize: number }>`
 const QuestionMenu = styled.div<{
   fontSize: number;
 }>`
-  max-height: 70%;
   font-size: ${(props) => props.fontSize}em;
 `;
+//max-height: 70%;
 
 interface QuestionTaskProps {
   unit: Unit;
@@ -100,10 +117,15 @@ const QuestionTask = ({
     return { text: textref, box: boxref, code: coderef };
   }, []);
 
-  const [settings, setSettings] = useLocalStorage("questionTaskSettings", {
+  const [settings] = useLocalStorage("questionTaskSettings", {
     upperTextSize: 1,
     lowerTextSize: 1.2,
   });
+
+  // useEffect(() => {
+  //   if (!textref.current) return;
+  //   textref.current.addEventListener();
+  // }, [textref]);
 
   const questions = useMemo(() => unfoldQuestions(codebook, unit), [unit, codebook]);
   const question = questions[questionIndex];
@@ -190,7 +212,6 @@ const QuestionTask = ({
           startTransition={startTransition}
           blockEvents={blockEvents}
         >
-          <SettingsPopup settings={settings} setSettings={setSettings} />
           <Instructions
             codebook={codebook}
             sessionData={sessionData}
@@ -202,71 +223,75 @@ const QuestionTask = ({
   );
 };
 
-interface SettingsPopupProps {
-  settings: { [key: string]: number | string };
-  setSettings: SetState<{ [key: string]: number | string }>;
-}
+// interface SettingsPopupProps {
+//   settings: { [key: string]: number | string };
+//   setSettings: SetState<{ [key: string]: number | string }>;
+// }
 
-const SettingsPopup = ({ settings, setSettings }: SettingsPopupProps) => {
-  return (
-    <RelativePopup
-      trigger={
-        <StyledButton
-          size="huge"
-          icon="setting"
-          style={{
-            background: "transparent",
-            color: "var(--text-inversed-fixed)",
-            cursor: "pointer",
-            padding: "4px 5px 4px 5px",
-            margin: "0",
-            width: "30px",
-            zIndex: 1000,
-          }}
-        />
-      }
-    >
-      <Form>
-        <Form.Group grouped>
-          <Form.Field style={{ textAlign: "center" }}>
-            <label>Dark mode</label>
-            <ThemeSelector />
-          </Form.Field>
-          <Form.Field>
-            <label>
-              Content text size{" "}
-              <span style={{ color: "var(--primary)" }}>{`${settings.upperTextSize}`}</span>
-            </label>
-            <Input
-              size="mini"
-              step={0.025}
-              min={0.4}
-              max={1.6}
-              type="range"
-              value={settings.upperTextSize}
-              onChange={(e, d) => setSettings({ ...settings, upperTextSize: d.value })}
-            />
-          </Form.Field>
-          <Form.Field>
-            <label>
-              Answer field text size{" "}
-              <span style={{ color: "var(--primary)" }}>{`${settings.lowerTextSize}`}</span>
-            </label>
-            <Input
-              size="mini"
-              step={0.025}
-              min={0.4}
-              max={1.6}
-              type="range"
-              value={settings.lowerTextSize}
-              onChange={(e, d) => setSettings({ ...settings, lowerTextSize: d.value })}
-            />
-          </Form.Field>
-        </Form.Group>
-      </Form>
-    </RelativePopup>
-  );
-};
+// const SettingsPopup = ({ settings, setSettings }: SettingsPopupProps) => {
+//   return (
+//     <RelativePopup
+//       right
+//       trigger={
+//         <StyledButton
+//           size="huge"
+//           icon="setting"
+//           style={{
+//             background: "transparent",
+//             position: "absolute",
+//             top: 0,
+//             left: 0,
+//             color: "var(--text-inversed-fixed)",
+//             cursor: "pointer",
+//             padding: "4px 5px 4px 2px",
+//             margin: "0",
+//             width: "30px",
+//             zIndex: 1000,
+//           }}
+//         />
+//       }
+//     >
+//       <Form>
+//         <Form.Group grouped>
+//           {/* <Form.Field style={{ textAlign: "center" }}>
+//             <label>Dark mode</label>
+//             <ThemeSelector />
+//           </Form.Field> */}
+//           <Form.Field>
+//             <label>
+//               Content text size{" "}
+//               <span style={{ color: "var(--primary)" }}>{`${settings.upperTextSize}`}</span>
+//             </label>
+//             <Input
+//               size="mini"
+//               step={0.025}
+//               min={0.4}
+//               max={1.6}
+//               type="range"
+//               value={settings.upperTextSize}
+//               onChange={(e, d) => setSettings({ ...settings, upperTextSize: d.value })}
+//             />
+//           </Form.Field>
+//           <Form.Field>
+//             <label>
+//               Answer field text size{" "}
+//               <span style={{ color: "var(--primary)" }}>{`${settings.lowerTextSize}`}</span>
+//             </label>
+//             <Input
+//               size="mini"
+//               step={0.025}
+//               min={0.4}
+//               max={1.6}
+//               type="range"
+//               value={settings.lowerTextSize}
+//               onChange={(e, d) => setSettings({ ...settings, lowerTextSize: d.value })}
+//             />
+//           </Form.Field>
+//         </Form.Group>
+//       </Form>
+//     </RelativePopup>
+//   );
+// };
 
 const nextUnitTransition = (r: SwipeRefs, trans: Transition) => {
   const direction = trans?.direction;

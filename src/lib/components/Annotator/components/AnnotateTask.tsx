@@ -17,7 +17,6 @@ import {
   SessionData,
 } from "../../../types";
 import Instructions from "./Instructions";
-import ThemeSelector from "../../Common/Theme";
 import { StyledButton } from "../../../styled/StyledSemantic";
 import styled from "styled-components";
 
@@ -293,10 +292,10 @@ const SettingsPopup = ({ settings, setSettings }: SettingsPopupProps) => {
       }
     >
       <Form>
-        <Form.Field style={{ textAlign: "center" }}>
+        {/* <Form.Field style={{ textAlign: "center" }}>
           <label>Dark mode</label>
           <ThemeSelector />
-        </Form.Field>
+        </Form.Field> */}
         <Form.Group grouped>
           <Form.Field>
             <label>

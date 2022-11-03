@@ -6,6 +6,7 @@ import IndexController from "./IndexController";
 import Finished from "./Finished";
 import { FullScreenNode, JobServer, SetState } from "../../../types";
 import { StyledButton } from "../../../styled/StyledSemantic";
+import ThemeSelector from "../../Common/Theme";
 
 interface JobControllerProps {
   children: ReactElement;
@@ -84,6 +85,7 @@ const JobController = ({
         <div>
           <div>
             <StyledButton.Group>
+              <ThemeSelector color="white" />
               {fullScreenButton}
               {cantLeave ? null : (
                 <UserButton

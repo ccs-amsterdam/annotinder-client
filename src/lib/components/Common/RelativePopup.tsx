@@ -9,6 +9,8 @@ interface Props {
   trigger?: ReactElement;
   triggerRef?: RefObject<HTMLElement>;
   children: ReactElement;
+  bottom?: boolean;
+  right?: boolean;
 }
 
 const Wrapper = styled.div`
@@ -20,7 +22,7 @@ const PopupWindow = styled.div<{ open: boolean }>`
   left: 0px;
   position: fixed;
   max-width: min(400px, 80vw);
-  background: #dfeffbaa;
+  background: #dfeffbcc;
   backdrop-filter: blur(2px);
   z-index: 1000;
   border: 1px solid #136bae;
@@ -28,20 +30,29 @@ const PopupWindow = styled.div<{ open: boolean }>`
   padding: 1rem;
 `;
 
-const RelativePopup = ({ trigger, triggerRef, children }: Props) => {
+const RelativePopup = ({ trigger, triggerRef, children, bottom, right }: Props) => {
   const [open, setOpen] = useState(false);
   const triggerElementRef = useRef(null);
   const popupRef = useRef(null);
 
   useEffect(() => {
-    const tRef = triggerRef || triggerElementRef;
-    if (tRef.current && popupRef.current) {
-      const triggerBc = tRef.current.getBoundingClientRect();
-      const windowBc = popupRef.current.getBoundingClientRect();
-      popupRef.current.style.top = triggerBc.y - windowBc.height - 10 + "px";
-      popupRef.current.style.left = triggerBc.x + 5 + "px";
+    const triggerEl = triggerRef?.current || triggerElementRef?.current?.firstChild;
+    const popupEl = popupRef?.current;
+    if (triggerEl && popupEl) {
+      const triggerBc = triggerEl.getBoundingClientRect();
+      const windowBc = popupEl.getBoundingClientRect();
+      if (bottom) {
+        popupEl.style.bottom = triggerBc.y + windowBc.height + 10 + "px";
+      } else {
+        popupEl.style.top = Math.max(10, triggerBc.y - windowBc.height - 10) + "px";
+      }
+      if (right) {
+        popupEl.style.left = triggerBc.x + triggerBc.width + "px";
+      } else {
+        popupEl.style.left = triggerBc.x + "px";
+      }
     }
-  }, [open, triggerRef]);
+  }, [open, bottom, right, triggerRef, popupRef]);
 
   useEffect(() => {
     const onClick = (e: any) => {

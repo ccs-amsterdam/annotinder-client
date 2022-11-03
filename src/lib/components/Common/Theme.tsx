@@ -1,6 +1,14 @@
-import { useEffect } from "react";
-import { Checkbox } from "semantic-ui-react";
+import { useEffect, memo } from "react";
+import styled from "styled-components";
 import useLocalStorage from "../../hooks/useLocalStorage";
+import { StyledButton } from "../../styled/StyledSemantic";
+
+const ThemeButton = styled(StyledButton)<{ iconColor: string }>`
+  color: ${(props) => props.iconColor} !important;
+  background: transparent !important;
+  padding: 5px !important;
+  font-size: 18px !important;
+`;
 
 const dark = {
   background: "#1b1c1d",
@@ -17,19 +25,39 @@ const light = {
   "text-inversed": "white",
 };
 
-const ThemeSelector = () => {
-  const [theme, setTheme] = useLocalStorage("theme", "light");
+const themes = [
+  { name: "light", theme: light, icon: "sun" },
+  { name: "dark", theme: dark, icon: "moon" },
+];
 
-  useEffect(() => {
-    if (theme === "dark") setCSS(dark);
-    if (theme === "light") setCSS(light);
-  }, [theme]);
+interface ThemeSelectorProps {
+  color: string;
+}
+
+const ThemeSelector = ({ color }: ThemeSelectorProps) => {
+  // currently just supports 2 themes for dark/light mode.
+  // might add more at some point.
+  const [theme, setTheme] = useLocalStorage("theme", "light");
+  const selected = themes.findIndex((t) => t.name === theme);
+
+  setCSS(themes[selected].theme);
+  // useEffect(() => {
+  //   setCss
+  //   if (theme === "dark") setCSS(dark);
+  //   if (theme === "light") setCSS(light);
+  // }, [theme]);
+
+  //const t = themes.find(t => t.name === theme)
 
   return (
-    <Checkbox
-      toggle
-      checked={theme === "dark"}
-      onChange={(e, d) => setTheme(d.checked ? "dark" : "light")}
+    <ThemeButton
+      iconColor={color}
+      icon={themes[selected].icon}
+      onClick={(e, d) => {
+        const next = selected < themes.length - 1 ? selected + 1 : 0;
+        console.log(next);
+        setTheme(themes[next].name);
+      }}
     />
   );
 };
@@ -49,4 +77,4 @@ function setCSS(theme) {
   }
 }
 
-export default ThemeSelector;
+export default memo(ThemeSelector);

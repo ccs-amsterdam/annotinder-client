@@ -131,7 +131,6 @@ export interface Question {
   items?: QuestionItem[];
   single_row?: boolean;
   same_size?: boolean;
-  button?: string;
   swipeOptions?: SwipeOptions;
   options?: AnswerOption[];
   fields?: string[];

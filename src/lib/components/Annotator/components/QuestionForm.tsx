@@ -41,12 +41,12 @@ const MenuDiv = styled.div`
   z-index: 51;
   width: 100%;
   display: flex;
+  min-height: 30px;
 `;
 
 const BodyDiv = styled.div`
   display: flex;
   flex-flow: column;
-  height: calc(100% - 30px);
   width: 100%;
   padding: 0px 10px 5px 10px;
   color: var(--text-inversed-fixed);
@@ -61,13 +61,12 @@ const HeaderDiv = styled.div`
 `;
 
 const iconStyle = {
-  fontSize: "10px",
+  fontSize: "20px",
   position: "absolute",
-  right: "12px",
-  paddingTop: "4px",
+  right: "0px",
+  paddingTop: "3px",
   marginRight: "0",
-  color: "var(--green)",
-  transform: "scale(3)",
+  color: "#2bb92b81",
 };
 
 interface QuestionFormProps {
@@ -169,7 +168,8 @@ const QuestionForm = ({
             position: "relative",
             zIndex: 100,
             display: "flex",
-            width: "60px",
+            flexDirection: "column",
+            width: "30px",
             color: "var(--text-inversed-fixed)",
           }}
         >
@@ -182,21 +182,25 @@ const QuestionForm = ({
             answers={answers}
             setQuestionIndex={setQuestionIndex}
           />
+          <HeaderDiv className="AnswerHeader">
+            <h2
+              style={{
+                color: "var(--text-inversed-fixed)",
+                fontSize: "1.2em",
+                textAlign: "center",
+                paddingBottom: "5px",
+              }}
+            >
+              {questionText}
+            </h2>
+          </HeaderDiv>
         </div>
-        <div style={{ position: "relative", width: "60px" }}>
-          {done ? <Icon size="big" name="check square outline" style={iconStyle} /> : null}
+        <div style={{ position: "relative", width: "30px" }}>
+          {done ? <Icon size="big" name="check" style={iconStyle} /> : null}
         </div>
       </MenuDiv>
 
       <BodyDiv>
-        <HeaderDiv className="AnswerHeader">
-          <h2
-            style={{ color: "var(--text-inversed-fixed)", fontSize: "1.2em", textAlign: "center" }}
-          >
-            {questionText}
-          </h2>
-        </HeaderDiv>
-
         <AnswerField
           answers={answers}
           questions={questions}

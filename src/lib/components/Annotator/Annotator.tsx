@@ -104,7 +104,7 @@ const getIndexedUnit = async (jobServer: any, unitIndex: number): Promise<Indexe
 
   const rawUnit: RawUnit = await jobServer.getUnit(unitIndex);
   if (rawUnit.id == null) return { unit: null, index: rawUnit?.index ?? unitIndex };
-
+  console.log(rawUnit);
   const unitContent: UnitContent = processUnitContent(rawUnit.unit);
   unitContent.annotations = rawUnit.annotation;
 
