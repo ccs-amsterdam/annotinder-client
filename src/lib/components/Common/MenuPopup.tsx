@@ -1,16 +1,13 @@
 import { memo, ReactElement, RefObject, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-/**
- * This was supposed to be a popup using absolute position relative to the trigger.
- * However, this somehow works in some cases but not others, and really can't tell why.
- */
 interface Props {
   trigger?: ReactElement;
   triggerRef?: RefObject<HTMLElement>;
   children: ReactElement;
-  bottom?: boolean;
-  right?: boolean;
+
+  offsetY?: number;
+  offsetX?: number;
 }
 
 const Wrapper = styled.div`
@@ -19,18 +16,23 @@ const Wrapper = styled.div`
 `;
 const PopupWindow = styled.div<{ open: boolean }>`
   display: ${(props) => (props.open ? "" : "none")};
-  left: 0px;
-  position: fixed;
+  position: absolute;
   max-width: min(400px, 80vw);
-  background: #dfeffbcc;
-  backdrop-filter: blur(2px);
+  background: var(--background-inversed);
+  color: var(--text-inversed);
   z-index: 1000;
-  border: 1px solid #136bae;
   border-radius: 5px;
-  padding: 1rem;
+  padding: 0.5rem;
 `;
 
-const RelativePopup = ({ trigger, triggerRef, children, bottom, right }: Props) => {
+const MenuPopup = ({
+  trigger,
+  triggerRef,
+  children,
+
+  offsetX = 0,
+  offsetY = 5,
+}: Props) => {
   const [open, setOpen] = useState(false);
   const triggerElementRef = useRef(null);
   const popupRef = useRef(null);
@@ -40,19 +42,10 @@ const RelativePopup = ({ trigger, triggerRef, children, bottom, right }: Props) 
     const popupEl = popupRef?.current;
     if (triggerEl && popupEl) {
       const triggerBc = triggerEl.getBoundingClientRect();
-      const windowBc = popupEl.getBoundingClientRect();
-      if (bottom) {
-        popupEl.style.bottom = triggerBc.y + windowBc.height + 10 + "px";
-      } else {
-        popupEl.style.top = Math.max(10, triggerBc.y - windowBc.height - 10) + "px";
-      }
-      if (right) {
-        popupEl.style.left = triggerBc.x + triggerBc.width + "px";
-      } else {
-        popupEl.style.left = triggerBc.x + "px";
-      }
+      popupEl.style.top = Math.max(0, triggerBc.y + triggerBc.height + offsetY) + "px";
+      popupEl.style.right = -offsetX + "px";
     }
-  }, [open, bottom, right, triggerRef, popupRef]);
+  }, [open, offsetY, offsetX, triggerRef, popupRef]);
 
   useEffect(() => {
     const onClick = (e: any) => {
@@ -81,4 +74,4 @@ const RelativePopup = ({ trigger, triggerRef, children, bottom, right }: Props) 
   );
 };
 
-export default memo(RelativePopup);
+export default memo(MenuPopup);

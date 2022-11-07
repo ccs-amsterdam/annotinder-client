@@ -86,7 +86,7 @@ const DemoSelector = () => {
     <div>
       <Menu pointing secondary style={{ marginBottom: "10px" }}>
         <Menu.Item position="right" onClick={() => navigate("/")}>
-          <Icon name="user" style={{ cursor: "pointer" }} />
+          <Icon name="user" style={{ cursor: "pointer", color: "var(--text)" }} />
         </Menu.Item>
       </Menu>
 

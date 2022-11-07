@@ -1,12 +1,14 @@
 import React, { ReactElement } from "react";
-import { Popup, Icon } from "semantic-ui-react";
+import { Icon } from "semantic-ui-react";
 
 import { useNavigate } from "react-router-dom";
 import IndexController from "./IndexController";
 import Finished from "./Finished";
 import { FullScreenNode, JobServer, SetState } from "../../../types";
 import { StyledButton } from "../../../styled/StyledSemantic";
-import ThemeSelector from "../../Common/Theme";
+import { DarkModeButton, FontSizeButton } from "../../Common/Theme";
+import MenuPopup from "../../Common/MenuPopup";
+import MenuButtonGroup from "./MenuButtonGroup";
 
 interface JobControllerProps {
   children: ReactElement;
@@ -83,20 +85,15 @@ const JobController = ({
         </div>
         <HeartContainer damage={health?.damage} maxDamage={health?.maxDamage} />
         <div>
-          <div>
-            <StyledButton.Group>
-              <ThemeSelector color="white" />
-              {fullScreenButton}
-              {cantLeave ? null : (
-                <UserButton
-                  fullScreenNode={fullScreenNode}
-                  jobServer={jobServer}
-                  authForm={authForm}
-                />
-              )}
-            </StyledButton.Group>
-          </div>
+          <MenuButtonGroup>
+            <FontSizeButton color="white" />
+            <DarkModeButton color="white" />
+            {fullScreenButton}
+          </MenuButtonGroup>
         </div>
+        {cantLeave ? null : (
+          <UserButton fullScreenNode={fullScreenNode} jobServer={jobServer} authForm={authForm} />
+        )}
       </div>
       <div style={{ height: "calc(100% - 40px)" }}>
         {unitIndex < jobServer?.progress?.n_total ? children : <Finished jobServer={jobServer} />}
@@ -115,11 +112,8 @@ const UserButton = ({ fullScreenNode, jobServer, authForm }: UserButtonProps) =>
   //const [searchParams, setSearchParams] = useSearchParams();
 
   return (
-    <Popup
-      wide
-      mountNode={fullScreenNode}
-      position="bottom right"
-      on="click"
+    <MenuPopup
+      offsetX={0}
       trigger={
         <StyledButton
           icon="cancel"
@@ -129,16 +123,16 @@ const UserButton = ({ fullScreenNode, jobServer, authForm }: UserButtonProps) =>
             color: "var(--text-inversed-fixed)",
             cursor: "pointer",
             padding: "4px 1px",
+            fontSize: "24px",
+            margin: 0,
           }}
         />
       }
     >
-      <Popup.Content>
-        <StyledButton.Group vertical fluid>
-          {jobServer?.return_link ? <BackToOverview jobServer={jobServer} /> : authForm}
-        </StyledButton.Group>
-      </Popup.Content>
-    </Popup>
+      <div style={{ display: "flex", minWidth: "200px", minHeight: "100px" }}>
+        {jobServer?.return_link ? <BackToOverview jobServer={jobServer} /> : authForm}
+      </div>
+    </MenuPopup>
   );
 };
 
@@ -152,6 +146,7 @@ const BackToOverview = ({ jobServer }: BackToOverviewProps) => {
   return (
     <StyledButton
       primary
+      fluid
       icon="home"
       content="Close job"
       onClick={() => navigate(jobServer.return_link)}

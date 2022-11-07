@@ -4,7 +4,6 @@ import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import AnnotateTaskManual from "./AnnotateTaskManual";
-import RelativePopup from "../../Common/RelativePopup";
 
 import {
   Annotation,
@@ -128,7 +127,6 @@ const AnnotateTask = ({
           />
         </div>
         <div className="bottomBar">
-          <SettingsPopup settings={settings} setSettings={setSettings} />
           <Instructions
             codebook={codebook}
             sessionData={sessionData}
@@ -270,52 +268,5 @@ interface SettingsPopupProps {
   settings: Record<string, string | number>;
   setSettings: SetState<Record<string, string | number>>;
 }
-
-const SettingsPopup = ({ settings, setSettings }: SettingsPopupProps) => {
-  return (
-    <RelativePopup
-      trigger={
-        <StyledButton
-          size="huge"
-          icon="setting"
-          style={{
-            padding: "8px 5px 4px 5px",
-            maxWidth: "30px",
-            background: "transparent",
-            color: "var(--text-inversed-fixed)",
-            cursor: "pointer",
-            margin: "0",
-            width: "30px",
-            zIndex: 1000,
-          }}
-        />
-      }
-    >
-      <Form>
-        {/* <Form.Field style={{ textAlign: "center" }}>
-          <label>Dark mode</label>
-          <ThemeSelector />
-        </Form.Field> */}
-        <Form.Group grouped>
-          <Form.Field>
-            <label>
-              text size scaling{" "}
-              <span style={{ color: "var(--primary)" }}>{`${settings.textSize}`}</span>
-            </label>
-            <Input
-              size="mini"
-              step={0.025}
-              min={0.4}
-              max={1.6}
-              type="range"
-              value={settings.textSize}
-              onChange={(e, d) => setSettings({ ...settings, textSize: d.value })}
-            />
-          </Form.Field>
-        </Form.Group>
-      </Form>
-    </RelativePopup>
-  );
-};
 
 export default React.memo(AnnotateTask);

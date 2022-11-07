@@ -11,7 +11,7 @@ interface SelectVariableProps {
 
 const TaskDescription = styled.div`
   border: 1px solid var(--background-inversed);
-  padding: 5px 5px 3px 5px;
+  padding: 10px 5px 3px 5px;
   background: var(--primary);
   color: var(--text-inversed-fixed);
   z-index: 1;
@@ -19,7 +19,7 @@ const TaskDescription = styled.div`
 
 const VariableButtons = styled.div`
   display: flex;
-  margin-bottom: -1px;
+  margin-bottom: -2px;
   z-index: 2;
   word-wrap: break-word;
   font-size: 1.2em;
@@ -27,7 +27,7 @@ const VariableButtons = styled.div`
   width: 100%;
 
   & div {
-    padding: 0.2em 1em 0.2em 1em;
+    padding: 0.4em 1em 0.2em 1em;
     border: 1px solid var(--background-inversed);
     border-left: 0px;
     width: 100%;

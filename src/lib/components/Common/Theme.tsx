@@ -1,4 +1,4 @@
-import { useEffect, memo } from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { StyledButton } from "../../styled/StyledSemantic";
@@ -7,7 +7,8 @@ const ThemeButton = styled(StyledButton)<{ iconcolor: string }>`
   color: ${(props) => props.iconcolor} !important;
   background: transparent !important;
   padding: 5px !important;
-  font-size: 18px !important;
+  font-size: inherit !important;
+  margin: 0 !important;
 `;
 
 const dark = {
@@ -34,20 +35,11 @@ interface ThemeSelectorProps {
   color: string;
 }
 
-const ThemeSelector = ({ color }: ThemeSelectorProps) => {
-  // currently just supports 2 themes for dark/light mode.
-  // might add more at some point.
+export const DarkModeButton = ({ color }: ThemeSelectorProps) => {
   const [theme, setTheme] = useLocalStorage("theme", "light");
   const selected = themes.findIndex((t) => t.name === theme);
 
   setCSS(themes[selected].theme);
-  // useEffect(() => {
-  //   setCss
-  //   if (theme === "dark") setCSS(dark);
-  //   if (theme === "light") setCSS(light);
-  // }, [theme]);
-
-  //const t = themes.find(t => t.name === theme)
 
   return (
     <ThemeButton
@@ -56,6 +48,31 @@ const ThemeSelector = ({ color }: ThemeSelectorProps) => {
       onClick={(e, d) => {
         const next = selected < themes.length - 1 ? selected + 1 : 0;
         setTheme(themes[next].name);
+      }}
+    />
+  );
+};
+
+const fontsizeOptions = [
+  { name: "small", size: "12px", icon: "text height" },
+  { name: "medium", size: "16px", icon: "text height" },
+  { name: "large", size: "18px", icon: "text height" },
+];
+
+export const FontSizeButton = ({ color }: ThemeSelectorProps) => {
+  const [theme, setTheme] = useLocalStorage("fontsize", "medium");
+  const selected = fontsizeOptions.findIndex((t) => t.name === theme);
+  console.log(selected);
+
+  document.documentElement.style.setProperty(`--font-size`, fontsizeOptions[selected].size);
+
+  return (
+    <ThemeButton
+      iconcolor={color}
+      icon={fontsizeOptions[selected].icon}
+      onClick={(e, d) => {
+        const next = selected < fontsizeOptions.length - 1 ? selected + 1 : 0;
+        setTheme(fontsizeOptions[next].name);
       }}
     />
   );
@@ -75,5 +92,3 @@ function setCSS(theme) {
     document.documentElement.style.setProperty(`--${property}`, theme[property]);
   }
 }
-
-export default memo(ThemeSelector);

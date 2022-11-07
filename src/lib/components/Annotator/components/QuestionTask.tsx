@@ -40,7 +40,7 @@ const ContentWindow = styled.div`
     height: 10px;
     width: 100%;
     background: linear-gradient(var(--background), transparent 70%);
-    z-index: 1000;
+    z-index: 100;
   }
 
   &::after {
@@ -51,7 +51,7 @@ const ContentWindow = styled.div`
     height: 10px;
     width: 100%;
     background: linear-gradient(transparent, var(--background) 90%);
-    z-index: 1000;
+    z-index: 100;
   }
 `;
 

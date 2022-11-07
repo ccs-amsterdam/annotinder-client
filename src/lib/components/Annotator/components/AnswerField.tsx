@@ -94,11 +94,13 @@ const AnswerField = ({
         growAnswerField(el);
         return;
       }
+      el.style["border-top"] = "";
 
       const innerEl = el.children[0];
       if (!innerEl) return;
-      if (el.clientHeight - innerEl.clientHeight > 10) {
-        // if the innerAnswerField is smaller than the answerField, we can
+      if (el.clientHeight - innerEl.clientHeight > 15) {
+        console.log(el.clientHeight, innerEl.clientHeight);
+        // if the innerAnswerField is smaller than the answerField (with some margin), we can
         // shrink the answerfield
         answerRef.current.style["min-height"] = innerEl.clientHeight + "px";
       }
@@ -261,7 +263,7 @@ const growAnswerField = (el: HTMLDivElement) => {
   const content = container.querySelector(".DocumentContent");
   const minContentHeight = container.clientHeight / 2;
   const contentHeight = content
-    ? Math.max(content.clientHeight, minContentHeight)
+    ? Math.min(content.clientHeight + 50, minContentHeight)
     : minContentHeight;
   const maxheight = container ? container.clientHeight - contentHeight : 300;
 

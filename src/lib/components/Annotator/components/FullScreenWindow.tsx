@@ -113,8 +113,9 @@ const FullScreenButton = ({ handle }: FullScreenButtonProps) => {
         background: "transparent",
         color: "var(--text-inversed-fixed)",
         margin: "0",
-        zIndex: 1000,
-        padding: "4px 1px",
+        zIndex: 100,
+        fontSize: "1.1em",
+        padding: "5px",
       }}
       onClick={() => {
         handle.active ? handle.exit() : handle.enter();

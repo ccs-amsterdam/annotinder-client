@@ -7,6 +7,8 @@ const GlobalStyle = createGlobalStyle`
     ${AnnotatorStyle}
 
     :root {
+    --font-size: 14px;
+
     --primary: #1678c2;
     --primary-light: #7bb6ea;
     --primary-verylight: #c5d7e7;
@@ -34,12 +36,15 @@ const GlobalStyle = createGlobalStyle`
     --lightred: rgb(218, 151, 164);
     --orange: orange;
   }
+
+  html {
+    font-size: var(--font-size) !important;
+  }
   
   body {
     overscroll-behavior: contain;
     background: var(--background);
     color: var(--text);
-
     font-family: Helvetica, Arial, sans-serif;
   }
 
