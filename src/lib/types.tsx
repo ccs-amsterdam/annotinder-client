@@ -144,14 +144,14 @@ export interface Question {
   perAnnotation?: string[];
   /** If true, than each annotation in perAnnotation is focussed on */
   focusAnnotations: boolean;
-  /** An array of arrays with field names. A name can also refer to a
+  /** An array of strings that match field names. A name can also refer to a
    * numbered field, so that 'comment' would e.g., match 'comment.1', 'comment.2', etc.
    */
+  perField?: string[];
   /** This is not to be passed via the codebook, but is automatically generated if perAnnotation is used.
    * The annotatino can then be highlighted, and the field, offset and length are stored in the answer
    */
   annotation?: Annotation;
-  perField?: string[];
 }
 
 export interface Transition {
@@ -480,10 +480,10 @@ export interface RawUnit {
 }
 
 export interface RawUnitContent {
-  text_fields?: RawTextField[];
+  text_fields?: TextField[];
   tokens?: RawToken[] | RawTokenColumn;
-  image_fields?: RawImageField[];
-  markdown_fields?: RawMarkdownField[];
+  image_fields?: ImageField[];
+  markdown_fields?: MarkdownField[];
   meta_fields?: MetaField[];
   importedAnnotations?: Annotation[];
   codebook?: RawCodeBook;
@@ -512,13 +512,6 @@ export interface Field {
   style?: CSSProperties;
 }
 
-export interface SubField {
-  value: string;
-  caption?: string;
-  offset?: number;
-  style?: CSSProperties;
-}
-
 export interface TextField extends Field {
   label?: string;
   offset?: number;
@@ -527,10 +520,6 @@ export interface TextField extends Field {
   context_before?: string;
   context_after?: string;
   paragraphs?: boolean;
-}
-
-export interface RawTextField extends Omit<TextField, "value"> {
-  value: string | (string | SubField)[];
 }
 
 export interface RenderedText {
@@ -543,19 +532,11 @@ export interface ImageField extends Field {
   caption?: string;
 }
 
-export interface RawImageField extends Omit<ImageField, "value"> {
-  value: string | (string | SubField)[];
-}
-
 export interface RenderedImages {
   [key: string]: ReactElement;
 }
 
 export interface MarkdownField extends Field {}
-
-export interface RawMarkdownField extends Omit<MarkdownField, "value"> {
-  value: string | (string | SubField)[];
-}
 
 export interface RenderedMarkdown {
   [key: string]: ReactElement;

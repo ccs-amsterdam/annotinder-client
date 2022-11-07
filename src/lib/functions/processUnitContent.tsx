@@ -2,38 +2,33 @@ import { importTokens, parseTokens } from "../components/Document/functions/toke
 import {
   UnitContent,
   RawUnitContent,
-  SubField,
   TextField,
-  ImageField,
   MarkdownField,
-  RawTextField,
-  RawImageField,
-  RawMarkdownField,
+  ImageField,
   FieldGrid,
   FieldGridInput,
 } from "../types";
 import { importCodebook } from "./codebook";
 
 /**
- * If the value of a field (text field, markdown field, image field) is an array,
- * unfold it into numbered fields. So a field named comment would for instance become
- * comment.1, comment.2, etc.
+ * Any steps for validating and preparing the unit content should go here
  *
  * @param unit
  * @returns
  */
 export default function processUnitContent(ruc: RawUnitContent): UnitContent {
-  // explicitly add offset to RawTextUnits so that we can use it as a typeguard
-
   const content: UnitContent = {
-    text_fields: unfold(ruc.text_fields, ruc.grid),
-    image_fields: unfold(ruc.image_fields, ruc.grid),
-    markdown_fields: unfold(ruc.markdown_fields, ruc.grid),
+    text_fields: ruc.text_fields || [],
+    image_fields: ruc.image_fields || [],
+    markdown_fields: ruc.markdown_fields || [],
     meta_fields: ruc.meta_fields || [],
     importedAnnotations: ruc.importedAnnotations,
     codebook: importCodebook(ruc.codebook),
     variables: ruc.variables,
   };
+
+  // !! prepareGrid also removes unused fields from content
+  content.grid = prepareGrid(ruc.grid, content);
 
   if (!content.variables && content.importedAnnotations) {
     content.variables = {};
@@ -47,81 +42,8 @@ export default function processUnitContent(ruc: RawUnitContent): UnitContent {
   }
 
   content.tokens = ruc.tokens ? importTokens(ruc.tokens) : parseTokens([...content.text_fields]);
-  content.grid = prepareGrid(ruc.grid, content);
 
   return content;
-}
-
-type RawField = RawTextField | RawImageField | RawMarkdownField;
-type ProcessedField = TextField | ImageField | MarkdownField;
-
-function unfold(fields: RawField[], grid: FieldGridInput): ProcessedField[] {
-  const newFields: ProcessedField[] = [];
-  if (!fields) return newFields;
-
-  for (let f of fields || []) {
-    if (!Array.isArray(f.value)) {
-      newFields.push({ ...f, value: String(f.value) });
-    } else {
-      // if array, unfold
-      const values: (string | SubField)[] = f.value;
-      console.log(values);
-      for (let i = 0; i < values.length; i++) {
-        const name = `${f.name}.${i + 1}`;
-        // value in array can either be a string, or an object with
-        // {value: 'the value string', style: {}}
-        let newField: any;
-        let value: string;
-        const valueItem: string | SubField = values[i];
-        if (typeof valueItem === "object") {
-          const subField: SubField = valueItem;
-          value = subField.value;
-          newField = { ...f, name, value: subField.value };
-          if (subField.style) newField.style = subField.style;
-          if (subField.caption) newField.caption = subField.caption;
-          if (subField.offset) newField.offset = subField.offset;
-        } else {
-          value = valueItem;
-          newField = { ...f, name, value };
-        }
-
-        if (newField.context_before && i > 0) {
-          if (newField.offset) newField.offset += newField.context_before.length;
-          delete newField.context_before;
-        }
-        if (newField.context_after && i < value.length - 1) delete newField.context_after;
-
-        newFields.push(newField);
-      }
-      grid = unfoldGrid(grid, f.name, values.length);
-    }
-  }
-  return newFields;
-}
-
-function unfoldGrid(grid, value, times) {
-  if (!grid?.areas) return grid;
-
-  const newAreas = [];
-  const newRowUnits = [];
-  for (let i = 0; i < grid.areas.length; i++) {
-    let row = grid.areas[i];
-    const rowUnit = grid.rows ? grid.rows[i] ?? grid.rows[grid.rows.length - 1] : 1;
-
-    if (!row.includes(value)) {
-      newAreas.push(row);
-      if (grid.rows) newRowUnits.push(rowUnit);
-      continue;
-    }
-    for (let repeat = 0; repeat < times; repeat++) {
-      const newrow = row.map((v) => (v === value ? v + "." + (repeat + 1) : v));
-      newAreas.push(newrow);
-      newRowUnits.push(rowUnit);
-    }
-  }
-  grid.areas = newAreas;
-  if (grid.rows) grid.rows = newRowUnits;
-  return grid;
 }
 
 function prepareGrid(grid: FieldGridInput, content: UnitContent): FieldGrid {

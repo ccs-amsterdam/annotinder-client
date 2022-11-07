@@ -39,7 +39,7 @@ const ContentWindow = styled.div`
     top: 0;
     height: 10px;
     width: 100%;
-    background: linear-gradient(var(--background), transparent);
+    background: linear-gradient(var(--background), transparent 70%);
     z-index: 1000;
   }
 
@@ -48,9 +48,9 @@ const ContentWindow = styled.div`
     display: block;
     position: absolute;
     bottom: 0;
-    height: 20px;
+    height: 10px;
     width: 100%;
-    background: linear-gradient(transparent, var(--background));
+    background: linear-gradient(transparent, var(--background) 90%);
     z-index: 1000;
   }
 `;

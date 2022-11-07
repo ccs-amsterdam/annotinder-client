@@ -21,6 +21,10 @@ const RetryPortalContent = styled.div`
   border: 1px solid var(--primary);
   text-align: center;
   font-size: 1em;
+
+  & .Hint {
+    margin-top: 1rem;
+  }
 `;
 
 interface FeedbackPortalProps {
@@ -80,25 +84,17 @@ const RetryPortal = ({ action, setConditionReport, fullScreenNode }: RetryPortal
     >
       <RetryPortalContent>
         <CloseButton onClick={() => setConditionReport({ evaluation: {}, damage: {} })} />
-        <div
-          style={{
-            width: "100%",
-            textAlign: "center",
-            fontSize: "30px",
-          }}
-        >
-          {/* <Icon name="exclamation" style={{ color: "crimson" }} /> */}
-        </div>
+
         <Markdown>{action?.message}</Markdown>
-        <ul>
+        <div className="Hint">
           {(action?.submessages || []).map((sm: string, i) => {
             return (
-              <li key={i}>
+              <p key={i}>
                 <Markdown>{sm}</Markdown>
-              </li>
+              </p>
             );
           })}
-        </ul>
+        </div>
       </RetryPortalContent>
     </TransitionablePortal>
   );

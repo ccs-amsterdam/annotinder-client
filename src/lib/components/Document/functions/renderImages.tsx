@@ -1,5 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
+import styled from "styled-components";
 import { ImageField, RenderedImages } from "../../../types";
+
+const StyledFigure = styled.figure<{ hasCaption: boolean }>`
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  place-self: center;
+
+  & figcaption {
+    margin: auto;
+    padding: 0.5rem;
+    height: ${(p) => (p.hasCaption ? 50 : 0)}px;
+  }
+`;
+
+const StyledImg = styled.img<{ size: Size }>`
+  border: 2px solid grey; // DON"T CHANGE BORDER WIDTH WITHOUT ADJUSTING OFFSET IN getImagePosition.js
+  margin: auto;
+  background: white;
+  max-width: 100%;
+  width: ${(p) => p.size.width}px;
+  height: ${(p) => p.size.height}px;
+`;
 
 /** Simple interface for image size */
 interface Size {
@@ -58,19 +81,17 @@ const AnnotatableImage = React.forwardRef(({ image_field }: AnnotatableImageProp
   let src = image_field.base64 ? `data:image/jpeg;base64,${value}` : value;
 
   return (
-    <figure
+    <StyledFigure
       className="field"
+      hasCaption={!!image_field.caption}
       style={{
         gridArea: image_field.grid_area,
-        display: "flex",
-        flexDirection: "column",
-        textAlign: "center",
-        placeSelf: "center",
         ...image_field?.style,
       }}
     >
-      <img
+      <StyledImg
         ref={img}
+        size={size}
         draggable={false}
         className="AnnotatableImage"
         onLoad={() => updateImageSize(img, container, setSize, extraspace)}
@@ -78,24 +99,9 @@ const AnnotatableImage = React.forwardRef(({ image_field }: AnnotatableImageProp
         key={image_field.name}
         alt={image_field.alt}
         src={src}
-        style={{
-          border: "2px solid grey", // DON"T CHANGE BORDER WIDTH WITHOUT ADJUSTING OFFSET IN getImagePosition.js
-          margin: "auto",
-          background: "white",
-          maxWidth: "100%",
-          width: size.width,
-          height: size.height,
-        }}
       />
-      <figcaption
-        style={{
-          margin: "auto",
-          height: image_field.caption ? "50px" : "0px",
-        }}
-      >
-        {image_field.caption}
-      </figcaption>
-    </figure>
+      <figcaption>{image_field.caption}</figcaption>
+    </StyledFigure>
   );
 });
 
@@ -105,8 +111,6 @@ const updateImageSize = (
   setSize: (value: Size) => void,
   bottomSpace = 0
 ) => {
-  // use window.innerHeight for height, because vh on mobile is weird (can include the address bar)
-  // use document.documentElement.clientwidth for width, to exclude the scrollbar
   if (!img.current || !container.current) return;
   const [ih, iw] = [img.current.naturalHeight - bottomSpace, img.current.naturalWidth];
   const [ch, cw] = [container.current.clientHeight - bottomSpace, container.current.clientWidth];

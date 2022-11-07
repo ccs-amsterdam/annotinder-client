@@ -3,8 +3,8 @@ import styled from "styled-components";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { StyledButton } from "../../styled/StyledSemantic";
 
-const ThemeButton = styled(StyledButton)<{ iconColor: string }>`
-  color: ${(props) => props.iconColor} !important;
+const ThemeButton = styled(StyledButton)<{ iconcolor: string }>`
+  color: ${(props) => props.iconcolor} !important;
   background: transparent !important;
   padding: 5px !important;
   font-size: 18px !important;
@@ -51,11 +51,10 @@ const ThemeSelector = ({ color }: ThemeSelectorProps) => {
 
   return (
     <ThemeButton
-      iconColor={color}
+      iconcolor={color}
       icon={themes[selected].icon}
       onClick={(e, d) => {
         const next = selected < themes.length - 1 ? selected + 1 : 0;
-        console.log(next);
         setTheme(themes[next].name);
       }}
     />

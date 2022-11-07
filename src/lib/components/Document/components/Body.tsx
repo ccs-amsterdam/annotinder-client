@@ -123,7 +123,6 @@ const Body = ({
               grid={grid}
               key="content"
               className="DocumentContent"
-              style={{}}
             >
               {text_fields.map((tf) => text[tf.name])}
               {image_fields.map((imf) => images[imf.name])}

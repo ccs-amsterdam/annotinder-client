@@ -171,8 +171,7 @@ const SelectCode = React.memo(
                 style={{
                   backgroundColor: option.color,
                   overflowWrap: "break-word",
-                  height: "100%",
-                  padding: "5px 5px",
+                  padding: "15px 5px",
                   transition: "padding 0.2s",
                   fontWeight: "bold",
                   textShadow: "0px 0px 5px var(--background-inversed-fixed)",
