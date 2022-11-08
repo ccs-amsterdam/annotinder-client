@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Header, Grid, Button } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
+import { StyledButton } from "../../styled/StyledSemantic";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import Backend, { redeemJobToken } from "./Backend";
 
@@ -48,14 +49,14 @@ const JobTokenLogin = ({ login, host, userId, jobtoken, asGuest }: JobTokenLogin
           justifyContent: "space-between",
         }}
       >
-        <Header style={{ color: "var(--primary)", marginBottom: "20px" }}>One-time login</Header>
+        <h2 style={{ color: "var(--primary)", marginBottom: "20px" }}>One-time login</h2>
         <p style={{ marginLeft: "10%", marginRight: "10%" }}>
           {alreadyGuest
             ? "This device is already logged in. Click here to continue"
             : "Log in once with your current device. You can then still close the app and return later, but only using this device (and using the same browser)"}
         </p>
 
-        <Button
+        <StyledButton
           primary
           fluid
           style={{ marginTop: "20px" }}
@@ -67,7 +68,7 @@ const JobTokenLogin = ({ login, host, userId, jobtoken, asGuest }: JobTokenLogin
           }}
         >
           {alreadyGuest ? "Continue" : "Log in"}
-        </Button>
+        </StyledButton>
       </div>
     </Grid.Column>
   );

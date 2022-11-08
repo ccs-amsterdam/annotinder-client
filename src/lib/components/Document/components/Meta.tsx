@@ -1,5 +1,5 @@
-import { Table } from "semantic-ui-react";
 import { MetaField } from "../../../types";
+import { StyledTable } from "../../../styled/StyledSemantic";
 
 interface MetaProps {
   meta_fields: MetaField[];
@@ -12,14 +12,14 @@ const Meta = ({ meta_fields }: MetaProps) => {
       label = String(label);
 
       return (
-        <Table.Row
+        <StyledTable.Row
           key={label}
           style={{
             lineHeight: "1.2",
             fontSize: `1.2em`,
           }}
         >
-          <Table.Cell
+          <StyledTable.Cell
             width={1}
             style={{
               borderTop: "none",
@@ -28,9 +28,9 @@ const Meta = ({ meta_fields }: MetaProps) => {
             }}
           >
             <b>{label}</b>
-          </Table.Cell>
-          <Table.Cell style={row.style}>{row.value}</Table.Cell>
-        </Table.Row>
+          </StyledTable.Cell>
+          <StyledTable.Cell style={row.style}>{row.value}</StyledTable.Cell>
+        </StyledTable.Row>
       );
     });
   };
@@ -50,7 +50,7 @@ const Meta = ({ meta_fields }: MetaProps) => {
       }}
     >
       <div style={{ margin: "auto" }}>
-        <Table
+        <StyledTable
           basic="very"
           compact
           unstackable
@@ -63,8 +63,8 @@ const Meta = ({ meta_fields }: MetaProps) => {
             color: "var(--text)",
           }}
         >
-          <Table.Body>{rows()}</Table.Body>
-        </Table>
+          <StyledTable.Body>{rows()}</StyledTable.Body>
+        </StyledTable>
       </div>
     </div>
   );

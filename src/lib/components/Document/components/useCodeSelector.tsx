@@ -182,15 +182,17 @@ const CodeSelectorPortal = React.memo(
       // Supposedly this should also be possible with the resizeObserver API, but not
       // sure that's sufficiently supported yet (especially considering RStudio)
       let portalWidth = portalref.current.clientWidth;
+      let portalHeight = portalref.current.clientHeight;
       const interval = setInterval(() => {
-        if (portalref.current.clientWidth === portalWidth) return;
+        const sameHeight = portalref.current.clientHeight === portalHeight;
+        const sameWidth = portalref.current.clientWidth === portalWidth;
+        if (sameHeight && sameWidth) return;
         fitPortalOnScreen(portalref.current, positionRef.current);
         portalWidth = portalref.current.clientWidth;
       }, 100);
       return () => clearInterval(interval);
     }, [open, positionRef]);
 
-    // if this is a small screen, use a portal instead of a popup
     const smallscreen = window.innerWidth < 500;
 
     if (!open) return null;

@@ -1,10 +1,11 @@
-import React, { useState, useEffect, CSSProperties } from "react";
-import { Button, Grid, Header, Icon } from "semantic-ui-react";
+import { useState, useEffect, CSSProperties } from "react";
+import { Grid, Icon } from "semantic-ui-react";
 import { QRCodeCanvas } from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
 import Backend from "../../Login/Backend";
 import { Debriefing, JobServer } from "../../../types";
 import Markdown from "../../Common/Markdown";
+import { StyledButton } from "../../../styled/StyledSemantic";
 
 interface FinishedProps {
   jobServer: JobServer;
@@ -44,13 +45,13 @@ const Finished = ({ jobServer }: FinishedProps) => {
           <Grid.Row>
             <Markdown>{debriefing.message}</Markdown>
             {debriefing.link ? (
-              <Button
-                as="a"
+              <a
                 href={debriefing.link.replace("{user_id}", debriefing.user_id)}
                 rel="noopener noreferrer"
-                primary
-                content={debriefing.link_text || "Click here!"}
-              />
+              >
+                {" "}
+                <StyledButton primary content={debriefing.link_text || "Click here!"} />
+              </a>
             ) : null}
             {debriefing.qr ? (
               <JobLink jobId={jobServer.job_id} backend={jobServer.backend} />
@@ -110,8 +111,7 @@ const JobLink = ({ jobId, backend, style = {} }: JobLinkProps) => {
 
   return (
     <div style={{ paddingTop: "15px" }}>
-      <Header
-        textAlign="center"
+      <h2
         onClick={() => {
           copyToClipboard(link?.url);
           setTimeout(() => alert("copied link!"), 50);
@@ -119,7 +119,7 @@ const JobLink = ({ jobId, backend, style = {} }: JobLinkProps) => {
         style={{ color: "var(--primary)", cursor: "copy" }}
       >
         Share this job with others!
-      </Header>
+      </h2>
       <div style={{ textAlign: "center" }}>
         <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
       </div>

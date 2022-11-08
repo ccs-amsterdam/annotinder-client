@@ -38,7 +38,7 @@ const AnnotateUnit = ({
   // codebook is the default codebook applied to all units
   // unit.codebook is a unit specific codebook that overrides the default
   if (unitIndex < 0) return null;
-  let codebook = unit?.codebook || jobServer?.codebook;
+  let codebook = unit?.unit.codebook || jobServer?.codebook;
   if (!codebook || !unit) return null;
 
   return (

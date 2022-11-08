@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, RefObject } from "react";
-import { Button, Ref } from "semantic-ui-react";
+import { Ref } from "semantic-ui-react";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
 import { scrollToMiddle } from "../../../functions/scroll";
 import { AnswerOption, OnSelectParams } from "../../../types";
 import useSpeedBump from "../../../hooks/useSpeedBump";
+import { StyledButton } from "../../../styled/StyledSemantic";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -155,23 +156,20 @@ const SelectCode = React.memo(
           <div
             key={option.code}
             style={{
-              flex: true
-                ? `${Math.max(1 / perRow, 1 / options.length)} 1 0px`
-                : `${Math.max(1 / perRow, 1 / options.length)}  1 auto`,
+              flex: `${Math.max(1 / perRow, 1 / options.length)} 1 0px`,
               minWidth: minWidth + "px",
               width: sameSize ? minWidth + "px" : null,
               textAlign: "center",
             }}
           >
             <Ref key={option.code} innerRef={option.ref}>
-              <Button
+              <StyledButton
                 fluid
                 loading={speedbump}
                 style={{
                   backgroundColor: option.color,
                   overflowWrap: "break-word",
-                  height: "100%",
-                  padding: "5px 5px",
+                  padding: "15px 5px",
                   transition: "padding 0.2s",
                   fontWeight: "bold",
                   textShadow: "0px 0px 5px var(--background-inversed-fixed)",
@@ -214,7 +212,7 @@ const SelectCode = React.memo(
                     borderWidth: isCurrent ? "3px" : "3px",
                   }}
                 ></div>
-              </Button>
+              </StyledButton>
             </Ref>
           </div>
         );
@@ -241,7 +239,7 @@ const SelectCode = React.memo(
         {multiple ? (
           <div style={{ width: "60px", height: "100%" }}>
             <Ref key={"finishbutton"} innerRef={finishbutton}>
-              <Button
+              <StyledButton
                 primary
                 icon="play"
                 fluid

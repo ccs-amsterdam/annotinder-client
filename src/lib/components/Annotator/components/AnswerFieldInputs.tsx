@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, RefObject } from "react";
-import { Button, Form } from "semantic-ui-react";
+import { Form } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
+import { StyledButton } from "../../../styled/StyledSemantic";
 import { OnSelectParams, AnswerItem, QuestionItem, SetState } from "../../../types";
 
 interface InputsProps {
@@ -51,7 +52,7 @@ const Inputs = ({
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
+        justifyItems: "space-between",
       }}
     >
       <Items
@@ -65,28 +66,25 @@ const Inputs = ({
         blockEvents={blockEvents}
         scrollRef={scrollRef}
       />
-
-      <div>
-        <Button
-          primary
-          fluid
-          size="mini"
-          disabled={!done}
-          icon={done ? "play" : null}
-          content={done ? "Continue" : "Please complete the form to continue"}
-          style={{
-            flex: "1 1 0px",
-            textAlign: "center",
-            margin: "0",
-            border: `4px solid ${selectedItem === items.length ? "black" : "#00000044"}`,
-          }}
-          onClick={() => {
-            // this is a bit of an odd one out. We didn't anticipate having multiple answers,
-            // so some of the previous logic doesn't hold
-            onFinish();
-          }}
-        />
-      </div>
+      <StyledButton
+        primary
+        fluid
+        size="mini"
+        disabled={!done}
+        icon={done ? "play" : null}
+        content={done ? "Continue" : "Please complete the form to continue"}
+        style={{
+          minHeight: "30px",
+          textAlign: "center",
+          margin: "10px 0 0 0",
+          border: `4px solid ${selectedItem === items.length ? "black" : "#00000044"}`,
+        }}
+        onClick={() => {
+          // this is a bit of an odd one out. We didn't anticipate having multiple answers,
+          // so some of the previous logic doesn't hold
+          onFinish();
+        }}
+      />
     </div>
   );
 };
@@ -227,7 +225,6 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
         style={{
           maxWidth: "150px",
           textAlign: "center",
-          background: answerItems[itemIndex]?.invalid ? "var(--red)" : "var(--text-inversed-fixed)",
         }}
         onChange={(e) => {
           if (!answerItems?.[itemIndex]) return;
@@ -271,7 +268,7 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
         style={{
           maxWidth: "300px",
           textAlign: "center",
-          background: answerItems[itemIndex].invalid ? "var(--red)" : "white",
+          background: answerItems[itemIndex].invalid ? "#fa1e1e4d" : "white",
         }}
         onChange={(e) => {
           if (!answerItems?.[itemIndex]) return;

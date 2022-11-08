@@ -5,7 +5,6 @@ import useCodeSelector from "./components/useCodeSelector";
 import useUnit from "./components/useUnit";
 import SelectVariable from "./components/SelectVariable";
 
-import "./documentStyle.css";
 import useVariableMap from "./components/useVariableMap";
 import {
   Variable,

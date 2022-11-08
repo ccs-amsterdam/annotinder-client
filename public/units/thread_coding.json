@@ -1,5 +1,71 @@
 [
   {
+    "id": "conversation",
+    "type": "unit",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "message",
+          "value": "The first message in a thread. This could for instance be a Tweet",
+          "style": { "fontSize": "1.5em", "margin": "1rem 30% 1rem 1rem" }
+        },
+        {
+          "name": "comment",
+          "value": [
+            {
+              "value": "A comment",
+              "style": { "textAlign": "right", "margin": "1rem 1rem 1rem 30%" }
+            },
+            {
+              "value": "A reply from the original author",
+              "style": { "margin": "1rem 30% 1rem 1rem" }
+            },
+            {
+              "value": "A reply to the reply",
+              "style": { "textAlign": "right", "margin": "1rem 1rem 1rem 30%" }
+            }
+          ],
+          "style": { "fontSize": "1.3em" }
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "message",
+            "fields": "message",
+            "type": "select code",
+            "question": "Is this message relevant?",
+            "codes": [
+              { "code": "No", "color": "crimson", "makes_irrelevant": "REMAINING" },
+              { "code": "Yes", "color": "lightgreen" }
+            ]
+          },
+          {
+            "name": "comment1_1",
+            "perField": "comment",
+            "type": "select code",
+            "question": "First question about this comment",
+            "codes": [
+              { "code": "Some answer", "color": "lightblue" },
+              { "code": "Some other answer", "color": "lightgreen" }
+            ]
+          },
+          {
+            "name": "comment1_2",
+            "perField": "comment",
+            "type": "select code",
+            "question": "Second question about this comment",
+            "codes": [
+              { "code": "Some answer", "color": "yellow" },
+              { "code": "Some other answer", "color": "orange" }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
     "id": "focus",
     "type": "unit",
     "unit": {

@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "semantic-ui-react";
 import { Question, Answer, AnswerItem, SetState } from "../../../types";
+import { StyledButton } from "../../../styled/StyledSemantic";
+import styled from "styled-components";
+
+const QuestionIndexDiv = styled.div`
+  min-height: 10px;
+`;
 
 interface QuestionIndexStepProps {
   questions: Question[];
@@ -58,27 +63,27 @@ export default function QuestionIndexStep({
 
   const hide = questions.length === 1;
   return (
-    <>
+    <QuestionIndexDiv>
       {questions.map((q: Question, i: number) => {
         if (hide) return null;
 
         // size question buttons so that those near the selected question are largest
         const dist = Math.pow(1.2, -Math.abs(questionIndex - i));
         return (
-          <Button
+          <StyledButton
             key={i}
             circular
             size="mini"
             active={i === questionIndex}
             style={{
-              transition: "padding 0.2s opacity 0.2s background 0.2s",
+              transition: "all 0.2s",
               opacity: Math.max(dist, 0.2),
-              padding: `6px ${dist * 24}px`,
-              height: `${15 * dist}px`,
+              padding: `5px ${dist * 20}px`,
+              height: `${10 * dist}px`,
               border: `1px solid`,
-              borderColor: i === questionIndex ? "var(--text)" : "var(--text-inversed)",
+              borderColor: i === questionIndex ? "var(--text-fixed)" : "var(--text-inversed-fixed)",
               background: getColor(i),
-              color: "var(--text)",
+              color: "var(--text-fixed)",
             }}
             onClick={() => {
               if (canSelect?.[i]) {
@@ -89,6 +94,6 @@ export default function QuestionIndexStep({
           />
         );
       })}
-    </>
+    </QuestionIndexDiv>
   );
 }

@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import "./App.css";
+import GlobalStyle from "./lib/styled/GlobalStyle";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // Main pages. Use below in items to include in header menu
@@ -18,6 +17,7 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <GlobalStyle />
       <Router>
         <ResponsiveContainer>
           <Routes>
@@ -27,7 +27,7 @@ const App = () => {
           </Routes>
         </ResponsiveContainer>
       </Router>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 };

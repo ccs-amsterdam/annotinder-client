@@ -12,7 +12,7 @@ const IndexControllerBar = styled.div`
   padding: 0;
   left-margin: 0px;
   border-radius: 0;
-  font-size: 1em;
+  font-size: 1rem;
   background: var(--background-inversed-fixed);
 
   & > div {

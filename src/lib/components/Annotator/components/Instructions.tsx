@@ -1,32 +1,35 @@
 import { useEffect, useRef, useState } from "react";
-import { Modal, Button, TransitionablePortal } from "semantic-ui-react";
-import { FullScreenNode, CodeBook, SessionData } from "../../../types";
+import { TransitionablePortal } from "semantic-ui-react";
+import { FullScreenNode, SessionData } from "../../../types";
 import Markdown from "../../Common/Markdown";
+import { StyledModal, StyledButton } from "../../../styled/StyledSemantic";
 
 interface InstructionsProps {
-  codebook: CodeBook;
+  instruction: string;
+  autoInstruction: boolean;
   sessionData: SessionData;
   fullScreenNode: FullScreenNode;
 }
 
-const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsProps) => {
+const Instructions = ({
+  instruction,
+  autoInstruction,
+  sessionData,
+  fullScreenNode,
+}: InstructionsProps) => {
   const [open, setOpen] = useState(false);
-  const [instruction, setInstruction] = useState(null);
   const modalRef = useRef(null);
 
   useEffect(() => {
-    const inst = codebook?.settings?.instruction;
-    if (!inst) {
-      setInstruction(null);
+    if (!instruction) {
       setOpen(false);
       return;
     }
-    setInstruction(inst);
-    if (codebook?.settings?.auto_instruction) {
-      if (!sessionData.seenInstructions[inst]) setOpen(true);
-      sessionData.seenInstructions[inst] = true;
+    if (autoInstruction) {
+      if (!sessionData.seenInstructions[instruction]) setOpen(true);
+      sessionData.seenInstructions[instruction] = true;
     }
-  }, [codebook, sessionData]);
+  }, [instruction, autoInstruction, sessionData]);
 
   useEffect(() => {
     const stopPropagation = (e: any) => open && e.stopPropagation();
@@ -48,7 +51,7 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
       open={open}
       style={{ zIndex: 800 }}
       trigger={
-        <Button
+        <StyledButton
           size="huge"
           icon="help circle"
           style={{
@@ -56,15 +59,15 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
             background: "transparent",
             cursor: "pointer",
             color: "var(--text-inversed-fixed)",
-            padding: "4px 5px 4px 5px",
-            maxWidth: "40px",
+            padding: "4px 5px",
+            maxWidth: "20px",
             zIndex: 800,
           }}
           onClick={() => setOpen(true)}
         />
       }
     >
-      <Modal
+      <StyledModal
         ref={modalRef}
         closeIcon
         mountNode={fullScreenNode || undefined}
@@ -73,18 +76,19 @@ const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsPro
         onClose={() => setOpen(false)}
         style={{ zIndex: 900 }}
       >
-        <Modal.Content
+        <StyledModal.Content
           scrolling
           style={{
             zIndex: 900,
+            maxHeight: "calc(100vh - 10rem)",
             background: "var(--background)",
             color: "var(--text)",
             border: "1px solid var(--background-inversed)",
           }}
         >
           <Markdown>{instruction}</Markdown>
-        </Modal.Content>
-      </Modal>
+        </StyledModal.Content>
+      </StyledModal>
     </TransitionablePortal>
   );
 };

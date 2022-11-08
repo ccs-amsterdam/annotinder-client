@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { getDoc, getAnnotations } from "../functions/prepareDocumentContent";
+import { getAnnotations } from "../functions/prepareDocumentContent";
 import {
   CodeHistory,
   SetState,
@@ -37,13 +37,13 @@ const useUnit = (
   const [fieldAnnotations, setFieldAnnotations] = useState<FieldAnnotations | null>(null);
   const [safetyCheck, setSafetyCheck] = useState<Token[]>(null);
 
-  const doc = useMemo(() => getDoc(unit), [unit]);
+  const doc = unit.unit;
 
   if (useWatchChange([unit, annotations])) {
-    const unitAnnotations = annotations || unit.annotations || [];
-    unit = { ...unit, annotations: [...unitAnnotations] };
-    const [spanAnnotations, fieldAnnotations] = getAnnotations(doc, unit.annotations);
-    initializeCodeHistory(unit.annotations, setCodeHistory);
+    const unitAnnotations = annotations || unit.unit.annotations || [];
+    unit = { ...unit, unit: { ...unit.unit, annotations: [...unitAnnotations] } };
+    const [spanAnnotations, fieldAnnotations] = getAnnotations(doc, unit.unit.annotations);
+    initializeCodeHistory(unit.unit.annotations, setCodeHistory);
     setSpanAnnotations(spanAnnotations);
     setFieldAnnotations(fieldAnnotations);
     setSafetyCheck(doc.tokens);

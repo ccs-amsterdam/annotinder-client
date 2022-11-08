@@ -1,6 +1,15 @@
 import { useEffect } from "react";
-import { Checkbox } from "semantic-ui-react";
+import styled from "styled-components";
 import useLocalStorage from "../../hooks/useLocalStorage";
+import { StyledButton } from "../../styled/StyledSemantic";
+
+const ThemeButton = styled(StyledButton)<{ iconcolor: string }>`
+  color: ${(props) => props.iconcolor} !important;
+  background: transparent !important;
+  padding: 5px !important;
+  font-size: inherit !important;
+  margin: 0 !important;
+`;
 
 const dark = {
   background: "#1b1c1d",
@@ -17,19 +26,53 @@ const light = {
   "text-inversed": "white",
 };
 
-const ThemeSelector = () => {
-  const [theme, setTheme] = useLocalStorage("theme", "light");
+const themes = [
+  { name: "light", theme: light, icon: "sun" },
+  { name: "dark", theme: dark, icon: "moon" },
+];
 
-  useEffect(() => {
-    if (theme === "dark") setCSS(dark);
-    if (theme === "light") setCSS(light);
-  }, [theme]);
+interface ThemeSelectorProps {
+  color: string;
+}
+
+export const DarkModeButton = ({ color }: ThemeSelectorProps) => {
+  const [theme, setTheme] = useLocalStorage("theme", "light");
+  const selected = themes.findIndex((t) => t.name === theme);
+
+  setCSS(themes[selected].theme);
 
   return (
-    <Checkbox
-      toggle
-      checked={theme === "dark"}
-      onChange={(e, d) => setTheme(d.checked ? "dark" : "light")}
+    <ThemeButton
+      iconcolor={color}
+      icon={themes[selected].icon}
+      onClick={(e, d) => {
+        const next = selected < themes.length - 1 ? selected + 1 : 0;
+        setTheme(themes[next].name);
+      }}
+    />
+  );
+};
+
+const fontsizeOptions = [
+  { name: "small", size: "12px", icon: "text height" },
+  { name: "medium", size: "16px", icon: "text height" },
+  { name: "large", size: "18px", icon: "text height" },
+];
+
+export const FontSizeButton = ({ color }: ThemeSelectorProps) => {
+  const [theme, setTheme] = useLocalStorage("fontsize", "medium");
+  const selected = fontsizeOptions.findIndex((t) => t.name === theme);
+
+  document.documentElement.style.setProperty(`--font-size`, fontsizeOptions[selected].size);
+
+  return (
+    <ThemeButton
+      iconcolor={color}
+      icon={fontsizeOptions[selected].icon}
+      onClick={(e, d) => {
+        const next = selected < fontsizeOptions.length - 1 ? selected + 1 : 0;
+        setTheme(fontsizeOptions[next].name);
+      }}
     />
   );
 };
@@ -48,5 +91,3 @@ function setCSS(theme) {
     document.documentElement.style.setProperty(`--${property}`, theme[property]);
   }
 }
-
-export default ThemeSelector;

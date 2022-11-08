@@ -2,7 +2,6 @@ import React, { useState, useRef, RefObject, useCallback, useMemo } from "react"
 import QuestionForm from "./QuestionForm";
 import Document from "../../Document/Document";
 import { useSwipeable } from "react-swipeable";
-import { Button, Form, Input, Portal, Segment } from "semantic-ui-react";
 import swipeControl from "../functions/swipeControl";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import styled from "styled-components";
@@ -12,7 +11,6 @@ import {
   ConditionReport,
   FullScreenNode,
   SessionData,
-  SetState,
   SwipeRefs,
   Swipes,
   Unit,
@@ -22,7 +20,6 @@ import Instructions from "./Instructions";
 import FeedbackPortal from "./FeedbackPortal";
 import useWatchChange from "../../../hooks/useWatchChange";
 import unfoldQuestions from "../../../functions/unfoldQuestions";
-import ThemeSelector from "../../Common/Theme";
 
 const Container = styled.div`
   display: flex;
@@ -34,6 +31,28 @@ const Container = styled.div`
 const ContentWindow = styled.div`
   flex: 1 1 auto;
   position: relative;
+
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    height: 10px;
+    width: 100%;
+    background: linear-gradient(var(--background), transparent 70%);
+    z-index: 100;
+  }
+
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    height: 10px;
+    width: 100%;
+    background: linear-gradient(transparent, var(--background) 90%);
+    z-index: 100;
+  }
 `;
 
 const SwipeableBox = styled.div`
@@ -67,9 +86,9 @@ const Content = styled.div<{ fontSize: number }>`
 const QuestionMenu = styled.div<{
   fontSize: number;
 }>`
-  max-height: 70%;
   font-size: ${(props) => props.fontSize}em;
 `;
+//max-height: 70%;
 
 interface QuestionTaskProps {
   unit: Unit;
@@ -98,10 +117,15 @@ const QuestionTask = ({
     return { text: textref, box: boxref, code: coderef };
   }, []);
 
-  const [settings, setSettings] = useLocalStorage("questionTaskSettings", {
+  const [settings] = useLocalStorage("questionTaskSettings", {
     upperTextSize: 1,
     lowerTextSize: 1.2,
   });
+
+  // useEffect(() => {
+  //   if (!textref.current) return;
+  //   textref.current.addEventListener();
+  // }, [textref]);
 
   const questions = useMemo(() => unfoldQuestions(codebook, unit), [unit, codebook]);
   const question = questions[questionIndex];
@@ -142,8 +166,8 @@ const QuestionTask = ({
   // two modes for highlighting annotations: if they are included in question.annotations and
   // in question.showAnnotations. Passing an array of annotations to Document highlights the spans
   let annotations: Annotation[] = question?.annotation ? [question.annotation] : [];
-  if (question?.showAnnotations && unit.annotations) {
-    const addAnnotations = unit.annotations.filter((a) =>
+  if (question?.showAnnotations && unit.unit.annotations) {
+    const addAnnotations = unit.unit.annotations.filter((a) =>
       question.showAnnotations.includes(a.variable)
     );
     annotations = [...annotations, ...addAnnotations];
@@ -188,13 +212,9 @@ const QuestionTask = ({
           startTransition={startTransition}
           blockEvents={blockEvents}
         >
-          <SettingsPopup
-            settings={settings}
-            setSettings={setSettings}
-            fullScreenNode={fullScreenNode}
-          />
           <Instructions
-            codebook={codebook}
+            instruction={question?.instruction || codebook?.settings?.instruction}
+            autoInstruction={codebook?.settings?.auto_instruction || false}
             sessionData={sessionData}
             fullScreenNode={fullScreenNode}
           />
@@ -204,89 +224,75 @@ const QuestionTask = ({
   );
 };
 
-interface SettingsPopupProps {
-  settings: { [key: string]: number | string };
-  setSettings: SetState<{ [key: string]: number | string }>;
-  fullScreenNode: FullScreenNode;
-}
+// interface SettingsPopupProps {
+//   settings: { [key: string]: number | string };
+//   setSettings: SetState<{ [key: string]: number | string }>;
+// }
 
-const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupProps) => {
-  return (
-    <Portal
-      closeOnTriggerClick
-      mountNode={fullScreenNode || undefined}
-      on="click"
-      trigger={
-        <Button
-          size="huge"
-          icon="setting"
-          style={{
-            background: "transparent",
-            color: "var(--text-inversed-fixed)",
-            cursor: "pointer",
-            padding: "4px 5px 4px 5px",
-            margin: "0",
-            width: "30px",
-            zIndex: 1000,
-          }}
-        />
-      }
-    >
-      <Segment
-        style={{
-          bottom: "30%",
-          left: "10%",
-          position: "fixed",
-          width: "80%",
-          maxWidth: "400px",
-          zIndex: 10000,
-          background: "#dfeffbaa",
-          backdropFilter: "blur(2px)",
-          border: "1px solid #136bae",
-        }}
-      >
-        <Form>
-          <Form.Group grouped>
-            <Form.Field style={{ textAlign: "center" }}>
-              <label>Dark mode</label>
-              <ThemeSelector />
-            </Form.Field>
-            <Form.Field>
-              <label>
-                Content text size{" "}
-                <span style={{ color: "var(--primary)" }}>{`${settings.upperTextSize}`}</span>
-              </label>
-              <Input
-                size="mini"
-                step={0.025}
-                min={0.4}
-                max={1.6}
-                type="range"
-                value={settings.upperTextSize}
-                onChange={(e, d) => setSettings({ ...settings, upperTextSize: d.value })}
-              />
-            </Form.Field>
-            <Form.Field>
-              <label>
-                Answer field text size{" "}
-                <span style={{ color: "var(--primary)" }}>{`${settings.lowerTextSize}`}</span>
-              </label>
-              <Input
-                size="mini"
-                step={0.025}
-                min={0.4}
-                max={1.6}
-                type="range"
-                value={settings.lowerTextSize}
-                onChange={(e, d) => setSettings({ ...settings, lowerTextSize: d.value })}
-              />
-            </Form.Field>
-          </Form.Group>
-        </Form>
-      </Segment>
-    </Portal>
-  );
-};
+// const SettingsPopup = ({ settings, setSettings }: SettingsPopupProps) => {
+//   return (
+//     <RelativePopup
+//       right
+//       trigger={
+//         <StyledButton
+//           size="huge"
+//           icon="setting"
+//           style={{
+//             background: "transparent",
+//             position: "absolute",
+//             top: 0,
+//             left: 0,
+//             color: "var(--text-inversed-fixed)",
+//             cursor: "pointer",
+//             padding: "4px 5px 4px 2px",
+//             margin: "0",
+//             width: "30px",
+//             zIndex: 1000,
+//           }}
+//         />
+//       }
+//     >
+//       <Form>
+//         <Form.Group grouped>
+//           {/* <Form.Field style={{ textAlign: "center" }}>
+//             <label>Dark mode</label>
+//             <ThemeSelector />
+//           </Form.Field> */}
+//           <Form.Field>
+//             <label>
+//               Content text size{" "}
+//               <span style={{ color: "var(--primary)" }}>{`${settings.upperTextSize}`}</span>
+//             </label>
+//             <Input
+//               size="mini"
+//               step={0.025}
+//               min={0.4}
+//               max={1.6}
+//               type="range"
+//               value={settings.upperTextSize}
+//               onChange={(e, d) => setSettings({ ...settings, upperTextSize: d.value })}
+//             />
+//           </Form.Field>
+//           <Form.Field>
+//             <label>
+//               Answer field text size{" "}
+//               <span style={{ color: "var(--primary)" }}>{`${settings.lowerTextSize}`}</span>
+//             </label>
+//             <Input
+//               size="mini"
+//               step={0.025}
+//               min={0.4}
+//               max={1.6}
+//               type="range"
+//               value={settings.lowerTextSize}
+//               onChange={(e, d) => setSettings({ ...settings, lowerTextSize: d.value })}
+//             />
+//           </Form.Field>
+//         </Form.Group>
+//       </Form>
+//     </RelativePopup>
+//   );
+// };
 
 const nextUnitTransition = (r: SwipeRefs, trans: Transition) => {
   const direction = trans?.direction;

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import JobServerDemo from "./classes/JobServerDemo";
 import Annotator from "../Annotator/Annotator";
-import { Button, Grid, Header, Menu, Icon } from "semantic-ui-react";
+import { Grid, Menu, Icon } from "semantic-ui-react";
+import { StyledButton } from "../../styled/StyledSemantic";
 import FullDataTable from "../AnnotatorClient/components/FullDataTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../functions/copyToClipboard";
@@ -11,7 +12,6 @@ import { SetState } from "../../types";
 const DemoJobOverview = () => {
   const [job, setJob] = useState(null);
   const [searchParams] = useSearchParams();
-
   useEffect(() => {
     let codebook = searchParams.get("codebook");
     let units = searchParams.get("units");
@@ -86,14 +86,14 @@ const DemoSelector = () => {
     <div>
       <Menu pointing secondary style={{ marginBottom: "10px" }}>
         <Menu.Item position="right" onClick={() => navigate("/")}>
-          <Icon name="user" style={{ cursor: "pointer" }} />
+          <Icon name="user" style={{ cursor: "pointer", color: "var(--text)" }} />
         </Menu.Item>
       </Menu>
 
       <Grid stackable centered container style={{ marginTop: "30px" }}>
         <Grid.Row>
           <Grid.Column textAlign="center" width="8">
-            <Header as="h2">Demo jobs</Header>
+            <h2>Demo jobs</h2>
             <p>
               This is a list of demo jobs to get a gist of the annotator features. Your annotations
               will not be stored, and will be lost when closing or refreshing the application.
@@ -102,7 +102,7 @@ const DemoSelector = () => {
         </Grid.Row>
         <Grid.Row>
           <Grid.Column width="8">
-            <Header textAlign="center">Select a demo</Header>
+            <h3 style={{ textAlign: "center" }}>Select a demo</h3>
             <FullDataTable
               fullData={demo_files}
               columns={columns}
@@ -111,7 +111,7 @@ const DemoSelector = () => {
             />
           </Grid.Column>
           <Grid.Column width="8">
-            <Header textAlign="center">Start demo</Header>
+            <h3 style={{ textAlign: "center" }}>Start demo</h3>
 
             <DemoJobLink units={demo.units} codebook={demo.codebook} />
           </Grid.Column>
@@ -173,19 +173,19 @@ const DemoJobLink = ({ units, codebook }: DemoJobLinkProps) => {
 
   return (
     <div>
-      <Button.Group fluid>
-        <Button primary disabled={!units || !codebook} onClick={onClick}>
+      <StyledButton.Group fluid>
+        <StyledButton primary disabled={!units || !codebook} onClick={onClick}>
           Start Demo
-        </Button>
-        <Button
+        </StyledButton>
+        <StyledButton
           secondary
           onClick={() => {
             copyToClipboard(url);
           }}
         >
           Copy link
-        </Button>
-      </Button.Group>
+        </StyledButton>
+      </StyledButton.Group>
       <br />
       <div style={{ textAlign: "center", width: "100%", marginTop: "10px" }}>
         <QRCodeCanvas value={encodeURI(url)} size={300} />

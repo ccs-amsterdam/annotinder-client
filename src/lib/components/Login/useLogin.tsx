@@ -4,7 +4,8 @@ import Login from "./Login";
 import Backend from "./Backend";
 // import GuestJobs from "./GuestJobs";
 import useSessions from "./useSessions";
-import { Loader, Button } from "semantic-ui-react";
+import { Loader } from "semantic-ui-react";
+import { StyledButton } from "../../styled/StyledSemantic";
 import { ReactElement, useCallback } from "react";
 
 const Container = styled.div`
@@ -69,9 +70,9 @@ const Logout = ({ logout }: LogoutProps) => {
   // because the session is not immediately removed
   // (maybe add second button for logout that does immediately remove)
   return (
-    <Button secondary onClick={logout}>
+    <StyledButton secondary onClick={logout}>
       Go to Login Screen
-    </Button>
+    </StyledButton>
   );
 };
 

@@ -10,18 +10,25 @@ import styled from "styled-components";
 
 const AnswerDiv = styled.div`
   transition: all 0.2s;
+  display: flex;
   position: relative;
   padding: 0;
   overflow-y: auto;
   height: 60px;
+  min-height: 200px;
   width: 100%;
   margin: 0;
   font-size: inherit;
   color: var(--text-inversed-fixed);
 
-  &::before {
-    position: sticky;
+  & .InnerAnswerField {
+    width: 100%;
+    margin-top: auto;
   }
+
+  /* &::before {
+    position: sticky;
+  } */
 `;
 
 interface AnswerFieldProps {
@@ -74,59 +81,38 @@ const AnswerField = ({
   }, [answers, questionIndex, answerItems]);
 
   useEffect(() => {
-    // Manually handle the sizing of the answerfield,
-    // so that we can add transitions based on min-height.
-    let newMinHeight = null;
-    let resizeId;
-    let startHeight = null;
-    const minHeight = 60;
-    let shrinkchecks = 0;
+    // change the min-height of the answerField based on whether it needs to grow
+    // or shrink. This way, the transition animation works (which is not possible with flex)
 
-    function resize() {
-      if (!answerRef.current) {
-        resizeId = requestAnimationFrame(resize);
+    const resize = () => {
+      if (!answerRef.current) return;
+      const el = answerRef.current;
+
+      if (el.scrollHeight > el.clientHeight) {
+        // if div is scrollable, it needs to grow. growAnswerField
+        // does this taking the height of the content into account
+        growAnswerField(el);
         return;
       }
-      const el = answerRef.current;
-      console.count(el.current);
-      if (startHeight === null) {
-        startHeight = el.clientHeight;
-        el.style["min-height"] = minHeight + "px";
+      el.style["border-top"] = "";
+
+      const innerEl = el.children[0];
+      if (!innerEl) return;
+      if (el.clientHeight - innerEl.clientHeight > 15) {
+        // if the innerAnswerField is smaller than the answerField (with some margin), we can
+        // shrink the answerfield
+        answerRef.current.style["min-height"] = innerEl.clientHeight + "px";
       }
+    };
 
-      if (el.clientHeight < startHeight || startHeight === minHeight) {
-        // if shrinking started, or if startheight is already the minimum
-
-        if (el.scrollHeight > el.clientHeight) {
-          // see if the container overflows. If so, we can calculate the required height
-          // and stop the loop
-          const container = el.closest(".QuestionContainer");
-          const maxheight = container ? container.clientHeight / 2 : 300;
-          const minheight = Math.max(100, el.scrollHeight + 10);
-          newMinHeight = Math.min(maxheight, minheight);
-
-          answerRef.current.style["min-height"] = newMinHeight + "px";
-          //answerRef.current.style.opacity = 1;
-          return;
-        }
-
-        if (el.clientHeight === minHeight) {
-          // if minimum size is reached, and we know that shrinking started without overflowing
-          // the container, we can break the loop
-          if (startHeight !== minHeight) return;
-
-          // if startHeight === minHeight, we can't tell whether shrinking started.
-          // In this case we just quit after checking max 10 frames
-          shrinkchecks++;
-          if (shrinkchecks > 10) return;
-        }
-      }
-
-      resizeId = requestAnimationFrame(resize);
-    }
-    resize();
-
-    return () => cancelAnimationFrame(resizeId);
+    // first do a quick update, using a small delay that is enough for most content
+    setTimeout(() => resize(), 50);
+    // then check whether height needs to change with short intervalls. This is fairly inexpensive
+    // and ensures that theres no issues when content is slow to load (e.g., images)
+    const interval = setInterval(() => {
+      resize();
+    }, 500);
+    return () => clearInterval(interval);
   }, [answerRef, onAnswer]);
 
   const onFinish = () => {
@@ -186,6 +172,7 @@ const AnswerField = ({
   // values         array of values
   // answerItems     object with items as keys and values array as value
 
+  console.log(question);
   let answerfield = null;
   if (question.type === "select code")
     answerfield = (
@@ -244,7 +231,7 @@ const AnswerField = ({
     answerfield = (
       <Confirm
         onSelect={onSelect}
-        button={question?.button}
+        button={question.options?.[0]?.code}
         swipe={swipe}
         blockEvents={blockEvents}
       />
@@ -263,7 +250,29 @@ const AnswerField = ({
       />
     );
 
-  return <AnswerDiv ref={answerRef}>{answerfield}</AnswerDiv>;
+  return (
+    <AnswerDiv ref={answerRef}>
+      <div className="InnerAnswerField">{answerfield}</div>
+    </AnswerDiv>
+  );
+};
+
+const growAnswerField = (el: HTMLDivElement) => {
+  if (!el) return;
+  const container = el.closest(".QuestionContainer");
+  const content = container.querySelector(".DocumentContent");
+  const minContentHeight = container.clientHeight / 2;
+  const contentHeight = content
+    ? Math.min(content.clientHeight + 50, minContentHeight)
+    : minContentHeight;
+  const maxheight = container ? container.clientHeight - contentHeight : 300;
+
+  const minheight = Math.max(100, el.scrollHeight + 10);
+  const newMinHeight = Math.min(maxheight, minheight);
+
+  if (maxheight < minheight) el.style["border-top"] = "1px solid var(--background-fixed)";
+  el.style["min-height"] = newMinHeight + "px";
+  //answerRef.current.style.opacity = 1;
 };
 
 export default React.memo(AnswerField);

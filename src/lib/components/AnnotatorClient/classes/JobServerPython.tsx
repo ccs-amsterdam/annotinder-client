@@ -1,7 +1,7 @@
 import { importCodebook } from "../../../functions/codebook";
 import {
   Annotation,
-  BackendUnit,
+  RawUnit,
   CodeBook,
   ConditionReport,
   JobServer,
@@ -37,7 +37,7 @@ class JobServerPython implements JobServer {
     this.progress = await this.backend.getProgress(this.job_id);
   }
 
-  async getUnit(i: number): Promise<BackendUnit> {
+  async getUnit(i: number): Promise<RawUnit> {
     return await this.backend.getUnit(this.job_id, i);
   }
 

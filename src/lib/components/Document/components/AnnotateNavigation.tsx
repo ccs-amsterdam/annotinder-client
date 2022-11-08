@@ -50,7 +50,7 @@ const AnnotateNavigation = ({
   }, [tokens, annotations, variableMap, editMode, showAll]);
 
   useEffect(() => {
-    showSelection(tokens, tokenSelection);
+    setSelectionAsCSSClass(tokens, tokenSelection);
   }, [tokens, tokenSelection, editMode]);
 
   useEffect(() => {
@@ -117,7 +117,7 @@ const highlightAnnotations = (
       continue;
     }
 
-    annotateToken(token, tokenAnnotations, variableMap);
+    setAnnotationAsCSSClass(token, tokenAnnotations, variableMap);
 
     if (editMode) {
       // in edit mode, make annotations look clickable
@@ -153,17 +153,23 @@ const allowedAnnotations = (
   return annotations;
 };
 
-const annotateToken = (token: Token, annotations: AnnotationMap, variableMap: VariableMap) => {
+const setAnnotationAsCSSClass = (
+  token: Token,
+  annotations: AnnotationMap,
+  variableMap: VariableMap
+) => {
   // Set specific classes for nice css to show the start/end of codes
   let nLeft = 0;
   let nRight = 0;
   const colors: any = { pre: [], text: [], post: [] };
+  let tokenlabel: string[] = [];
   let nAnnotations = Object.keys(annotations).length;
 
   for (let id of Object.keys(annotations)) {
     const annotation = annotations[id];
     const codeMap = variableMap?.[annotation.variable]?.codeMap || {};
     const color = standardizeColor(annotation.color, "50") || getColor(annotation.value, codeMap);
+    tokenlabel.push(String(annotation.value));
 
     colors.text.push(color);
     if (annotation.span[0] === annotation.index) {
@@ -191,14 +197,10 @@ const annotateToken = (token: Token, annotations: AnnotationMap, variableMap: Va
   const textColor = getColorGradient(colors.text);
   const preColor = allLeft ? "var(--background)" : getColorGradient(colors.pre);
   const postColor = allRight ? "var(--background)" : getColorGradient(colors.post);
+
   setTokenColor(token, preColor, textColor, postColor);
   //setTokenLabels(token, ["test", "this"]);
 };
-
-// const setTokenLabels = (token, labels) => {
-//   token.ref.current.style.lineHeight = `${labels.length * 1}em`;
-//   token.ref.current.style.marginBottom = "-1em";
-// };
 
 const setTokenColor = (token: Token, pre: string, text: string, post: string) => {
   const children = token.ref.current.children;
@@ -207,7 +209,7 @@ const setTokenColor = (token: Token, pre: string, text: string, post: string) =>
   children[2].style.background = post;
 };
 
-const showSelection = (tokens: Token[], selection: TokenSelection) => {
+const setSelectionAsCSSClass = (tokens: Token[], selection: TokenSelection) => {
   for (let token of tokens) {
     if (!token.ref?.current) continue;
     token.ref.current.classList.remove("tapped");

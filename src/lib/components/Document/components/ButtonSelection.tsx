@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Button, Divider, Icon, Ref } from "semantic-ui-react";
-
+import { Divider, Icon, Ref } from "semantic-ui-react";
+import { StyledButton } from "../../../styled/StyledSemantic";
 import { moveDown, moveUp } from "../../../functions/refNavigation";
 import { CodeSelectorOption, CodeSelectorValue } from "../../../types";
 
@@ -97,7 +97,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
 
     return (
       <Ref key={option.label + "_" + i} innerRef={option.ref}>
-        <Button
+        <StyledButton
           style={{
             position: "relative",
             flex: `0.2 1 auto`,
@@ -134,7 +134,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
             >{`${option.tag} `}</span>
           ) : null}
           <span>{option.label}</span>
-        </Button>
+        </StyledButton>
       </Ref>
     );
   };
@@ -201,7 +201,7 @@ interface CloseButtonProps {
 
 const CloseButton = ({ selected, onClick }: CloseButtonProps) => {
   return (
-    <Button
+    <StyledButton
       icon="window close"
       size="huge"
       style={{

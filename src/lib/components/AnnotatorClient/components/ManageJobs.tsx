@@ -1,22 +1,37 @@
-import React, { useState, useEffect, CSSProperties } from "react";
-import {
-  Grid,
-  Header,
-  Button,
-  Icon,
-  Checkbox,
-  Table,
-  Dropdown,
-  Container,
-  Portal,
-  Segment,
-} from "semantic-ui-react";
+import { useState, useEffect, CSSProperties } from "react";
+import { Icon, Checkbox, Table, Dropdown, Container, Portal, Segment } from "semantic-ui-react";
+import { StyledButton } from "../../../styled/StyledSemantic";
 import { useCSVDownloader } from "react-papaparse";
 import JobsTable from "./JobsTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
 import Backend from "../../Login/Backend";
 import { Job, User, SetState } from "../../../types";
+import styled from "styled-components";
+
+const JobsGrid = styled.div`
+  padding: 1em;
+  margin: auto;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+
+  & .jobstable {
+    margin: 0 auto;
+    min-width: 280px;
+    max-width: 750px;
+    text-align: center;
+  }
+  & .jobdetails {
+    margin: 0 auto;
+    min-width: 200px;
+    max-width: 400px;
+    text-align: center;
+  }
+`;
 
 interface ManageJobsProps {
   backend: Backend;
@@ -28,9 +43,9 @@ export default function ManageJobs({ backend }: ManageJobsProps) {
   const [job, setJob] = useState<Job>(null);
 
   return (
-    <Grid stackable textAlign="center" style={{ height: "100%" }}>
-      <Grid.Column width="8">
-        <Header>Jobs</Header>
+    <JobsGrid>
+      <div className="jobstable">
+        <h3>Jobs</h3>
         <JobsTable
           backend={backend}
           setJob={setJob}
@@ -39,11 +54,11 @@ export default function ManageJobs({ backend }: ManageJobsProps) {
           jobId={jobId}
           setJobId={setJobId}
         />
-      </Grid.Column>
-      <Grid.Column width="4">
+      </div>
+      <div className="jobdetails">
         <JobDetails backend={backend} job={job} setJob={setJob} jobId={jobId} setJobs={setJobs} />
-      </Grid.Column>
-    </Grid>
+      </div>
+    </JobsGrid>
   );
 }
 
@@ -120,7 +135,7 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
 
   return (
     <Container style={{ height: "100%", textAlign: "left" }}>
-      <Header textAlign="center">{job.title}</Header>
+      <h3>{job.title}</h3>
 
       <Table
         singleLine
@@ -209,7 +224,7 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
           data={annotations?.data}
           style={{ cursor: "pointer", border: "0", padding: "0", width: "100%" }}
         >
-          <Button
+          <StyledButton
             fluid
             loading={!annotations?.data}
             disabled={annotations?.data.length === 0}
@@ -222,10 +237,10 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
           />
         </CSVDownloader>
       ) : (
-        <Button fluid onClick={getAnnotations} disabled={annotations !== null}>
+        <StyledButton fluid onClick={getAnnotations} disabled={annotations !== null}>
           <Icon name="list" />
           Get annotations
-        </Button>
+        </StyledButton>
       )}
 
       <AnnotationProgress job={job} annotations={annotations} />
@@ -281,7 +296,7 @@ const JobUsers = ({ backend, job }: JobUsersProps) => {
           options={options}
           style={{ width: "100%" }}
         />
-        <Button icon="save" disabled={!changed} primary onClick={onSave} />
+        <StyledButton icon="save" disabled={!changed} primary onClick={onSave} />
       </div>
       {changed ? (
         <span style={{ float: "right", color: "var(--orange)" }}>
@@ -395,7 +410,7 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
       onOpen={() => setOpen(true)}
       hoverable
       mouseLeaveDelay={9999999}
-      trigger={<Button style={{ padding: "5px", ...style }}>Get Job Token</Button>}
+      trigger={<StyledButton style={{ padding: "5px", ...style }}>Get Job Token</StyledButton>}
     >
       <Segment
         style={{
@@ -408,15 +423,13 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
           border: "1px solid #136bae",
         }}
       >
-        <Header textAlign="center" style={{ fontSize: "1.5em" }}>
-          Create job coder
-        </Header>
+        <h2>Create job coder</h2>
         <div style={{ textAlign: "center" }}>
           <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
         </div>
         <br />
 
-        <Button
+        <StyledButton
           fluid
           secondary
           onClick={() => {
@@ -424,7 +437,7 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
           }}
         >
           Copy link
-        </Button>
+        </StyledButton>
       </Segment>
     </Portal>
   );

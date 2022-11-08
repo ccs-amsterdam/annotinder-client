@@ -1,27 +1,69 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Grid, Button, Portal, Form, Input, Icon, Segment } from "semantic-ui-react";
+import { Icon } from "semantic-ui-react";
 import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
-import useLocalStorage from "../../../hooks/useLocalStorage";
 import AnnotateTaskManual from "./AnnotateTaskManual";
+
 import {
   Annotation,
   FullScreenNode,
   Unit,
   VariableValueMap,
   VariableMap,
-  SetState,
   CodeBook,
   SessionData,
 } from "../../../types";
 import Instructions from "./Instructions";
-import ThemeSelector from "../../Common/Theme";
+import { StyledButton } from "../../../styled/StyledSemantic";
+import styled from "styled-components";
 
 const NEXTDELAY = 500;
 const BODYSTYLE = {
   paddingTop: "10px",
   paddingBottom: "10px",
 };
+
+const AnnotateGrid = styled.div`
+  display: grid;
+  grid-gap: 1em;
+  grid-template-areas: "documentContainer table";
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+
+  @media screen and (max-width: 700px) {
+    grid-template-areas: "table" "documentContainer";
+    grid-template-columns: 1fr;
+    grid-template-rows: 0% 100%;
+    grid-gap: 0;
+  }
+
+  & .documentContainer {
+    grid-area: documentContainer;
+    overflow: auto;
+    height: 100%;
+
+    .document {
+      height: calc(100% - 35px);
+      overflow: auto;
+    }
+    .bottomBar {
+      display: flex;
+      padding: 0;
+      height: 35px;
+      background: var(--secondary);
+      border-radius: 5px;
+    }
+  }
+
+  & .table {
+    grid-area: table;
+    overflow: auto;
+    border-bottom: 1px solid;
+  }
+`;
 
 interface AnnotateTaskProps {
   unit: Unit;
@@ -42,7 +84,6 @@ const AnnotateTask = ({
 }: AnnotateTaskProps) => {
   const [annotations, onChangeAnnotations] = useAnnotations(unit);
   const [variableMap, setVariableMap] = useState<VariableMap>(null);
-  const [settings, setSettings] = useLocalStorage("annotateTaskSettings", { textSize: 1 });
   const [tokens, setTokens] = useState(null);
 
   const restrictedCodes = useMemo(() => {
@@ -50,7 +91,7 @@ const AnnotateTask = ({
     for (let v of codebook.variables) {
       if (v.onlyImported) restrictedCodes[v.name] = {};
     }
-    for (let a of unit.importedAnnotations || []) {
+    for (let a of unit.unit.importedAnnotations || []) {
       if (!restrictedCodes[a.variable]) continue;
       restrictedCodes[a.variable][a.value] = true;
     }
@@ -59,56 +100,14 @@ const AnnotateTask = ({
 
   if (!unit || codebook?.variables === null) return null;
 
-  const renderAnnotateTable = () => {
-    if (codebook?.settings?.no_table) return null;
-    return (
-      <Grid.Column
-        width={6}
-        style={{
-          padding: "0",
-          height: "100%",
-          paddingLeft: "10px",
-        }}
-      >
-        <div style={{ borderBottom: "1px solid", height: "calc(100%)", overflow: "auto" }}>
-          <AnnotateTable tokens={tokens} variableMap={variableMap} annotations={annotations} />
-        </div>
-      </Grid.Column>
-    );
-  };
-
-  let ann = unit.annotations;
-  if (unit.importedAnnotations && (!ann || ann.length === 0) && unit.status !== "DONE")
-    ann = unit.importedAnnotations;
+  let ann = unit.unit.annotations;
+  if (unit.unit.importedAnnotations && (!ann || ann.length === 0) && unit.status !== "DONE")
+    ann = unit.unit.importedAnnotations;
 
   return (
-    <Grid
-      centered
-      stackable
-      style={{
-        height: "100%",
-        width: "100%",
-        paddingTop: "0",
-        margin: "0",
-        background: "var(--background)",
-        color: "var(--text)",
-      }}
-      columns={2}
-    >
-      <Grid.Column
-        width={10}
-        style={{
-          padding: "0",
-          height: "100%",
-          //margin: "0",
-        }}
-      >
-        <div
-          style={{
-            height: "calc(100% - 35px)",
-            fontSize: `${settings.textSize}em`,
-          }}
-        >
+    <AnnotateGrid>
+      <div className="documentContainer">
+        <div className="document">
           <Document
             unit={unit}
             annotations={ann}
@@ -123,31 +122,23 @@ const AnnotateTask = ({
             bodyStyle={BODYSTYLE}
           />
         </div>
-        <Button.Group
-          fluid
-          style={{
-            padding: "0",
-            height: "35px",
-            background: "var(--secondary)",
-            borderRadius: "5px",
-          }}
-        >
-          <SettingsPopup
-            settings={settings}
-            setSettings={setSettings}
-            fullScreenNode={fullScreenNode}
-          />
+        <div className="bottomBar">
           <Instructions
-            codebook={codebook}
+            instruction={codebook?.settings?.instruction}
+            autoInstruction={codebook?.settings?.auto_instruction || false}
             sessionData={sessionData}
             fullScreenNode={fullScreenNode}
           />
           <AnnotateTaskManual fullScreenNode={fullScreenNode} />
           <NextUnitButton unit={unit} annotations={annotations} nextUnit={nextUnit} />
-        </Button.Group>
-      </Grid.Column>
-      {renderAnnotateTable()}
-    </Grid>
+        </div>
+      </div>
+      <div className="table">
+        <div style={{}}>
+          <AnnotateTable tokens={tokens} variableMap={variableMap} annotations={annotations} />
+        </div>
+      </div>
+    </AnnotateGrid>
   );
 };
 
@@ -164,7 +155,7 @@ const useAnnotations = (unit: Unit): [Annotation[], (value: Annotation[]) => voi
     }
     safeWrite.current = unit.unitId;
     //hasChanged.current = false;
-    setAnnotations(unit.annotations || []);
+    setAnnotations(unit.unit.annotations || []);
     // if (!unit.annotations || unit.annotations.length === 0)
     //   unit.jobServer.postAnnotations(unit.unitId, [], "IN_PROGRESS");
   }, [unit, setAnnotations]);
@@ -174,7 +165,7 @@ const useAnnotations = (unit: Unit): [Annotation[], (value: Annotation[]) => voi
       if (unit.unitId !== safeWrite.current) return;
       setAnnotations(newAnnotations);
       const cleanAnnotations = getCleanAnnotations(newAnnotations);
-      if (!annotationsHaveChanged(unit.annotations || [], cleanAnnotations)) return;
+      if (!annotationsHaveChanged(unit.unit.annotations || [], cleanAnnotations)) return;
       const newStatus = unit?.status === "DONE" ? "DONE" : "IN_PROGRESS";
       unit.jobServer.postAnnotations(unit.unitId, cleanAnnotations, newStatus);
     },
@@ -255,87 +246,18 @@ const NextUnitButton = ({ unit, annotations, nextUnit }: NextUnitButtonProps) =>
   });
 
   return (
-    <Button
+    <StyledButton
       disabled={tempDisable !== "ready"}
       loading={tempDisable === "loading"}
       primary
+      fluid
       size="tiny"
-      style={{ padding: "5px", marginLeft: "30px" }}
+      style={{ padding: "5px", marginLeft: "30px", marginRight: "0px" }}
       onClick={onNext}
     >
       <Icon name="play" />
       Go to next unit
-    </Button>
-  );
-};
-
-interface SettingsPopupProps {
-  settings: Record<string, string | number>;
-  setSettings: SetState<Record<string, string | number>>;
-  fullScreenNode: FullScreenNode;
-}
-
-const SettingsPopup = ({ settings, setSettings, fullScreenNode }: SettingsPopupProps) => {
-  return (
-    <Portal
-      closeOnTriggerClick
-      mountNode={fullScreenNode || undefined}
-      on="click"
-      trigger={
-        <Button
-          size="huge"
-          icon="setting"
-          style={{
-            padding: "4px 5px 4px 5px",
-            maxWidth: "30px",
-            background: "transparent",
-            color: "var(--text-inversed-fixed)",
-            cursor: "pointer",
-            margin: "0",
-            width: "30px",
-            zIndex: 1000,
-          }}
-        />
-      }
-    >
-      <Segment
-        style={{
-          bottom: "30%",
-          left: "10%",
-          position: "fixed",
-          width: "80%",
-          maxWidth: "400px",
-          zIndex: 10000,
-          background: "#dfeffbaa",
-          backdropFilter: "blur(2px)",
-          border: "1px solid #136bae",
-        }}
-      >
-        <Form>
-          <Form.Field style={{ textAlign: "center" }}>
-            <label>Dark mode</label>
-            <ThemeSelector />
-          </Form.Field>
-          <Form.Group grouped>
-            <Form.Field>
-              <label>
-                text size scaling{" "}
-                <span style={{ color: "var(--primary)" }}>{`${settings.textSize}`}</span>
-              </label>
-              <Input
-                size="mini"
-                step={0.025}
-                min={0.4}
-                max={1.6}
-                type="range"
-                value={settings.textSize}
-                onChange={(e, d) => setSettings({ ...settings, textSize: d.value })}
-              />
-            </Form.Field>
-          </Form.Group>
-        </Form>
-      </Segment>
-    </Portal>
+    </StyledButton>
   );
 };
 

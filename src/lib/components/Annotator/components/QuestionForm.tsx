@@ -25,25 +25,28 @@ import AnswerField from "./AnswerField";
 import QuestionIndexStep from "./QuestionIndexStep";
 
 const QuestionDiv = styled.div`
+  position: relative;
   height: 100%;
   width: 100%;
   background-color: var(--background-inversed-fixed);
   border-top: 3px double var(--text-inversed-fixed);
   box-shadow: 0px 5px 5px 1px grey;
   font-size: inherit;
-  z-index: 9000;
+  z-index: 50;
   overflow: auto;
 `;
 
 const MenuDiv = styled.div`
+  position: relative;
+  z-index: 51;
   width: 100%;
   display: flex;
+  min-height: 30px;
 `;
 
 const BodyDiv = styled.div`
   display: flex;
   flex-flow: column;
-  height: calc(100% - 30px);
   width: 100%;
   padding: 0px 10px 5px 10px;
   color: var(--text-inversed-fixed);
@@ -58,13 +61,12 @@ const HeaderDiv = styled.div`
 `;
 
 const iconStyle = {
-  fontSize: "10px",
+  fontSize: "20px",
   position: "absolute",
-  right: "12px",
-  paddingTop: "4px",
+  right: "0px",
+  paddingTop: "3px",
   marginRight: "0",
-  color: "var(--green)",
-  transform: "scale(3)",
+  color: "#2bb92b81",
 };
 
 interface QuestionFormProps {
@@ -161,7 +163,16 @@ const QuestionForm = ({
   return (
     <QuestionDiv>
       <MenuDiv>
-        <div style={{ display: "flex", width: "60px", color: "var(--text-inversed-fixed)" }}>
+        <div
+          style={{
+            position: "relative",
+            zIndex: 100,
+            display: "flex",
+            flexDirection: "column",
+            width: "30px",
+            color: "var(--text-inversed-fixed)",
+          }}
+        >
           {children}
         </div>
         <div style={{ width: "100%", textAlign: "center" }}>
@@ -171,21 +182,25 @@ const QuestionForm = ({
             answers={answers}
             setQuestionIndex={setQuestionIndex}
           />
+          <HeaderDiv className="AnswerHeader">
+            <h2
+              style={{
+                color: "var(--text-inversed-fixed)",
+                fontSize: "1.2em",
+                textAlign: "center",
+                paddingBottom: "5px",
+              }}
+            >
+              {questionText}
+            </h2>
+          </HeaderDiv>
         </div>
-        <div style={{ position: "relative", width: "60px" }}>
-          {done ? <Icon size="big" name="check square outline" style={iconStyle} /> : null}
+        <div style={{ position: "relative", width: "30px" }}>
+          {done ? <Icon size="big" name="check" style={iconStyle} /> : null}
         </div>
       </MenuDiv>
 
       <BodyDiv>
-        <HeaderDiv className="AnswerHeader">
-          <h2
-            style={{ color: "var(--text-inversed-fixed)", fontSize: "1.2em", textAlign: "center" }}
-          >
-            {questionText}
-          </h2>
-        </HeaderDiv>
-
         <AnswerField
           answers={answers}
           questions={questions}
@@ -213,8 +228,8 @@ const prepareQuestion = (unit: Unit, question: Question, answers: Answer[]) => {
       const m0: string = m[0];
       const m1: string = m[1];
       let answer;
-      if (unit.variables) {
-        answer = { variable: m1, items: [{ values: [unit.variables[m1]] }] };
+      if (unit.unit.variables) {
+        answer = { variable: m1, items: [{ values: [unit.unit.variables[m1]] }] };
       }
       if (answers) {
         answer = answers.find((a) => a.variable === m1) || answer;
@@ -278,20 +293,22 @@ const processAnswer = async (
       questions[questionIndex].options
     );
 
-    unit.annotations = addAnnotationsFromAnswer(answers[questionIndex], unit.annotations);
-
+    unit.unit.annotations = addAnnotationsFromAnswer(answers[questionIndex], unit.unit.annotations);
     const irrelevantQuestions = processIrrelevantBranching(unit, questions, answers, questionIndex);
 
     // next (non-irrelevant) question in unit (null if no remaining)
     let newQuestionIndex: number = null;
     for (let i = questionIndex + 1; i < questions.length; i++) {
-      if (irrelevantQuestions[i]) continue;
+      if (irrelevantQuestions[i]) {
+        unit.unit.annotations = addAnnotationsFromAnswer(answers[i], unit.unit.annotations);
+        continue;
+      }
       newQuestionIndex = i;
       break;
     }
 
     const status = newQuestionIndex === null ? "DONE" : "IN_PROGRESS";
-    const cleanAnnotations = unit.annotations.map((a: Annotation) => {
+    const cleanAnnotations = unit.unit.annotations.map((a: Annotation) => {
       const { field, offset, length, variable, value } = a;
       return { field, offset, length, variable, value };
     });
