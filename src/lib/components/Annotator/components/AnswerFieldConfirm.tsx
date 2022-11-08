@@ -60,6 +60,7 @@ const Confirm = ({ onSelect, button, swipe, blockEvents }: ConfirmProps) => {
         style={{ height: "100%", border: `2px solid ${borderColor}`, color: textColor }}
         onClick={() => {
           setPressed(true);
+          setTimeout(() => setPressed(false), 400);
           onSelect({ value: "confirmed", finish: true });
         }}
       />
