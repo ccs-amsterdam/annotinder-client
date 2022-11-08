@@ -58,10 +58,9 @@ const AskFullScreenModal = ({ handle, askFullScreenSetting }: AskFullScreenModal
   // Ask once per session
   let [askFullScreen, setAskFullScreen] = useSessionStorage("askFullScreen", true);
 
-  console.log(askFullScreen);
   // only ask for small (mobile) screen and if askFullScreenSetting allows it.
   if (!askFullScreenSetting || window.innerWidth > 500) askFullScreen = false;
-  askFullScreen = true;
+
   return (
     <StyledModal open={askFullScreen}>
       <StyledModal.Header>Fullscreen mode</StyledModal.Header>
