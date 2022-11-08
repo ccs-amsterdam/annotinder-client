@@ -42,7 +42,6 @@ export default function processUnitContent(ruc: RawUnitContent): UnitContent {
   }
 
   content.tokens = ruc.tokens ? importTokens(ruc.tokens) : parseTokens([...content.text_fields]);
-
   return content;
 }
 
@@ -56,8 +55,9 @@ function prepareGrid(grid: FieldGridInput, content: UnitContent): FieldGrid {
   let ncolumns = 1;
 
   for (let row of grid.areas) {
+    if (!Array.isArray(row)) row = [row];
     // first get max row length (= n columns)
-    if (Array.isArray(row)) ncolumns = Math.max(ncolumns, row.length);
+    ncolumns = Math.max(ncolumns, row.length);
   }
 
   // grid area names have certain conditions that we don't want to think of,
@@ -66,7 +66,6 @@ function prepareGrid(grid: FieldGridInput, content: UnitContent): FieldGrid {
 
   const used_columns = new Set([]);
   for (let row of grid.areas) {
-    if (!Array.isArray(row)) row = [row];
     const row_columns = [];
     for (let i = 0; i < ncolumns; i++) {
       const column = row[i] ?? row[row.length - 1];

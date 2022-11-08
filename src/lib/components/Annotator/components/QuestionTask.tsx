@@ -213,7 +213,8 @@ const QuestionTask = ({
           blockEvents={blockEvents}
         >
           <Instructions
-            codebook={codebook}
+            instruction={question?.instruction || codebook?.settings?.instruction}
+            autoInstruction={codebook?.settings?.auto_instruction || false}
             sessionData={sessionData}
             fullScreenNode={fullScreenNode}
           />

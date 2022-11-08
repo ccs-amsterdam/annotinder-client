@@ -70,7 +70,6 @@
         "questions": [
           {
             "name": "fav_animal",
-            "instruction": "questions can have individual instructions",
             "type": "select code",
             "question": "What's your favourite type of animal?",
             "codes": [
@@ -83,7 +82,7 @@
           {
             "name": "fav_animal_count",
             "type": "inputs",
-            "instruction": "blabla instruction blabla",
+            "instruction": "Specific questions can also have individual instructions",
             "question": "How many {fav_animal} do you have?",
             "items": [{ "name": "animal count", "type": "number", "min": 0 }]
           }

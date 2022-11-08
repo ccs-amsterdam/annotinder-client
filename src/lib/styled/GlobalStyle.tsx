@@ -38,10 +38,11 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html {
-    font-size: var(--font-size) !important;
+    font-size: 14px;
   }
   
   body {
+    font-size: var(--font-size) !important ;
     overscroll-behavior: contain;
     background: var(--background);
     color: var(--text);

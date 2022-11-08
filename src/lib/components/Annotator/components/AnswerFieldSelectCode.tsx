@@ -156,9 +156,7 @@ const SelectCode = React.memo(
           <div
             key={option.code}
             style={{
-              flex: true
-                ? `${Math.max(1 / perRow, 1 / options.length)} 1 0px`
-                : `${Math.max(1 / perRow, 1 / options.length)}  1 auto`,
+              flex: `${Math.max(1 / perRow, 1 / options.length)} 1 0px`,
               minWidth: minWidth + "px",
               width: sameSize ? minWidth + "px" : null,
               textAlign: "center",

@@ -127,6 +127,7 @@ export interface Question {
   name: string;
   type: QuestionType;
   question?: string;
+  instruction?: string;
   codes?: Code[];
   items?: QuestionItem[];
   single_row?: boolean;

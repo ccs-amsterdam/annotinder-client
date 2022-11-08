@@ -62,7 +62,6 @@ const fontsizeOptions = [
 export const FontSizeButton = ({ color }: ThemeSelectorProps) => {
   const [theme, setTheme] = useLocalStorage("fontsize", "medium");
   const selected = fontsizeOptions.findIndex((t) => t.name === theme);
-  console.log(selected);
 
   document.documentElement.style.setProperty(`--font-size`, fontsizeOptions[selected].size);
 

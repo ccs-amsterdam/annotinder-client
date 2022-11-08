@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback, ReactElement } from "react";
-import { Segment } from "semantic-ui-react";
 import AnnotateUnit from "./components/AnnotateUnit";
 import FullScreenWindow from "./components/FullScreenWindow";
 import JobController from "./components/JobController";
 import { SetState, JobServer, Unit, SetUnitIndex, RawUnit, UnitContent } from "../../types";
 import processUnitContent from "../../functions/processUnitContent";
+import { StyledSegment } from "../../styled/StyledSemantic";
 
 /**
  * Keep unit and index in same state to guarantee that they're synchronized
@@ -59,7 +59,7 @@ const Annotator = ({
           cantLeave={cantLeave}
           authForm={authForm}
         >
-          <Segment basic style={{ height: "100%", padding: "0", margin: "0" }}>
+          <StyledSegment style={{ height: "100%", padding: "0", margin: "0" }}>
             <AnnotateUnit
               jobServer={jobServer}
               unit={indexedUnit?.unit}
@@ -67,7 +67,7 @@ const Annotator = ({
               setUnitIndex={setUnitIndex}
               fullScreenNode={fullScreenNode}
             />
-          </Segment>
+          </StyledSegment>
         </JobController>
       )}
     </FullScreenWindow>

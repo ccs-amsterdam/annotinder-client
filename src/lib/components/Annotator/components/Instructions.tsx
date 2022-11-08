@@ -1,33 +1,35 @@
 import { useEffect, useRef, useState } from "react";
 import { TransitionablePortal } from "semantic-ui-react";
-import { FullScreenNode, CodeBook, SessionData } from "../../../types";
+import { FullScreenNode, SessionData } from "../../../types";
 import Markdown from "../../Common/Markdown";
 import { StyledModal, StyledButton } from "../../../styled/StyledSemantic";
 
 interface InstructionsProps {
-  codebook: CodeBook;
+  instruction: string;
+  autoInstruction: boolean;
   sessionData: SessionData;
   fullScreenNode: FullScreenNode;
 }
 
-const Instructions = ({ codebook, sessionData, fullScreenNode }: InstructionsProps) => {
+const Instructions = ({
+  instruction,
+  autoInstruction,
+  sessionData,
+  fullScreenNode,
+}: InstructionsProps) => {
   const [open, setOpen] = useState(false);
-  const [instruction, setInstruction] = useState(null);
   const modalRef = useRef(null);
 
   useEffect(() => {
-    const inst = codebook?.settings?.instruction;
-    if (!inst) {
-      setInstruction(null);
+    if (!instruction) {
       setOpen(false);
       return;
     }
-    setInstruction(inst);
-    if (codebook?.settings?.auto_instruction) {
-      if (!sessionData.seenInstructions[inst]) setOpen(true);
-      sessionData.seenInstructions[inst] = true;
+    if (autoInstruction) {
+      if (!sessionData.seenInstructions[instruction]) setOpen(true);
+      sessionData.seenInstructions[instruction] = true;
     }
-  }, [codebook, sessionData]);
+  }, [instruction, autoInstruction, sessionData]);
 
   useEffect(() => {
     const stopPropagation = (e: any) => open && e.stopPropagation();

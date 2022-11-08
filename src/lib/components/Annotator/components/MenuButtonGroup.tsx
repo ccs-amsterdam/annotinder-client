@@ -35,7 +35,6 @@ const StyledButtonGroup = styled.div`
     & .Buttons {
       background: var(--background-inversed-fixed);
       border: 0px double var(--background-fixed);
-
       position: absolute;
       width: 38px;
       top: 34px;
@@ -43,6 +42,9 @@ const StyledButtonGroup = styled.div`
       z-index: 1000;
       flex-direction: column;
       max-height: var(--buttongroup-height);
+    }
+    & .Buttons * {
+      padding-top: 1rem;
     }
     &:hover .Buttons,
     &:active .Buttons {

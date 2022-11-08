@@ -99,7 +99,6 @@ const AnswerField = ({
       const innerEl = el.children[0];
       if (!innerEl) return;
       if (el.clientHeight - innerEl.clientHeight > 15) {
-        console.log(el.clientHeight, innerEl.clientHeight);
         // if the innerAnswerField is smaller than the answerField (with some margin), we can
         // shrink the answerfield
         answerRef.current.style["min-height"] = innerEl.clientHeight + "px";
@@ -173,6 +172,7 @@ const AnswerField = ({
   // values         array of values
   // answerItems     object with items as keys and values array as value
 
+  console.log(question);
   let answerfield = null;
   if (question.type === "select code")
     answerfield = (

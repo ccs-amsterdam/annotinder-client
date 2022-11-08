@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Form, Input, Icon } from "semantic-ui-react";
+import { Icon } from "semantic-ui-react";
 import AnnotateTable from "./AnnotateTable";
 import Document from "../../Document/Document";
-import useLocalStorage from "../../../hooks/useLocalStorage";
 import AnnotateTaskManual from "./AnnotateTaskManual";
 
 import {
@@ -11,7 +10,6 @@ import {
   Unit,
   VariableValueMap,
   VariableMap,
-  SetState,
   CodeBook,
   SessionData,
 } from "../../../types";
@@ -25,7 +23,7 @@ const BODYSTYLE = {
   paddingBottom: "10px",
 };
 
-const AnnotateGrid = styled.div<{ textSize: number }>`
+const AnnotateGrid = styled.div`
   display: grid;
   grid-gap: 1em;
   grid-template-areas: "documentContainer table";
@@ -50,7 +48,6 @@ const AnnotateGrid = styled.div<{ textSize: number }>`
     .document {
       height: calc(100% - 35px);
       overflow: auto;
-      font-size: ${(props) => props.textSize}em;
     }
     .bottomBar {
       display: flex;
@@ -87,7 +84,6 @@ const AnnotateTask = ({
 }: AnnotateTaskProps) => {
   const [annotations, onChangeAnnotations] = useAnnotations(unit);
   const [variableMap, setVariableMap] = useState<VariableMap>(null);
-  const [settings, setSettings] = useLocalStorage("annotateTaskSettings", { textSize: 1 });
   const [tokens, setTokens] = useState(null);
 
   const restrictedCodes = useMemo(() => {
@@ -109,7 +105,7 @@ const AnnotateTask = ({
     ann = unit.unit.importedAnnotations;
 
   return (
-    <AnnotateGrid textSize={settings.textSize}>
+    <AnnotateGrid>
       <div className="documentContainer">
         <div className="document">
           <Document
@@ -128,7 +124,8 @@ const AnnotateTask = ({
         </div>
         <div className="bottomBar">
           <Instructions
-            codebook={codebook}
+            instruction={codebook?.settings?.instruction}
+            autoInstruction={codebook?.settings?.auto_instruction || false}
             sessionData={sessionData}
             fullScreenNode={fullScreenNode}
           />
@@ -263,10 +260,5 @@ const NextUnitButton = ({ unit, annotations, nextUnit }: NextUnitButtonProps) =>
     </StyledButton>
   );
 };
-
-interface SettingsPopupProps {
-  settings: Record<string, string | number>;
-  setSettings: SetState<Record<string, string | number>>;
-}
 
 export default React.memo(AnnotateTask);

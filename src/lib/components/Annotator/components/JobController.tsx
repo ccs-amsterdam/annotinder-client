@@ -129,7 +129,7 @@ const UserButton = ({ fullScreenNode, jobServer, authForm }: UserButtonProps) =>
         />
       }
     >
-      <div style={{ display: "flex", minWidth: "200px", minHeight: "100px" }}>
+      <div style={{ display: "flex", minWidth: "150px", minHeight: "50px" }}>
         {jobServer?.return_link ? <BackToOverview jobServer={jobServer} /> : authForm}
       </div>
     </MenuPopup>
