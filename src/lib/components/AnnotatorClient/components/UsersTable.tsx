@@ -53,7 +53,7 @@ const PortalContent = styled.div`
   left: 25%;
   position: fixed;
   min-width: 50%;
-  z-index: 1000,
+  z-index: 1000;
   background: #dfeffb;
   border: 1px solid var(--background-inversed);
   text-align: center;

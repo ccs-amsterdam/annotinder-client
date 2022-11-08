@@ -41,7 +41,9 @@ interface LoginProps {
 
 const Login = ({ login, sessionList }: LoginProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [host, setHost] = useState(searchParams.get("host") || "");
+  const paramHost = (searchParams.get("host") || "").replace("%colon%", ":");
+  const [host, setHost] = useState(paramHost);
+
   const [email, setEmail] = useState("");
   const has_jobtoken = !!searchParams.get("jobtoken");
   const canRegister = false; // placeholder for if at some point we want to enable registering
