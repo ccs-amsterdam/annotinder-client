@@ -50,7 +50,7 @@ function prepareGrid(grid: FieldGridInput, content: UnitContent): FieldGrid {
   // there is some leeway (inner array can be a single string, and if inner arrays do not have same length, last value is repeated).
   // this is then used to create the grid-template-areas
   const outputGrid: FieldGrid = {};
-  if (!grid) return outputGrid;
+  if (!grid?.areas) return outputGrid;
   let template = [];
   let ncolumns = 1;
 
