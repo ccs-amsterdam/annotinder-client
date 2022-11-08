@@ -88,9 +88,9 @@ const JobController = ({
           <MenuButtonGroup>
             <FontSizeButton color="white" />
             <DarkModeButton color="white" />
-            {fullScreenButton}
           </MenuButtonGroup>
         </div>
+        {fullScreenButton}
         {cantLeave ? null : (
           <UserButton fullScreenNode={fullScreenNode} jobServer={jobServer} authForm={authForm} />
         )}
@@ -121,7 +121,6 @@ const UserButton = ({ fullScreenNode, jobServer, authForm }: UserButtonProps) =>
           style={{
             background: "transparent",
             color: "var(--text-inversed-fixed)",
-            cursor: "pointer",
             padding: "4px 1px",
             fontSize: "24px",
             margin: 0,

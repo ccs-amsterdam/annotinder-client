@@ -38,7 +38,7 @@ const DemoJobOverview = () => {
   }, [job]);
 
   if (job === null) return <DemoSelector />;
-  return <Annotator jobServer={job} />;
+  return <Annotator jobServer={job} askFullScreen />;
 };
 
 interface DemoFile {
