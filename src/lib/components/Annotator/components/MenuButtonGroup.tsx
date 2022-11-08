@@ -23,6 +23,7 @@ const StyledButtonGroup = styled.div`
 
   & .Buttons {
     transition: max-height 0.2s, border 1s;
+    padding-top: 2px;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -36,6 +37,7 @@ const StyledButtonGroup = styled.div`
       background: var(--background-inversed-fixed);
       border: 0px double var(--background-fixed);
       position: absolute;
+      padding-top: 0px;
       width: 38px;
       top: 34px;
       left: -3px;

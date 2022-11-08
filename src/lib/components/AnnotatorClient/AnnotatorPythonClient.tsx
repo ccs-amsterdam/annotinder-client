@@ -23,7 +23,7 @@ const AnnotatorPythonClient = () => {
     return <Home backend={backend} authForm={authForm} />;
   }
 
-  return <Annotator jobServer={jobServer} authForm={authForm} />;
+  return <Annotator jobServer={jobServer} askFullScreen authForm={authForm} />;
 };
 
 const useJobServer = (backend: Backend): [JobServer, boolean] => {
