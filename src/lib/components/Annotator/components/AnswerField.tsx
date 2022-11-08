@@ -172,7 +172,6 @@ const AnswerField = ({
   // values         array of values
   // answerItems     object with items as keys and values array as value
 
-  console.log(question);
   let answerfield = null;
   if (question.type === "select code")
     answerfield = (
