@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { OnSelectParams, Swipes } from "../../../types";
 import { StyledButton } from "../../../styled/StyledSemantic";
 
@@ -14,6 +14,7 @@ interface ConfirmProps {
 }
 
 const Confirm = ({ onSelect, button, swipe, blockEvents }: ConfirmProps) => {
+  const [pressed, setPressed] = useState(false);
   // there's only one option here and it's glorious
 
   const onKeydown = React.useCallback(
@@ -47,6 +48,8 @@ const Confirm = ({ onSelect, button, swipe, blockEvents }: ConfirmProps) => {
     }
   }, [swipe, onSelect]);
 
+  const borderColor = pressed ? "var(--background-inversed-fixed)" : "var(--background-fixed";
+  const textColor = pressed ? "black" : "white";
   return (
     <div style={{ width: "100%", height: "100%" }}>
       <StyledButton
@@ -54,8 +57,11 @@ const Confirm = ({ onSelect, button, swipe, blockEvents }: ConfirmProps) => {
         primary
         content={button || "Continue"}
         size="huge"
-        style={{ height: "100%", border: "2px solid var(--background-fixed)" }}
-        onClick={() => onSelect({ value: "confirmed", finish: true })}
+        style={{ height: "100%", border: `2px solid ${borderColor}`, color: textColor }}
+        onClick={() => {
+          setPressed(true);
+          onSelect({ value: "confirmed", finish: true });
+        }}
       />
     </div>
   );
