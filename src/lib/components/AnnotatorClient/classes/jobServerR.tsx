@@ -46,7 +46,8 @@ class JobServerR implements JobServer {
   async postAnnotations(unitId: number, annotation: Annotation[], status: Status) {
     try {
       await this.backend.postAnnotation(this.job_id, unitId, annotation, status);
-      return checkConditions({ ...this.unit, annotation });
+      const report = checkConditions({ ...this.unit, annotation });
+      return report;
     } catch (e) {
       if (this.setJobServer) this.setJobServer(null);
     }
