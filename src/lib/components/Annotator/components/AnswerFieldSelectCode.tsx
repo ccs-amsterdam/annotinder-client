@@ -15,8 +15,8 @@ interface SelectCodeProps {
   values: (string | number)[];
   /** If true, multiple options can be chosen */
   multiple: boolean;
-  /** If true, all buttons are put on the same row */
-  singleRow: boolean;
+  /** If true, all buttons are put in a single column */
+  vertical: boolean;
   /** If true, all buttons are kept mostly the same size (can deviate if some options have more characters) */
   sameSize: boolean;
   /** The function used to update the values */
@@ -35,7 +35,7 @@ const SelectCode = React.memo(
     options,
     values,
     multiple,
-    singleRow,
+    vertical,
     sameSize,
     onSelect,
     onFinish,
@@ -145,6 +145,7 @@ const SelectCode = React.memo(
         minWidth = px_per_em * 6;
         perRow = Math.floor(container.current.clientWidth / minWidth);
       }
+      const minWidthStr = vertical ? "100%" : minWidth + "px";
 
       return options.map((option, i) => {
         let bordercolor = "var(--background-inversed-fixed)";
@@ -157,8 +158,9 @@ const SelectCode = React.memo(
             key={option.code}
             style={{
               flex: `${Math.max(1 / perRow, 1 / options.length)} 1 0px`,
-              minWidth: minWidth + "px",
-              width: sameSize ? minWidth + "px" : null,
+              //flex: "1 1 auto",
+              minWidth: minWidthStr,
+              width: sameSize ? minWidthStr : null,
               textAlign: "center",
             }}
           >
@@ -177,6 +179,7 @@ const SelectCode = React.memo(
                   borderRadius: "13.5px",
                   fontSize: "inherit",
                   position: "relative",
+                  height: "100%",
                   border: `3px solid ${bordercolor}`,
                 }}
                 key={option.code}
@@ -227,8 +230,8 @@ const SelectCode = React.memo(
             display: "flex",
             flex: "1 1 auto",
             justifyContent: "center",
-            flexWrap: singleRow ? null : "wrap",
-            //alignItems: stretch ? "stretch" : "center",
+            flexWrap: "wrap",
+            alignItems: "stretch",
             maxWidth: "100%",
             height: "100%",
             //overflow: "auto",

@@ -25,6 +25,7 @@ const VariableButtons = styled.div`
   font-size: 1.2em;
   font-weight: bold;
   width: 100%;
+  color: rgb(0, 0, 255);
 
   & div {
     padding: 0.4em 1em 0.2em 1em;

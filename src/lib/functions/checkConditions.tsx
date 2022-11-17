@@ -13,7 +13,6 @@ import { RawUnit, ConditionReport, Annotation, Status, ConditionalAction } from 
 export default function checkConditions(unit: RawUnit): ConditionReport {
   const type = unit.type;
   const cr: ConditionReport = { evaluation: {}, damage: {} };
-
   if (type !== "train" && type !== "test" && type !== "pre") return cr;
   if (!unit.conditionals) return cr;
 

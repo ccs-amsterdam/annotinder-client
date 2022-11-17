@@ -130,7 +130,7 @@ export interface Question {
   instruction?: string;
   codes?: Code[];
   items?: QuestionItem[];
-  single_row?: boolean;
+  vertical?: boolean;
   same_size?: boolean;
   swipeOptions?: SwipeOptions;
   options?: AnswerOption[];

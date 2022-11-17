@@ -162,7 +162,7 @@ const QuestionForm = ({
 
   return (
     <QuestionDiv>
-      <MenuDiv>
+      <MenuDiv className="QuestionMenu">
         <div
           style={{
             position: "relative",

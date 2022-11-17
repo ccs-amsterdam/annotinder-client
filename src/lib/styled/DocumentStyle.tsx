@@ -104,7 +104,7 @@ export default css`
   .focus {
     transition: background-color 500ms;
     position: relative;
-    background-color: var(--background);
+    background-color: var(--background) !important;
     border: 1px double var(--border);
     border-radius: 20px;
     box-shadow: 0px 1px 3px black;
