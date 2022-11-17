@@ -83,7 +83,6 @@ const AnswerField = ({
   useEffect(() => {
     // change the min-height of the answerField based on whether it needs to grow
     // or shrink. This way, the transition animation works (which is not possible with flex)
-
     const resize = () => {
       if (!answerRef.current) return;
       const el = answerRef.current;
@@ -173,13 +172,14 @@ const AnswerField = ({
   // answerItems     object with items as keys and values array as value
 
   let answerfield = null;
+
   if (question.type === "select code")
     answerfield = (
       <SelectCode
         options={question.options}
         values={answerItems[0].values} // only use first because selectCode doesn't support items
         multiple={question.multiple}
-        singleRow={question.single_row}
+        vertical={question.vertical}
         sameSize={question.same_size}
         onSelect={onSelect}
         onFinish={onFinish}
@@ -259,14 +259,15 @@ const AnswerField = ({
 const growAnswerField = (el: HTMLDivElement) => {
   if (!el) return;
   const container = el.closest(".QuestionContainer");
+  const questionMenu = container.querySelector(".QuestionMenu");
+  const questionMenuHeight = questionMenu.scrollHeight;
   const content = container.querySelector(".DocumentContent");
   const minContentHeight = container.clientHeight / 2;
-  const contentHeight = content
-    ? Math.min(content.clientHeight + 50, minContentHeight)
-    : minContentHeight;
-  const maxheight = container ? container.clientHeight - contentHeight : 300;
+  const contentHeight = Math.min(content.clientHeight, minContentHeight);
 
-  const minheight = Math.max(100, el.scrollHeight + 10);
+  const maxheight = container.clientHeight - contentHeight - questionMenuHeight - 10;
+
+  const minheight = Math.max(100, el.scrollHeight);
   const newMinHeight = Math.min(maxheight, minheight);
 
   if (maxheight < minheight) el.style["border-top"] = "1px solid var(--background-fixed)";

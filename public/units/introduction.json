@@ -134,7 +134,7 @@
           {
             "name": "annoying_scale_question",
             "type": "scale",
-            "single_row": true,
+
             "same_size": true,
             "question": "You didn't skip the annoying scale question? Why?",
             "items": [
