@@ -186,7 +186,7 @@ const QuestionForm = ({
             <h2
               style={{
                 color: "var(--text-inversed-fixed)",
-                fontSize: "1.2em",
+                fontSize: "1em",
                 textAlign: "center",
                 paddingBottom: "5px",
               }}
@@ -326,8 +326,8 @@ const processAnswer = async (
       cleanAnnotations,
       status
     );
-    conditionReport.reportSuccess = true;
 
+    conditionReport.reportSuccess = true;
     setConditionReport(conditionReport);
     const action = conditionReport?.evaluation?.[questions[questionIndex].name]?.action;
     if (action === "block") {
