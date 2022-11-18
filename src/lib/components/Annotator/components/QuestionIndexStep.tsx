@@ -68,7 +68,7 @@ export default function QuestionIndexStep({
         if (hide) return null;
 
         // size question buttons so that those near the selected question are largest
-        const dist = Math.pow(1.2, -Math.abs(questionIndex - i));
+        const dist = Math.pow(1.5, -Math.abs(questionIndex - i));
         return (
           <StyledButton
             key={i}
@@ -78,7 +78,8 @@ export default function QuestionIndexStep({
             style={{
               transition: "all 0.2s",
               opacity: Math.max(dist, 0.2),
-              padding: `5px ${dist * 20}px`,
+              padding: `5px ${dist * 15}px`,
+              marginRight: `${3 * dist}px`,
               height: `${10 * dist}px`,
               border: `1px solid`,
               borderColor: i === questionIndex ? "var(--text-fixed)" : "var(--text-inversed-fixed)",

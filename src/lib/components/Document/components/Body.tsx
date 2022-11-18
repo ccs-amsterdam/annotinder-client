@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useRef, useState, useMemo } from "react";
+import React, { CSSProperties, useEffect, useRef, useState, useMemo, ReactElement } from "react";
 import { Ref } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
 import Meta from "./Meta";
@@ -13,9 +13,6 @@ import {
   ImageField,
   MarkdownField,
   MetaField,
-  RenderedImages,
-  RenderedMarkdown,
-  RenderedText,
   TextField,
   Token,
 } from "../../../types";
@@ -57,9 +54,7 @@ const Body = ({
   focus,
   centered,
 }: BodyProps) => {
-  const [text, setText] = useState<RenderedText>({});
-  const [images, setImages] = useState<RenderedImages>({});
-  const [markdown, setMarkdown] = useState<RenderedMarkdown>({});
+  const [content, setContent] = useState<(ReactElement | ReactElement[])[]>([]);
   const fieldRefs: FieldRefs = useMemo(() => ({}), []);
   const containerRef = useRef(null);
 
@@ -78,9 +73,15 @@ const Body = ({
 
   useEffect(() => {
     if (!tokens) return;
-    setText(renderText(tokens, text_fields, containerRef, fieldRefs));
-    setImages(renderImages(image_fields, containerRef));
-    setMarkdown(renderMarkdown(markdown_fields, fieldRefs));
+    const text = renderText(tokens, text_fields, containerRef, fieldRefs);
+    const images = renderImages(image_fields, containerRef);
+    const markdown = renderMarkdown(markdown_fields, fieldRefs);
+
+    const content: (ReactElement | ReactElement[])[] = [];
+    if (text) for (const f of text_fields) content.push(text[f.name]);
+    if (images) for (const f of image_fields) content.push(images[f.name]);
+    if (markdown) for (const f of markdown_fields) content.push(markdown[f.name]);
+    setContent(content);
     setTimeout(() => onReady(), 50);
   }, [tokens, text_fields, image_fields, markdown_fields, onReady, fieldRefs]);
 
@@ -124,9 +125,7 @@ const Body = ({
               key="content"
               className="DocumentContent"
             >
-              {text_fields.map((tf) => text[tf.name])}
-              {image_fields.map((imf) => images[imf.name])}
-              {markdown_fields.map((md) => markdown[md.name])}
+              {content}
             </DocumentContent>
           </div>
         </div>

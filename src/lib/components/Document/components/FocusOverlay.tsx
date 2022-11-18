@@ -4,7 +4,7 @@ import { scrollToMiddle } from "../../../functions/scroll";
 import { FieldRefs } from "../../../types";
 
 const Overlay = styled.div`
-  background: linear-gradient(135deg, #aaa5 25%, #ddd6 50%, #bbb4 75%, #ccc5 100%);
+  background: linear-gradient(135deg, #aaa8 25%, #ddd8 50%, #bbb7 75%, #ccc9 100%);
   position: absolute;
   top: 0;
   left: 0;
@@ -36,8 +36,12 @@ const FocusOverlay = ({ fieldRefs, focus, containerRef }: FocusOverlayProps) => 
           if (first) {
             containerRef.current.style.scrollBehavior = "smooth";
             setTimeout(
-              () => scrollToMiddle(containerRef.current, fieldRefs[field].current, 1 / 2),
-              0
+              () => scrollToMiddle(containerRef.current, fieldRefs[field].current, 1 / 3),
+              50
+            );
+            setTimeout(
+              () => scrollToMiddle(containerRef.current, fieldRefs[field].current, 1 / 3),
+              500
             );
             first = false;
           }
