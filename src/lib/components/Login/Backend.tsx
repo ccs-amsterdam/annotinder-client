@@ -188,6 +188,10 @@ class Backend {
     const body = { users, only_add };
     return await this.api.post(`codingjob/${job_id}/users`, body);
   }
+  async setPassword(email: string, password: string) {
+    const body = { email, password };
+    return await this.api.post(`users/me/password`, body);
+  }
 }
 
 export default Backend;

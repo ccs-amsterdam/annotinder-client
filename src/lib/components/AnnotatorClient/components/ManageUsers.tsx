@@ -79,7 +79,7 @@ const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }: CreateUse
         name: user.name,
         email: user.name,
         admin: asAdmin,
-        password: "supersecret007",
+        password: "test",
       });
       return submitUsers;
     }, []);
