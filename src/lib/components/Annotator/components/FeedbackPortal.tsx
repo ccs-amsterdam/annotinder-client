@@ -89,9 +89,9 @@ const RetryPortal = ({ action, setConditionReport, fullScreenNode }: RetryPortal
         <div className="Hint">
           {(action?.submessages || []).map((sm: string, i) => {
             return (
-              <p key={i}>
+              <div style={{ marginBottom: "0.5em" }} key={i}>
                 <Markdown>{sm}</Markdown>
-              </p>
+              </div>
             );
           })}
         </div>
