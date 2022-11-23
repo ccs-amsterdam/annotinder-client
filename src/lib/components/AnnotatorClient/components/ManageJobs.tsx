@@ -109,14 +109,17 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
     const progress: Record<string, Record<string, number>> = {};
     const data = [];
     for (let unit of units) {
+      const coder = unit.coder_id + ". " + unit.coder;
       if (!progress[unit.jobset]) progress[unit.jobset] = {};
-      if (!progress[unit.jobset][unit.coder]) progress[unit.jobset][unit.coder] = 0;
-      if (unit.status === "DONE") progress[unit.jobset][unit.coder]++;
+      if (!progress[unit.jobset][coder]) progress[unit.jobset][coder] = 0;
+      if (unit.status === "DONE") progress[unit.jobset][coder]++;
       uniqueUnits[unit.unit_id] = true;
 
       for (let ann of unit.annotation) {
         data.push({
+          coder_id: unit.coder_id,
           coder: unit.coder,
+          jobset: unit.jobset,
           unit_id: unit.unit_id,
           unit_status: unit.status,
           ...ann,
@@ -315,21 +318,46 @@ interface AnnotationProgressProps {
 const AnnotationProgress = ({ job, annotations }: AnnotationProgressProps) => {
   if (!annotations?.progress) return null;
 
-  const data: Record<string, { total: number; n: number }> = {};
+  const data: Record<string, { jobset: string; total: number; n: number }> = {};
   for (const jobset of Object.keys(annotations.progress)) {
     const details = job.jobset_details.find((jd: any) => jd.name === jobset);
     const total = details?.n_units || 0;
     for (const coder of Object.keys(annotations.progress[jobset])) {
-      if (!data[coder]) data[coder] = { total, n: 0 };
+      if (!data[coder]) data[coder] = { jobset, total, n: 0 };
       data[coder].n += annotations.progress[jobset][coder];
     }
   }
 
+  let totalAnnotations = 0;
+  let finishedJobsets = new Set([]);
+  let codersStarted = Object.keys(data).length;
+  let codersFinished = 0;
+  for (const [, values] of Object.entries(data)) {
+    totalAnnotations += values.n;
+    if (values.n === values.total) {
+      codersFinished += 1;
+      finishedJobsets.add(values.jobset);
+    }
+  }
+  let jobsetsStarted = Object.keys(annotations.progress).length;
+  let jobsetsFinished = finishedJobsets.size;
+
+  console.log(job);
   return (
     <div style={{ marginTop: "20px", height: "100%" }}>
+      <ul>
+        <li>{totalAnnotations} Annotations</li>
+        <li>
+          {jobsetsStarted} / {job.jobset_details.length} jobset{jobsetsStarted !== 1 ? "s" : ""}{" "}
+          started, {jobsetsFinished} finished (by at least one coder)
+        </li>
+        <li>
+          {codersStarted} coder{codersStarted !== 1 ? "s" : ""} started, {codersFinished} finished
+        </li>
+      </ul>
       <LabeledProgress
         key={"total"}
-        label={"Total units finished"}
+        label={"Units coded (at least once)"}
         value={annotations.totalProgress}
         total={job.n_total}
         bold={true}

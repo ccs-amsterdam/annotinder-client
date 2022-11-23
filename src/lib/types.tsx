@@ -773,6 +773,7 @@ export interface JobSettings {
 export interface JobAnnotation {
   jobset: string;
   unit_id: string;
+  coder_id: number;
   coder: string;
   annotation: Annotation[];
   status: Status;

@@ -50,6 +50,7 @@ const Finished = ({ jobServer }: FinishedProps) => {
                 rel="noopener noreferrer"
               >
                 {" "}
+                <br />
                 <StyledButton primary content={debriefing.link_text || "Click here!"} />
               </a>
             ) : null}
