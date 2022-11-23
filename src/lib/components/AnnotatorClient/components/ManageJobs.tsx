@@ -165,18 +165,22 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
             <Table.Cell key="value">{job?.n_total}</Table.Cell>
           </Table.Row>
 
-          {job?.jobset_details?.map((js, i) => {
-            return (
-              <Table.Row key={"set" + i}>
-                <Table.Cell key="name" style={leftColStyle}>
-                  {i === 0 ? "Job sets" : ""}
-                </Table.Cell>
-                <Table.Cell key="value">
-                  {js.name} <i>({js.n_units + ", " + js.rules.ruleset}</i>)
-                </Table.Cell>
-              </Table.Row>
-            );
-          })}
+          <Table.Row key={"sets"}>
+            <Table.Cell key="name" style={leftColStyle}>
+              Job sets
+            </Table.Cell>
+            <Table.Cell key="value">
+              <div style={{ height: "100px", overflow: "auto" }}>
+                {job?.jobset_details?.map((js, i) => {
+                  return (
+                    <p style={{ marginBottom: 0 }}>
+                      {js.name} <i>({js.n_units + ", " + js.rules.ruleset}</i>)
+                    </p>
+                  );
+                })}
+              </div>
+            </Table.Cell>
+          </Table.Row>
 
           <Table.Row key="archived">
             <Table.Cell key="name" style={leftColStyle}>
