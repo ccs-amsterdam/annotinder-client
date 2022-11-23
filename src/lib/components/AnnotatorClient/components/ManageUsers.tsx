@@ -75,7 +75,12 @@ const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }: CreateUse
   const onSubmit = async () => {
     const users = addUsers.reduce((submitUsers, user) => {
       if (user.exists) return submitUsers;
-      submitUsers.push({ name: user.name, admin: asAdmin, password: "test" });
+      submitUsers.push({
+        name: user.name,
+        email: user.name,
+        admin: asAdmin,
+        password: "supersecret007",
+      });
       return submitUsers;
     }, []);
     try {
