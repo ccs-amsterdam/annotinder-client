@@ -1,6 +1,6 @@
 import { useState, useEffect, CSSProperties } from "react";
 import { Icon, Checkbox, Table, Dropdown, Container, Portal, Segment } from "semantic-ui-react";
-import { StyledButton } from "../../../styled/StyledSemantic";
+import { StyledButton, CustomButton } from "../../../styled/StyledSemantic";
 import { useCSVDownloader } from "react-papaparse";
 import JobsTable from "./JobsTable";
 import QRCodeCanvas from "qrcode.react";
@@ -170,10 +170,10 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
               Job sets
             </Table.Cell>
             <Table.Cell key="value">
-              <div style={{ height: "100px", overflow: "auto" }}>
+              <div style={{ overflow: "auto", maxHeight: "100px" }}>
                 {job?.jobset_details?.map((js, i) => {
                   return (
-                    <p style={{ marginBottom: 0 }}>
+                    <p key="value" style={{ margin: 0 }}>
                       {js.name} <i>({js.n_units + ", " + js.rules.ruleset}</i>)
                     </p>
                   );
@@ -442,7 +442,7 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
       onOpen={() => setOpen(true)}
       hoverable
       mouseLeaveDelay={9999999}
-      trigger={<StyledButton style={{ padding: "5px", ...style }}>Get Job Token</StyledButton>}
+      trigger={<CustomButton style={{ padding: "5px", ...style }}>Get Job Token</CustomButton>}
     >
       <Segment
         style={{

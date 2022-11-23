@@ -1,6 +1,6 @@
 import { useState, useEffect, CSSProperties } from "react";
-import { Portal } from "semantic-ui-react";
-import { StyledButton } from "../../../styled/StyledSemantic";
+import { Icon, Portal } from "semantic-ui-react";
+import { CustomButton, StyledButton } from "../../../styled/StyledSemantic";
 import FullDataTable from "./FullDataTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
@@ -94,9 +94,17 @@ const LoginLinkButton = ({ row, backend, style }: LoginLinkButtonProps) => {
     <Portal
       on="click"
       onOpen={() => setOpen(true)}
+      onClose={() => {
+        console.log("test");
+        setOpen(false);
+      }}
       hoverable
       mouseLeaveDelay={9999999}
-      trigger={<StyledButton icon="linkify" style={{ padding: "5px", ...style }} />}
+      trigger={
+        <CustomButton>
+          <Icon name="linkify" />
+        </CustomButton>
+      }
     >
       <PortalContent>
         <h2>Login link for {row.name}</h2>

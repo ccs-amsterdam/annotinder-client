@@ -9,6 +9,32 @@ import styled, { StyledComponent } from "styled-components";
 // therefore we'll run all semantic ui components via custom styled versions,
 // so that we can gradually replace them.
 
+const CustomButton = styled.button`
+  padding: 5% 10%;
+  margin: 0;
+  color: var(--grey);
+  background: var(--inactive);
+  cursor: pointer;
+  border-radius: 5px;
+
+  transition: background 0.2s;
+
+  &.primary {
+    background: var(--primary);
+    color: white;
+  }
+  &.secondary {
+    background: var(--secondary);
+    color: white;
+  }
+  & > i {
+    margin: 0;
+  }
+  &:hover {
+    background: var(--active);
+  }
+`;
+
 const StyledButton = styled(Button)`
   &.primary {
     background: var(--primary) !important;
@@ -73,4 +99,12 @@ const StyledPagination = styled(Pagination)`
   }
 `;
 
-export { StyledButton, StyledModal, StyledContainer, StyledTable, StyledSegment, StyledPagination };
+export {
+  CustomButton,
+  StyledButton,
+  StyledModal,
+  StyledContainer,
+  StyledTable,
+  StyledSegment,
+  StyledPagination,
+};

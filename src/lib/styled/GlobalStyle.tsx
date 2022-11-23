@@ -28,6 +28,7 @@ const GlobalStyle = createGlobalStyle`
     --text-inversed: black;
     --text-inversed-fixed: white;
     
+    --lightgrey: lightgrey;
     --grey: grey;
     --darkgrey: darkgrey;
     --border: white;
@@ -35,6 +36,9 @@ const GlobalStyle = createGlobalStyle`
     --red: crimson;
     --lightred: rgb(218, 151, 164);
     --orange: orange;
+
+    --inactive: #00000011;
+    --active: #00000022;
   }
 
   html {

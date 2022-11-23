@@ -22,6 +22,13 @@ const LoginWindow = styled.div`
   margin: auto;
 `;
 
+// rewrite with middlecat
+// - replace sessions with active jobs
+// - a jobtoken creates an active job
+//   - if jobtoken has user_id, create job immediately as anonymous
+//   - if not, user needs to log in via middlecat
+// - if there is no jobtoken, users needs to log in
+
 const useLogin = (): [Backend, ReactElement] => {
   const [session, login, logout, storeSession, sessionList] = useSessions();
 

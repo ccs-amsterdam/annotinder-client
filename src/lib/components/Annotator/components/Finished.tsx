@@ -29,6 +29,7 @@ const Finished = ({ jobServer }: FinishedProps) => {
   if (!jobServer) return null;
 
   if (debriefing) {
+    console.log(debriefing);
     return (
       <Grid
         container
@@ -44,6 +45,7 @@ const Finished = ({ jobServer }: FinishedProps) => {
           </Grid.Row>
           <Grid.Row>
             <Markdown>{debriefing.message}</Markdown>
+            <br />
             {debriefing.link ? (
               <a
                 href={debriefing.link.replace("{user_id}", debriefing.user_id)}
@@ -51,7 +53,7 @@ const Finished = ({ jobServer }: FinishedProps) => {
               >
                 {" "}
                 <br />
-                <StyledButton primary content={debriefing.link_text || "Click here!"} />
+                <StyledButton primary size="huge" content={debriefing.link_text || "Click here!"} />
               </a>
             ) : null}
             {debriefing.qr ? (
