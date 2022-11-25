@@ -116,6 +116,7 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
       uniqueUnits[unit.unit_id] = true;
 
       for (let ann of unit.annotation) {
+        ann.field = ann.field || "";
         data.push({
           coder_id: unit.coder_id,
           coder: unit.coder,

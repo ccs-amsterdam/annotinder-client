@@ -1,35 +1,34 @@
 import { useState, useEffect, CSSProperties } from "react";
-import { Grid, Icon } from "semantic-ui-react";
+import { Grid, Icon, Loader } from "semantic-ui-react";
 import { QRCodeCanvas } from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
 import Backend from "../../Login/Backend";
 import { Debriefing, JobServer } from "../../../types";
 import Markdown from "../../Common/Markdown";
 import { StyledButton } from "../../../styled/StyledSemantic";
+import { useQuery } from "@tanstack/react-query";
 
 interface FinishedProps {
   jobServer: JobServer;
 }
 
 const Finished = ({ jobServer }: FinishedProps) => {
-  const [debriefing, setDebriefing] = useState<Debriefing>(null);
-
-  useEffect(() => {
-    if (!jobServer?.backend) return;
-    jobServer
-      .getDebriefing()
-      .then((data: Debriefing) => {
-        setDebriefing(data);
-      })
-      .catch((e: Error) => {
-        //console.error(e);
-      });
-  }, [jobServer]);
+  const debriefing = useQuery<Debriefing>(
+    ["debriefing", jobServer],
+    () => {
+      if (!jobServer?.backend) return null;
+      return jobServer.getDebriefing();
+    },
+    {
+      enabled: !!jobServer,
+    }
+  );
 
   if (!jobServer) return null;
 
-  if (debriefing) {
-    console.log(debriefing);
+  if (debriefing.isFetching) return <Loader />;
+
+  if (debriefing.data) {
     return (
       <Grid
         container
@@ -44,19 +43,23 @@ const Finished = ({ jobServer }: FinishedProps) => {
             </div>
           </Grid.Row>
           <Grid.Row>
-            <Markdown>{debriefing.message}</Markdown>
+            <Markdown>{debriefing.data.message}</Markdown>
             <br />
-            {debriefing.link ? (
+            {debriefing.data.link ? (
               <a
-                href={debriefing.link.replace("{user_id}", debriefing.user_id)}
+                href={debriefing.data.link.replace("{user_id}", debriefing.data.user_id)}
                 rel="noopener noreferrer"
               >
                 {" "}
                 <br />
-                <StyledButton primary size="huge" content={debriefing.link_text || "Click here!"} />
+                <StyledButton
+                  primary
+                  size="huge"
+                  content={debriefing.data.link_text || "Click here!"}
+                />
               </a>
             ) : null}
-            {debriefing.qr ? (
+            {debriefing.data.qr ? (
               <JobLink jobId={jobServer.job_id} backend={jobServer.backend} />
             ) : null}
           </Grid.Row>
