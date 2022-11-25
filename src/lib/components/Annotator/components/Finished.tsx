@@ -14,7 +14,7 @@ interface FinishedProps {
 
 const Finished = ({ jobServer }: FinishedProps) => {
   const debriefing = useQuery<Debriefing>(
-    ["debriefing", jobServer],
+    ["debriefing"],
     () => {
       if (!jobServer?.backend) return null;
       return jobServer.getDebriefing();
@@ -26,7 +26,12 @@ const Finished = ({ jobServer }: FinishedProps) => {
 
   if (!jobServer) return null;
 
-  if (debriefing.isFetching) return <Loader />;
+  if (debriefing.isFetching)
+    return (
+      <div style={{ height: "100%", position: "relative" }}>
+        <Loader size="huge" active style={{ color: "var(--text)" }} />
+      </div>
+    );
 
   if (debriefing.data) {
     return (

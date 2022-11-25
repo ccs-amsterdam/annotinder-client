@@ -1,6 +1,6 @@
 import { useState, useEffect, CSSProperties } from "react";
-import { Icon, Checkbox, Table, Dropdown, Container, Portal, Segment } from "semantic-ui-react";
-import { StyledButton, CustomButton } from "../../../styled/StyledSemantic";
+import { Icon, Checkbox, Dropdown, Container, Portal, Segment } from "semantic-ui-react";
+import { StyledButton, StyledTable, CustomButton } from "../../../styled/StyledSemantic";
 import { useCSVDownloader } from "react-papaparse";
 import JobsTable from "./JobsTable";
 import QRCodeCanvas from "qrcode.react";
@@ -141,7 +141,7 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
     <Container style={{ height: "100%", textAlign: "left" }}>
       <h3>{job.title}</h3>
 
-      <Table
+      <StyledTable
         singleLine
         unstackable
         size="small"
@@ -150,27 +150,27 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
         compact="very"
         style={{ paddingLeft: "", textAlign: "left" }}
       >
-        <Table.Body>
-          <Table.Row key="id">
-            <Table.Cell key="name" width="8" style={leftColStyle}>
+        <StyledTable.Body>
+          <StyledTable.Row key="id">
+            <StyledTable.Cell key="name" width="8" style={leftColStyle}>
               ID
-            </Table.Cell>
-            <Table.Cell key="value" width="8">
+            </StyledTable.Cell>
+            <StyledTable.Cell key="value" width="8">
               {job?.id}
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row key="units">
-            <Table.Cell key="name" style={leftColStyle}>
+            </StyledTable.Cell>
+          </StyledTable.Row>
+          <StyledTable.Row key="units">
+            <StyledTable.Cell key="name" style={leftColStyle}>
               Units
-            </Table.Cell>
-            <Table.Cell key="value">{job?.n_total}</Table.Cell>
-          </Table.Row>
+            </StyledTable.Cell>
+            <StyledTable.Cell key="value">{job?.n_total}</StyledTable.Cell>
+          </StyledTable.Row>
 
-          <Table.Row key={"sets"}>
-            <Table.Cell key="name" style={leftColStyle}>
+          <StyledTable.Row key={"sets"}>
+            <StyledTable.Cell key="name" style={leftColStyle}>
               Job sets
-            </Table.Cell>
-            <Table.Cell key="value">
+            </StyledTable.Cell>
+            <StyledTable.Cell key="value">
               <div style={{ overflow: "auto", maxHeight: "100px" }}>
                 {job?.jobset_details?.map((js, i) => {
                   return (
@@ -180,14 +180,14 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
                   );
                 })}
               </div>
-            </Table.Cell>
-          </Table.Row>
+            </StyledTable.Cell>
+          </StyledTable.Row>
 
-          <Table.Row key="archived">
-            <Table.Cell key="name" style={leftColStyle}>
+          <StyledTable.Row key="archived">
+            <StyledTable.Cell key="name" style={leftColStyle}>
               Archived
-            </Table.Cell>
-            <Table.Cell key="value">
+            </StyledTable.Cell>
+            <StyledTable.Cell key="value">
               <Checkbox
                 toggle
                 checked={job.archived}
@@ -195,13 +195,13 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
                   setJobSettings(job.id, backend, { archived: !job.archived }, setJobs, setJob)
                 }
               />
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row key="restricted">
-            <Table.Cell key="name" style={leftColStyle}>
+            </StyledTable.Cell>
+          </StyledTable.Row>
+          <StyledTable.Row key="restricted">
+            <StyledTable.Cell key="name" style={leftColStyle}>
               Restricted
-            </Table.Cell>
-            <Table.Cell key="value">
+            </StyledTable.Cell>
+            <StyledTable.Cell key="value">
               <Checkbox
                 toggle
                 checked={job.restricted}
@@ -209,21 +209,21 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
                   setJobSettings(job.id, backend, { restricted: !job.restricted }, setJobs, setJob)
                 }
               />
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row key="jobusers">
+            </StyledTable.Cell>
+          </StyledTable.Row>
+          <StyledTable.Row key="jobusers">
             <JobUsers backend={backend} job={job} />
-          </Table.Row>
-          <Table.Row key="unregistered">
-            <Table.Cell key="name" style={leftColStyle}>
+          </StyledTable.Row>
+          <StyledTable.Row key="unregistered">
+            <StyledTable.Cell key="name" style={leftColStyle}>
               Unregistered coder
-            </Table.Cell>
-            <Table.Cell key="value">
+            </StyledTable.Cell>
+            <StyledTable.Cell key="value">
               <JobTokenButton jobId={jobId} backend={backend} />
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table>
+            </StyledTable.Cell>
+          </StyledTable.Row>
+        </StyledTable.Body>
+      </StyledTable>
 
       {annotations?.data ? (
         <CSVDownloader
@@ -290,7 +290,7 @@ const JobUsers = ({ backend, job }: JobUsersProps) => {
   // const [users, setUsers] = useState([]);
 
   return (
-    <Table.Cell colSpan="2" style={{ border: "none" }}>
+    <StyledTable.Cell colSpan="2" style={{ border: "none" }}>
       <b>Users with access</b>
       <div style={{ display: "flex" }}>
         <Dropdown
@@ -311,7 +311,7 @@ const JobUsers = ({ backend, job }: JobUsersProps) => {
           <i>Click save icon to confirm changes</i>
         </span>
       ) : null}
-    </Table.Cell>
+    </StyledTable.Cell>
   );
 };
 
