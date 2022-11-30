@@ -98,13 +98,17 @@ interface JobDetailsProps {
 const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) => {
   const { CSVDownloader, Type } = useCSVDownloader();
   const [annotations, setAnnotations] = useState<AnnotationData>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(false);
     setAnnotations(null);
   }, [jobId]);
 
   const getAnnotations = async () => {
+    setLoading(true);
     const units = await backend.getCodingjobAnnotations(job.id);
+    setLoading(false);
     const uniqueUnits: Record<string, boolean> = {};
     const progress: Record<string, Record<string, number>> = {};
     const data = [];
@@ -174,7 +178,7 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
               <div style={{ overflow: "auto", maxHeight: "100px" }}>
                 {job?.jobset_details?.map((js, i) => {
                   return (
-                    <p key="value" style={{ margin: 0 }}>
+                    <p key={"value" + i} style={{ margin: 0 }}>
                       {js.name} <i>({js.n_units + ", " + js.rules.ruleset}</i>)
                     </p>
                   );
@@ -234,7 +238,6 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
         >
           <StyledButton
             fluid
-            loading={!annotations?.data}
             disabled={annotations?.data.length === 0}
             primary
             content={
@@ -245,7 +248,12 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
           />
         </CSVDownloader>
       ) : (
-        <StyledButton fluid onClick={getAnnotations} disabled={annotations !== null}>
+        <StyledButton
+          fluid
+          loading={loading}
+          onClick={getAnnotations}
+          disabled={annotations !== null}
+        >
           <Icon name="list" />
           Get annotations
         </StyledButton>
@@ -321,6 +329,7 @@ interface AnnotationProgressProps {
 }
 
 const AnnotationProgress = ({ job, annotations }: AnnotationProgressProps) => {
+  const { CSVDownloader, Type } = useCSVDownloader();
   if (!annotations?.progress) return null;
 
   const data: Record<string, { jobset: string; total: number; n: number }> = {};
@@ -333,12 +342,21 @@ const AnnotationProgress = ({ job, annotations }: AnnotationProgressProps) => {
     }
   }
 
+  const summaryCSV = [];
   let totalAnnotations = 0;
   let finishedJobsets = new Set([]);
   let codersStarted = Object.keys(data).length;
   let codersFinished = 0;
-  for (const [, values] of Object.entries(data)) {
+  for (const [coder, values] of Object.entries(data)) {
     totalAnnotations += values.n;
+    const [coder_id, coder_label] = coder.split(/\.(.*)/s);
+    summaryCSV.push({
+      coder_id,
+      coder_label,
+      jobset: values.jobset,
+      done: values.n,
+      total: values.total,
+    });
     if (values.n === values.total) {
       codersFinished += 1;
       finishedJobsets.add(values.jobset);
@@ -347,7 +365,6 @@ const AnnotationProgress = ({ job, annotations }: AnnotationProgressProps) => {
   let jobsetsStarted = Object.keys(annotations.progress).length;
   let jobsetsFinished = finishedJobsets.size;
 
-  console.log(job);
   return (
     <div style={{ marginTop: "20px", height: "100%" }}>
       <ul>
@@ -357,9 +374,31 @@ const AnnotationProgress = ({ job, annotations }: AnnotationProgressProps) => {
           started, {jobsetsFinished} finished (by at least one coder)
         </li>
         <li>
-          {codersStarted} coder{codersStarted !== 1 ? "s" : ""} started, {codersFinished} finished
+          {codersStarted} session{codersStarted !== 1 ? "s" : ""} started, {codersFinished} finished
         </li>
       </ul>
+
+      <CSVDownloader
+        type={Type.Button}
+        filename={`progress_${job?.id}_${job?.title}.csv`}
+        data={summaryCSV}
+        style={{ cursor: "pointer", border: "0", padding: "0", width: "100%" }}
+      >
+        <StyledButton
+          fluid
+          disabled={annotations?.data.length === 0}
+          secondary
+          content={
+            annotations?.data.length > 0
+              ? "Download progress summary"
+              : "There are no annotations :("
+          }
+          icon="download"
+          labelPosition="left"
+        />
+      </CSVDownloader>
+      <br />
+      <br />
       <LabeledProgress
         key={"total"}
         label={"Units coded (at least once)"}
