@@ -10,11 +10,12 @@ import styled, { StyledComponent } from "styled-components";
 // so that we can gradually replace them.
 
 const CustomButton = styled.button`
-  padding: 5% 10%;
+  padding: 0.3rem 0.7rem;
   margin: 0;
   color: var(--grey);
   background: var(--inactive);
   cursor: pointer;
+  border: 1px solid var(--grey);
   border-radius: 5px;
 
   transition: background 0.2s;

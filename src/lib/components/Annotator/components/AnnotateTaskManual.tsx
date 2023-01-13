@@ -32,7 +32,6 @@ const AnnotateTaskManual = ({ fullScreenNode }: AnnotateTaskManualProps) => {
             cursor: "pointer",
             color: "var(--text-inversed)",
             padding: "4px 5px 4px 5px",
-            maxWidth: "30px",
             zIndex: 800,
           }}
         />

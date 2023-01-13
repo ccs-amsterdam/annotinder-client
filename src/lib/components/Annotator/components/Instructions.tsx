@@ -60,7 +60,7 @@ const Instructions = ({
             cursor: "pointer",
             color: "var(--text-inversed-fixed)",
             padding: "4px 5px",
-            maxWidth: "20px",
+
             zIndex: 800,
           }}
           onClick={() => setOpen(true)}

@@ -9,37 +9,53 @@ interface SelectVariableProps {
   editAll: boolean;
 }
 
-const TaskDescription = styled.div`
+const SelectVariableContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--background-inversed);
-  padding: 10px 5px 3px 5px;
+  padding: 5px 5px 3px 5px;
   background: var(--primary);
   color: var(--text-inversed-fixed);
   z-index: 1;
+
+  .Description {
+    margin: auto;
+    padding-bottom: 0.4rem;
+
+    .Variable {
+      border: 2px solid white;
+      border-radius: 5px;
+      font-size: 1.2em;
+      margin-right: 0.5rem;
+      padding: 0.1rem 0.7rem;
+    }
+  }
 `;
 
 const VariableButtons = styled.div`
   display: flex;
-  margin-bottom: -2px;
-  z-index: 2;
   word-wrap: break-word;
   font-size: 1.2em;
-  font-weight: bold;
-  width: 100%;
-  color: rgb(0, 0, 255);
+  justify-content: center;
+`;
 
-  & div {
-    padding: 0.4em 1em 0.2em 1em;
-    border: 1px solid var(--background-inversed);
-    border-left: 0px;
-    width: 100%;
-  }
-  &:first-child {
-    border-left: 1px solid var(--background-inversed);
-  }
-  & .selected {
+const VariableButton = styled.button`
+  margin: 0 0.2rem 0.4rem 0.2rem;
+  padding: 0.1rem 0.7rem;
+  background: var(--primary);
+  border-radius: 5px;
+  border: 2px solid inherit;
+  color: var(--primary-verylight);
+
+  cursor: pointer;
+
+  &:hover {
+    border: 2px solid white;
     background: var(--primary);
-    color: var(--text-inversed-fixed);
-    border-bottom: 0px;
+    color: white;
+  }
+  &.active {
+    display: none;
   }
 `;
 
@@ -96,21 +112,17 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
   if (variable === "EDIT ALL") helpText = "Show and edit all variables";
 
   return (
-    <div
-      style={{
-        //background: "#1277c469",
-        textAlign: "center",
-        width: "100%",
-      }}
-    >
+    <SelectVariableContainer>
       <VariableMenu
         variable={variable}
         setVariable={setVariable}
         variables={variables}
         variableNames={variableNames}
       />
-      <TaskDescription>{helpText} </TaskDescription>
-    </div>
+      <div className="Description">
+        <span className="Variable">{variable || ""}</span> {helpText}{" "}
+      </div>
+    </SelectVariableContainer>
   );
 };
 
@@ -133,16 +145,16 @@ const VariableMenu = ({ variable, setVariable, variables, variableNames }: Varia
 
   if (variableNames?.length === 1) return null;
   return (
-    <VariableButtons style={{}}>
+    <VariableButtons>
       {variableNames.map((name) => {
         return (
-          <div
+          <VariableButton
             key={name}
-            className={name === variable ? "selected" : ""}
+            className={name === variable ? "active" : ""}
             onClick={() => setVariable(name)}
           >
-            <span style={{ textAlign: "center", width: "100%" }}>{name}</span>
-          </div>
+            {name}
+          </VariableButton>
         );
       })}
     </VariableButtons>
