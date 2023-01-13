@@ -44,6 +44,7 @@ const AnnotateGrid = styled.div`
     grid-area: documentContainer;
     overflow: auto;
     height: 100%;
+    border-right: 1px solid var(--secondary);
 
     .document {
       height: calc(100% - 35px);
@@ -54,7 +55,6 @@ const AnnotateGrid = styled.div`
       padding: 0;
       height: 35px;
       background: var(--secondary);
-      border-radius: 5px;
     }
   }
 
@@ -252,7 +252,7 @@ const NextUnitButton = ({ unit, annotations, nextUnit }: NextUnitButtonProps) =>
       primary
       fluid
       size="tiny"
-      style={{ padding: "5px", marginLeft: "30px", marginRight: "0px" }}
+      style={{ borderRadius: "0", padding: "5px", marginLeft: "30px", marginRight: "0px" }}
       onClick={onNext}
     >
       <Icon name="play" />
