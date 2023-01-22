@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, RefObject } from "react";
+import React, { useState, useEffect } from "react";
 import { AnnotationEvents } from "./AnnotationEvents";
 import { Popup, List } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
@@ -12,12 +12,13 @@ import {
   TokenSelection,
   TriggerCodePopup,
   FullScreenNode,
-  Edge,
+  VariableType,
 } from "../../../types";
 import Arrow from "./Arrow";
 
 interface AnnotateNavigationProps {
   tokens: Token[];
+  variableType: VariableType;
   showValues: VariableMap;
   annotations: SpanAnnotations;
   disableAnnotations: boolean;
@@ -35,6 +36,7 @@ interface AnnotateNavigationProps {
  */
 const AnnotateNavigation = ({
   tokens,
+  variableType,
   showValues,
   annotations,
   disableAnnotations,
@@ -45,24 +47,23 @@ const AnnotateNavigation = ({
   fullScreenNode,
 }: AnnotateNavigationProps) => {
   const [currentToken, setCurrentToken] = useState({ i: null });
-  const [tokenSelection, setTokenSelection] = useState<TokenSelection>({ edge: [] });
-  const [relationSelection, setRelationSelection] = useState<Edge>([]);
+  const [tokenSelection, setTokenSelection] = useState<TokenSelection>([]);
 
   useEffect(() => {
     highlightAnnotations(tokens, annotations, showValues, editMode, showAll);
   }, [tokens, annotations, showValues, editMode, showAll]);
 
   useEffect(() => {
-    setSelectionAsCSSClass(tokens, tokenSelection, setRelationSelection);
-  }, [tokens, tokenSelection, editMode]);
+    setSelectionAsCSSClass(tokens, variableType, tokenSelection);
+  }, [tokens, variableType, tokenSelection, editMode]);
 
   useEffect(() => {
-    setTokenSelection({ edge: [] });
+    setTokenSelection([]);
   }, [annotations]);
 
   useEffect(() => {
     setCurrentToken({ i: null });
-    setTokenSelection({ edge: [] });
+    setTokenSelection([]);
   }, [tokens]);
 
   return (
@@ -78,6 +79,7 @@ const AnnotateNavigation = ({
       {disableAnnotations ? null : (
         <AnnotationEvents
           tokens={tokens}
+          variableType={variableType}
           annotations={annotations}
           currentToken={currentToken}
           setCurrentToken={setCurrentToken}
@@ -90,8 +92,17 @@ const AnnotateNavigation = ({
       )}
 
       {/* this is where the relation arrows are drawn */}
-      <svg style={{ position: "fixed", height: "100%", width: "100%", zIndex: 0 }} strokeWidth={1}>
-        <Arrow tokens={tokens} edge={relationSelection} />
+      <svg
+        style={{
+          position: "fixed",
+          marginTop: "-40px", // need to correct for menu bar
+          height: window.innerHeight,
+          width: "100%",
+          zIndex: 0,
+        }}
+        strokeWidth={1}
+      >
+        {variableType === "relation" && <Arrow tokens={tokens} tokenSelection={tokenSelection} />}
       </svg>
     </>
   );
@@ -219,25 +230,25 @@ const setTokenColor = (token: Token, pre: string, text: string, post: string) =>
 
 const setSelectionAsCSSClass = (
   tokens: Token[],
-  selection: TokenSelection,
-  setRelationSelection: SetState<Edge>
+  variableType: VariableType,
+  selection: TokenSelection
 ) => {
   for (let token of tokens) {
     if (!token.ref?.current) continue;
     token.ref.current.classList.remove("tapped");
-    if (selection.edge.length === 0 || selection.edge[0] === null || selection.edge[1] === null) {
+    if (selection.length === 0 || selection[0] === null || selection[1] === null) {
       token.ref.current.classList.remove("selected");
       continue;
     }
 
-    let [from, to] = selection.edge;
+    let [from, to] = selection;
     //if (to === null) return false;
     if (from > to) [to, from] = [from, to];
 
     // if type is relation, only show first and last token. Otherwise,
     // (if type is "span") show all tokens in between as well
     let selected =
-      selection.type === "relation"
+      variableType === "relation"
         ? token.arrayIndex === from || token.arrayIndex === to
         : token.arrayIndex >= from && token.arrayIndex <= to;
 
@@ -249,16 +260,6 @@ const setSelectionAsCSSClass = (
       left ? cl.add("start") : cl.remove("start");
       right ? cl.add("end") : cl.remove("end");
     } else cl.remove("selected");
-  }
-
-  if (
-    selection.type === "relation" &&
-    selection.edge.length === 2 &&
-    selection.edge[0] !== selection.edge[1]
-  ) {
-    setRelationSelection([selection.edge[0], selection.edge[1]]);
-  } else {
-    setRelationSelection([]);
   }
 };
 

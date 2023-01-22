@@ -255,7 +255,7 @@ export interface OnSelectParams {
 
 export interface Variable {
   name: string;
-  type?: string; // if missing, defaults to "span"
+  type?: VariableType; // if missing, defaults to "span"
   codes: Code[];
   instruction: string;
   buttonMode?: "all" | "recent";
@@ -265,6 +265,8 @@ export interface Variable {
   onlyImported?: boolean;
   codeMap?: CodeMap;
 }
+
+export type VariableType = "span" | "relation";
 
 /** This one's intentionally flexible, because the codeselector popup handles multiple types of selections */
 export interface CodeSelectorValue {
@@ -302,11 +304,7 @@ export interface CodeSelectorDropdownOption {
   content?: ReactElement;
 }
 
-export interface TokenSelection {
-  type?: "span" | "relation";
-  edge: Edge;
-}
-export type Edge = [number, number] | [];
+export type TokenSelection = [number, number] | [];
 
 ///// CONDITIONALS
 
@@ -581,8 +579,8 @@ export interface Code {
 }
 
 export interface CodeRelation {
-  Variable: string;
-  values: string[];
+  variable: string;
+  values?: string[];
 }
 
 export interface CodeMap {

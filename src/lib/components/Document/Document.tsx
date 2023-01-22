@@ -99,7 +99,11 @@ const Document = ({
   const [variable, setVariable] = useState(null);
 
   const unitStates = useUnit(unit, annotations, returnTokens, onChangeAnnotations);
-  const [variableMap, showValues, editMode] = useVariableMap(variables, variable, restrictedCodes);
+  const [variableMap, showValues, variableType, editMode] = useVariableMap(
+    variables,
+    variable,
+    restrictedCodes
+  );
   const [codeSelector, triggerCodeSelector, codeSelectorOpen] = useCodeSelector(
     unitStates,
     variableMap,
@@ -118,6 +122,8 @@ const Document = ({
   }, [onReady, setSpanAnnotations]);
 
   if (!unitStates.doc.tokens && !unitStates.doc.image_fields) return null;
+
+  console.log(variableType);
 
   return (
     <DocumentContainer>
@@ -142,6 +148,7 @@ const Document = ({
 
       <AnnotateNavigation
         tokens={unitStates.doc.tokens}
+        variableType={variableType}
         showValues={showValues}
         annotations={unitStates.spanAnnotations}
         disableAnnotations={!onChangeAnnotations || !variableMap}

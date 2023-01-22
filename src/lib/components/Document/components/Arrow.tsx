@@ -1,40 +1,47 @@
 import { getBoxToBoxArrow } from "perfect-arrows";
-import { Edge, Token } from "../../../types";
+import { TokenSelection, Token } from "../../../types";
 
 interface Props {
   tokens: Token[];
-  edge: Edge;
+  tokenSelection: TokenSelection;
   relation?: string;
   edgeColor?: string;
   fromColor?: string;
   toColor?: string;
 }
 
-export default function Arrow({ tokens, edge, relation, edgeColor, fromColor, toColor }: Props) {
-  if (edge.length === 0) return;
-  const elX = tokens[edge[0]].ref.current;
-  const elY = tokens[edge[1]].ref.current;
+export default function Arrow({
+  tokens,
+  tokenSelection,
+  relation,
+  edgeColor,
+  fromColor,
+  toColor,
+}: Props) {
+  if (tokenSelection.length !== 2) return;
+  const elX = tokens[tokenSelection[0]]?.ref?.current;
+  const elY = tokens[tokenSelection[1]]?.ref?.current;
   if (!elX || !elY) return null;
+  if (elX === elY) return null;
 
   const X = elX.getBoundingClientRect();
   const Y = elY.getBoundingClientRect();
 
-  console.log(X);
-  const p1 = { x: X.x, y: X.y - X.height * 2, w: X.width, h: X.height };
-  const p2 = { x: Y.x, y: Y.y - Y.height * 2, w: Y.width, h: Y.height };
+  const p1 = { x: X.x, y: X.y, w: X.width, h: X.height };
+  const p2 = { x: Y.x, y: Y.y, w: Y.width, h: Y.height };
 
   const arrow = getBoxToBoxArrow(p1.x, p1.y, p1.w, p1.h, p2.x, p2.y, p2.w, p2.h, {
     bow: 0.2,
     stretch: 0.5,
     stretchMin: 40,
-    stretchMax: 420,
+    stretchMax: 100,
     padStart: 5,
     padEnd: 10,
     flip: false,
-    straights: true,
+    straights: false,
   });
 
-  const [sx, sy, cx, cy, ex, ey, ae, as, ec] = arrow;
+  const [sx, sy, cx, cy, ex, ey, ae] = arrow;
 
   const endAngleAsDegrees = ae * (180 / Math.PI);
 
