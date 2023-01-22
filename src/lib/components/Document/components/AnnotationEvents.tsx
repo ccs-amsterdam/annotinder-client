@@ -9,6 +9,7 @@ import {
   TokenSelection,
   TriggerCodePopup,
   Span,
+  Edge,
 } from "../../../types";
 
 // This component generates no content, but manages navigation for span level annotations
@@ -63,14 +64,17 @@ export const AnnotationEvents = ({
   const [mover, setMover] = useState(null);
   const [holdSpace, setHoldSpace] = useState(false);
   const [holdArrow, setHoldArrow] = useState<Arrowkeys>(null);
+  const [holdCtrl, setHoldCtrl] = useState(false);
+
   useEffect(() => {
     if (eventsBlocked) {
       setHoldArrow(null);
       setHoldSpace(false);
+      setHoldCtrl(false);
     } else {
       //setTokenSelection((state) => (state.length === 0 ? state : []));
     }
-  }, [setHoldArrow, setHoldSpace, eventsBlocked, setTokenSelection]);
+  }, [setHoldArrow, setHoldSpace, setHoldCtrl, eventsBlocked, setTokenSelection]);
 
   // this adds a function to each token to select and navigate to it
   // that can also be accessed outside of Document (via returnTokens)
@@ -85,7 +89,11 @@ export const AnnotationEvents = ({
           //keepInView(token.containerRef.current, token.ref.current);
         }
         setCurrentToken({ i: token.index });
-        setTokenSelection(span);
+
+        setTokenSelection({
+          type: "span",
+          edge: span,
+        });
       };
   }, [tokens, setCurrentToken, setTokenSelection]);
 
@@ -203,7 +211,7 @@ const KeyEvents = ({
     // keep track of which buttons are pressed in the state
     if (event.keyCode === 32 && holdSpace) {
       setHoldSpace(false);
-      if (tokenSelection.length > 0) {
+      if (tokenSelection.edge.length > 0) {
         annotationFromSelection(tokens, tokenSelection, triggerCodePopup);
       }
       return;
@@ -272,9 +280,10 @@ const TokenMouseEvents = ({
         if (state.i === currentNode.index) return state;
         return { i: currentNode.index };
       });
-      setTokenSelection((state: TokenSelection) =>
-        updateSelection(state, tokens, currentNode.index, true)
-      );
+      setTokenSelection((state: TokenSelection) => ({
+        type: state.type,
+        edge: updateEdge(state.edge, tokens, currentNode.index, true),
+      }));
       return currentNode.index;
     },
     [setCurrentToken, setTokenSelection, tokens]
@@ -301,7 +310,10 @@ const TokenMouseEvents = ({
       if (token?.index === null) {
         rmTapped(tokens, tapped.current);
         tapped.current = null;
-        setTokenSelection((state: TokenSelection) => (state.length === 0 ? state : []));
+        setTokenSelection((state: TokenSelection) => ({
+          type: state.type,
+          edge: state.edge.length === 0 ? state.edge : [],
+        }));
         return;
       }
 
@@ -310,22 +322,35 @@ const TokenMouseEvents = ({
       e.preventDefault();
 
       if (editMode) {
-        annotationFromSelection(tokens, [token.index, token.index], triggerCodePopup);
+        const selection: TokenSelection = {
+          type: tokenSelection.type,
+          edge: [token.index, token.index],
+        };
+        annotationFromSelection(tokens, selection, triggerCodePopup);
         return;
       }
 
       // first check if there is a tokenselection (after double tab). If so, this completes the selection
-      if (tokenSelection.length > 0 && tokenSelection[0] === tapped.current) {
+      if (tokenSelection.edge.length > 0 && tokenSelection.edge[0] === tapped.current) {
         // if a single token, and an annotation already exists, open create/edit mode
         const currentNode: number = storeMouseTokenSelection(token);
-        setTokenSelection((state: TokenSelection) =>
-          updateSelection(state, tokens, currentNode, true)
-        );
+        setTokenSelection((state: TokenSelection) => ({
+          type: state.type,
+          edge: updateEdge(state.edge, tokens, currentNode, true),
+        }));
 
-        if (token?.annotated && currentNode === tokenSelection[0]) {
-          annotationFromSelection(tokens, [currentNode, currentNode], triggerCodePopup);
+        if (token?.annotated && currentNode === tokenSelection.edge[0]) {
+          const selection: TokenSelection = {
+            type: tokenSelection.type,
+            edge: [currentNode, currentNode],
+          };
+          annotationFromSelection(tokens, selection, triggerCodePopup);
         } else {
-          annotationFromSelection(tokens, [tokenSelection[0], currentNode], triggerCodePopup);
+          const selection: TokenSelection = {
+            type: tokenSelection.type,
+            edge: [tokenSelection.edge[0], currentNode],
+          };
+          annotationFromSelection(tokens, selection, triggerCodePopup);
         }
         rmTapped(tokens, tapped.current);
         tapped.current = null;
@@ -340,12 +365,15 @@ const TokenMouseEvents = ({
         tapped.current = token.index;
 
         setCurrentToken({ i: token.index });
-        setTokenSelection((state: TokenSelection) => (state.length === 0 ? state : []));
+        setTokenSelection((state: TokenSelection) =>
+          state.edge.length === 0 ? state : { edge: [] }
+        );
       } else {
         rmTapped(tokens, tapped.current);
-        setTokenSelection((state: TokenSelection) =>
-          updateSelection(state, tokens, token.index, true)
-        );
+        setTokenSelection((state: TokenSelection) => ({
+          type: state.type,
+          edge: updateEdge(state.edge, tokens, token.index, true),
+        }));
       }
     },
     [
@@ -365,7 +393,9 @@ const TokenMouseEvents = ({
       // When left button pressed, start new selection
       if (event.which === 1) {
         selectionStarted.current = true;
-        setTokenSelection((state: TokenSelection) => (state.length === 0 ? state : []));
+        setTokenSelection((state: TokenSelection) =>
+          state.edge.length === 0 ? state : { edge: [] }
+        );
       }
     },
     [setTokenSelection]
@@ -375,7 +405,7 @@ const TokenMouseEvents = ({
     (event: MouseEvent) => {
       // If mousemove only happens if mouse is used (which you can't be sure of, because chaos),
       // this would work to prevent odd cases where a touchscreen could disable mouse
-      //if (istouch.current) return;
+      // if (istouch.current) return;
       istouch.current = false;
 
       // When selection started (mousedown), select tokens hovered over
@@ -383,6 +413,7 @@ const TokenMouseEvents = ({
         //event.preventDefault();
         if (event.which !== 1 && event.which !== 0) return null;
         window.getSelection().empty();
+
         storeMouseTokenSelection(getToken(tokens, event));
       } else {
         let currentNode = getToken(tokens, event);
@@ -391,9 +422,10 @@ const TokenMouseEvents = ({
             if (state.i === currentNode.index) return state;
             return { i: currentNode.index };
           });
-          setTokenSelection((state: TokenSelection) =>
-            updateSelection(state, tokens, currentNode.index, false)
-          );
+          setTokenSelection((state: TokenSelection) => ({
+            type: state.type,
+            edge: updateEdge(state.edge, tokens, currentNode.index, false),
+          }));
         } else
           setCurrentToken((state) => {
             if (state.i === currentNode.index || currentNode.index === null) return state;
@@ -427,11 +459,19 @@ const TokenMouseEvents = ({
       // storeMouseTokenSelection does save position to tokenSelection state, but this isn't
       // yet updated within this scope. This results in single clicks (without mousemove)
       // not registering. So if there is no current selection, directly use currentNode as position.
-      if (tokenSelection.length > 0 && tokenSelection[0] !== null && tokenSelection[1] !== null) {
+      if (
+        tokenSelection.edge.length > 0 &&
+        tokenSelection.edge[0] !== null &&
+        tokenSelection.edge[1] !== null
+      ) {
         annotationFromSelection(tokens, tokenSelection, triggerCodePopup);
       } else {
         if (currentNode !== null) {
-          annotationFromSelection(tokens, [currentNode, currentNode], triggerCodePopup);
+          const singleNodeSelection: TokenSelection = {
+            type: tokenSelection.type,
+            edge: [currentNode, currentNode],
+          };
+          annotationFromSelection(tokens, singleNodeSelection, triggerCodePopup);
         }
       }
     },
@@ -461,9 +501,14 @@ const annotationFromSelection = (
   selection: TokenSelection,
   triggerCodePopup: TriggerCodePopup
 ) => {
-  let [from, to] = selection;
+  let [from, to] = selection.edge;
   if (from > to) [from, to] = [to, from];
-  triggerCodePopup(tokens[to].index, [tokens[from].index, tokens[to].index]);
+  if (selection.type === "relation") {
+    alert("triggerRelationPopup");
+  } else {
+    // if type is "span", which is also the default
+    triggerCodePopup(tokens[to].index, [tokens[from].index, tokens[to].index]);
+  }
 };
 
 const movePosition = (
@@ -487,9 +532,10 @@ const movePosition = (
       if (state.i === newPosition) return state;
       return { i: newPosition };
     });
-    setTokenSelection((state: TokenSelection) =>
-      updateSelection(state, tokens, newPosition, !editMode && space)
-    );
+    setTokenSelection((state: TokenSelection) => ({
+      type: state.type,
+      edge: updateEdge(state.edge, tokens, newPosition, !editMode && space),
+    }));
 
     const containerRef = tokens[newPosition].containerRef.current;
     const tokenRef = tokens[newPosition].ref.current;
@@ -609,7 +655,7 @@ const rmTapped = (tokens: Token[], i: number) => {
   if (ref?.current) ref.current.classList.remove("tapped");
 };
 
-const returnSelectionIfChanged = (selection: TokenSelection, newSelection: TokenSelection) => {
+const returnSelectionIfChanged = (selection: Edge, newSelection: Edge) => {
   // if it hasn't changed, return old to prevent updating the state
   if (
     newSelection.length > 0 &&
@@ -621,14 +667,9 @@ const returnSelectionIfChanged = (selection: TokenSelection, newSelection: Token
   return newSelection;
 };
 
-const updateSelection = (
-  selection: TokenSelection,
-  tokens: Token[],
-  index: number,
-  add: boolean
-) => {
+const updateEdge = (selection: Edge, tokens: Token[], index: number, add: boolean) => {
   if (index === null) return selection;
-  let newSelection: TokenSelection = [...selection];
+  let newSelection: Edge = [...selection];
 
   if (!add || newSelection.length === 0) return returnSelectionIfChanged(selection, [index, index]);
   if (index === null) return returnSelectionIfChanged(selection, [newSelection[0], null]);

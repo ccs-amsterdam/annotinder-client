@@ -50,7 +50,7 @@ const NewCodePage = ({
 
   const onKeydown = React.useCallback(
     (event: KeyboardEvent) => {
-      if (settings && !settings.searchBox && settings.buttonMode !== "recent") return null;
+      if (settings && !settings.searchBox && settings.buttonMode === "all") return null;
       const focusOnTextInput = textInputRef?.current?.children[0] === document.activeElement;
       if (!focusOnTextInput) setFocusOnButtons(true);
       if (event.keyCode === 27) setOpen(false);
@@ -204,7 +204,7 @@ const NewCodePage = ({
   const asButtonSelection = (options: CodeSelectorOption[]) => {
     return (
       <>
-        {settings.buttonMode === "recent" &&
+        {settings?.buttonMode !== "all" &&
         codeHistory[variable] &&
         codeHistory[variable].length > 0 ? (
           <b>Recent codes</b>

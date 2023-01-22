@@ -6,7 +6,7 @@ export default function useVariableMap(
   variables: Variable[],
   selectedVariable: string,
   restrictedCodes: VariableValueMap
-): [VariableMap, boolean] {
+): [VariableMap, VariableMap, boolean] {
   const fullVariableMap: VariableMap = useMemo(() => {
     // creates fullVariableMap
     if (!variables || variables.length === 0) return null;
@@ -73,6 +73,6 @@ export default function useVariableMap(
     return variableMap?.[selectedVariable]?.editMode || selectedVariable === "EDIT ALL";
   }, [variableMap, selectedVariable]);
 
-  if (!selectedVariable) return [null, editMode];
-  return [variableMap, editMode];
+  if (!selectedVariable) return [null, null, editMode];
+  return [variableMap, variableMap, editMode];
 }

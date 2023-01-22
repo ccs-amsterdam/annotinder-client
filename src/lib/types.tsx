@@ -255,13 +255,14 @@ export interface OnSelectParams {
 
 export interface Variable {
   name: string;
+  type?: string; // if missing, defaults to "span"
   codes: Code[];
   instruction: string;
-  searchBox: boolean;
-  buttonMode: "all" | "recent";
-  multiple: boolean;
-  editMode: boolean;
-  onlyImported: boolean;
+  buttonMode?: "all" | "recent";
+  searchBox?: boolean;
+  multiple?: boolean;
+  editMode?: boolean;
+  onlyImported?: boolean;
   codeMap?: CodeMap;
 }
 
@@ -301,7 +302,11 @@ export interface CodeSelectorDropdownOption {
   content?: ReactElement;
 }
 
-export type TokenSelection = [number, number] | [];
+export interface TokenSelection {
+  type?: "span" | "relation";
+  edge: Edge;
+}
+export type Edge = [number, number] | [];
 
 ///// CONDITIONALS
 
@@ -556,6 +561,11 @@ export interface Code {
   code: string;
   parent: string;
   color: string;
+
+  // For relation type codes
+  from?: CodeRelation;
+  to?: CodeRelation;
+
   active: boolean;
   activeParent: any;
   folded: boolean;
@@ -568,6 +578,11 @@ export interface Code {
   makes_irrelevant?: string[];
   /** Like makes_irrelevant, but the questions become irrelevant if this option is NOT chosen */
   required_for?: string[];
+}
+
+export interface CodeRelation {
+  Variable: string;
+  values: string[];
 }
 
 export interface CodeMap {

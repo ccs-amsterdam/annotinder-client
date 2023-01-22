@@ -1,0 +1,57 @@
+{
+  "type": "annotate",
+  "settings": { "no_table": false },
+  "variables": [
+    {
+      "type": "span",
+      "codes": [
+        {
+          "code": "Subject",
+          "color": "blue"
+        },
+        {
+          "code": "Predicate",
+          "color": "purple"
+        }
+      ],
+      "relations": [
+        {
+          "code": "Argument",
+          "color": "green",
+          "from": ["Subject"],
+          "to": ["Predicate"]
+        }
+      ],
+      "name": "Labels",
+      "instruction": "Annotate arguments by labeling subjects and predictes, and then drawing relations between them.",
+      "searchBox": false,
+      "buttonMode": "all",
+      "multiple": false,
+      "editMode": false
+    },
+    {
+      "type": "relation",
+
+      "codes": [
+        {
+          "code": "Argument",
+          "color": "green",
+          "from": {
+            "variable": "Labels",
+            "values": ["Subject"]
+          },
+          "to": {
+            "variable": "Labels",
+            "values": ["Predicate"]
+          }
+        }
+      ],
+      "name": "Relations",
+      "instruction": "Annotate arguments by labeling subjects and predictes, and then drawing relations between them.",
+      "searchBox": false,
+      "buttonMode": "all",
+      "multiple": false,
+      "editMode": false
+    }
+  ]
+}
