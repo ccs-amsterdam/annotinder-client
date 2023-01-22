@@ -41,7 +41,7 @@ const VariableButtons = styled.div`
 
 const VariableButton = styled.button`
   margin: 0 0.2rem 0.4rem 0.2rem;
-  padding: 0.1rem 0.7rem;
+  padding: 0.2rem 0.7rem;
   background: var(--primary);
   border-radius: 5px;
   border: 2px solid inherit;
@@ -55,7 +55,9 @@ const VariableButton = styled.button`
     color: white;
   }
   &.active {
-    display: none;
+    background: var(--primary-light);
+    color: black;
+    border-color: white;
   }
 `;
 
@@ -120,7 +122,8 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
         variableNames={variableNames}
       />
       <div className="Description">
-        <span className="Variable">{variable || ""}</span> {helpText}{" "}
+        {helpText}
+        {/* <span className="Variable">{variable || ""}</span> {helpText}{" "} */}
       </div>
     </SelectVariableContainer>
   );
