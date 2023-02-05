@@ -47,11 +47,16 @@ export default function Arrow({
 
   return (
     <>
-      <circle cx={sx} cy={sy} r={4} fill={fromColor || "#0009"} />
-      <path d={`M${sx},${sy} Q${cx},${cy} ${ex},${ey}`} stroke={edgeColor || "#0009"} fill="none" />
+      <circle cx={sx} cy={sy} r={4} fill={fromColor || "#0005"} />
+      <path
+        d={`M${sx},${sy} Q${cx},${cy} ${ex},${ey}`}
+        stroke={edgeColor || "#0005"}
+        fill="none"
+        strokeWidth="2"
+      />
       <polygon
         points="0,-6 12,0, 0,6"
-        fill={toColor || "#0009"}
+        fill={toColor || "#0005"}
         transform={`translate(${ex},${ey}) rotate(${endAngleAsDegrees})`}
       />
     </>

@@ -123,8 +123,6 @@ const Document = ({
 
   if (!unitStates.doc.tokens && !unitStates.doc.image_fields) return null;
 
-  console.log(variableType);
-
   return (
     <DocumentContainer>
       <SelectVariable

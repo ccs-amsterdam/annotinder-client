@@ -36,7 +36,7 @@ export default function useVariableMap(
       // creates the actually used variableMap from the fullVariableMap
       // this lets us select specific variables without recreating full map
       // Here we also add imported variables
-      if (fullVariableMap === null) return null;
+      if (fullVariableMap === null) return [null, null, null];
 
       let vmap: VariableMap;
       if (selectedVariable === null || selectedVariable === "EDIT ALL") {
@@ -73,6 +73,10 @@ export default function useVariableMap(
         }
       }
 
+      // we use a separate variableMap called showValues that tells Document what annotations
+      // to show. This is the same for "span" variables, but for "relation"
+      // variables we want to only show the annotations
+      // that are valid options for the relation codes
       let showValues: VariableMap;
       let variableType: VariableType = "span";
       if (fullVariableMap?.[selectedVariable]?.type === "relation") {
@@ -98,10 +102,6 @@ const getRelationShowValues = (
   fullVariableMap: VariableMap,
   selectedVariable: string
 ) => {
-  // we use a separate variableMap called showValues that tells Document what annotations
-  // to show. This is the same for "span" variables, but for "relation"
-  // variables we want to only show the annotations
-  // that are valid options for the relation codes
   let showValues: VariableMap = { [selectedVariable]: vmap[selectedVariable] };
 
   let valuemap: VariableValueMap | null = {};
