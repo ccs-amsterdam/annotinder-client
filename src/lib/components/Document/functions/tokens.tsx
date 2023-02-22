@@ -37,45 +37,51 @@ export const parseTokens = (text_fields: TextField[]): Token[] => {
     // should be impossible for value to be an array due to unfoldFields, but typescript doesn't catch that
     if (Array.isArray(text)) text = text.join("");
 
+    let text_parts = [text];
+    let text_length = text.length;
     if (text_field.context_before != null) {
-      text = text_field.context_before + text;
+      text_parts = [text_field.context_before, text];
+      text_length = text_length + text_field.context_before.length;
       text_field.unit_start = text_field.context_before.length - 1;
     }
     if (text_field.context_after != null) {
-      text_field.unit_end = text.length - 1;
-      text = text + text_field.context_after;
+      text_field.unit_end = text_length - 1;
+      text_parts.push(text_field.context_after);
     }
 
-    const tokenized = nlp.tokenize(text) as any; // circumvent some typescript issues
-    t = tokenized.json({ offset: true });
+    for (let text of text_parts) {
+      const tokenized = nlp.tokenize(text) as any; // circumvent some typescript issues
+      t = tokenized.json({ offset: true });
 
-    for (let sent = 0; sent < t.length; sent++) {
-      for (let term = 0; term < t[sent].terms.length; term++) {
-        token = t[sent].terms[term];
+      for (let sent = 0; sent < t.length; sent++) {
+        for (let term = 0; term < t[sent].terms.length; term++) {
+          token = t[sent].terms[term];
 
-        if (text_field.unit_start != null && token.offset.start + offset >= text_field.unit_start)
-          unit_started = true;
-        if (text_field.unit_end != null && token.offset.start + offset > text_field.unit_end)
-          unit_ended = true;
+          if (text_field.unit_start != null && token.offset.start + offset >= text_field.unit_start)
+            unit_started = true;
+          if (text_field.unit_end != null && token.offset.start + offset > text_field.unit_end)
+            unit_ended = true;
 
-        const tokenobj: Token = {
-          field: field,
-          offset: token.offset.start + offset,
-          length: token.offset.length,
-          paragraph: paragraph,
-          sentence: sentence,
-          index: tokenIndex,
-          text: token.text,
-          pre: token.pre,
-          post: token.post,
-          codingUnit: unit_started && !unit_ended,
-          annotations: [],
-        };
-        tokens.push(tokenobj);
-        tokenIndex++;
-        if (/(?:\r?\n)+/.test(token.post)) paragraph++;
+          const tokenobj: Token = {
+            field: field,
+            offset: token.offset.start + offset,
+            length: token.offset.length,
+            paragraph: paragraph,
+            sentence: sentence,
+            index: tokenIndex,
+            text: token.text,
+            pre: sent === 0 && term === 0 ? " " + token.pre : token.pre, // add whitespace to first token. (Will be ignored if not needed due to how html is rendered)
+            post: token.post,
+            codingUnit: unit_started && !unit_ended,
+            annotations: [],
+          };
+          tokens.push(tokenobj);
+          tokenIndex++;
+          if (/(?:\r?\n)+/.test(token.post)) paragraph++;
+        }
+        sentence++;
       }
-      sentence++;
+      offset += text.length;
     }
     paragraph++;
 

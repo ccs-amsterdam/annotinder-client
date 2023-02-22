@@ -16,11 +16,9 @@ export default function renderText(
 
   let field = [];
   let paragraph = [];
-  let sentence = [];
   let codingUnit = tokens[0].codingUnit;
   let field_name = tokens[0].field;
   let paragraph_nr = tokens[0].paragraph;
-  let sentence_nr = tokens[0].sentence;
 
   const getTextField = (field_name: string) =>
     text_fields.find((tf: TextField) => tf.name === field_name);
@@ -29,10 +27,6 @@ export default function renderText(
   for (let i = 0; i < tokens.length; i++) {
     tokens[i].arrayIndex = i;
 
-    if (tokens[i].sentence !== sentence_nr) {
-      if (sentence.length > 0) paragraph.push(renderSentence(i, sentence_nr, sentence));
-      sentence = [];
-    }
     if (tokens[i].paragraph !== paragraph_nr) {
       if (paragraph.length > 0) {
         field.push(
@@ -56,7 +50,6 @@ export default function renderText(
     }
 
     paragraph_nr = tokens[i].paragraph;
-    sentence_nr = tokens[i].sentence;
     field_name = tokens[i].field;
     codingUnit = tokens[i].codingUnit;
 
@@ -64,11 +57,10 @@ export default function renderText(
     tokens[i].containerRef = containerRef;
     if (codingUnit) tokens[i].ref = React.createRef();
 
-    sentence.push(renderToken(tokens[i], codingUnit));
+    paragraph.push(renderToken(tokens[i], codingUnit));
   }
 
   textField = getTextField(field_name);
-  if (sentence.length > 0) paragraph.push(renderSentence("last", sentence_nr, sentence));
   if (paragraph.length > 0) field.push(renderParagraph(textField, paragraph_nr, paragraph, false));
   if (field.length > 0)
     text[field_name].push(
@@ -136,13 +128,13 @@ const renderField = (
 const renderParagraph = (
   textField: TextField,
   paragraph_nr: number,
-  sentences: ReactElement[],
+  tokens: ReactElement[],
   end: boolean
 ) => {
   if (textField?.paragraphs != null && !textField?.paragraphs)
     return (
       <span key={"par" + paragraph_nr}>
-        <span>{sentences}</span>
+        <span>{tokens}</span>
       </span>
     );
 
@@ -155,16 +147,8 @@ const renderParagraph = (
         //display: "table",
       }}
     >
-      {sentences}
-    </p>
-  );
-};
-
-const renderSentence = (position: number | string, sentence_nr: number, tokens: ReactElement[]) => {
-  return (
-    <span key={position + "_" + sentence_nr} className="sentence">
       {tokens}
-    </span>
+    </p>
   );
 };
 

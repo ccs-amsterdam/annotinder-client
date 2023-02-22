@@ -82,7 +82,6 @@
           {
             "name": "fav_animal_count",
             "type": "inputs",
-            "instruction": "Specific questions can also have individual instructions",
             "question": "How many {fav_animal} do you have?",
             "items": [{ "name": "animal count", "type": "number", "min": 0 }]
           }

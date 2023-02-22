@@ -7,7 +7,7 @@ export default css`
     color: rgba(0, 0, 0, 0.87) !important;
   }
 
-  .sentence {
+  .paragraph {
     line-height: 1.8em;
     vertical-align: middle;
   }
