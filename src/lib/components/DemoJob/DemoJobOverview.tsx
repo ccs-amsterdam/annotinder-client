@@ -178,7 +178,7 @@ const DemoJobLink = ({ units, codebook }: DemoJobLinkProps) => {
 
   return (
     <div>
-      <StyledButton.Group fluid>
+      <div>
         <StyledButton primary disabled={!units || !codebook} onClick={onClick}>
           Start Demo
         </StyledButton>
@@ -190,7 +190,7 @@ const DemoJobLink = ({ units, codebook }: DemoJobLinkProps) => {
         >
           Copy link
         </StyledButton>
-      </StyledButton.Group>
+      </div>
       <br />
       <div style={{ textAlign: "center", width: "100%", marginTop: "10px" }}>
         <QRCodeCanvas value={encodeURI(url)} size={300} />
