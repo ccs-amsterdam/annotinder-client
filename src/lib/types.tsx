@@ -586,7 +586,7 @@ export interface CodeTree {
 export interface Token {
   field: string;
   paragraph: number;
-  sentence: number;
+  //sentence: number;
   index: number;
   offset: number;
   length: number;
@@ -606,7 +606,7 @@ export interface Token {
 export interface RawToken {
   field?: string;
   paragraph?: number;
-  sentence?: number;
+  //sentence?: number;
   index?: number;
   offset?: number;
   length?: number;
@@ -625,7 +625,7 @@ export interface RawToken {
 export interface RawTokenColumn {
   field?: string[];
   paragraph?: number[];
-  sentence?: number[];
+  //sentence?: number[];
   index?: number[];
   text?: string[];
   token?: string[];
