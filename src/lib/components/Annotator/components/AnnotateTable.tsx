@@ -9,7 +9,7 @@ interface AnnotateTableProps {
 }
 
 const StyledTable = styled.table`
-  font-size: 0.7rem;
+  font-size: 1em;
   max-height: 100%;
   border-radius: 0px;
   border-collapse: collapse;

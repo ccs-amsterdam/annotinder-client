@@ -54,9 +54,9 @@ export const DarkModeButton = ({ color }: ThemeSelectorProps) => {
 };
 
 const fontsizeOptions = [
-  { name: "small", size: "12px", icon: "text height" },
-  { name: "medium", size: "16px", icon: "text height" },
-  { name: "large", size: "18px", icon: "text height" },
+  { name: "small", size: "1.3rem", icon: "text height" },
+  { name: "medium", size: "1.6rem", icon: "text height" },
+  { name: "large", size: "2rem", icon: "text height" },
 ];
 
 export const FontSizeButton = ({ color }: ThemeSelectorProps) => {

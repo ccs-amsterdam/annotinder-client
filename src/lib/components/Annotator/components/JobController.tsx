@@ -4,7 +4,7 @@ import { Icon } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
 import IndexController from "./IndexController";
 import Finished from "./Finished";
-import { FullScreenNode, JobServer, SetState } from "../../../types";
+import { CodeBook, FullScreenNode, JobServer, SetState } from "../../../types";
 import { StyledButton } from "../../../styled/StyledSemantic";
 import { DarkModeButton, FontSizeButton } from "../../Common/Theme";
 import MenuPopup from "../../Common/MenuPopup";
@@ -13,6 +13,7 @@ import MenuButtonGroup from "./MenuButtonGroup";
 interface JobControllerProps {
   children: ReactElement;
   jobServer: JobServer;
+  codebook: CodeBook;
   unitIndex: number;
   setUnitIndex: SetState<number>;
   unitProgress: number;
@@ -31,6 +32,7 @@ interface JobControllerProps {
 const JobController = ({
   children,
   jobServer,
+  codebook,
   unitIndex,
   setUnitIndex,
   unitProgress,
@@ -40,7 +42,7 @@ const JobController = ({
   authForm,
   health,
 }: JobControllerProps) => {
-  const [maxHeight, maxWidth] = getMaxWindowSize(jobServer);
+  const [maxHeight, maxWidth] = getMaxWindowSize(codebook);
 
   return (
     <div
@@ -64,6 +66,7 @@ const JobController = ({
           background: "var(--background-inversed-fixed)",
           color: "var(--text-inversed-fixed)",
           borderBottom: "3px double var(--background-fixed)",
+          fontSize: "2rem",
         }}
       >
         <div
@@ -117,12 +120,10 @@ const UserButton = ({ fullScreenNode, jobServer, authForm }: UserButtonProps) =>
       trigger={
         <StyledButton
           icon="cancel"
-          size="massive"
           style={{
             background: "transparent",
             color: "var(--text-inversed-fixed)",
             padding: "4px 1px",
-            fontSize: "24px",
             margin: 0,
           }}
         />
@@ -153,8 +154,8 @@ const BackToOverview = ({ jobServer }: BackToOverviewProps) => {
   );
 };
 
-const getMaxWindowSize = (jobServer: JobServer) => {
-  switch (jobServer?.codebook?.type) {
+const getMaxWindowSize = (codebook: CodeBook) => {
+  switch (codebook?.type) {
     case "questions":
       return ["100%", "1000px"];
     case "annotate":

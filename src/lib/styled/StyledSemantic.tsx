@@ -37,6 +37,8 @@ const CustomButton = styled.button`
 `;
 
 const StyledButton = styled(Button)`
+  font-size: inherit !important;
+
   &.primary {
     background: var(--primary) !important;
     color: white !important;
@@ -49,7 +51,7 @@ const StyledButton = styled(Button)`
 
 const StyledModal: StyledComponent<typeof Modal, any, {}, never> = styled(Modal)`
   border: 1px solid var(--background-inversed);
-  font-size: 0.9em;
+  font-size: 0.9em !important;
 
   & .header,
   .content,

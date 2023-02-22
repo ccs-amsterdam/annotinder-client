@@ -21,6 +21,7 @@ export default css`
   span.token.codingUnit {
     font-size: 1.2em;
     background-color: transparent;
+    //text-shadow: 0px 0px 2px var(--background);
     color: var(--text);
   }
 
