@@ -27,6 +27,7 @@ const DocumentContent = styled.div<{ grid: FieldGrid; centered: boolean }>`
   padding-top: 0px;
   padding-bottom: 0px;
   width: 100%;
+  z-index: 1;
 `;
 
 interface BodyProps {

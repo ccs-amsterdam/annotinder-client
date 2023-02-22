@@ -49,6 +49,11 @@ interface DemoFile {
 
 const demo_files: DemoFile[] = [
   {
+    label: "Annotate arguments by relating subjects to predicates",
+    units: "sotu",
+    codebook: "relations",
+  },
+  {
     label: "Annotate sentiment and issues in SOTU",
     units: "sotu",
     codebook: "annotate_sentiment_issue",

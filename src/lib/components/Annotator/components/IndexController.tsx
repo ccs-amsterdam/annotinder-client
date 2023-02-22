@@ -7,10 +7,10 @@ import { SetState } from "../../../types";
 const IndexControllerBar = styled.div`
   position: relative;
   display: flex;
+  max-width: 300px;
   border: none;
   box-shadow: none;
-  padding: 0;
-  left-margin: 0px;
+  padding: 0px;
   border-radius: 0;
   font-size: 1rem;
   background: var(--background-inversed-fixed);
@@ -165,7 +165,9 @@ const IndexController = ({
         min={1}
         max={n + 1}
         onChange={updateSliderPage}
+        onMouseDown={(e) => e.stopPropagation()}
         onMouseUp={(e) => {
+          e.stopPropagation();
           updatePage(slider.current);
         }}
         onTouchEnd={(e) => {

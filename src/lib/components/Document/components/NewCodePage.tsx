@@ -8,7 +8,6 @@ import {
   Span,
   Annotation,
   SpanAnnotations,
-  AnnotationMap,
   VariableMap,
   SetState,
   Token,
@@ -25,7 +24,6 @@ interface NewCodepageProps {
   variable: string;
   variableMap: VariableMap;
   annotations: SpanAnnotations;
-  tokenAnnotations: AnnotationMap;
   setAnnotations: SetState<SpanAnnotations>;
   editMode: boolean;
   span: Span;
@@ -39,7 +37,6 @@ const NewCodePage = ({
   variable,
   variableMap,
   annotations,
-  tokenAnnotations,
   setAnnotations,
   editMode,
   span,
@@ -53,7 +50,7 @@ const NewCodePage = ({
 
   const onKeydown = React.useCallback(
     (event: KeyboardEvent) => {
-      if (settings && !settings.searchBox && settings.buttonMode !== "recent") return null;
+      if (settings && !settings.searchBox && settings.buttonMode === "all") return null;
       const focusOnTextInput = textInputRef?.current?.children[0] === document.activeElement;
       if (!focusOnTextInput) setFocusOnButtons(true);
       if (event.keyCode === 27) setOpen(false);
@@ -130,7 +127,10 @@ const NewCodePage = ({
     const codeMap = variableMap?.[variable]?.codeMap;
     autoCode(codeMap, existing);
 
+    const existingValues = new Set(existing.map((e) => e.value));
     for (let code of Object.keys(codeMap)) {
+      if (existingValues.has(code)) continue;
+
       if (settings && settings.buttonMode === "all")
         buttonOptions.push({
           label: code,
@@ -204,7 +204,7 @@ const NewCodePage = ({
   const asButtonSelection = (options: CodeSelectorOption[]) => {
     return (
       <>
-        {settings.buttonMode === "recent" &&
+        {settings?.buttonMode !== "all" &&
         codeHistory[variable] &&
         codeHistory[variable].length > 0 ? (
           <b>Recent codes</b>

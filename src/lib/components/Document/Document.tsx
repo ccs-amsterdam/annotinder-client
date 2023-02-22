@@ -18,6 +18,18 @@ import {
   VariableValueMap,
 } from "../../types";
 import { useCallback } from "react";
+import styled from "styled-components";
+
+const DocumentContainer = styled.div`
+  display: flex;
+  position: relative;
+  height: 100%;
+  max-height: 100%;
+  flex-direction: column;
+  color: var(--text);
+  background: var(--background);
+  z-index: 100;
+`;
 
 interface DocumentProps {
   /** A unit object, as created in JobServerClass (or standardizeUnit) */
@@ -87,7 +99,11 @@ const Document = ({
   const [variable, setVariable] = useState(null);
 
   const unitStates = useUnit(unit, annotations, returnTokens, onChangeAnnotations);
-  const [variableMap, editMode] = useVariableMap(variables, variable, restrictedCodes);
+  const [variableMap, showValues, variableType, editMode] = useVariableMap(
+    variables,
+    variable,
+    restrictedCodes
+  );
   const [codeSelector, triggerCodeSelector, codeSelectorOpen] = useCodeSelector(
     unitStates,
     variableMap,
@@ -108,17 +124,7 @@ const Document = ({
   if (!unitStates.doc.tokens && !unitStates.doc.image_fields) return null;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        position: "relative",
-        height: "100%",
-        maxHeight: "100%",
-        flexDirection: "column",
-        color: "var(--text)",
-        background: "var(--background)",
-      }}
-    >
+    <DocumentContainer>
       <SelectVariable
         variables={variables}
         variable={variable}
@@ -140,7 +146,8 @@ const Document = ({
 
       <AnnotateNavigation
         tokens={unitStates.doc.tokens}
-        variableMap={variableMap}
+        variableType={variableType}
+        showValues={showValues}
         annotations={unitStates.spanAnnotations}
         disableAnnotations={!onChangeAnnotations || !variableMap}
         editMode={editMode}
@@ -150,7 +157,7 @@ const Document = ({
         fullScreenNode={fullScreenNode}
       />
       {codeSelector || null}
-    </div>
+    </DocumentContainer>
   );
 };
 
