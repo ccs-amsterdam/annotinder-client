@@ -343,6 +343,7 @@ const AnnotationPopup = React.memo(
           zIndex: 100,
           background: "var(--background)",
           color: "var(--text)",
+          fontSize: "1em",
         }}
       >
         {content}

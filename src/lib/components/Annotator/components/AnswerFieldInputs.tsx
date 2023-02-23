@@ -69,11 +69,11 @@ const Inputs = ({
       <StyledButton
         primary
         fluid
-        size="mini"
         disabled={!done}
         icon={done ? "play" : null}
         content={done ? "Continue" : "Please complete the form to continue"}
         style={{
+          padding: "1rem 1.5rem 0.9rem",
           minHeight: "30px",
           textAlign: "center",
           margin: "10px 0 0 0",
@@ -175,9 +175,9 @@ const Items = ({
             key={itemIndex + "_" + itemObj.label}
             style={{ padding: "10px", textAlign: "center", flex: "1 1 auto", margin: "auto" }}
           >
-            <Form onSubmit={(e, d) => setSelectedItem((current: number) => current + 1)}>
+            <form>
               <Form.Field>
-                <label style={{ color: "var(--text-inversed-fixed)" }}>
+                <label style={{ color: "var(--text-inversed-fixed)", fontSize: "0.8em" }}>
                   <>
                     {itemlabel}
                     <i style={{ color: "var(--text-light-fixed)" }}>
@@ -185,6 +185,7 @@ const Items = ({
                     </i>
                   </>
                 </label>
+                <br />
 
                 <Input
                   answerItems={answerItems}
@@ -193,7 +194,7 @@ const Items = ({
                   itemIndex={itemIndex}
                 />
               </Form.Field>
-            </Form>
+            </form>
           </div>
         );
       })}

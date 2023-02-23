@@ -51,6 +51,8 @@ const AnnotateGrid = styled.div`
       overflow: auto;
     }
     .bottomBar {
+      position: relative;
+      z-index: 100;
       display: flex;
       padding: 0;
       height: 35px;
@@ -62,6 +64,8 @@ const AnnotateGrid = styled.div`
     grid-area: table;
     overflow: auto;
     border-bottom: 1px solid;
+    position: relative;
+    z-index: 100;
   }
 `;
 
@@ -251,8 +255,13 @@ const NextUnitButton = ({ unit, annotations, nextUnit }: NextUnitButtonProps) =>
       loading={tempDisable === "loading"}
       primary
       fluid
-      size="tiny"
-      style={{ borderRadius: "0", padding: "5px", marginLeft: "30px", marginRight: "0px" }}
+      style={{
+        cursor: "pointer",
+        borderRadius: "0",
+        padding: "5px",
+        marginLeft: "30px",
+        marginRight: "0px",
+      }}
       onClick={onNext}
     >
       <Icon name="play" />

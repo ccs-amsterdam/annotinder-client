@@ -9,6 +9,7 @@ import { StyledButton } from "../../../styled/StyledSemantic";
 import { DarkModeButton, FontSizeButton } from "../../Common/Theme";
 import MenuPopup from "../../Common/MenuPopup";
 import MenuButtonGroup from "./MenuButtonGroup";
+import styled from "styled-components";
 
 interface JobControllerProps {
   children: ReactElement;
@@ -23,6 +24,36 @@ interface JobControllerProps {
   authForm?: ReactElement;
   health?: any;
 }
+
+const StyledWrapper = styled.div<{ maxWidth: string; maxHeight: string }>`
+  max-width: ${(p) => p.maxWidth};
+  max-height: ${(p) => p.maxHeight};
+  margin: 0 auto;
+  height: 100%;
+  width: 100%;
+  background: var(--background);
+
+  .Menubar {
+    height: 40px;
+    width: 100;
+    padding: 3px 5px 0px 5px;
+    display: flex;
+    justify-content: space-between;
+    background: var(--background-inversed-fixed);
+    color: var(--text-inversed-fixed);
+    border-bottom: 3px double var(--background-fixed);
+    font-size: 2rem;
+    position: relative;
+    z-index: 9000;
+
+    .IndexController {
+      flex: 1 1 auto;
+      padding-top: 4px;
+      padding-right: 10px;
+      width: 100px;
+    }
+  }
+`;
 
 /**
  * Render an annotator for the provided jobServer class
@@ -45,38 +76,9 @@ const JobController = ({
   const [maxHeight, maxWidth] = getMaxWindowSize(codebook);
 
   return (
-    <div
-      style={{
-        maxWidth,
-        maxHeight,
-        margin: "0 auto",
-        height: "100%",
-        width: "100%",
-        background: "var(--background)",
-        color: "var(--text)",
-      }}
-    >
-      <div
-        style={{
-          height: "40px",
-          width: "100%",
-          padding: "3px 5px 0px 5px",
-          display: "flex",
-          justifyContent: "space-between",
-          background: "var(--background-inversed-fixed)",
-          color: "var(--text-inversed-fixed)",
-          borderBottom: "3px double var(--background-fixed)",
-          fontSize: "2rem",
-        }}
-      >
-        <div
-          style={{
-            flex: "1 1 auto",
-            paddingTop: "4px",
-            paddingRight: "10px",
-            width: "100px",
-          }}
-        >
+    <StyledWrapper maxHeight={maxHeight} maxWidth={maxWidth}>
+      <div className="Menubar">
+        <div className="IndexController">
           <IndexController
             n={jobServer?.progress?.n_total}
             progressN={unitProgress}
@@ -101,7 +103,7 @@ const JobController = ({
       <div style={{ height: "calc(100% - 40px)" }}>
         {unitIndex < jobServer?.progress?.n_total ? children : <Finished jobServer={jobServer} />}
       </div>
-    </div>
+    </StyledWrapper>
   );
 };
 
@@ -123,7 +125,7 @@ const UserButton = ({ fullScreenNode, jobServer, authForm }: UserButtonProps) =>
           style={{
             background: "transparent",
             color: "var(--text-inversed-fixed)",
-            padding: "4px 1px",
+            padding: "6px 1px",
             margin: 0,
           }}
         />
@@ -147,6 +149,7 @@ const BackToOverview = ({ jobServer }: BackToOverviewProps) => {
     <StyledButton
       primary
       fluid
+      style={{ fontSize: "1.5rem", padding: "0.5rem", margin: "0" }}
       icon="home"
       content="Close job"
       onClick={() => navigate(jobServer.return_link)}

@@ -15,7 +15,7 @@ const RetryPortalContent = styled.div`
   margin: 0;
   max-height: 50%;
   overflow: auto;
-  z-index: 1000;
+  z-index: 10000;
   color: var(--text-fixed);
   background: var(--lightred);
   border: 1px solid var(--primary);
