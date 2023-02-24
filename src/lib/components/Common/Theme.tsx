@@ -13,6 +13,7 @@ const ThemeButton = styled(StyledButton)<{ iconcolor: string }>`
 
 const dark = {
   background: "#1b1c1d",
+  "background-transparent": "#1b1c1dbb",
   "background-inversed": "white",
   text: "white",
   "text-light": "darkgrey",
@@ -20,6 +21,7 @@ const dark = {
 };
 const light = {
   background: "white",
+  "background-transparent": "#fffb",
   "background-inversed": "#1b1c1d",
   text: "black",
   "text-light": "grey",

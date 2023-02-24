@@ -702,7 +702,7 @@ export interface VariableMap {
   [key: string]: Variable;
 }
 
-export interface TriggerCodePopup {
+export interface TriggerSelectionPopup {
   (index: number, span: Span): void;
 }
 

@@ -9,9 +9,10 @@ interface AnnotateTableProps {
 }
 
 const StyledTable = styled.table`
-  font-size: 1em;
+  font-size: 1.6rem;
   max-height: 100%;
-  border-radius: 0px;
+  border-radius: 5px;
+  margin: 0.5rem 0.5rem 0 0.5rem;
   border-collapse: collapse;
   text-align: left;
 
@@ -38,7 +39,7 @@ const StyledTable = styled.table`
     height: 100%;
   }
   & th {
-    padding: 5px;
+    padding: 1rem 0.5rem;
     background: transparent;
     white-space: nowrap;
     overflow: hidden;

@@ -25,7 +25,6 @@ const BODYSTYLE = {
 
 const AnnotateGrid = styled.div`
   display: grid;
-  grid-gap: 1em;
   grid-template-areas: "documentContainer table";
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 1fr;

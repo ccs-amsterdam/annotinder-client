@@ -1,12 +1,13 @@
 import { useState, useEffect, CSSProperties } from "react";
-import { Grid, Icon, Loader } from "semantic-ui-react";
+import { Icon, Loader } from "semantic-ui-react";
 import { QRCodeCanvas } from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
 import Backend from "../../Login/Backend";
 import { Debriefing, JobServer } from "../../../types";
-import Markdown from "../../Common/Markdown";
-import { StyledButton } from "../../../styled/StyledSemantic";
 import { useQuery } from "@tanstack/react-query";
+import { CenteredDiv } from "../../../styled/Styled";
+import { StyledButton } from "../../../styled/StyledSemantic";
+import Markdown from "../../Common/Markdown";
 
 interface FinishedProps {
   jobServer: JobServer;
@@ -28,26 +29,19 @@ const Finished = ({ jobServer }: FinishedProps) => {
 
   if (debriefing.isFetching)
     return (
-      <div style={{ height: "100%", position: "relative" }}>
+      <CenteredDiv>
         <Loader size="huge" active style={{ color: "var(--text)" }} />
-      </div>
+      </CenteredDiv>
     );
 
   if (debriefing.data) {
     return (
-      <Grid
-        container
-        centered
-        verticalAlign="middle"
-        style={{ margin: "0", padding: "0", height: "100%" }}
-      >
-        <Grid.Column textAlign="center">
-          <Grid.Row style={{ width: "100%" }}>
-            <div>
-              <Icon name="flag checkered" size="huge" style={{ marginBottom: "50px" }} />
-            </div>
-          </Grid.Row>
-          <Grid.Row>
+      <CenteredDiv>
+        <div>
+          <CenteredDiv>
+            <Icon name="flag checkered" size="huge" style={{ marginBottom: "50px" }} />
+          </CenteredDiv>
+          <div>
             <Markdown>{debriefing.data.message}</Markdown>
             <br />
             {debriefing.data.link ? (
@@ -67,26 +61,16 @@ const Finished = ({ jobServer }: FinishedProps) => {
             {debriefing.data.qr ? (
               <JobLink jobId={jobServer.job_id} backend={jobServer.backend} />
             ) : null}
-          </Grid.Row>
-        </Grid.Column>
-      </Grid>
+          </div>
+        </div>
+      </CenteredDiv>
     );
   }
+
   return (
-    <Grid
-      container
-      centered
-      verticalAlign="middle"
-      style={{ margin: "0", padding: "0", height: "100%" }}
-    >
-      <Grid.Column textAlign="center">
-        <Grid.Row style={{ width: "100%" }}>
-          <div>
-            <Icon name="flag checkered" size="huge" style={{ transform: "scale(2)" }} />
-          </div>
-        </Grid.Row>
-      </Grid.Column>
-    </Grid>
+    <CenteredDiv>
+      <Icon name="flag checkered" size="huge" style={{ transform: "scale(2)" }} />
+    </CenteredDiv>
   );
 };
 

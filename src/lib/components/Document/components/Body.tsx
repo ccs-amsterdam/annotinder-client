@@ -18,7 +18,7 @@ import {
 } from "../../../types";
 import styled from "styled-components";
 
-const DocumentContent = styled.div<{ grid: FieldGrid; centered: boolean }>`
+const DocumentContent = styled.div<{ grid: FieldGrid; centered: boolean; highLines: boolean }>`
   display: ${(p) => (p.grid?.areas ? "grid" : null)};
   grid-template-rows: ${(p) => p.grid?.rows};
   grid-template-columns: ${(p) => p.grid?.columns};
@@ -28,6 +28,10 @@ const DocumentContent = styled.div<{ grid: FieldGrid; centered: boolean }>`
   padding-bottom: 0px;
   width: 100%;
   z-index: 1;
+
+  p {
+    line-height: ${(p) => (p.highLines ? "2em" : "1.5em")};
+  }
 `;
 
 interface BodyProps {
@@ -41,6 +45,7 @@ interface BodyProps {
   bodyStyle: CSSProperties;
   focus: string[];
   centered: boolean;
+  readOnly: boolean;
 }
 
 const Body = ({
@@ -54,6 +59,7 @@ const Body = ({
   bodyStyle = {},
   focus,
   centered,
+  readOnly,
 }: BodyProps) => {
   const [content, setContent] = useState<(ReactElement | ReactElement[])[]>([]);
   const fieldRefs: FieldRefs = useMemo(() => ({}), []);
@@ -122,6 +128,7 @@ const Body = ({
             />
             <DocumentContent
               centered={centered}
+              highLines={!readOnly}
               grid={grid}
               key="content"
               className="DocumentContent"

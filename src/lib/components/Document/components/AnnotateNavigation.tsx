@@ -10,7 +10,7 @@ import {
   SpanAnnotations,
   AnnotationMap,
   TokenSelection,
-  TriggerCodePopup,
+  TriggerSelectionPopup,
   FullScreenNode,
   VariableType,
 } from "../../../types";
@@ -23,7 +23,7 @@ interface AnnotateNavigationProps {
   annotations: SpanAnnotations;
   disableAnnotations: boolean;
   editMode: boolean;
-  triggerCodeSelector: TriggerCodePopup;
+  triggerSelectionPopup: TriggerSelectionPopup;
   eventsBlocked: boolean;
   showAll: boolean;
   fullScreenNode: FullScreenNode;
@@ -41,7 +41,7 @@ const AnnotateNavigation = ({
   annotations,
   disableAnnotations,
   editMode,
-  triggerCodeSelector,
+  triggerSelectionPopup,
   showAll,
   eventsBlocked,
   fullScreenNode,
@@ -79,31 +79,32 @@ const AnnotateNavigation = ({
       {disableAnnotations ? null : (
         <AnnotationEvents
           tokens={tokens}
-          variableType={variableType}
           annotations={annotations}
           currentToken={currentToken}
           setCurrentToken={setCurrentToken}
           tokenSelection={tokenSelection}
           setTokenSelection={setTokenSelection}
-          triggerCodePopup={triggerCodeSelector}
+          triggerSelectionPopup={triggerSelectionPopup}
           editMode={editMode}
           eventsBlocked={eventsBlocked}
         />
       )}
 
       {/* this is where the relation arrows are drawn */}
-      <svg
-        style={{
-          position: "fixed",
-          marginTop: "-40px", // need to correct for menu bar
-          height: window.innerHeight,
-          width: "100%",
-          zIndex: 0,
-        }}
-        strokeWidth={1}
-      >
-        {variableType === "relation" && <Arrow tokens={tokens} tokenSelection={tokenSelection} />}
-      </svg>
+      {variableType === "relation" && (
+        <svg
+          style={{
+            position: "fixed",
+            marginTop: "-40px", // need to correct for menu bar
+            height: window.innerHeight,
+            width: "100%",
+            zIndex: 0,
+          }}
+          strokeWidth={1}
+        >
+          <Arrow tokens={tokens} tokenSelection={tokenSelection} />
+        </svg>
+      )}
     </>
   );
 };

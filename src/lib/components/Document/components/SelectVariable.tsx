@@ -21,11 +21,11 @@ const SelectVariableContainer = styled.div`
   .Description {
     margin: auto;
     padding-bottom: 0.4rem;
+    font-size: 1.6rem;
 
     .Variable {
       border: 2px solid white;
       border-radius: 5px;
-      font-size: 1.2em;
       margin-right: 0.5rem;
       padding: 0.1rem 0.7rem;
     }
@@ -35,7 +35,7 @@ const SelectVariableContainer = styled.div`
 const VariableButtons = styled.div`
   display: flex;
   word-wrap: break-word;
-  font-size: 1.2em;
+  font-size: 1.6rem;
   justify-content: center;
 `;
 

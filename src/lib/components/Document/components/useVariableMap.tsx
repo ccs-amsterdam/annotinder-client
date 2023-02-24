@@ -90,7 +90,10 @@ export default function useVariableMap(
     }, [restrictedCodes, fullVariableMap, selectedVariable]);
 
   const editMode: boolean = useMemo(() => {
-    return variableMap?.[selectedVariable]?.editMode || selectedVariable === "EDIT ALL";
+    return (
+      variableMap?.[selectedVariable]?.editMode || selectedVariable === "EDIT ALL"
+      //|| variableMap?.[selectedVariable].type === "relation"
+    );
   }, [variableMap, selectedVariable]);
 
   if (!selectedVariable) return [null, null, variableType, editMode];

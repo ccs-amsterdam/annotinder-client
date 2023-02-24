@@ -31,7 +31,7 @@ export default function Arrow({
   const p2 = { x: Y.x, y: Y.y, w: Y.width, h: Y.height };
 
   const arrow = getBoxToBoxArrow(p1.x, p1.y, p1.w, p1.h, p2.x, p2.y, p2.w, p2.h, {
-    bow: 0.2,
+    bow: 0.3,
     stretch: 0.5,
     stretchMin: 40,
     stretchMax: 100,
@@ -47,16 +47,16 @@ export default function Arrow({
 
   return (
     <>
-      <circle cx={sx} cy={sy} r={4} fill={fromColor || "#0005"} />
+      <circle cx={sx} cy={sy} r={4} fill={fromColor || "var(--text)"} />
       <path
         d={`M${sx},${sy} Q${cx},${cy} ${ex},${ey}`}
-        stroke={edgeColor || "#0005"}
+        stroke={edgeColor || "var(--text)"}
         fill="none"
         strokeWidth="2"
       />
       <polygon
         points="0,-6 12,0, 0,6"
-        fill={toColor || "#0005"}
+        fill={toColor || "var(--text)"}
         transform={`translate(${ex},${ey}) rotate(${endAngleAsDegrees})`}
       />
     </>

@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef, RefObject } from "react";
-import { Form } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
 import { StyledButton } from "../../../styled/StyledSemantic";
 import { OnSelectParams, AnswerItem, QuestionItem, SetState } from "../../../types";
@@ -176,7 +175,7 @@ const Items = ({
             style={{ padding: "10px", textAlign: "center", flex: "1 1 auto", margin: "auto" }}
           >
             <form>
-              <Form.Field>
+              <div>
                 <label style={{ color: "var(--text-inversed-fixed)", fontSize: "0.8em" }}>
                   <>
                     {itemlabel}
@@ -193,7 +192,7 @@ const Items = ({
                   item={itemObj}
                   itemIndex={itemIndex}
                 />
-              </Form.Field>
+              </div>
             </form>
           </div>
         );

@@ -9,7 +9,7 @@ import {
   Span,
   SpanAnnotations,
   Token,
-  TriggerCodePopup,
+  TriggerSelectionPopup,
   Variable,
   VariableMap,
   UnitStates,
@@ -40,7 +40,7 @@ const useCodeSelector = (
   variableMap: VariableMap,
   editMode: boolean,
   variables: Variable[]
-): [ReactElement, TriggerCodePopup, boolean] => {
+): [ReactElement, TriggerSelectionPopup, boolean] => {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(null);
   const [span, setSpan] = useState<Span>(null);
@@ -50,7 +50,9 @@ const useCodeSelector = (
   const triggerFunction = React.useCallback(
     // this function can be called to open the code selector.
     (index: number, span: Span) => {
-      setSpan(span || [index, index]);
+      let [from, to] = span;
+      if (from > to) [from, to] = [to, from];
+      setSpan([from, to]);
       setIndex(index);
       setOpen(true);
     },
@@ -58,7 +60,10 @@ const useCodeSelector = (
   );
 
   if (useWatchChange([tokens])) setOpen(false);
-  if (useWatchChange([variableMap])) setVariable(null);
+  if (useWatchChange([variableMap])) {
+    setVariable(null);
+    setOpen(false);
+  }
   if (useWatchChange([open])) setVariable(null);
 
   if (!variables) return [null, null, true];

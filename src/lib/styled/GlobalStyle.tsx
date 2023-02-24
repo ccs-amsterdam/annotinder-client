@@ -17,6 +17,7 @@ const GlobalStyle = createGlobalStyle`
     --secondary-light: #7b7c7d;
 
     --background: #1b1c1d;
+    --background-transparent: #1b1c1dbb; 
     --background-fixed: white;
     --background-inversed: #ffffff;
     --background-inversed-fixed: #1b1c1d;
@@ -46,7 +47,6 @@ const GlobalStyle = createGlobalStyle`
   }
   
   body {
-    font-size: var(--font-size) !important ;
     overscroll-behavior: contain;
     background: var(--background);
     color: var(--text);

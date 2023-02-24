@@ -8,7 +8,6 @@ export default css`
   }
 
   .paragraph {
-    line-height: 1.8em;
     vertical-align: middle;
   }
 
@@ -20,7 +19,7 @@ export default css`
 
   span.token.codingUnit {
     font-size: 1.2em;
-    background-color: transparent;
+    background-color: var(--background-transparent);
     //text-shadow: 0px 0px 2px var(--background);
     color: var(--text);
   }

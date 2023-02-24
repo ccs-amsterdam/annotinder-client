@@ -7,9 +7,8 @@ import {
   SpanAnnotations,
   Token,
   TokenSelection,
-  TriggerCodePopup,
+  TriggerSelectionPopup,
   Span,
-  VariableType,
 } from "../../../types";
 
 // This component generates no content, but manages navigation for span level annotations
@@ -30,13 +29,12 @@ interface Mover {
 
 interface AnnotationEventsProps {
   tokens: Token[];
-  variableType: VariableType;
   annotations: SpanAnnotations;
   currentToken: { i: number };
   setCurrentToken: SetState<{ i: number }>;
   tokenSelection: TokenSelection;
   setTokenSelection: SetState<TokenSelection>;
-  triggerCodePopup: any;
+  triggerSelectionPopup: any;
   editMode: boolean;
   eventsBlocked: boolean;
 }
@@ -49,13 +47,12 @@ interface AnnotationEventsProps {
  */
 export const AnnotationEvents = ({
   tokens,
-  variableType,
   annotations,
   currentToken,
   setCurrentToken,
   tokenSelection,
   setTokenSelection,
-  triggerCodePopup,
+  triggerSelectionPopup,
   editMode,
   eventsBlocked,
 }: AnnotationEventsProps) => {
@@ -66,7 +63,6 @@ export const AnnotationEvents = ({
   const [mover, setMover] = useState(null);
   const [holdSpace, setHoldSpace] = useState(false);
   const [holdArrow, setHoldArrow] = useState<Arrowkeys>(null);
-
   useEffect(() => {
     if (eventsBlocked) {
       setHoldArrow(null);
@@ -89,7 +85,6 @@ export const AnnotationEvents = ({
           //keepInView(token.containerRef.current, token.ref.current);
         }
         setCurrentToken({ i: token.index });
-
         setTokenSelection(span);
       };
   }, [tokens, setCurrentToken, setTokenSelection]);
@@ -149,7 +144,6 @@ export const AnnotationEvents = ({
   return (
     <>
       <KeyEvents
-        variableType={variableType}
         tokenSelection={tokenSelection}
         currentToken={currentToken}
         tokens={tokens}
@@ -157,15 +151,14 @@ export const AnnotationEvents = ({
         setMover={setMover}
         setHoldSpace={setHoldSpace}
         setHoldArrow={setHoldArrow}
-        triggerCodePopup={triggerCodePopup}
+        triggerSelectionPopup={triggerSelectionPopup}
       />
       <TokenMouseEvents
-        variableType={variableType}
         tokenSelection={tokenSelection}
         tokens={tokens}
         setCurrentToken={setCurrentToken}
         setTokenSelection={setTokenSelection}
-        triggerCodePopup={triggerCodePopup}
+        triggerSelectionPopup={triggerSelectionPopup}
         editMode={editMode}
       />
     </>
@@ -173,8 +166,6 @@ export const AnnotationEvents = ({
 };
 
 interface KeyEventsProps {
-  variableType: VariableType;
-
   tokenSelection: TokenSelection;
   currentToken: { i: number };
   tokens: Token[];
@@ -182,11 +173,10 @@ interface KeyEventsProps {
   setMover: SetState<Mover>;
   setHoldSpace: SetState<boolean>;
   setHoldArrow: SetState<Arrowkeys>;
-  triggerCodePopup: TriggerCodePopup;
+  triggerSelectionPopup: TriggerSelectionPopup;
 }
 
 const KeyEvents = ({
-  variableType,
   tokenSelection,
   currentToken,
   tokens,
@@ -194,7 +184,7 @@ const KeyEvents = ({
   setMover,
   setHoldSpace,
   setHoldArrow,
-  triggerCodePopup,
+  triggerSelectionPopup,
 }: KeyEventsProps) => {
   // This blocks event listeners when the eventsBlocked state (in redux) is true.
   // This lets us block the key activities in the text (selecting tokens) when
@@ -214,7 +204,7 @@ const KeyEvents = ({
     if (event.keyCode === 32 && holdSpace) {
       setHoldSpace(false);
       if (tokenSelection.length > 0) {
-        annotationFromSelection(tokens, variableType, tokenSelection, triggerCodePopup);
+        annotationFromSelection(tokens, tokenSelection, triggerSelectionPopup);
       }
       return;
     }
@@ -250,22 +240,20 @@ const KeyEvents = ({
 };
 
 interface TokenMouseEventsProps {
-  variableType: VariableType;
   tokenSelection: TokenSelection;
   tokens: Token[];
   setCurrentToken: SetState<{ i: number }>;
   setTokenSelection: SetState<TokenSelection>;
-  triggerCodePopup: TriggerCodePopup;
+  triggerSelectionPopup: TriggerSelectionPopup;
   editMode: boolean;
 }
 
 const TokenMouseEvents = ({
-  variableType,
   tokenSelection,
   tokens,
   setCurrentToken,
   setTokenSelection,
-  triggerCodePopup,
+  triggerSelectionPopup,
   editMode,
 }: TokenMouseEventsProps) => {
   const selectionStarted = useRef(false);
@@ -285,7 +273,7 @@ const TokenMouseEvents = ({
         return { i: currentNode.index };
       });
       setTokenSelection((state: TokenSelection) =>
-        updateTokenSelection(state, tokens, currentNode.index, true)
+        updateSelection(state, tokens, currentNode.index, true)
       );
       return currentNode.index;
     },
@@ -322,7 +310,7 @@ const TokenMouseEvents = ({
       e.preventDefault();
 
       if (editMode) {
-        annotationFromSelection(tokens, variableType, [token.index, token.index], triggerCodePopup);
+        annotationFromSelection(tokens, [token.index, token.index], triggerSelectionPopup);
         return;
       }
 
@@ -331,23 +319,13 @@ const TokenMouseEvents = ({
         // if a single token, and an annotation already exists, open create/edit mode
         const currentNode: number = storeMouseTokenSelection(token);
         setTokenSelection((state: TokenSelection) =>
-          updateTokenSelection(state, tokens, currentNode, true)
+          updateSelection(state, tokens, currentNode, true)
         );
 
         if (token?.annotated && currentNode === tokenSelection[0]) {
-          annotationFromSelection(
-            tokens,
-            variableType,
-            [currentNode, currentNode],
-            triggerCodePopup
-          );
+          annotationFromSelection(tokens, [currentNode, currentNode], triggerSelectionPopup);
         } else {
-          annotationFromSelection(
-            tokens,
-            variableType,
-            [tokenSelection[0], currentNode],
-            triggerCodePopup
-          );
+          annotationFromSelection(tokens, [tokenSelection[0], currentNode], triggerSelectionPopup);
         }
         rmTapped(tokens, tapped.current);
         tapped.current = null;
@@ -366,19 +344,18 @@ const TokenMouseEvents = ({
       } else {
         rmTapped(tokens, tapped.current);
         setTokenSelection((state: TokenSelection) =>
-          updateTokenSelection(state, tokens, token.index, true)
+          updateSelection(state, tokens, token.index, true)
         );
       }
     },
     [
-      variableType,
       editMode,
       setCurrentToken,
       setTokenSelection,
       storeMouseTokenSelection,
       tokenSelection,
       tokens,
-      triggerCodePopup,
+      triggerSelectionPopup,
     ]
   );
 
@@ -398,7 +375,7 @@ const TokenMouseEvents = ({
     (event: MouseEvent) => {
       // If mousemove only happens if mouse is used (which you can't be sure of, because chaos),
       // this would work to prevent odd cases where a touchscreen could disable mouse
-      // if (istouch.current) return;
+      //if (istouch.current) return;
       istouch.current = false;
 
       // When selection started (mousedown), select tokens hovered over
@@ -406,7 +383,6 @@ const TokenMouseEvents = ({
         //event.preventDefault();
         if (event.which !== 1 && event.which !== 0) return null;
         window.getSelection().empty();
-
         storeMouseTokenSelection(getToken(tokens, event));
       } else {
         let currentNode = getToken(tokens, event);
@@ -416,7 +392,7 @@ const TokenMouseEvents = ({
             return { i: currentNode.index };
           });
           setTokenSelection((state: TokenSelection) =>
-            updateTokenSelection(state, tokens, currentNode.index, false)
+            updateSelection(state, tokens, currentNode.index, false)
           );
         } else
           setCurrentToken((state) => {
@@ -452,19 +428,14 @@ const TokenMouseEvents = ({
       // yet updated within this scope. This results in single clicks (without mousemove)
       // not registering. So if there is no current selection, directly use currentNode as position.
       if (tokenSelection.length > 0 && tokenSelection[0] !== null && tokenSelection[1] !== null) {
-        annotationFromSelection(tokens, variableType, tokenSelection, triggerCodePopup);
+        annotationFromSelection(tokens, tokenSelection, triggerSelectionPopup);
       } else {
         if (currentNode !== null) {
-          annotationFromSelection(
-            tokens,
-            variableType,
-            [currentNode, currentNode],
-            triggerCodePopup
-          );
+          annotationFromSelection(tokens, [currentNode, currentNode], triggerSelectionPopup);
         }
       }
     },
-    [variableType, storeMouseTokenSelection, tokenSelection, tokens, triggerCodePopup]
+    [storeMouseTokenSelection, tokenSelection, tokens, triggerSelectionPopup]
   );
 
   useEffect(() => {
@@ -487,18 +458,11 @@ const TokenMouseEvents = ({
 
 const annotationFromSelection = (
   tokens: Token[],
-  variableType: VariableType,
   selection: TokenSelection,
-  triggerCodePopup: TriggerCodePopup
+  triggerSelectionPopup: TriggerSelectionPopup
 ) => {
   let [from, to] = selection;
-  if (from > to) [from, to] = [to, from];
-  if (variableType === "relation") {
-    alert("triggerRelationPopup");
-  } else {
-    // if type is "span", which is also the default
-    triggerCodePopup(tokens[to].index, [tokens[from].index, tokens[to].index]);
-  }
+  triggerSelectionPopup(tokens[to].index, [tokens[from].index, tokens[to].index]);
 };
 
 const movePosition = (
@@ -523,7 +487,7 @@ const movePosition = (
       return { i: newPosition };
     });
     setTokenSelection((state: TokenSelection) =>
-      updateTokenSelection(state, tokens, newPosition, !editMode && space)
+      updateSelection(state, tokens, newPosition, !editMode && space)
     );
 
     const containerRef = tokens[newPosition].containerRef.current;
@@ -656,7 +620,7 @@ const returnSelectionIfChanged = (selection: TokenSelection, newSelection: Token
   return newSelection;
 };
 
-const updateTokenSelection = (
+const updateSelection = (
   selection: TokenSelection,
   tokens: Token[],
   index: number,

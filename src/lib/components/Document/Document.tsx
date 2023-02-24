@@ -2,6 +2,7 @@ import React, { useState, useEffect, CSSProperties } from "react";
 import AnnotateNavigation from "./components/AnnotateNavigation";
 import Body from "./components/Body";
 import useCodeSelector from "./components/useCodeSelector";
+import useRelationSelector from "./components/useRelationSelector";
 import useUnit from "./components/useUnit";
 import SelectVariable from "./components/SelectVariable";
 
@@ -29,6 +30,7 @@ const DocumentContainer = styled.div`
   color: var(--text);
   background: var(--background);
   z-index: 100;
+  font-size: var(--font-size);
 `;
 
 interface DocumentProps {
@@ -104,11 +106,17 @@ const Document = ({
     variable,
     restrictedCodes
   );
+
   const [codeSelector, triggerCodeSelector, codeSelectorOpen] = useCodeSelector(
     unitStates,
     variableMap,
     editMode,
     variables
+  );
+  const [relationSelector, triggerRelationSelector, relationSelectorOpen] = useRelationSelector(
+    unitStates,
+    variableType,
+    variableMap?.[variable]
   );
 
   useEffect(() => {
@@ -122,6 +130,11 @@ const Document = ({
   }, [onReady, setSpanAnnotations]);
 
   if (!unitStates.doc.tokens && !unitStates.doc.image_fields) return null;
+
+  const triggerSelectionPopup =
+    variableType === "relation" ? triggerRelationSelector : triggerCodeSelector;
+  const selectorOpen = variableType === "relation" ? relationSelectorOpen : codeSelectorOpen;
+  const selector = variableType === "relation" ? relationSelector : codeSelector;
 
   return (
     <DocumentContainer>
@@ -142,6 +155,7 @@ const Document = ({
         bodyStyle={bodyStyle}
         focus={focus}
         centered={centered}
+        readOnly={!onChangeAnnotations}
       />
 
       <AnnotateNavigation
@@ -151,12 +165,13 @@ const Document = ({
         annotations={unitStates.spanAnnotations}
         disableAnnotations={!onChangeAnnotations || !variableMap}
         editMode={editMode}
-        triggerCodeSelector={triggerCodeSelector}
-        eventsBlocked={codeSelectorOpen || blockEvents}
+        triggerSelectionPopup={triggerSelectionPopup}
+        eventsBlocked={selectorOpen || blockEvents}
         showAll={showAll}
         fullScreenNode={fullScreenNode}
       />
-      {codeSelector || null}
+
+      {selector || null}
     </DocumentContainer>
   );
 };
