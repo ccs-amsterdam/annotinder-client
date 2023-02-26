@@ -1,14 +1,15 @@
 import { getColor } from "../../../functions/tokenDesign";
-import { SpanAnnotations, Token, VariableMap } from "../../../types";
+import { SpanAnnotations, Token, VariableMap, Span } from "../../../types";
 import Arrow from "./Arrow";
 
 interface Props {
   tokens: Token[];
   annotations: SpanAnnotations;
   showValues: VariableMap;
+  triggerSelectionPopup: (index: number, span: Span) => void;
 }
 
-const RelationArrows = ({ tokens, annotations, showValues }: Props) => {
+const RelationArrows = ({ tokens, annotations, showValues, triggerSelectionPopup }: Props) => {
   const arrows = [];
 
   for (let positionAnnotations of Object.values(annotations)) {
@@ -41,7 +42,12 @@ const RelationArrows = ({ tokens, annotations, showValues }: Props) => {
   return (
     <>
       {arrows.map((arrowProps, i) => (
-        <Arrow key={arrowProps.id} tokens={tokens} {...arrowProps} />
+        <Arrow
+          key={arrowProps.id}
+          tokens={tokens}
+          onClick={() => triggerSelectionPopup(0, arrowProps.tokenSelection)}
+          {...arrowProps}
+        />
       ))}
     </>
   );

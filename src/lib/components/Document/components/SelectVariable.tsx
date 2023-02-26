@@ -86,6 +86,7 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
           }
         }
       }
+      if (move === 0) return;
 
       const currentIndex = variableNames.findIndex((name) => name === variable);
       let newIndex = currentIndex + move;
@@ -94,9 +95,28 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
       setVariable(variableNames[newIndex]);
     };
 
+    // const onMouseDown = (e: MouseEvent) => {
+    //   console.log(e);
+    //   let move = 0;
+    //   if (e.button === 2) {
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //     move = e.shiftKey ? -1 : 1;
+    //   }
+    //   if (move === 0) return;
+
+    //   const currentIndex = variableNames.findIndex((name) => name === variable);
+    //   let newIndex = currentIndex + move;
+    //   if (newIndex > variableNames.length - 1) newIndex = 0;
+    //   if (newIndex < 0) newIndex = variableNames.length - 1;
+    //   setVariable(variableNames[newIndex]);
+    // };
+
     window.addEventListener("keydown", onKeyDown);
+    //window.addEventListener("contextmenu", onMouseDown);
     return () => {
       window.removeEventListener("keydown", onKeyDown);
+      //window.removeEventListener("contextmenu", onMouseDown);
     };
   }, [setVariable, variable, variableNames]);
 

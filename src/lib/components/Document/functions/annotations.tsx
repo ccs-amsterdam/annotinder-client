@@ -129,6 +129,8 @@ export const toggleSpanAnnotation = (
     // Check if there exists an annotation with the same variable+value at this position and if so delete it
     if (annotations[index]) {
       if (annotations[index][id]) {
+        // first, delete any relations to this annotations
+
         // if the new annotation overlaps with an existing annotations, loop over the existing annotation to remove it entirely
         const old = annotations[index][id];
         const oldSpan = old.span;
@@ -178,6 +180,30 @@ export const toggleSpanAnnotation = (
     }
   }
 
+  return rmDeadRelations(annotations);
+};
+
+const rmDeadRelations = (annotations: SpanAnnotations) => {
+  const uniqueAnn = [];
+
+  for (const positionAnnotations of Object.values(annotations)) {
+    for (const ann of Object.values(positionAnnotations)) {
+      if (ann.index !== ann.span[0]) continue; // relations are only included on first token of span
+      uniqueAnn.push(ann);
+    }
+  }
+
+  for (const ann of uniqueAnn) {
+    if (ann.parents) {
+      ann.parents = ann.parents.filter((p) => {
+        for (const toAnn of uniqueAnn) {
+          if (p.variable === toAnn.variable && p.value === toAnn.value && p.offset === toAnn.offset)
+            return true;
+        }
+        return false;
+      });
+    }
+  }
   return annotations;
 };
 

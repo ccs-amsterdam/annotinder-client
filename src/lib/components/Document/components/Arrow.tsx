@@ -11,6 +11,7 @@ interface Props {
   edgeColor?: string;
   fromColor?: string;
   toColor?: string;
+  onClick?: () => void;
 }
 
 const StyledG = styled.g`
@@ -18,8 +19,8 @@ const StyledG = styled.g`
   font-size: 0em;
   transition: all 0.3s;
   cursor: pointer;
-  --strokewidth: 0.4rem;
-  --opacity: 0.2;
+  --strokewidth: 1rem;
+  --opacity: 0.4;
 
   circle {
     stroke-width: 0.4rem;
@@ -30,7 +31,7 @@ const StyledG = styled.g`
     opacity: 1;
     font-size: 1.3rem;
     --strokewidth: 2rem;
-    --opacity: 0.8;
+    --opacity: 1;
   }
 
   .arrow {
@@ -58,6 +59,7 @@ export default function Arrow({
   edgeColor,
   fromColor,
   toColor,
+  onClick,
 }: Props) {
   if (tokenSelection.length !== 2) return;
   const elX = tokens[tokenSelection[0]]?.ref?.current;
@@ -78,15 +80,14 @@ export default function Arrow({
   const p1end = { x: Xend.x + Xend.width, y: Xend.y };
   const p2end = { x: Yend.x + Yend.width, y: Yend.y };
 
-  let flip = false;
+  //let flip = false;
+  let straights = false;
 
-  if (p1.x < p2.x) {
+  if (p1.x < p2.x - 150) {
     p1.x = p1end.x - 7;
     p2.x = p2.x - 7;
-  }
-  if (p2end.x < p1.x) {
+  } else if (p2end.x < p1.x) {
     p2.x = p2end.x;
-    //flip = true;
   }
   if (p1.y < p2end.y) {
     p1.y = p1.y + p1.h + 5;
@@ -94,16 +95,17 @@ export default function Arrow({
   if (p2.y < p1end.y) {
     p2.y = p2.y + p2.h + 5;
   }
+  if (p2.x < p1.x) {
+    //flip = true;
+  }
+  if (p1.y !== p2.y) straights = true;
 
   const arrow = getArrow(p1.x, p1.y, p2.x, p2.y, {
-    bow: 0.1,
-    stretch: 0.3,
+    bow: 0.2,
     stretchMin: 10,
-    stretchMax: 50,
-    padStart: 0,
-    padEnd: 0,
-    flip: flip,
-    straights: false,
+    stretchMax: 200,
+    //flip: flip,
+    straights: straights,
   });
   // const arrow = getBoxToBoxArrow(p1.x, p1.y, p1.w, p1.h, p2.x, p2.y, p2.w, p2.h, {
   //   bow: 0.3,
@@ -122,12 +124,12 @@ export default function Arrow({
 
   return (
     <>
-      <StyledG onClick={() => console.log("click relation")}>
+      <StyledG onClick={onClick}>
         <path
           id={id}
           className="arrow"
           d={`M${sx},${sy} Q${cx},${cy} ${ex},${ey}`}
-          stroke={edgeColor || "var(--text)"}
+          stroke={edgeColor || "grey"}
           fill="none"
           strokeWidth="5"
         />
@@ -145,9 +147,9 @@ export default function Arrow({
           fill={toColor || "var(--text)"}
           transform={`translate(${ex},${ey}) rotate(${endAngleAsDegrees})`}
         />
-        <text>
+        <text dy={4}>
           <textPath href={`#${id}`} startOffset="50%" textAnchor="middle">
-            {relation + " 🠪"}
+            {relation || "new relation"}
           </textPath>
         </text>
       </StyledG>

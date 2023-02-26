@@ -21,7 +21,7 @@ import {
 import { useCallback } from "react";
 import styled from "styled-components";
 
-const DocumentContainer = styled.div`
+const DocumentContainer = styled.div<{ cursor: string }>`
   display: flex;
   position: relative;
   height: 100%;
@@ -31,6 +31,7 @@ const DocumentContainer = styled.div`
   background: var(--background);
   z-index: 100;
   font-size: var(--font-size);
+  cursor: ${(props) => props.cursor};
 `;
 
 interface DocumentProps {
@@ -135,8 +136,11 @@ const Document = ({
   const selectorOpen = variableType === "relation" ? relationSelectorOpen : codeSelectorOpen;
   const selector = variableType === "relation" ? relationSelector : codeSelector;
 
+  let cursor = "default";
+  if (variableType === "relation") cursor = "crosshair";
+
   return (
-    <DocumentContainer>
+    <DocumentContainer cursor={cursor}>
       <SelectVariable
         variables={variables}
         variable={variable}

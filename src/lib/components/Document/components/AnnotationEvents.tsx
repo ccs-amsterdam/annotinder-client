@@ -79,6 +79,7 @@ export const AnnotationEvents = ({
     for (let token of tokens)
       token.select = (span: Span = undefined) => {
         if (!span) span = [token.index, token.index];
+
         if (token?.containerRef?.current && token?.ref?.current) {
           token.containerRef.current.style.scrollBehavior = "smooth";
           scrollToMiddle(token.containerRef.current, token.ref.current, 1 / 2);
@@ -86,6 +87,7 @@ export const AnnotationEvents = ({
         }
         setCurrentToken({ i: token.index });
         setTokenSelection(span);
+        triggerSelectionPopup(token.index, span);
       };
   }, [tokens, setCurrentToken, setTokenSelection]);
 

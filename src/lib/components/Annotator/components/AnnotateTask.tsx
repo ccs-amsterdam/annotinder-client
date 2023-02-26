@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Icon } from "semantic-ui-react";
-import AnnotateTable from "./AnnotateTable";
+import AnnotationList from "./AnnotationList";
 import Document from "../../Document/Document";
 import AnnotateTaskManual from "./AnnotateTaskManual";
 
@@ -25,7 +25,7 @@ const BODYSTYLE = {
 
 const AnnotateGrid = styled.div`
   display: grid;
-  grid-template-areas: "documentContainer table";
+  grid-template-areas: "documentContainer annotationList";
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 1fr;
   height: 100%;
@@ -33,7 +33,7 @@ const AnnotateGrid = styled.div`
   overflow: auto;
 
   @media screen and (max-width: 700px) {
-    grid-template-areas: "table" "documentContainer";
+    grid-template-areas: "annotationList" "documentContainer";
     grid-template-columns: 1fr;
     grid-template-rows: 0% 100%;
     grid-gap: 0;
@@ -59,8 +59,8 @@ const AnnotateGrid = styled.div`
     }
   }
 
-  & .table {
-    grid-area: table;
+  & .annotationList {
+    grid-area: annotationList;
     overflow: auto;
     border-bottom: 1px solid;
     position: relative;
@@ -107,6 +107,8 @@ const AnnotateTask = ({
   if (unit.unit.importedAnnotations && (!ann || ann.length === 0) && unit.status !== "DONE")
     ann = unit.unit.importedAnnotations;
 
+  console.log(variableMap);
+
   return (
     <AnnotateGrid>
       <div className="documentContainer">
@@ -136,9 +138,9 @@ const AnnotateTask = ({
           <NextUnitButton unit={unit} annotations={annotations} nextUnit={nextUnit} />
         </div>
       </div>
-      <div className="table">
+      <div className="annotationList">
         <div style={{}}>
-          <AnnotateTable tokens={tokens} variableMap={variableMap} annotations={annotations} />
+          <AnnotationList tokens={tokens} variableMap={variableMap} annotations={annotations} />
         </div>
       </div>
     </AnnotateGrid>

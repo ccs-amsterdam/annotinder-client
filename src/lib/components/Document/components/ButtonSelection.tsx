@@ -200,7 +200,6 @@ const CloseButton = ({ selected, onClick }: CloseButtonProps) => {
   return (
     <StyledButton
       icon="window close"
-      size="huge"
       style={{
         padding: "0px",
         background: selected ? "var(--text-light)" : "var(--text-inversed)",
@@ -208,6 +207,7 @@ const CloseButton = ({ selected, onClick }: CloseButtonProps) => {
         position: "absolute",
         left: "calc(50% - 15px)",
         top: "-15px",
+        transform: "scale(180%)",
       }}
       onClick={onClick}
     />

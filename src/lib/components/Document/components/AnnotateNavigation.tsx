@@ -67,7 +67,11 @@ const AnnotateNavigation = ({
     setTokenSelection([]);
   }, [tokens]);
 
-  const showArrow = tokenSelection?.[0] && annotations[tokenSelection[0]];
+  const validArrow =
+    tokenSelection?.[0] &&
+    annotations[tokenSelection[0]] &&
+    tokenSelection?.[1] &&
+    annotations[tokenSelection[1]];
 
   return (
     <>
@@ -106,10 +110,19 @@ const AnnotateNavigation = ({
           }}
           strokeWidth={1}
         >
-          {showArrow && (
-            <Arrow id={"create relation"} tokens={tokens} tokenSelection={tokenSelection} />
-          )}
-          <RelationArrows tokens={tokens} annotations={annotations} showValues={showValues} />
+          <Arrow
+            id={"create relation"}
+            tokens={tokens}
+            tokenSelection={tokenSelection}
+            edgeColor={validArrow ? "var(--primary)" : "var(--text-light)"}
+          />
+
+          <RelationArrows
+            tokens={tokens}
+            annotations={annotations}
+            showValues={showValues}
+            triggerSelectionPopup={triggerSelectionPopup}
+          />
         </svg>
       )}
     </>
@@ -131,9 +144,11 @@ const highlightAnnotations = (
     if (!token.ref?.current) continue;
 
     if (editMode) {
-      if (token.ref.current.style.cursor !== "default") token.ref.current.style.cursor = null;
+      token.ref.current.style.cursor = null;
+    } else if (variableType === "relation") {
+      token.ref.current.style.cursor = "crosshair";
     } else {
-      if (token.ref.current.style.cursor !== "text") token.ref.current.style.cursor = "text";
+      token.ref.current.style.cursor = "text";
     }
 
     let tokenAnnotations = allowedAnnotations(annotations?.[token.index], showValues, showAll);
@@ -148,12 +163,10 @@ const highlightAnnotations = (
     setAnnotationAsCSSClass(token, tokenAnnotations, showValues);
 
     if (editMode) {
-      // in edit mode, make annotations look clickable
       token.ref.current.style.cursor = "pointer";
     }
     if (variableType === "relation") {
-      // in relation mode, make annotations look clickable
-      token.ref.current.style.cursor = "grab";
+      token.ref.current.style.cursor = "crosshair";
     }
   }
 };
@@ -321,8 +334,9 @@ const AnnotationPopup = React.memo(
             }}
             onMouseOver={() => setCurrentToken({ i: null })}
           >
-            <b>{variable}</b>
-            {": " + value}
+            {/* <b>{variable}</b>
+            {": " + value} */}
+            <b>{value}</b>
           </List.Item>
         );
         return arr;
