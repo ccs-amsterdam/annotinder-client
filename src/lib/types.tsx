@@ -44,6 +44,17 @@ export interface Annotation {
   span?: Span;
   token_span?: Span;
   color?: string;
+  parents?: SpanParent[];
+}
+
+export interface SpanParent {
+  variable: string;
+  value: string | number;
+  offset: number;
+  relation: string;
+  relationColor?: string;
+  color?: string;
+  span?: Span;
 }
 
 ////// LOGIN
@@ -264,7 +275,12 @@ export interface Variable {
   editMode?: boolean;
   onlyImported?: boolean;
   codeMap?: CodeMap;
+  validFrom?: ValidRelation;
+  validTo?: ValidRelation;
 }
+
+// for fast lookup of relation codes, indexed as: variable -> value -> relation_code_value -> relation_code_object
+export type ValidRelation = Record<string, Record<string, Record<string, Code>>>;
 
 export type VariableType = "span" | "relation";
 
@@ -272,7 +288,11 @@ export type VariableType = "span" | "relation";
 export interface CodeSelectorValue {
   variable?: string;
   span?: Span;
-  value?: string | number;
+  value?: string | number | Code;
+  relation?: {
+    from: Annotation;
+    to: Annotation;
+  };
   delete?: boolean;
   cancel?: boolean;
 }

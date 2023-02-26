@@ -1,4 +1,4 @@
-import { Token, Annotation, SpanAnnotations, FieldAnnotations } from "../../../types";
+import { Code, Token, Annotation, SpanAnnotations, FieldAnnotations } from "../../../types";
 
 export const createId = (annotation: any): string => {
   return annotation.variable + "|" + annotation.value;
@@ -15,8 +15,6 @@ export const exportSpanAnnotations = (
   const uniqueAnnotations = Object.keys(annotations).reduce((un_ann, index) => {
     const ann = annotations[index];
     for (let id of Object.keys(ann)) {
-      //const endIndex = if (index === 'unit' ? index : )
-
       if (index !== "unit") if (ann[id].index !== ann[id].span[0]) continue;
 
       const ann_obj: Annotation = {
@@ -179,6 +177,52 @@ export const toggleSpanAnnotation = (
       };
     }
   }
+
+  return annotations;
+};
+
+/**
+ * Relations are stored in the 'parent' field of the child annotation
+ * (i.e. the relation is directed towards the parent).
+ *
+ * We only store the relation in the first annotation of the span. Note that
+ * this annotation is also the only one that's used to export annotations
+ */
+export const toggleRelationAnnotation = (
+  annotations: SpanAnnotations,
+  from: Annotation,
+  to: Annotation,
+  relation: Code,
+  rm: boolean
+) => {
+  const fromId = createId(from);
+  const ann = annotations[from.span[0]]?.[fromId];
+
+  // this shouldn't happen, but just in case
+  if (!ann) return;
+
+  // first, delete the relation (if it exists)
+  if (ann.parents) {
+    ann.parents = ann.parents.filter((p) => {
+      const same = p.variable === to.variable && p.value === to.value && p.offset === to.offset;
+      return !same;
+    });
+    if (ann.parents.length === 0) delete ann.parents;
+  }
+
+  // if we're just removing, we're done
+  if (rm) return annotations;
+
+  if (!ann.parents) ann.parents = [];
+  ann.parents.push({
+    variable: to.variable,
+    value: to.value,
+    offset: to.offset,
+    relation: relation.code,
+    relationColor: relation.color,
+    color: to.color,
+    span: to.span,
+  });
 
   return annotations;
 };

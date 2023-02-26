@@ -115,7 +115,6 @@ const Document = ({
   );
   const [relationSelector, triggerRelationSelector, relationSelectorOpen] = useRelationSelector(
     unitStates,
-    variableType,
     variableMap?.[variable]
   );
 

@@ -6,6 +6,7 @@ import {
   CodeRelation,
   VariableType,
   VariableMap,
+  ValidRelation,
 } from "../../../types";
 
 export default function useVariableMap(
@@ -25,7 +26,8 @@ export default function useVariableMap(
         obj[key] = cm[key];
         return obj;
       }, {});
-      vm[variable.name] = { ...variable, codeMap: cm };
+      const [validFrom, validTo] = getValidRelationCodes(variable.type, variable.codes);
+      vm[variable.name] = { ...variable, codeMap: cm, validFrom, validTo };
     }
 
     return vm;
@@ -138,3 +140,33 @@ const getRelationShowValues = (
 
   return showValues;
 };
+
+/**
+ * If variable of type relation, prepare efficient lookup for
+ * valid from/to annotations
+ */
+function getValidRelationCodes(variableType, codes) {
+  if (variableType !== "relation") return [null, null];
+  const validFrom: ValidRelation = {};
+  const validTo: ValidRelation = {};
+
+  function addValidRelation(valid: ValidRelation, variable, values, code) {
+    if (!valid[variable]) valid[variable] = {};
+    if (values) {
+      for (let value of values) {
+        if (!valid[variable][value]) valid[variable][value] = {};
+        valid[variable][value][code.code] = code;
+      }
+    } else {
+      if (!valid[variable]["*"]) valid[variable]["*"] = {};
+      valid[variable]["*"][code.code] = code;
+    }
+  }
+
+  for (let code of codes) {
+    addValidRelation(validFrom, code.from.variable, code.from.values, code);
+    addValidRelation(validTo, code.to.variable, code.to.values, code);
+  }
+
+  return [validFrom, validTo];
+}

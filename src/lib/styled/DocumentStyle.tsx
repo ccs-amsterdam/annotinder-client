@@ -49,9 +49,9 @@ export default css`
     /* line-height: 1.5em; */
     padding: 2px 0px;
     transition: all 0.5s ease;
-    //border: 1px solid;
-    //border-left: none;
-    //border-right: none;
+    border: 1px solid var(--background-fixed);
+    border-left: none;
+    border-right: none;
     /* cursor: pointer;; */
     vertical-align: bottom;
     box-shadow: none;
@@ -60,7 +60,7 @@ export default css`
 
   span.token.annotated.anyLeft > span.text {
     //border-left: solid;
-    //border-left-width: 0px;
+    border-left-width: 0px;
     border-bottom-left-radius: 0px;
   }
 
@@ -70,14 +70,14 @@ export default css`
   }
   span.token.annotated.allLeft > span.text {
     padding-left: 3px;
-    //border-left: solid;
-    //border-left-width: 1px;
+    border-left: 1px solid var(--background-fixed);
+    border-left-width: 1px;
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
   }
 
   span.token.annotated.anyRight > span.text {
-    //border-right: 0px solid;
+    border-right: 0px solid;
   }
   span.token.annotated.allRight > span.post {
     border: none;
@@ -85,8 +85,8 @@ export default css`
   }
   span.token.annotated.allRight > span.text {
     padding-right: 3px;
-    //border-right: solid;
-    //border-right-width: 1px;
+    border-right: 1px solid var(--background-fixed);
+    border-right-width: 1px;
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;
   }

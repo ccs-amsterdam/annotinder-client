@@ -1,0 +1,50 @@
+import { getColor } from "../../../functions/tokenDesign";
+import { SpanAnnotations, Token, VariableMap } from "../../../types";
+import Arrow from "./Arrow";
+
+interface Props {
+  tokens: Token[];
+  annotations: SpanAnnotations;
+  showValues: VariableMap;
+}
+
+const RelationArrows = ({ tokens, annotations, showValues }: Props) => {
+  const arrows = [];
+
+  for (let positionAnnotations of Object.values(annotations)) {
+    for (let ann of Object.values(positionAnnotations)) {
+      if (ann.span[0] !== ann.index) continue;
+      if (!ann.parents) continue;
+
+      for (let parent of ann.parents) {
+        let [from, to] = [ann.span[0], parent.span[0]];
+        let [fromEnd, toEnd] = [ann.span[1], parent.span[1]];
+
+        const id = `${ann.variable}|${ann.value}|${ann.span[0]} - ${parent.relation} - ${parent.variable}|${parent.value}|${parent.span[0]}`;
+
+        const fromCodeMap = showValues[ann.variable].codeMap;
+        const toCodeMap = showValues[parent.variable].codeMap;
+
+        arrows.push({
+          id,
+          tokenSelection: [from, to],
+          tokenSelectionEnd: [fromEnd, toEnd],
+          relation: parent.relation,
+          edgeColor: parent.relationColor,
+          fromColor: ann.color || getColor(ann.value, fromCodeMap),
+          toColor: parent.color || getColor(parent.value, toCodeMap),
+        });
+      }
+    }
+  }
+
+  return (
+    <>
+      {arrows.map((arrowProps, i) => (
+        <Arrow key={arrowProps.id} tokens={tokens} {...arrowProps} />
+      ))}
+    </>
+  );
+};
+
+export default RelationArrows;

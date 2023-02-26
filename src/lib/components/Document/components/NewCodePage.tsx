@@ -308,7 +308,7 @@ const updateAnnotations = (
   const [from, to] = value.span;
   const annotation: Annotation = {
     variable: value.variable,
-    value: value.value,
+    value: value.value as string | number,
     span: value.span,
     index: tokens[from].index,
     offset: tokens[from].offset,

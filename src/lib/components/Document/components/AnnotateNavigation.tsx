@@ -15,6 +15,7 @@ import {
   VariableType,
 } from "../../../types";
 import Arrow from "./Arrow";
+import RelationArrows from "./RelationArrows";
 
 interface AnnotateNavigationProps {
   tokens: Token[];
@@ -50,8 +51,8 @@ const AnnotateNavigation = ({
   const [tokenSelection, setTokenSelection] = useState<TokenSelection>([]);
 
   useEffect(() => {
-    highlightAnnotations(tokens, annotations, showValues, editMode, showAll);
-  }, [tokens, annotations, showValues, editMode, showAll]);
+    highlightAnnotations(tokens, annotations, showValues, editMode, showAll, variableType);
+  }, [tokens, annotations, showValues, editMode, showAll, variableType]);
 
   useEffect(() => {
     setSelectionAsCSSClass(tokens, variableType, tokenSelection);
@@ -65,6 +66,8 @@ const AnnotateNavigation = ({
     setCurrentToken({ i: null });
     setTokenSelection([]);
   }, [tokens]);
+
+  const showArrow = tokenSelection?.[0] && annotations[tokenSelection[0]];
 
   return (
     <>
@@ -98,11 +101,15 @@ const AnnotateNavigation = ({
             marginTop: "-40px", // need to correct for menu bar
             height: window.innerHeight,
             width: "100%",
-            zIndex: 0,
+            zIndex: 10000,
+            pointerEvents: "none",
           }}
           strokeWidth={1}
         >
-          <Arrow tokens={tokens} tokenSelection={tokenSelection} />
+          {showArrow && (
+            <Arrow id={"create relation"} tokens={tokens} tokenSelection={tokenSelection} />
+          )}
+          <RelationArrows tokens={tokens} annotations={annotations} showValues={showValues} />
         </svg>
       )}
     </>
@@ -114,7 +121,8 @@ const highlightAnnotations = (
   annotations: SpanAnnotations,
   showValues: VariableMap,
   editMode: boolean,
-  showAll: boolean
+  showAll: boolean,
+  variableType: string
 ) => {
   // loop over tokens. Do some styling. Then get the (allowed) annotations for this token,
   // and apply styling to annotated tokens
@@ -142,6 +150,10 @@ const highlightAnnotations = (
     if (editMode) {
       // in edit mode, make annotations look clickable
       token.ref.current.style.cursor = "pointer";
+    }
+    if (variableType === "relation") {
+      // in relation mode, make annotations look clickable
+      token.ref.current.style.cursor = "grab";
     }
   }
 };
