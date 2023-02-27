@@ -317,7 +317,7 @@ const updateAnnotations = (
   };
 
   setAnnotations((state: SpanAnnotations) =>
-    toggleSpanAnnotation({ ...state }, annotation, value.delete, editMode)
+    toggleSpanAnnotation({ ...state }, annotation, value.delete, editMode, true)
   );
 
   setCodeHistory((state: CodeHistory) => {

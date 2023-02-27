@@ -129,7 +129,7 @@ const SelectEdgePage = ({ unitStates, relation, edgeOptions, setOpen }: SelectEd
         relation,
         value.delete
       );
-      unitStates.setSpanAnnotations(annotations);
+      unitStates.setSpanAnnotations({ ...annotations });
       setOpen(false);
     },
     [setOpen, unitStates, relation]
@@ -153,7 +153,8 @@ const SelectEdgePage = ({ unitStates, relation, edgeOptions, setOpen }: SelectEd
             p.variable === to.variable &&
             p.value === to.value &&
             p.offset === to.offset &&
-            p.relation === relation.code
+            p.relationVariable === relation.variable &&
+            p.relationValue === relation.code
         );
 
       return {

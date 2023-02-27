@@ -23,6 +23,7 @@ export const exportSpanAnnotations = (
         field: ann[id].field,
         offset: ann[id].offset,
         length: ann[id].length,
+        //color: ann[id].color,
       };
 
       if (SpanAndText) {
@@ -39,6 +40,35 @@ export const exportSpanAnnotations = (
         ann_obj["text"] = text;
         ann_obj["token_span"] = span;
       }
+
+      if (ann[id].parents)
+        ann_obj["parents"] = ann[id].parents.map((p) => {
+          const parent = {
+            variable: p.variable,
+            value: p.value,
+            offset: p.offset,
+            relationVariable: p.relationVariable,
+            relationValue: p.relationValue,
+            //relationColor: p.relationColor,
+            //color: p.color,
+          };
+
+          if (SpanAndText) {
+            const span = p.span;
+            const text = tokens
+              .slice(span[0], span[1] + 1)
+              .map((t: Token, i: number) => {
+                let string = t.text;
+                if (i > 0) string = t.pre + string;
+                if (i < span[1] - span[0]) string = string + t.post;
+                return string;
+              })
+              .join("");
+            parent["text"] = text;
+            parent["span"] = span;
+          }
+          return parent;
+        });
 
       un_ann.push(ann_obj);
     }
@@ -67,9 +97,9 @@ export const importSpanAnnotations = (
   if (annotationsArray.length === 0) return { ...currentAnnotations };
   // import span annotations. Uses the offset to match annotations to tokens
   const importedAnnotations = prepareSpanAnnotations(annotationsArray);
+
   let trackAnnotations: any = {};
   let matchedAnnotations: any = [];
-
   for (let token of tokens) {
     findMatches(token, importedAnnotations, trackAnnotations, matchedAnnotations);
   }
@@ -92,10 +122,10 @@ export const importSpanAnnotations = (
   }
 
   for (let ann of annArray) {
-    currentAnnotations = toggleSpanAnnotation(currentAnnotations, ann, false, false);
+    currentAnnotations = toggleSpanAnnotation(currentAnnotations, ann, false, false, false);
   }
 
-  return currentAnnotations;
+  return updateRelations(currentAnnotations);
 };
 
 export const importFieldAnnotations = (annotationsArray: Annotation[]) => {
@@ -119,7 +149,8 @@ export const toggleSpanAnnotation = (
   annotations: SpanAnnotations,
   newAnnotation: Annotation,
   rm: boolean,
-  keep_empty: boolean
+  keep_empty: boolean,
+  update_relations: boolean
 ): SpanAnnotations => {
   // Add span annotations in a way that prevents double assignments of the same value to the same token
   const id = createId(newAnnotation);
@@ -176,14 +207,16 @@ export const toggleSpanAnnotation = (
         field: newAnnotation.field,
         offset: newAnnotation.offset,
         color: newAnnotation.color,
+        parents: newAnnotation.parents,
       };
     }
   }
 
-  return rmDeadRelations(annotations);
+  if (update_relations) return updateRelations(annotations);
+  return annotations;
 };
 
-const rmDeadRelations = (annotations: SpanAnnotations) => {
+export const updateRelations = (annotations: SpanAnnotations) => {
   const uniqueAnn = [];
 
   for (const positionAnnotations of Object.values(annotations)) {
@@ -197,8 +230,16 @@ const rmDeadRelations = (annotations: SpanAnnotations) => {
     if (ann.parents) {
       ann.parents = ann.parents.filter((p) => {
         for (const toAnn of uniqueAnn) {
-          if (p.variable === toAnn.variable && p.value === toAnn.value && p.offset === toAnn.offset)
+          if (
+            p.variable === toAnn.variable &&
+            p.value === toAnn.value &&
+            p.offset === toAnn.offset
+          ) {
+            // if match found, keep the relation, and also update the span
+            // When importing annotations, this has to be performed at least once
+            p.span = toAnn.span;
             return true;
+          }
         }
         return false;
       });
@@ -244,7 +285,8 @@ export const toggleRelationAnnotation = (
     variable: to.variable,
     value: to.value,
     offset: to.offset,
-    relation: relation.code,
+    relationVariable: relation.variable,
+    relationValue: relation.code,
     relationColor: relation.color,
     color: to.color,
     span: to.span,
@@ -297,6 +339,7 @@ const findMatches = (
           length: null,
           span: [token.index],
           color: annotation.color,
+          parents: annotation.parents,
         };
       }
 

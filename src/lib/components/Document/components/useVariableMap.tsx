@@ -55,7 +55,7 @@ export default function useVariableMap(
         for (let value of Object.keys(restrictedCodes[variable])) {
           if (value === "EMPTY") continue;
           if (!vmap[variable].codeMap[value])
-            vmap[variable].codeMap[value] = standardizeCodes([value], true)[0];
+            vmap[variable].codeMap[value] = standardizeCodes(variable, [value], true)[0];
         }
       }
 

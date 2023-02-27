@@ -194,7 +194,7 @@ const annotationsHaveChanged = (old: Annotation[], current: Annotation[]) => {
 
 const getCleanAnnotations = (annotations: Annotation[]) => {
   return annotations.map((na) => {
-    return {
+    const a: Annotation = {
       variable: na.variable,
       value: na.value,
       field: na.field,
@@ -202,6 +202,15 @@ const getCleanAnnotations = (annotations: Annotation[]) => {
       length: na.length,
       text: na.text,
     };
+    if (na.parents)
+      a.parents = na.parents.map((p) => ({
+        variable: p.variable,
+        value: p.value,
+        offset: p.offset,
+        relationVariable: p.relationVariable,
+        relationValue: p.relationValue,
+      }));
+    return a;
   });
 };
 

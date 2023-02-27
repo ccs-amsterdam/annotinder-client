@@ -51,10 +51,12 @@ export interface SpanParent {
   variable: string;
   value: string | number;
   offset: number;
-  relation: string;
+  relationVariable: string;
+  relationValue: string;
   relationColor?: string;
   color?: string;
   span?: Span;
+  text?: string;
 }
 
 ////// LOGIN
@@ -576,6 +578,8 @@ export interface MetaField {
 ///// CODES
 
 export interface Code {
+  variable: string;
+
   code: string;
   parent: string;
   color: string;

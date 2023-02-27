@@ -21,8 +21,9 @@ const RelationArrows = ({ tokens, annotations, showValues, triggerSelectionPopup
         let [from, to] = [ann.span[0], parent.span[0]];
         let [fromEnd, toEnd] = [ann.span[1], parent.span[1]];
 
-        const id = `${ann.variable}|${ann.value}|${ann.span[0]} - ${parent.relation} - ${parent.variable}|${parent.value}|${parent.span[0]}`;
+        const id = `${ann.variable}|${ann.value}|${ann.span[0]} - ${parent.relationVariable}|${parent.relationValue} - ${parent.variable}|${parent.value}|${parent.span[0]}`;
 
+        const relationCodeMap = showValues[parent.relationVariable].codeMap;
         const fromCodeMap = showValues[ann.variable].codeMap;
         const toCodeMap = showValues[parent.variable].codeMap;
 
@@ -30,8 +31,8 @@ const RelationArrows = ({ tokens, annotations, showValues, triggerSelectionPopup
           id,
           tokenSelection: [from, to],
           tokenSelectionEnd: [fromEnd, toEnd],
-          relation: parent.relation,
-          edgeColor: parent.relationColor,
+          relation: parent.relationValue,
+          edgeColor: parent.relationColor || getColor(parent.relationValue, relationCodeMap),
           fromColor: ann.color || getColor(ann.value, fromCodeMap),
           toColor: parent.color || getColor(parent.value, toCodeMap),
         });

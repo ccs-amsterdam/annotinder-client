@@ -52,7 +52,7 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef }: P
         position: "fixed",
         minWidth: smallscreen ? "100%" : "300px",
         maxWidth: "min(100%, 600px)",
-        zIndex: 1000,
+        zIndex: 100000,
         background: "var(--background)",
         color: "var(--text)",
         padding: "10px",

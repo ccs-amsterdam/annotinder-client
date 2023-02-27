@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { getColor } from "../../../functions/tokenDesign";
-import { Annotation, VariableMap, Span, Token } from "../../../types";
+import { Annotation, VariableMap, Span, Token, SpanParent } from "../../../types";
 
 interface AnnotationListProps {
   tokens: Token[];
@@ -18,31 +18,63 @@ const StyledDiv = styled.div`
 
   .annotation {
     display: flex;
-    align-items: center;
+    align-items: stretch;
+
     //border-bottom: 1px dotted var(--text-light);
     cursor: pointer;
+    margin: 0.2rem;
 
     .value {
+      display: flex;
       width: 30%;
       min-width: 120px;
       border-radius: 5px;
-      text-align: center;
-      padding: 0.7rem 0rem;
+      padding: 0.5rem 0rem;
     }
-    .text {
-      line-height: 2rem;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      padding: 0.3rem 0.5rem;
-      width: 70%;
-      margin: 0.5rem 0rem;
-      text-align: justify;
-      //word-wrap: break-word;
-      hyphens: auto;
-      //white-space: nowrap;
+    .value span {
+      margin: auto;
     }
+  }
+  .relation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 8px;
+    margin: 0.2rem;
+
+    span {
+      font-weight: bold;
+      padding: 0.2rem;
+    }
+    div {
+      display: flex;
+      margin: 0.2rem;
+    }
+    .header {
+      display: flex;
+      width: 100%;
+      padding: 0rem 0.4rem;
+      justify-content: space-between;
+    }
+
+    p {
+      flex: 1 1 auto;
+    }
+  }
+
+  .text {
+    margin: auto;
+    line-height: 1.5rem;
+    padding: 0.15rem 0.5rem;
+    max-height: 5rem;
+    overflow: auto;
+    width: 70%;
+    text-align: justify;
+    hyphens: auto;
+  }
+  .right {
+    text-align: right;
   }
 `;
 
@@ -56,9 +88,9 @@ const listAnnotations = (tokens: Token[], variableMap: VariableMap, annotations:
   const rows = [];
   let i = 0;
 
-  const onClick = (span: Span) => {
+  const onClick = (span: Span, end?: boolean) => {
     if (!span) return;
-    const token = tokens?.[span[0]];
+    const token = tokens?.[span[end ? 1 : 0]];
     if (token?.select) token.select(span);
   };
 
@@ -66,9 +98,8 @@ const listAnnotations = (tokens: Token[], variableMap: VariableMap, annotations:
     const text = annotation.text || "";
 
     const row = (
-      <AnnotationRow
-        key={i}
-        variable={annotation.variable}
+      <ShowSpanAnnotation
+        key={"span" + i}
         variableMap={variableMap}
         annotation={annotation}
         onClick={onClick}
@@ -76,29 +107,42 @@ const listAnnotations = (tokens: Token[], variableMap: VariableMap, annotations:
       />
     );
     if (row !== null) rows.push(row);
+
+    for (let parent of annotation.parents || []) {
+      const row = (
+        <ShowRelation
+          key={"relation" + parent.value + parent.offset + "_" + i}
+          variableMap={variableMap}
+          annotation={annotation}
+          parent={parent}
+          onClick={onClick}
+          fromText={text}
+          toText={parent.text}
+        />
+      );
+      if (row !== null) rows.push(row);
+    }
     i++;
   }
   return rows;
 };
 
-interface AnnotationRowProps {
-  variable: string;
+interface ShowSpanAnnotationProps {
   variableMap: VariableMap;
   annotation: Annotation;
   onClick: (span: Span) => void;
   text: string;
 }
 
-const AnnotationRow = ({
-  variable,
+const ShowSpanAnnotation = ({
   variableMap,
   annotation,
   onClick,
   text,
-}: AnnotationRowProps) => {
-  if (!variableMap?.[annotation.variable]?.codeMap) return null;
+}: ShowSpanAnnotationProps) => {
+  let codeMap = variableMap?.[annotation.variable]?.codeMap;
+  if (!codeMap) return null;
 
-  const codeMap = variableMap[variable].codeMap;
   if (!codeMap?.[annotation.value] || !codeMap[annotation.value].active) return null;
   const color = getColor(annotation.value, codeMap);
   const label = codeMap[annotation.value]?.foldToParent
@@ -107,12 +151,67 @@ const AnnotationRow = ({
 
   return (
     <div className={"annotation"} onClick={() => onClick(annotation.token_span)}>
-      <span className="value" style={{ background: color || null }}>
-        {label}
-      </span>
+      <div className="value" style={{ background: color || null }}>
+        <span>{label}</span>
+      </div>
       <p className="text" title={text}>
         {text}
       </p>
+    </div>
+  );
+};
+
+interface ShowRelationProps {
+  variableMap: VariableMap;
+  annotation: Annotation;
+  parent: SpanParent;
+  onClick: (span: Span, end: boolean) => void;
+  fromText: string;
+  toText: string;
+}
+
+const ShowRelation = ({
+  variableMap,
+  annotation,
+  parent,
+  onClick,
+  fromText,
+  toText,
+}: ShowRelationProps) => {
+  let codeMap = variableMap?.[parent?.relationVariable]?.codeMap;
+  if (!codeMap) return null;
+
+  const color = getColor(parent.relationValue, codeMap);
+  const label = codeMap[parent.relationValue]?.foldToParent
+    ? `${codeMap[parent.relationValue].foldToParent} - ${parent.relationValue}`
+    : parent.relationValue;
+
+  if (!annotation.token_span || !parent.span) return null;
+
+  const relationSpan: Span =
+    annotation.token_span[0] < parent.span[0]
+      ? [annotation.token_span[1], parent.span[0]]
+      : [annotation.token_span[0], parent.span[1]];
+
+  return (
+    <div
+      className={"relation"}
+      onClick={() => onClick(relationSpan, true)}
+      style={{ background: color || null }}
+    >
+      <div className="header">
+        <span>{label}</span>
+        <div>
+          <i>
+            {annotation.value} 🠪 {parent.value}
+          </i>
+        </div>
+      </div>
+      <div>
+        <p className="text left" title={fromText}>
+          {fromText + " 🠪 " + toText}
+        </p>
+      </div>
     </div>
   );
 };

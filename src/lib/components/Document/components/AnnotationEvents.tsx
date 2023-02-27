@@ -89,7 +89,7 @@ export const AnnotationEvents = ({
         setTokenSelection(span);
         triggerSelectionPopup(token.index, span);
       };
-  }, [tokens, setCurrentToken, setTokenSelection]);
+  }, [tokens, triggerSelectionPopup, setCurrentToken, setTokenSelection]);
 
   useEffect(() => {
     // for when manual edit mode releases

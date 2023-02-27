@@ -49,6 +49,7 @@ const AnnotateNavigation = ({
 }: AnnotateNavigationProps) => {
   const [currentToken, setCurrentToken] = useState({ i: null });
   const [tokenSelection, setTokenSelection] = useState<TokenSelection>([]);
+  const [, setRefresh] = useState(0);
 
   useEffect(() => {
     highlightAnnotations(tokens, annotations, showValues, editMode, showAll, variableType);
@@ -65,6 +66,24 @@ const AnnotateNavigation = ({
   useEffect(() => {
     setCurrentToken({ i: null });
     setTokenSelection([]);
+  }, [tokens]);
+
+  useEffect(() => {
+    // ugly hack, but ensures that popup and arrows are redrawn
+    // when positions change and on body scroll
+    setRefresh(0);
+    const refreshNow = () => setRefresh((refresh) => refresh + 1);
+    const interval = setInterval(refreshNow, 500);
+
+    // seems nicer, but we need to interval anyway because we can't
+    // watch for changes in the bodycontainer
+    const bodycontainer = document.getElementById("bodycontainer");
+    if (bodycontainer) bodycontainer.addEventListener("scroll", refreshNow);
+
+    return () => {
+      if (bodycontainer) bodycontainer.removeEventListener("scroll", refreshNow);
+      clearInterval(interval);
+    };
   }, [tokens]);
 
   const validArrow =
@@ -101,14 +120,17 @@ const AnnotateNavigation = ({
       {variableType === "relation" && (
         <svg
           style={{
-            position: "fixed",
+            position: "absolute",
             marginTop: "-40px", // need to correct for menu bar
-            height: window.innerHeight,
+            top: 0,
+            left: 0,
+            height: "calc(100% + 40px)",
+            overflow: "hidden",
+            //height: window.innerHeight,
             width: "100%",
             zIndex: 10000,
             pointerEvents: "none",
           }}
-          strokeWidth={1}
         >
           <Arrow
             id={"create relation"}
@@ -308,12 +330,11 @@ const AnnotationPopup = React.memo(
     fullScreenNode,
   }: AnnotationPopupProps) => {
     const [content, setContent] = useState(null);
-    const [refresh, setRefresh] = useState(0);
 
     useEffect(() => {
       if (!tokens?.[currentToken.i]?.ref || !annotations?.[tokens[currentToken.i].index]) {
         setContent(null);
-        setRefresh(0);
+        //setRefresh(0);
         return;
       }
 
@@ -343,17 +364,8 @@ const AnnotationPopup = React.memo(
       }, []);
 
       setContent(<List>{list}</List>);
-      setRefresh(0);
-    }, [tokens, currentToken, setCurrentToken, annotations, showValues, setRefresh]);
-
-    useEffect(() => {
-      // ugly hack, but popup won't scroll along, so refresh position at intervalls if content is not null
-      if (!content) return;
-      const timer = setTimeout(() => {
-        setRefresh(refresh + 1);
-      }, 200);
-      return () => clearTimeout(timer);
-    }, [refresh, content]);
+      //setRefresh(0);
+    }, [tokens, currentToken, setCurrentToken, annotations, showValues]);
 
     return (
       <Popup

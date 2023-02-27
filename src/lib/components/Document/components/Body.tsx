@@ -98,6 +98,7 @@ const Body = ({
       <Ref innerRef={containerRef}>
         <div
           key="bodycontainer"
+          id="bodycontainer"
           className="BodyContainer"
           style={{
             height: "100%",
