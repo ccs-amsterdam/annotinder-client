@@ -128,7 +128,7 @@ const AnnotateNavigation = ({
             overflow: "hidden",
             //height: window.innerHeight,
             width: "100%",
-            zIndex: 10000,
+            zIndex: 1000,
             pointerEvents: "none",
           }}
         >

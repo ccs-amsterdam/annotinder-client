@@ -16,7 +16,8 @@ const SelectVariableContainer = styled.div`
   padding: 5px 5px 3px 5px;
   background: var(--primary);
   color: var(--text-inversed-fixed);
-  z-index: 1;
+  position: relative;
+  z-index: 10000;
 
   .Description {
     margin: auto;

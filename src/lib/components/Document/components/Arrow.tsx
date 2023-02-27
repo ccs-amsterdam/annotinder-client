@@ -33,8 +33,12 @@ const StyledG = styled.g<{ interactive: boolean }>`
     stroke-width: 0.4rem;
     fill: var(--background);
     transition: r 0.1s;
+    pointer-events: ${(p) => (p.interactive ? "all    " : "none")};
   }
 
+  polygon {
+    pointer-events: ${(p) => (p.interactive ? "all" : "none")};
+  }
   .bigpolygon {
     opacity: var(--bigpolyOpacity);
     transition: opacity 0.1s;
