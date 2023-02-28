@@ -7,16 +7,17 @@ const GlobalStyle = createGlobalStyle`
     ${AnnotatorStyle}
 
     :root {
-    --font-size: 1.6rem;
+  --font-size: 1.6rem;
 
-    --primary: #1678c2;
-    --primary-light: #7bb6ea;
-    --primary-verylight: #c5d7e7;
+    --primary: #673AB7;
+    --primary-dark: #3B2667;
+    --primary-light: #D1C4E9;
+    
+    --secondary: #03DAC6;
+    --secondary-dark: #018786;
+    --secondary-light: #a7ffeb;
 
-    --secondary: #1b1c1d;
-    --secondary-light: #7b7c7d;
-
-    --background: #1b1c1d;
+    --background: #121212
     --background-transparent: #1b1c1dbb; 
     --background-fixed: white;
     --background-inversed: #ffffff;
@@ -81,6 +82,17 @@ h5 {
 @keyframes fadeIn {
     0% { opacity: 0; }
   100% { opacity: 1; }
+}
+
+@keyframes slideIn {
+  0% { transform: translateX(0); opacity: 0 }
+  10% { transform: translateX(0); opacity: 1 }
+  50% { transform: translateX(0); }
+  100% { transform: translateX(100%); }
+}
+
+.flex {
+  flex: 1 1 auto;
 }
     
 `;

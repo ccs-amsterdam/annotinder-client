@@ -12,12 +12,17 @@ const ThemeButton = styled(StyledButton)<{ iconcolor: string }>`
 `;
 
 const dark = {
-  background: "#1b1c1d",
-  "background-transparent": "#1b1c1dbb",
+  background: "#121212",
+  "background-transparent": "#121212bb",
   "background-inversed": "white",
   text: "white",
   "text-light": "darkgrey",
   "text-inversed": "black",
+
+  primary: "#8256cf",
+  "primary-dark": "#673AB7",
+  "primary-light": "#c0b1dd",
+  "primary-text": "#c0b1dd",
 };
 const light = {
   background: "white",
@@ -26,6 +31,11 @@ const light = {
   text: "black",
   "text-light": "grey",
   "text-inversed": "white",
+
+  primary: "#673AB7",
+  "primary-dark": "#3B2667",
+  "primary-light": "#c0b1dd",
+  "primary-text": "#673AB7",
 };
 
 const themes = [

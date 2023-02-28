@@ -43,28 +43,31 @@ const AnnotateGrid = styled.div`
     grid-area: documentContainer;
     overflow: auto;
     height: 100%;
-    border-right: 1px solid var(--secondary);
+    //border-right: 1px solid var(--primary-light);
+    /* width */
 
     .document {
       height: calc(100% - 35px);
       overflow: auto;
     }
     .bottomBar {
-      position: relative;
-      z-index: 100;
+      //position: relative;
+      //z-index: 100;
       display: flex;
       padding: 0;
       height: 35px;
-      background: var(--secondary);
+      color: var(--text-inversed-fixed);
+      background: var(--primary-dark);
     }
   }
 
   & .annotationList {
     grid-area: annotationList;
     overflow: auto;
-    border-bottom: 1px solid;
+    //border-bottom: 1px solid;
+    //height: 100%;
     position: relative;
-    z-index: 100;
+    z-index: 1;
   }
 `;
 

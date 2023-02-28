@@ -24,14 +24,14 @@ const StyledG = styled.g<{ interactive: boolean }>`
   cursor: pointer;
   --strokewidth: 0.5rem;
   --radius: 0.5rem;
-  --opacity: 0.4;
+  --opacity: 0.7;
   --bigpolyOpacity: 0;
   --smallpolyOpacity: 1;
 
   circle {
     r: var(--radius);
     stroke-width: 0.4rem;
-    fill: var(--background);
+    fill: var(--background-fixed);
     transition: r 0.1s;
     pointer-events: ${(p) => (p.interactive ? "all    " : "none")};
   }
@@ -49,7 +49,7 @@ const StyledG = styled.g<{ interactive: boolean }>`
 
   &:hover {
     opacity: 1;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     --strokewidth: 2rem;
     --opacity: 1;
     --radius: 1rem;
@@ -68,8 +68,8 @@ const StyledG = styled.g<{ interactive: boolean }>`
 
   text,
   textPath {
-    line-height: 2rem;
-    fill: var(--text);
+    line-height: 1rem;
+    fill: var(--text-fixed);
     font-weight: bold;
     overflow: show;
     paint-order: stroke;
@@ -153,9 +153,9 @@ export default function Arrow({
   const [sx, sy, cx, cy, ex, ey, ae] = arrow;
   const endAngleAsDegrees = ae * (180 / Math.PI);
 
-  const toColorNoAlpha = standardizeColor(toColor || "grey", "bb");
-  const fromColorNoAlpha = standardizeColor(fromColor || "grey", "bb");
-  const edgeColorNoAlpha = standardizeColor(edgeColor || "grey", "ee");
+  const toColorNoAlpha = standardizeColor(toColor, "bb");
+  const fromColorNoAlpha = standardizeColor(fromColor, "bb");
+  const edgeColorNoAlpha = standardizeColor(edgeColor, "ee");
 
   return (
     <>
@@ -172,25 +172,34 @@ export default function Arrow({
           id={id}
           className="arrow"
           d={`M${sx},${sy} Q${cx},${cy} ${ex},${ey}`}
-          stroke={edgeColorNoAlpha || "grey"}
+          stroke={"var(--background-fixed)"}
           fill="none"
           strokeWidth="5"
         />
-        <circle cx={sx} cy={sy} stroke={fromColorNoAlpha} />
+        <path
+          id={id}
+          className="arrow"
+          d={`M${sx},${sy} Q${cx},${cy} ${ex},${ey}`}
+          stroke={edgeColor || "var(--text)"}
+          fill="none"
+          strokeWidth="5"
+        />
+
+        <circle cx={sx} cy={sy} stroke={fromColorNoAlpha || edgeColorNoAlpha} />
 
         <polygon
           className="smallpolygon"
-          points="0,-8 8,0, 0,8"
-          fill={"var(--background)"}
-          stroke={toColorNoAlpha || "grey"}
+          points="0,-5 10,0, 0,5"
+          fill={"var(--background-fixed)"}
+          stroke={toColorNoAlpha || edgeColorNoAlpha}
           strokeWidth="3"
           transform={`translate(${ex},${ey}) rotate(${endAngleAsDegrees})`}
         />
         <polygon
           className="bigpolygon"
-          points="2.3,-12 12,0, 2.3,12"
-          fill={"var(--background)"}
-          stroke={toColorNoAlpha || "grey"}
+          points="2.3,-7 15,0, 2.3,7"
+          fill={"var(--background-fixed)"}
+          stroke={toColorNoAlpha || edgeColorNoAlpha}
           strokeWidth="4    "
           transform={`translate(${ex},${ey}) rotate(${endAngleAsDegrees})`}
         />

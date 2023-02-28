@@ -608,7 +608,7 @@
             "searchBox": false,
             "buttonMode": "all",
             "editMode": true,
-            "multiple": true
+            "multiple": false
           }
         ]
       }

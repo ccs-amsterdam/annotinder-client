@@ -1,6 +1,7 @@
 import React, { ReactElement, useState } from "react";
 import { Icon, List, Menu, Popup } from "semantic-ui-react";
 import { SetState } from "../../../types";
+import { DarkModeButton } from "../../Common/Theme";
 import Backend from "../../Login/Backend";
 import CoderView from "./CoderView";
 import ManageJobs from "./ManageJobs";
@@ -83,7 +84,11 @@ interface MenuBarProps {
 
 const MenuBar = ({ backend, authForm, menuItem, setMenuItem }: MenuBarProps) => {
   return (
-    <Menu pointing secondary style={{ marginBottom: "10px", borderBottom: "0px" }}>
+    <Menu
+      pointing
+      secondary
+      style={{ fontSize: "1.5rem", marginBottom: "10px", borderBottom: "0px" }}
+    >
       {menuItems.map((item) => {
         if (item.onlyAdmin && !backend?.is_admin) return null;
         return (
@@ -97,6 +102,7 @@ const MenuBar = ({ backend, authForm, menuItem, setMenuItem }: MenuBarProps) => 
         );
       })}
 
+      <DarkModeButton color="var(--text)" />
       <Popup
         position="bottom right"
         on="click"
@@ -106,7 +112,7 @@ const MenuBar = ({ backend, authForm, menuItem, setMenuItem }: MenuBarProps) => 
           </Menu.Item>
         }
       >
-        <Popup.Content>
+        <Popup.Content style={{ fontSize: "1.5rem" }}>
           <List>
             <List.Item>
               <List.Icon name="home" />

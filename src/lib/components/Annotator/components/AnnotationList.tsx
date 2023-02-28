@@ -9,8 +9,12 @@ interface AnnotationListProps {
 }
 
 const StyledDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   font-size: 1.6rem;
-  max-height: 100%;
+  min-height: 70vh;
+
   border-radius: 5px;
   margin: 0.5rem 0.5rem 0 0.5rem;
   border-collapse: collapse;
@@ -29,7 +33,23 @@ const StyledDiv = styled.div`
       width: 30%;
       min-width: 120px;
       border-radius: 5px;
-      padding: 0.5rem 0rem;
+      text-align: center;
+      padding: 0.5rem 0.3rem;
+      border: 1px solid var(--background-inversed-fixed);
+
+      color: var(--text-fixed);
+      position: relative;
+      ::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--background-fixed);
+        border-radius: inherit;
+        z-index: -1;
+      }
     }
     .value span {
       margin: auto;
@@ -42,6 +62,22 @@ const StyledDiv = styled.div`
     cursor: pointer;
     border-radius: 8px;
     margin: 0.2rem;
+    padding: 0.2rem;
+    border: 1px solid var(--background-inversed-fixed);
+
+    color: var(--text-fixed);
+    position: relative;
+    ::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--background-fixed);
+      border-radius: inherit;
+      z-index: -1;
+    }
 
     span {
       font-weight: bold;

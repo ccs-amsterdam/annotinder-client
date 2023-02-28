@@ -79,7 +79,7 @@ const Content = styled.div<{ fontSize: number }>`
   position: absolute;
   top: 0;
   font-size: ${(props) => props.fontSize}em;
-  box-shadow: 5px 5px 20px 5px;
+  box-shadow: 0px 0px 10px 5px var(--background-inversed-fixed);
   will-change: background, transform;
 `;
 

@@ -3,9 +3,9 @@ import { css } from "styled-components";
 export default css`
   input[type="range"] {
     border-radius: 2px;
-    height: 24px;
+    height: 14px;
+    margin-top: 5px;
     background-color: var(--primary-light) !important;
-    margin-top: 0px;
     outline: none;
     cursor: crosshair;
     -webkit-appearance: none;
@@ -17,7 +17,7 @@ export default css`
     width: 10px;
     height: 24px;
     padding: 0;
-    background: var(--primary);
+    background: var(--primary-light);
     cursor: pointer;
     border: 1px solid var(--background-inversed-fixed);
   }

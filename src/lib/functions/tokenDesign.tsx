@@ -14,7 +14,7 @@ export const getColor = (annotationCode: string | number, codeMap: CodeMap) => {
     color = codeMap[annotationCode].color;
     return standardizeColor(color, "50");
   } else {
-    if (annotationCode === "EMPTY") return "var(--background)";
+    if (annotationCode === "EMPTY") return "grey";
     return "#ffffff50";
   }
 };

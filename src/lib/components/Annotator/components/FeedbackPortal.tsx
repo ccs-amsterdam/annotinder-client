@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { TransitionablePortal, Icon } from "semantic-ui-react";
+import { TransitionablePortal } from "semantic-ui-react";
 import { FullScreenNode, SetState, ConditionReport, Action } from "../../../types";
 import Markdown from "../../Common/Markdown";
-import { StyledButton } from "../../../styled/StyledSemantic";
 import styled from "styled-components";
+import { FaCheck, FaWindowClose } from "react-icons/fa";
 
 const RetryPortalContent = styled.div`
   position: fixed;
@@ -14,16 +14,46 @@ const RetryPortalContent = styled.div`
   width: 100%;
   margin: 0;
   max-height: 50%;
-  overflow: auto;
   z-index: 10000;
   color: var(--text-fixed);
-  background: var(--lightred);
-  border: 1px solid var(--primary);
-  text-align: center;
-  font-size: 1em;
+  background: var(--primary-light);
+  border-bottom: 1px solid var(--primary-dark);
+
+  .portalContent {
+    text-align: center;
+    font-size: 1.5rem;
+    overflow: auto;
+  }
 
   & .Hint {
     margin-top: 1rem;
+  }
+
+  .closeIcon {
+    vertical-align: top;
+    cursor: pointer;
+    position: absolute;
+    bottom: 0;
+    z-index: 10000;
+    width: 3.5rem;
+    transform: translateY(1.5rem);
+    left: calc(50% - 2.5rem);
+  }
+`;
+
+const ApplaudIcon = styled.div`
+  position: fixed;
+  display: flex;
+  top: 30%;
+  left: 0;
+  width: 100%;
+  z-index: 10000;
+  animation: slideIn 0.6s;
+  animation-fill-mode: forwards;
+
+  div {
+    margin: auto;
+    width: 20%;
   }
 `;
 
@@ -84,16 +114,17 @@ const RetryPortal = ({ action, setConditionReport, fullScreenNode }: RetryPortal
     >
       <RetryPortalContent>
         <CloseButton onClick={() => setConditionReport({ evaluation: {}, damage: {} })} />
-
-        <Markdown>{action?.message}</Markdown>
-        <div className="Hint">
-          {(action?.submessages || []).map((sm: string, i) => {
-            return (
-              <div style={{ marginBottom: "0.5em" }} key={i}>
-                <Markdown>{sm}</Markdown>
-              </div>
-            );
-          })}
+        <div className="portalContent">
+          <Markdown>{action?.message}</Markdown>
+          <div className="Hint">
+            {(action?.submessages || []).map((sm: string, i) => {
+              return (
+                <div style={{ marginBottom: "0.5em" }} key={i}>
+                  <Markdown>{sm}</Markdown>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </RetryPortalContent>
     </TransitionablePortal>
@@ -106,65 +137,35 @@ interface ApplaudPortalProps {
   fullScreenNode: FullScreenNode;
 }
 
-const applaudTransition = { duration: 200, animation: "scale" };
-
-const ApplaudPortal = ({ action, reportSuccess, fullScreenNode }: ApplaudPortalProps) => {
+const ApplaudPortal = ({ action, reportSuccess }: ApplaudPortalProps) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (action?.action === "applaud") setOpen(true);
-    setTimeout(() => setOpen(false), 300);
-  }, [action]);
+    console.log(action);
+    if (action?.action === "applaud" && reportSuccess) setOpen(true);
+    setTimeout(() => setOpen(false), 600);
+  }, [action, reportSuccess]);
+
+  if (!open) return null;
 
   return (
-    <TransitionablePortal
-      key="applaud"
-      closeOnDocumentClick={false}
-      transition={applaudTransition}
-      mountNode={fullScreenNode || undefined}
-      open={open && reportSuccess}
-      style={{ zIndex: 10000 }}
-    >
-      <Icon
-        name="check"
-        style={{
-          top: "35%",
-          left: "0%",
-          position: "fixed",
-          width: "100%",
-          margin: "0",
-          zIndex: 1000,
-          color: "#90ee90cf",
-          textAlign: "center",
-          fontSize: "min(50vw, 30em)",
-        }}
-      />
-    </TransitionablePortal>
+    <ApplaudIcon>
+      <div>
+        <FaCheck size="100%" color="#90ee90cf" />
+      </div>
+    </ApplaudIcon>
   );
 };
 
 interface CloseButtonProps {
-  onClick: (e: any, d: Object) => void;
+  onClick: () => void;
 }
 
 const CloseButton = ({ onClick }: CloseButtonProps) => {
   return (
-    <StyledButton
-      fluid
-      icon="close"
-      size="huge"
-      style={{
-        background: "crimson",
-        height: "25px",
-        padding: "0px",
-        color: "var(--text-fixed)",
-        position: "absolute",
-        left: "0%",
-        bottom: "0%",
-        zIndex: 10000,
-      }}
-      onClick={onClick}
-    />
+    <div className="closeIcon">
+      <FaWindowClose size="100%" color="var(--primary)" onClick={onClick} />
+    </div>
   );
 };
 

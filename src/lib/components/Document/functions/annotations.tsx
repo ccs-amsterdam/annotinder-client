@@ -287,8 +287,6 @@ export const toggleRelationAnnotation = (
     offset: to.offset,
     relationVariable: relation.variable,
     relationValue: relation.code,
-    relationColor: relation.color,
-    color: to.color,
     span: to.span,
   });
 

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import IndexController from "./IndexController";
 import Finished from "./Finished";
 import { CodeBook, FullScreenNode, JobServer, SetState } from "../../../types";
-import { StyledButton } from "../../../styled/StyledSemantic";
+import { CustomButton, StyledButton } from "../../../styled/StyledSemantic";
 import { DarkModeButton, FontSizeButton } from "../../Common/Theme";
 import MenuPopup from "../../Common/MenuPopup";
 import MenuButtonGroup from "./MenuButtonGroup";
@@ -41,7 +41,7 @@ const StyledWrapper = styled.div<{ maxWidth: string; maxHeight: string }>`
     justify-content: space-between;
     background: var(--background-inversed-fixed);
     color: var(--text-inversed-fixed);
-    border-bottom: 3px double var(--background-fixed);
+    //border-bottom: 3px double var(--background-fixed);
     font-size: 2rem;
     position: relative;
     z-index: 9000;
@@ -146,14 +146,9 @@ const BackToOverview = ({ jobServer }: BackToOverviewProps) => {
   const navigate = useNavigate();
   if (!jobServer?.return_link) return null;
   return (
-    <StyledButton
-      primary
-      fluid
-      style={{ fontSize: "1.5rem", padding: "0.5rem", margin: "0" }}
-      icon="home"
-      content="Close job"
-      onClick={() => navigate(jobServer.return_link)}
-    />
+    <CustomButton className="primary flex" onClick={() => navigate(jobServer.return_link)}>
+      Close job
+    </CustomButton>
   );
 };
 

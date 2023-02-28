@@ -34,6 +34,36 @@ const DocumentContent = styled.div<{ grid: FieldGrid; centered: boolean; highLin
   }
 `;
 
+const BodyContainer = styled.div`
+  height: 100%;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto;
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 0;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--primary-light);
+    border-radius: 0;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+  }
+`;
+
 interface BodyProps {
   tokens: Token[];
   text_fields: TextField[];
@@ -96,17 +126,11 @@ const Body = ({
   return (
     <>
       <Ref innerRef={containerRef}>
-        <div
+        <BodyContainer
           key="bodycontainer"
           id="bodycontainer"
           className="BodyContainer"
           style={{
-            height: "100%",
-            flex: "1 1 auto",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            overflow: "auto",
             ...bodyStyle,
           }}
         >
@@ -137,7 +161,7 @@ const Body = ({
               {content}
             </DocumentContent>
           </div>
-        </div>
+        </BodyContainer>
       </Ref>
     </>
   );

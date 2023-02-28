@@ -132,18 +132,17 @@ const AnnotateNavigation = ({
             pointerEvents: "none",
           }}
         >
-          <Arrow
-            id={"create relation"}
-            tokens={tokens}
-            tokenSelection={tokenSelection}
-            edgeColor={validArrow ? "var(--primary)" : "var(--text-light)"}
-          />
-
           <RelationArrows
             tokens={tokens}
             annotations={annotations}
             showValues={showValues}
             triggerSelectionPopup={triggerSelectionPopup}
+          />
+          <Arrow
+            id={"create relation"}
+            tokens={tokens}
+            tokenSelection={tokenSelection}
+            edgeColor={validArrow ? "var(--primary)" : "var(--text)"}
           />
         </svg>
       )}

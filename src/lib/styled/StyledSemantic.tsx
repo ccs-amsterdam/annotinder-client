@@ -9,30 +9,62 @@ import styled, { StyledComponent } from "styled-components";
 // therefore we'll run all semantic ui components via custom styled versions,
 // so that we can gradually replace them.
 
-const CustomButton = styled.button`
-  padding: 0.3rem 0.7rem;
+const CustomButton = styled.button<{ size?: number }>`
+  font-size: ${(p) => p.size || 1}em;
+  padding: 0.7em 1em;
   margin: 0;
   color: var(--grey);
   background: var(--inactive);
   cursor: pointer;
-  border: 1px solid var(--grey);
+  border: 0;
+  //border: 1px solid var(--grey);
   border-radius: 5px;
+  position: relative;
 
   transition: background 0.2s;
 
   &.primary {
     background: var(--primary);
     color: white;
+    &:hover {
+      background: var(--primary-dark);
+    }
   }
   &.secondary {
     background: var(--secondary);
     color: white;
+    &:hover {
+      background: var(--secondary-dark);
+    }
   }
   & > i {
     margin: 0;
   }
-  &:hover {
+
+  &.left {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  &.right {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  &.middle {
+    border-radius: 0;
+  }
+
+  :hover,
+  :active {
     background: var(--active);
+  }
+
+  ::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
   }
 `;
 

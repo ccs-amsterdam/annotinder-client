@@ -12,8 +12,10 @@ interface SelectVariableProps {
 const SelectVariableContainer = styled.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--background-inversed);
-  padding: 5px 5px 3px 5px;
+  border-top: 1px solid var(--background-fixed);
+  border-bottom: 1px solid var(--background-fixed);
+
+  padding: 10px 5px 3px 5px;
   background: var(--primary);
   color: var(--text-inversed-fixed);
   position: relative;
@@ -21,6 +23,7 @@ const SelectVariableContainer = styled.div`
 
   .Description {
     margin: auto;
+    padding: 0 1.5rem;
     padding-bottom: 0.4rem;
     font-size: 1.6rem;
 
@@ -45,20 +48,16 @@ const VariableButton = styled.button`
   padding: 0.2rem 0.7rem;
   background: var(--primary);
   border-radius: 5px;
-  border: 2px solid inherit;
-  color: var(--primary-verylight);
+  border: 2px solid var(--primary-light);
+  color: var(--primary-light);
 
   cursor: pointer;
 
-  &:hover {
+  &:hover,
+  &.active {
     border: 2px solid white;
     background: var(--primary);
     color: white;
-  }
-  &.active {
-    background: var(--primary-light);
-    color: black;
-    border-color: white;
   }
 `;
 
