@@ -44,6 +44,19 @@ export interface Annotation {
   span?: Span;
   token_span?: Span;
   color?: string;
+  parents?: SpanParent[];
+}
+
+export interface SpanParent {
+  variable: string;
+  value: string | number;
+  offset: number;
+  relationVariable: string;
+  relationValue: string;
+  relationColor?: string;
+  color?: string;
+  span?: Span;
+  text?: string;
 }
 
 ////// LOGIN
@@ -255,21 +268,33 @@ export interface OnSelectParams {
 
 export interface Variable {
   name: string;
+  type?: VariableType; // if missing, defaults to "span"
   codes: Code[];
   instruction: string;
-  searchBox: boolean;
-  buttonMode: "all" | "recent";
-  multiple: boolean;
-  editMode: boolean;
-  onlyImported: boolean;
+  buttonMode?: "all" | "recent";
+  searchBox?: boolean;
+  multiple?: boolean;
+  editMode?: boolean;
+  onlyImported?: boolean;
   codeMap?: CodeMap;
+  validFrom?: ValidRelation;
+  validTo?: ValidRelation;
 }
+
+// for fast lookup of relation codes, indexed as: variable -> value -> relation_code_value -> relation_code_object
+export type ValidRelation = Record<string, Record<string, Record<string, Code>>>;
+
+export type VariableType = "span" | "relation";
 
 /** This one's intentionally flexible, because the codeselector popup handles multiple types of selections */
 export interface CodeSelectorValue {
   variable?: string;
   span?: Span;
-  value?: string | number;
+  value?: string | number | Code;
+  relation?: {
+    from: Annotation;
+    to: Annotation;
+  };
   delete?: boolean;
   cancel?: boolean;
 }
@@ -553,9 +578,16 @@ export interface MetaField {
 ///// CODES
 
 export interface Code {
+  variable: string;
+
   code: string;
   parent: string;
   color: string;
+
+  // For relation type codes
+  from?: CodeRelation;
+  to?: CodeRelation;
+
   active: boolean;
   activeParent: any;
   folded: boolean;
@@ -568,6 +600,11 @@ export interface Code {
   makes_irrelevant?: string[];
   /** Like makes_irrelevant, but the questions become irrelevant if this option is NOT chosen */
   required_for?: string[];
+}
+
+export interface CodeRelation {
+  variable: string;
+  values?: string[];
 }
 
 export interface CodeMap {
@@ -586,7 +623,7 @@ export interface CodeTree {
 export interface Token {
   field: string;
   paragraph: number;
-  sentence: number;
+  //sentence: number;
   index: number;
   offset: number;
   length: number;
@@ -606,7 +643,7 @@ export interface Token {
 export interface RawToken {
   field?: string;
   paragraph?: number;
-  sentence?: number;
+  //sentence?: number;
   index?: number;
   offset?: number;
   length?: number;
@@ -625,7 +662,7 @@ export interface RawToken {
 export interface RawTokenColumn {
   field?: string[];
   paragraph?: number[];
-  sentence?: number[];
+  //sentence?: number[];
   index?: number[];
   text?: string[];
   token?: string[];
@@ -689,7 +726,7 @@ export interface VariableMap {
   [key: string]: Variable;
 }
 
-export interface TriggerCodePopup {
+export interface TriggerSelectionPopup {
   (index: number, span: Span): void;
 }
 

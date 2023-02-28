@@ -12,20 +12,24 @@ interface SelectVariableProps {
 const SelectVariableContainer = styled.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--background-inversed);
-  padding: 5px 5px 3px 5px;
+  border-top: 1px solid var(--background-fixed);
+  border-bottom: 1px solid var(--background-fixed);
+
+  padding: 10px 5px 3px 5px;
   background: var(--primary);
   color: var(--text-inversed-fixed);
-  z-index: 1;
+  position: relative;
+  z-index: 10000;
 
   .Description {
     margin: auto;
+    padding: 0 1.5rem;
     padding-bottom: 0.4rem;
+    font-size: 1.6rem;
 
     .Variable {
       border: 2px solid white;
       border-radius: 5px;
-      font-size: 1.2em;
       margin-right: 0.5rem;
       padding: 0.1rem 0.7rem;
     }
@@ -35,27 +39,25 @@ const SelectVariableContainer = styled.div`
 const VariableButtons = styled.div`
   display: flex;
   word-wrap: break-word;
-  font-size: 1.2em;
+  font-size: 1.6rem;
   justify-content: center;
 `;
 
 const VariableButton = styled.button`
   margin: 0 0.2rem 0.4rem 0.2rem;
-  padding: 0.1rem 0.7rem;
+  padding: 0.2rem 0.7rem;
   background: var(--primary);
   border-radius: 5px;
-  border: 2px solid inherit;
-  color: var(--primary-verylight);
+  border: 2px solid var(--primary-light);
+  color: var(--primary-light);
 
   cursor: pointer;
 
-  &:hover {
+  &:hover,
+  &.active {
     border: 2px solid white;
     background: var(--primary);
     color: white;
-  }
-  &.active {
-    display: none;
   }
 `;
 
@@ -84,6 +86,7 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
           }
         }
       }
+      if (move === 0) return;
 
       const currentIndex = variableNames.findIndex((name) => name === variable);
       let newIndex = currentIndex + move;
@@ -92,9 +95,28 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
       setVariable(variableNames[newIndex]);
     };
 
+    // const onMouseDown = (e: MouseEvent) => {
+    //   console.log(e);
+    //   let move = 0;
+    //   if (e.button === 2) {
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //     move = e.shiftKey ? -1 : 1;
+    //   }
+    //   if (move === 0) return;
+
+    //   const currentIndex = variableNames.findIndex((name) => name === variable);
+    //   let newIndex = currentIndex + move;
+    //   if (newIndex > variableNames.length - 1) newIndex = 0;
+    //   if (newIndex < 0) newIndex = variableNames.length - 1;
+    //   setVariable(variableNames[newIndex]);
+    // };
+
     window.addEventListener("keydown", onKeyDown);
+    //window.addEventListener("contextmenu", onMouseDown);
     return () => {
       window.removeEventListener("keydown", onKeyDown);
+      //window.removeEventListener("contextmenu", onMouseDown);
     };
   }, [setVariable, variable, variableNames]);
 
@@ -120,7 +142,8 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
         variableNames={variableNames}
       />
       <div className="Description">
-        <span className="Variable">{variable || ""}</span> {helpText}{" "}
+        {helpText}
+        {/* <span className="Variable">{variable || ""}</span> {helpText}{" "} */}
       </div>
     </SelectVariableContainer>
   );

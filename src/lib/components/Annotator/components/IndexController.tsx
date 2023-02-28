@@ -12,7 +12,7 @@ const IndexControllerBar = styled.div`
   box-shadow: none;
   padding: 0px;
   border-radius: 0;
-  font-size: 1rem;
+  font-size: 1.4rem;
   background: var(--background-inversed-fixed);
 
   & > div {
@@ -29,8 +29,8 @@ const Slider = styled.input<{ progress: number }>`
   background: linear-gradient(
     to right,
     ${(props) => `var(--primary-light) ${props.progress}%,
-    var(--primary-verylight) ${props.progress}% 100%,
-    var(--primary-verylight) 100%`}
+    white ${props.progress}% 100%,
+    white 100%`}
   );
 `;
 
@@ -44,7 +44,7 @@ const IndexLabel = styled.div`
   line-height: 24px;
   text-align: center;
   white-space: nowrap;
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   font-weight: bold;
   border-radius: 2px;
   background: var(--primary);

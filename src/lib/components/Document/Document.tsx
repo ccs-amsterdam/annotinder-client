@@ -2,6 +2,7 @@ import React, { useState, useEffect, CSSProperties } from "react";
 import AnnotateNavigation from "./components/AnnotateNavigation";
 import Body from "./components/Body";
 import useCodeSelector from "./components/useCodeSelector";
+import useRelationSelector from "./components/useRelationSelector";
 import useUnit from "./components/useUnit";
 import SelectVariable from "./components/SelectVariable";
 
@@ -18,6 +19,20 @@ import {
   VariableValueMap,
 } from "../../types";
 import { useCallback } from "react";
+import styled from "styled-components";
+
+const DocumentContainer = styled.div<{ cursor: string }>`
+  display: flex;
+  position: relative;
+  height: 100%;
+  max-height: 100%;
+  flex-direction: column;
+  color: var(--text);
+  background: var(--background);
+  z-index: 100;
+  font-size: var(--font-size);
+  cursor: ${(props) => props.cursor};
+`;
 
 interface DocumentProps {
   /** A unit object, as created in JobServerClass (or standardizeUnit) */
@@ -87,12 +102,21 @@ const Document = ({
   const [variable, setVariable] = useState(null);
 
   const unitStates = useUnit(unit, annotations, returnTokens, onChangeAnnotations);
-  const [variableMap, editMode] = useVariableMap(variables, variable, restrictedCodes);
+  const [variableMap, showValues, variableType, editMode] = useVariableMap(
+    variables,
+    variable,
+    restrictedCodes
+  );
+
   const [codeSelector, triggerCodeSelector, codeSelectorOpen] = useCodeSelector(
     unitStates,
     variableMap,
     editMode,
     variables
+  );
+  const [relationSelector, triggerRelationSelector, relationSelectorOpen] = useRelationSelector(
+    unitStates,
+    variableMap?.[variable]
   );
 
   useEffect(() => {
@@ -107,18 +131,16 @@ const Document = ({
 
   if (!unitStates.doc.tokens && !unitStates.doc.image_fields) return null;
 
+  const triggerSelectionPopup =
+    variableType === "relation" ? triggerRelationSelector : triggerCodeSelector;
+  const selectorOpen = variableType === "relation" ? relationSelectorOpen : codeSelectorOpen;
+  const selector = variableType === "relation" ? relationSelector : codeSelector;
+
+  let cursor = "default";
+  if (variableType === "relation") cursor = "crosshair";
+
   return (
-    <div
-      style={{
-        display: "flex",
-        position: "relative",
-        height: "100%",
-        maxHeight: "100%",
-        flexDirection: "column",
-        color: "var(--text)",
-        background: "var(--background)",
-      }}
-    >
+    <DocumentContainer cursor={cursor}>
       <SelectVariable
         variables={variables}
         variable={variable}
@@ -136,21 +158,24 @@ const Document = ({
         bodyStyle={bodyStyle}
         focus={focus}
         centered={centered}
+        readOnly={!onChangeAnnotations}
       />
 
       <AnnotateNavigation
         tokens={unitStates.doc.tokens}
-        variableMap={variableMap}
+        variableType={variableType}
+        showValues={showValues}
         annotations={unitStates.spanAnnotations}
         disableAnnotations={!onChangeAnnotations || !variableMap}
         editMode={editMode}
-        triggerCodeSelector={triggerCodeSelector}
-        eventsBlocked={codeSelectorOpen || blockEvents}
+        triggerSelectionPopup={triggerSelectionPopup}
+        eventsBlocked={selectorOpen || blockEvents}
         showAll={showAll}
         fullScreenNode={fullScreenNode}
       />
-      {codeSelector || null}
-    </div>
+
+      {selector || null}
+    </DocumentContainer>
   );
 };
 

@@ -7,8 +7,7 @@ export default css`
     color: rgba(0, 0, 0, 0.87) !important;
   }
 
-  .sentence {
-    line-height: 1.8em;
+  .paragraph {
     vertical-align: middle;
   }
 
@@ -20,7 +19,8 @@ export default css`
 
   span.token.codingUnit {
     font-size: 1.2em;
-    background-color: transparent;
+    //background-color: var(--background-transparent);
+    //text-shadow: 0px 0px 2px var(--background);
     color: var(--text);
   }
 
@@ -49,17 +49,35 @@ export default css`
     /* line-height: 1.5em; */
     padding: 2px 0px;
     transition: all 0.5s ease;
-    border: 1px solid;
+    //border: 1px solid var(--background-fixed);
     border-left: none;
     border-right: none;
     /* cursor: pointer;; */
     vertical-align: bottom;
     box-shadow: none;
     box-sizing: border-box;
+
+    /* add white background for dark mode. Annotation colors are customizable,
+    so we use opacity on a white background to ensure text readability.
+    (also possible on black background, but not easy on the eyes)  */
+    color: var(--text-fixed);
+    position: relative;
+    z-index: 1;
+    ::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      z-index: -1;
+      border-radius: inherit;
+    }
   }
 
   span.token.annotated.anyLeft > span.text {
-    border-left: solid;
+    //border-left: solid;
     border-left-width: 0px;
     border-bottom-left-radius: 0px;
   }
@@ -70,7 +88,7 @@ export default css`
   }
   span.token.annotated.allLeft > span.text {
     padding-left: 3px;
-    border-left: solid;
+    //border-left: 1px solid var(--background-fixed);
     border-left-width: 1px;
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
@@ -85,7 +103,7 @@ export default css`
   }
   span.token.annotated.allRight > span.text {
     padding-right: 3px;
-    border-right: solid;
+    //  border-right: 1px solid var(--background-fixed);
     border-right-width: 1px;
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;

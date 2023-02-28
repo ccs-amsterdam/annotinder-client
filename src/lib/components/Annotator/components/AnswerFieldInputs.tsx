@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef, RefObject } from "react";
-import { Form } from "semantic-ui-react";
 import { scrollToMiddle } from "../../../functions/scroll";
 import { StyledButton } from "../../../styled/StyledSemantic";
 import { OnSelectParams, AnswerItem, QuestionItem, SetState } from "../../../types";
@@ -69,11 +68,11 @@ const Inputs = ({
       <StyledButton
         primary
         fluid
-        size="mini"
         disabled={!done}
         icon={done ? "play" : null}
         content={done ? "Continue" : "Please complete the form to continue"}
         style={{
+          padding: "1rem 1.5rem 0.9rem",
           minHeight: "30px",
           textAlign: "center",
           margin: "10px 0 0 0",
@@ -175,9 +174,9 @@ const Items = ({
             key={itemIndex + "_" + itemObj.label}
             style={{ padding: "10px", textAlign: "center", flex: "1 1 auto", margin: "auto" }}
           >
-            <Form onSubmit={(e, d) => setSelectedItem((current: number) => current + 1)}>
-              <Form.Field>
-                <label style={{ color: "var(--text-inversed-fixed)" }}>
+            <form>
+              <div>
+                <label style={{ color: "var(--text-inversed-fixed)", fontSize: "0.8em" }}>
                   <>
                     {itemlabel}
                     <i style={{ color: "var(--text-light-fixed)" }}>
@@ -185,6 +184,7 @@ const Items = ({
                     </i>
                   </>
                 </label>
+                <br />
 
                 <Input
                   answerItems={answerItems}
@@ -192,8 +192,8 @@ const Items = ({
                   item={itemObj}
                   itemIndex={itemIndex}
                 />
-              </Form.Field>
-            </Form>
+              </div>
+            </form>
           </div>
         );
       })}

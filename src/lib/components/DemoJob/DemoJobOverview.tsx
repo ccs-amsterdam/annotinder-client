@@ -3,11 +3,12 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import JobServerDemo from "./classes/JobServerDemo";
 import Annotator from "../Annotator/Annotator";
 import { Grid, Menu, Icon } from "semantic-ui-react";
-import { StyledButton } from "../../styled/StyledSemantic";
+import { CustomButton } from "../../styled/StyledSemantic";
 import FullDataTable from "../AnnotatorClient/components/FullDataTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../functions/copyToClipboard";
 import { SetState } from "../../types";
+import { DarkModeButton } from "../Common/Theme";
 
 const DemoJobOverview = () => {
   const [job, setJob] = useState(null);
@@ -49,6 +50,11 @@ interface DemoFile {
 
 const demo_files: DemoFile[] = [
   {
+    label: "Annotate arguments by relating subjects to predicates",
+    units: "sotu",
+    codebook: "relations",
+  },
+  {
     label: "Annotate sentiment and issues in SOTU",
     units: "sotu",
     codebook: "annotate_sentiment_issue",
@@ -84,7 +90,9 @@ const DemoSelector = () => {
 
   return (
     <div>
-      <Menu pointing secondary style={{ marginBottom: "10px" }}>
+      <Menu pointing secondary style={{ marginBottom: "10px", fontSize: "1.5rem" }}>
+        <DarkModeButton color="var(--text)" />
+
         <Menu.Item position="right" onClick={() => navigate("/")}>
           <Icon name="user" style={{ cursor: "pointer", color: "var(--text)" }} />
         </Menu.Item>
@@ -173,19 +181,25 @@ const DemoJobLink = ({ units, codebook }: DemoJobLinkProps) => {
 
   return (
     <div>
-      <StyledButton.Group fluid>
-        <StyledButton primary disabled={!units || !codebook} onClick={onClick}>
+      <div style={{ display: "flex" }}>
+        <CustomButton
+          className="primary flex left"
+          size={1.2}
+          disabled={!units || !codebook}
+          onClick={onClick}
+        >
           Start Demo
-        </StyledButton>
-        <StyledButton
-          secondary
+        </CustomButton>
+        <CustomButton
+          size={1.2}
+          className="secondary flex right"
           onClick={() => {
             copyToClipboard(url);
           }}
         >
           Copy link
-        </StyledButton>
-      </StyledButton.Group>
+        </CustomButton>
+      </div>
       <br />
       <div style={{ textAlign: "center", width: "100%", marginTop: "10px" }}>
         <QRCodeCanvas value={encodeURI(url)} size={300} />

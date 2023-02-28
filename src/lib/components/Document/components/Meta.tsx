@@ -24,7 +24,7 @@ const Meta = ({ meta_fields }: MetaProps) => {
             style={{
               borderTop: "none",
               textAlign: "right",
-              color: "var(--primary)",
+              color: "var(--primary-text)",
             }}
           >
             <b>{label}</b>

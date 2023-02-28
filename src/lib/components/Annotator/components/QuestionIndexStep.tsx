@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Question, Answer, AnswerItem, SetState } from "../../../types";
-import { StyledButton } from "../../../styled/StyledSemantic";
+import { CustomButton } from "../../../styled/StyledSemantic";
+
 import styled from "styled-components";
 
 const QuestionIndexDiv = styled.div`
@@ -52,11 +53,11 @@ export default function QuestionIndexStep({
     const irrelevant = answers[i].items[0].values?.[0] === "IRRELEVANT";
     const selected = questionIndex === i;
 
-    if (irrelevant) return "crimson";
-    if (done && selected) return "#0c4f83";
-    if (selected) return "#0c4f83";
-    if (done) return "#7fb9eb";
-    return "#d3dfe9";
+    if (irrelevant) return "var(--red)";
+    if (done && selected) return "var(--primary-dark)";
+    if (selected) return "var(--secondary)";
+    if (done) return "var(--primary-light)";
+    return "var(--primary-light)";
   };
 
   // hide if only 1 question that is not yet done
@@ -70,11 +71,9 @@ export default function QuestionIndexStep({
         // size question buttons so that those near the selected question are largest
         const dist = Math.pow(1.5, -Math.abs(questionIndex - i));
         return (
-          <StyledButton
+          <CustomButton
             key={i}
-            circular
-            size="mini"
-            active={i === questionIndex}
+            size={0.6}
             style={{
               transition: "all 0.2s",
               opacity: Math.max(dist, 0.2),

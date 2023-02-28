@@ -12,18 +12,30 @@ const ThemeButton = styled(StyledButton)<{ iconcolor: string }>`
 `;
 
 const dark = {
-  background: "#1b1c1d",
+  background: "#121212",
+  "background-transparent": "#121212bb",
   "background-inversed": "white",
   text: "white",
   "text-light": "darkgrey",
   "text-inversed": "black",
+
+  primary: "#8256cf",
+  "primary-dark": "#673AB7",
+  "primary-light": "#c0b1dd",
+  "primary-text": "#c0b1dd",
 };
 const light = {
   background: "white",
+  "background-transparent": "#fffb",
   "background-inversed": "#1b1c1d",
   text: "black",
   "text-light": "grey",
   "text-inversed": "white",
+
+  primary: "#673AB7",
+  "primary-dark": "#3B2667",
+  "primary-light": "#c0b1dd",
+  "primary-text": "#673AB7",
 };
 
 const themes = [
@@ -54,9 +66,9 @@ export const DarkModeButton = ({ color }: ThemeSelectorProps) => {
 };
 
 const fontsizeOptions = [
-  { name: "small", size: "12px", icon: "text height" },
-  { name: "medium", size: "16px", icon: "text height" },
-  { name: "large", size: "18px", icon: "text height" },
+  { name: "small", size: "1.3rem", icon: "text height" },
+  { name: "medium", size: "1.6rem", icon: "text height" },
+  { name: "large", size: "2rem", icon: "text height" },
 ];
 
 export const FontSizeButton = ({ color }: ThemeSelectorProps) => {

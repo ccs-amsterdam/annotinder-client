@@ -18,7 +18,6 @@ export const parseTokens = (text_fields: TextField[]): Token[] => {
   const tokens: Token[] = [];
   let token = null;
   let paragraph = 0; // offset can be used if position in original article is known
-  let sentence = 0;
   let tokenIndex = 0;
   let t = null;
   let text = null;
@@ -37,45 +36,49 @@ export const parseTokens = (text_fields: TextField[]): Token[] => {
     // should be impossible for value to be an array due to unfoldFields, but typescript doesn't catch that
     if (Array.isArray(text)) text = text.join("");
 
+    let text_parts = [text];
+    let text_length = text.length;
     if (text_field.context_before != null) {
-      text = text_field.context_before + text;
+      text_parts = [text_field.context_before, text];
+      text_length = text_length + text_field.context_before.length;
       text_field.unit_start = text_field.context_before.length - 1;
     }
     if (text_field.context_after != null) {
-      text_field.unit_end = text.length - 1;
-      text = text + text_field.context_after;
+      text_field.unit_end = text_length - 1;
+      text_parts.push(text_field.context_after);
     }
 
-    const tokenized = nlp.tokenize(text) as any; // circumvent some typescript issues
-    t = tokenized.json({ offset: true });
+    for (let text of text_parts) {
+      const tokenized = nlp.tokenize(text) as any; // circumvent some typescript issues
+      t = tokenized.json({ offset: true });
 
-    for (let sent = 0; sent < t.length; sent++) {
-      for (let term = 0; term < t[sent].terms.length; term++) {
-        token = t[sent].terms[term];
+      for (let sent = 0; sent < t.length; sent++) {
+        for (let term = 0; term < t[sent].terms.length; term++) {
+          token = t[sent].terms[term];
 
-        if (text_field.unit_start != null && token.offset.start + offset >= text_field.unit_start)
-          unit_started = true;
-        if (text_field.unit_end != null && token.offset.start + offset > text_field.unit_end)
-          unit_ended = true;
+          if (text_field.unit_start != null && token.offset.start + offset >= text_field.unit_start)
+            unit_started = true;
+          if (text_field.unit_end != null && token.offset.start + offset > text_field.unit_end)
+            unit_ended = true;
 
-        const tokenobj: Token = {
-          field: field,
-          offset: token.offset.start + offset,
-          length: token.offset.length,
-          paragraph: paragraph,
-          sentence: sentence,
-          index: tokenIndex,
-          text: token.text,
-          pre: token.pre,
-          post: token.post,
-          codingUnit: unit_started && !unit_ended,
-          annotations: [],
-        };
-        tokens.push(tokenobj);
-        tokenIndex++;
-        if (/(?:\r?\n)+/.test(token.post)) paragraph++;
+          const tokenobj: Token = {
+            field: field,
+            offset: token.offset.start + offset,
+            length: token.offset.length,
+            paragraph: paragraph,
+            index: tokenIndex,
+            text: token.text,
+            pre: sent === 0 && term === 0 ? " " + token.pre : token.pre, // add whitespace to first token. (Will be ignored if not needed due to how html is rendered)
+            post: token.post,
+            codingUnit: unit_started && !unit_ended,
+            annotations: [],
+          };
+          tokens.push(tokenobj);
+          tokenIndex++;
+          if (/(?:\r?\n)+/.test(token.post)) paragraph++;
+        }
       }
-      sentence++;
+      offset += text.length;
     }
     paragraph++;
 
@@ -89,9 +92,6 @@ export const importTokens = (tokens: RawToken[] | RawTokenColumn): Token[] => {
 
   let paragraph = 0;
   let last_paragraph = tokens[0].paragraph;
-
-  let sentence = 0;
-  let last_sentence = tokens[0].sentence;
 
   let offset = 0;
   let totalLength = 0;
@@ -144,22 +144,6 @@ export const importTokens = (tokens: RawToken[] | RawTokenColumn): Token[] => {
       }
     }
 
-    // ensure sentence counter
-    // currently doesn't actually do sentence boundary detection (if people want that,
-    // they should include sentence in the input)
-    // if sentence exists, still overwrite with new counter to ensure that it adds up
-    // also increment sentence on new paragraph
-    if (tokens[i].sentence == null) {
-      tokens[i].sentence = sentence;
-      if (tokens[i].text.includes("\n") || tokens[i].post.includes("\n")) sentence++;
-    } else {
-      if (tokens[i].paragraph !== last_paragraph || tokens[i].sentence !== last_sentence) {
-        last_sentence = tokens[i].sentence;
-        sentence++;
-      }
-      tokens[i].sentence = sentence;
-    }
-
     // ensure paragraph counter
     // if paragraph exists, still overwrite with new counter to ensure that it adds up
     if (tokens[i].paragraph == null) {
@@ -185,7 +169,6 @@ export const importTokens = (tokens: RawToken[] | RawTokenColumn): Token[] => {
       offset: token.offset ?? 0,
       length: token.length ?? 0,
       paragraph: token.paragraph ?? 0,
-      sentence: token.sentence ?? 0,
       index: token.index ?? 0,
       text: token.text ?? "",
       pre: token.pre ?? "",

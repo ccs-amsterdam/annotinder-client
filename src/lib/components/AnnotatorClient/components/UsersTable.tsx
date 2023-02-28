@@ -95,7 +95,6 @@ const LoginLinkButton = ({ row, backend, style }: LoginLinkButtonProps) => {
       on="click"
       onOpen={() => setOpen(true)}
       onClose={() => {
-        console.log("test");
         setOpen(false);
       }}
       hoverable

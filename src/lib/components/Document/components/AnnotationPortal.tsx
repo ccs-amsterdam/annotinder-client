@@ -26,9 +26,8 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef }: P
     if (!open || !portalref.current) return;
     setTimeout(() => fitPortalOnScreen(portalref.current, positionRef.current), 10);
 
-    // this isn't pretty, but we can't know when the portal reaches its full size.
-    // Supposedly this should also be possible with the resizeObserver API, but not
-    // sure that's sufficiently supported yet (especially considering RStudio)
+    // replace this with the implementation in MiddleCat, which uses
+    // scrollheight/width to calculate size without requiring loop
     let portalWidth = portalref.current.clientWidth;
     let portalHeight = portalref.current.clientHeight;
     const interval = setInterval(() => {
@@ -53,7 +52,7 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef }: P
         position: "fixed",
         minWidth: smallscreen ? "100%" : "300px",
         maxWidth: "min(100%, 600px)",
-        zIndex: 1000,
+        zIndex: 100000,
         background: "var(--background)",
         color: "var(--text)",
         padding: "10px",

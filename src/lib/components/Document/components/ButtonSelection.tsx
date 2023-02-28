@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Divider, Icon, Ref } from "semantic-ui-react";
-import { StyledButton } from "../../../styled/StyledSemantic";
+import { CustomButton, StyledButton } from "../../../styled/StyledSemantic";
 import { moveDown, moveUp } from "../../../functions/refNavigation";
 import { CodeSelectorOption, CodeSelectorValue } from "../../../types";
 
@@ -97,7 +97,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
 
     return (
       <Ref key={option.label + "_" + i} innerRef={option.ref}>
-        <StyledButton
+        <CustomButton
           style={{
             position: "relative",
             flex: `0.2 1 auto`,
@@ -109,14 +109,11 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
             margin: "1px",
           }}
           key={option.label + "_" + i}
-          value={option.value}
-          compact
-          size="mini"
           onMouseOver={() => setSelected(i)}
-          onClick={(e, d) => {
+          onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            onSelect(d.value, e.ctrlKey || e.altKey);
+            onSelect(option.value, e.ctrlKey || e.altKey);
           }}
         >
           {option.tag ? (
@@ -134,7 +131,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
             >{`${option.tag} `}</span>
           ) : null}
           <span>{option.label}</span>
-        </StyledButton>
+        </CustomButton>
       </Ref>
     );
   };
@@ -203,7 +200,6 @@ const CloseButton = ({ selected, onClick }: CloseButtonProps) => {
   return (
     <StyledButton
       icon="window close"
-      size="huge"
       style={{
         padding: "0px",
         background: selected ? "var(--text-light)" : "var(--text-inversed)",
@@ -211,6 +207,7 @@ const CloseButton = ({ selected, onClick }: CloseButtonProps) => {
         position: "absolute",
         left: "calc(50% - 15px)",
         top: "-15px",
+        transform: "scale(180%)",
       }}
       onClick={onClick}
     />

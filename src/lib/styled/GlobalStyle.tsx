@@ -7,16 +7,18 @@ const GlobalStyle = createGlobalStyle`
     ${AnnotatorStyle}
 
     :root {
-    --font-size: 14px;
+  --font-size: 1.6rem;
 
-    --primary: #1678c2;
-    --primary-light: #7bb6ea;
-    --primary-verylight: #c5d7e7;
+    --primary: #673AB7;
+    --primary-dark: #3B2667;
+    --primary-light: #D1C4E9;
+    
+    --secondary: #03DAC6;
+    --secondary-dark: #018786;
+    --secondary-light: #a7ffeb;
 
-    --secondary: #1b1c1d;
-    --secondary-light: #7b7c7d;
-
-    --background: #1b1c1d;
+    --background: #121212
+    --background-transparent: #1b1c1dbb; 
     --background-fixed: white;
     --background-inversed: #ffffff;
     --background-inversed-fixed: #1b1c1d;
@@ -42,11 +44,10 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html {
-    font-size: 14px;
+    font-size: 62.5%;
   }
   
   body {
-    font-size: var(--font-size) !important ;
     overscroll-behavior: contain;
     background: var(--background);
     color: var(--text);
@@ -56,7 +57,43 @@ const GlobalStyle = createGlobalStyle`
   h1 {
     text-align: center;
   }
+
+  h1 {
+  min-height: 1em;
+  font-size: 2em;
+}
+
+h2 {
+  font-size: 1.71428571em;
+}
+
+h3 {
+  font-size: 1.28571429em;
+}
+
+h4 {
+  font-size: 1.07142857em;
+}
+
+h5 {
+  font-size: 1em;
+}
   
+@keyframes fadeIn {
+    0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideIn {
+  0% { transform: translateX(0); opacity: 0 }
+  10% { transform: translateX(0); opacity: 1 }
+  50% { transform: translateX(0); }
+  100% { transform: translateX(100%); }
+}
+
+.flex {
+  flex: 1 1 auto;
+}
     
 `;
 

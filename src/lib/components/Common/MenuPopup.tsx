@@ -18,9 +18,10 @@ const PopupWindow = styled.div<{ open: boolean }>`
   display: ${(props) => (props.open ? "" : "none")};
   position: absolute;
   max-width: min(400px, 80vw);
-  background: var(--background-inversed);
-  color: var(--text-inversed);
+  background: var(--background);
+  color: var(--text);
   z-index: 1000;
+  border: 1px solid var(--text);
   border-radius: 5px;
   padding: 0.5rem;
 `;

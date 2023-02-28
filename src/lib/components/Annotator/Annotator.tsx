@@ -51,6 +51,7 @@ const Annotator = ({
         // FullScreenWindow passes on the fullScreenNode needed to mount popups, and a fullScreenButton to handle on/off
         <JobController
           jobServer={jobServer}
+          codebook={indexedUnit?.unit?.unit?.codebook || jobServer?.codebook}
           unitIndex={indexedUnit?.index}
           setUnitIndex={setUnitIndex}
           unitProgress={unitProgress}

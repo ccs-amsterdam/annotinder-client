@@ -35,7 +35,7 @@ const importVariables = (variables: Variable[]): Variable[] => {
   return variables.map((variable) => {
     return {
       ...variable,
-      codeMap: codeBookEdgesToMap(variable.codes),
+      codeMap: codeBookEdgesToMap(variable.name, variable.codes),
     };
   });
 };
@@ -44,7 +44,7 @@ const importQuestions = (questions: Question[]): Question[] => {
   // checks and preparation of questions
   return questions.map((question) => {
     const fillMissingColor = !["scale"].includes(question.type);
-    const codeMap = codeBookEdgesToMap(question.codes, fillMissingColor);
+    const codeMap = codeBookEdgesToMap(question.name, question.codes, fillMissingColor);
     let cta = getCodeTreeArray(codeMap);
     const [options, swipeOptions] = getOptions(cta);
 
@@ -84,10 +84,15 @@ const getOptions = (cta: CodeTree[]): [AnswerOption[], SwipeOptions] => {
   return [options, swipeOptions];
 };
 
-export const standardizeCodes = (codes: Code[] | string[], fillMissingColor: boolean): Code[] => {
+export const standardizeCodes = (
+  variable: string,
+  codes: Code[] | string[],
+  fillMissingColor: boolean
+): Code[] => {
   if (!codes) return [];
   return codes.map((code: any, i) => {
     if (typeof code !== "object") code = { code };
+    code.variable = variable;
     if (code.active == null) code.active = true;
     if (code.activeParent == null) code.activeParent = true;
     if (code.tree == null) code.tree = [];
@@ -106,8 +111,12 @@ export const standardizeCodes = (codes: Code[] | string[], fillMissingColor: boo
   });
 };
 
-export const codeBookEdgesToMap = (codes: Code[] | string[], fillMissingColor: boolean = true) => {
-  const standardizedCodes = standardizeCodes(codes, fillMissingColor);
+export const codeBookEdgesToMap = (
+  variable: string,
+  codes: Code[] | string[],
+  fillMissingColor: boolean = true
+) => {
+  const standardizedCodes = standardizeCodes(variable, codes, fillMissingColor);
   // codesis an array of objects, but for efficients operations
   // in the annotator we convert it to an object with the codes as keys
   const codeMap: CodeMap = standardizedCodes.reduce((result, code) => {

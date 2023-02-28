@@ -10,17 +10,21 @@ import {
   SpanAnnotations,
   AnnotationMap,
   TokenSelection,
-  TriggerCodePopup,
+  TriggerSelectionPopup,
   FullScreenNode,
+  VariableType,
 } from "../../../types";
+import Arrow from "./Arrow";
+import RelationArrows from "./RelationArrows";
 
 interface AnnotateNavigationProps {
   tokens: Token[];
-  variableMap: VariableMap;
+  variableType: VariableType;
+  showValues: VariableMap;
   annotations: SpanAnnotations;
   disableAnnotations: boolean;
   editMode: boolean;
-  triggerCodeSelector: TriggerCodePopup;
+  triggerSelectionPopup: TriggerSelectionPopup;
   eventsBlocked: boolean;
   showAll: boolean;
   fullScreenNode: FullScreenNode;
@@ -33,25 +37,27 @@ interface AnnotateNavigationProps {
  */
 const AnnotateNavigation = ({
   tokens,
-  variableMap,
+  variableType,
+  showValues,
   annotations,
   disableAnnotations,
   editMode,
-  triggerCodeSelector,
+  triggerSelectionPopup,
   showAll,
   eventsBlocked,
   fullScreenNode,
 }: AnnotateNavigationProps) => {
   const [currentToken, setCurrentToken] = useState({ i: null });
   const [tokenSelection, setTokenSelection] = useState<TokenSelection>([]);
+  const [, setRefresh] = useState(0);
 
   useEffect(() => {
-    highlightAnnotations(tokens, annotations, variableMap, editMode, showAll);
-  }, [tokens, annotations, variableMap, editMode, showAll]);
+    highlightAnnotations(tokens, annotations, showValues, editMode, showAll, variableType);
+  }, [tokens, annotations, showValues, editMode, showAll, variableType]);
 
   useEffect(() => {
-    setSelectionAsCSSClass(tokens, tokenSelection);
-  }, [tokens, tokenSelection, editMode]);
+    setSelectionAsCSSClass(tokens, variableType, tokenSelection);
+  }, [tokens, variableType, tokenSelection, editMode]);
 
   useEffect(() => {
     setTokenSelection([]);
@@ -62,6 +68,30 @@ const AnnotateNavigation = ({
     setTokenSelection([]);
   }, [tokens]);
 
+  useEffect(() => {
+    // ugly hack, but ensures that popup and arrows are redrawn
+    // when positions change and on body scroll
+    setRefresh(0);
+    const refreshNow = () => setRefresh((refresh) => refresh + 1);
+    const interval = setInterval(refreshNow, 500);
+
+    // seems nicer, but we need to interval anyway because we can't
+    // watch for changes in the bodycontainer
+    const bodycontainer = document.getElementById("bodycontainer");
+    if (bodycontainer) bodycontainer.addEventListener("scroll", refreshNow);
+
+    return () => {
+      if (bodycontainer) bodycontainer.removeEventListener("scroll", refreshNow);
+      clearInterval(interval);
+    };
+  }, [tokens]);
+
+  const validArrow =
+    tokenSelection?.[0] &&
+    annotations[tokenSelection[0]] &&
+    tokenSelection?.[1] &&
+    annotations[tokenSelection[1]];
+
   return (
     <>
       <AnnotationPopup
@@ -69,7 +99,7 @@ const AnnotateNavigation = ({
         currentToken={currentToken}
         setCurrentToken={setCurrentToken}
         annotations={annotations}
-        variableMap={variableMap}
+        showValues={showValues}
         fullScreenNode={fullScreenNode}
       />
       {disableAnnotations ? null : (
@@ -80,10 +110,41 @@ const AnnotateNavigation = ({
           setCurrentToken={setCurrentToken}
           tokenSelection={tokenSelection}
           setTokenSelection={setTokenSelection}
-          triggerCodePopup={triggerCodeSelector}
+          triggerSelectionPopup={triggerSelectionPopup}
           editMode={editMode}
           eventsBlocked={eventsBlocked}
         />
+      )}
+
+      {/* this is where the relation arrows are drawn */}
+      {variableType === "relation" && (
+        <svg
+          style={{
+            position: "absolute",
+            marginTop: "-40px", // need to correct for menu bar
+            top: 0,
+            left: 0,
+            height: "calc(100% + 40px)",
+            overflow: "hidden",
+            //height: window.innerHeight,
+            width: "100%",
+            zIndex: 1000,
+            pointerEvents: "none",
+          }}
+        >
+          <RelationArrows
+            tokens={tokens}
+            annotations={annotations}
+            showValues={showValues}
+            triggerSelectionPopup={triggerSelectionPopup}
+          />
+          <Arrow
+            id={"create relation"}
+            tokens={tokens}
+            tokenSelection={tokenSelection}
+            edgeColor={validArrow ? "var(--primary)" : "var(--text)"}
+          />
+        </svg>
       )}
     </>
   );
@@ -92,9 +153,10 @@ const AnnotateNavigation = ({
 const highlightAnnotations = (
   tokens: Token[],
   annotations: SpanAnnotations,
-  variableMap: VariableMap,
+  showValues: VariableMap,
   editMode: boolean,
-  showAll: boolean
+  showAll: boolean,
+  variableType: string
 ) => {
   // loop over tokens. Do some styling. Then get the (allowed) annotations for this token,
   // and apply styling to annotated tokens
@@ -103,12 +165,14 @@ const highlightAnnotations = (
     if (!token.ref?.current) continue;
 
     if (editMode) {
-      if (token.ref.current.style.cursor !== "default") token.ref.current.style.cursor = null;
+      token.ref.current.style.cursor = null;
+    } else if (variableType === "relation") {
+      token.ref.current.style.cursor = "crosshair";
     } else {
-      if (token.ref.current.style.cursor !== "text") token.ref.current.style.cursor = "text";
+      token.ref.current.style.cursor = "text";
     }
 
-    let tokenAnnotations = allowedAnnotations(annotations?.[token.index], variableMap, showAll);
+    let tokenAnnotations = allowedAnnotations(annotations?.[token.index], showValues, showAll);
     if (!tokenAnnotations || Object.keys(tokenAnnotations).length === 0) {
       if (token.ref.current.classList.contains("annotated")) {
         token.ref.current.classList.remove("annotated");
@@ -117,18 +181,20 @@ const highlightAnnotations = (
       continue;
     }
 
-    setAnnotationAsCSSClass(token, tokenAnnotations, variableMap);
+    setAnnotationAsCSSClass(token, tokenAnnotations, showValues);
 
     if (editMode) {
-      // in edit mode, make annotations look clickable
       token.ref.current.style.cursor = "pointer";
+    }
+    if (variableType === "relation") {
+      token.ref.current.style.cursor = "crosshair";
     }
   }
 };
 
 const allowedAnnotations = (
   annotations: AnnotationMap,
-  variableMap: VariableMap,
+  showValues: VariableMap,
   showAll: boolean
 ) => {
   // get all annotations that are currently 'allowed', meaning that the variable is selected
@@ -140,11 +206,11 @@ const allowedAnnotations = (
     for (let id of Object.keys(annotations)) {
       const a = annotations[id];
 
-      if (!variableMap?.[a.variable]) {
+      if (!showValues?.[a.variable]) {
         delete annotations[id];
         continue;
       }
-      const codeMap = variableMap[a.variable].codeMap;
+      const codeMap = showValues[a.variable].codeMap;
       const code = annotations[id].value;
       if (!codeMap[code] || !codeMap[code].active || !codeMap[code].activeParent)
         if (code !== "EMPTY") delete annotations[id];
@@ -156,7 +222,7 @@ const allowedAnnotations = (
 const setAnnotationAsCSSClass = (
   token: Token,
   annotations: AnnotationMap,
-  variableMap: VariableMap
+  showValues: VariableMap
 ) => {
   // Set specific classes for nice css to show the start/end of codes
   let nLeft = 0;
@@ -167,7 +233,7 @@ const setAnnotationAsCSSClass = (
 
   for (let id of Object.keys(annotations)) {
     const annotation = annotations[id];
-    const codeMap = variableMap?.[annotation.variable]?.codeMap || {};
+    const codeMap = showValues?.[annotation.variable]?.codeMap || {};
     const color = standardizeColor(annotation.color, "50") || getColor(annotation.value, codeMap);
     tokenlabel.push(String(annotation.value));
 
@@ -209,7 +275,11 @@ const setTokenColor = (token: Token, pre: string, text: string, post: string) =>
   children[2].style.background = post;
 };
 
-const setSelectionAsCSSClass = (tokens: Token[], selection: TokenSelection) => {
+const setSelectionAsCSSClass = (
+  tokens: Token[],
+  variableType: VariableType,
+  selection: TokenSelection
+) => {
   for (let token of tokens) {
     if (!token.ref?.current) continue;
     token.ref.current.classList.remove("tapped");
@@ -221,7 +291,14 @@ const setSelectionAsCSSClass = (tokens: Token[], selection: TokenSelection) => {
     let [from, to] = selection;
     //if (to === null) return false;
     if (from > to) [to, from] = [from, to];
-    let selected = token.arrayIndex >= from && token.arrayIndex <= to;
+
+    // if type is relation, only show first and last token. Otherwise,
+    // (if type is "span") show all tokens in between as well
+    let selected =
+      variableType === "relation"
+        ? token.arrayIndex === from || token.arrayIndex === to
+        : token.arrayIndex >= from && token.arrayIndex <= to;
+
     const cl = token.ref.current.classList;
     if (selected && token.codingUnit) {
       const left = from === token.arrayIndex;
@@ -238,7 +315,7 @@ interface AnnotationPopupProps {
   currentToken: { i: number };
   setCurrentToken: SetState<{ i: number }>;
   annotations: SpanAnnotations;
-  variableMap: VariableMap;
+  showValues: VariableMap;
   fullScreenNode: any;
 }
 
@@ -248,16 +325,15 @@ const AnnotationPopup = React.memo(
     currentToken,
     setCurrentToken,
     annotations,
-    variableMap,
+    showValues,
     fullScreenNode,
   }: AnnotationPopupProps) => {
     const [content, setContent] = useState(null);
-    const [refresh, setRefresh] = useState(0);
 
     useEffect(() => {
       if (!tokens?.[currentToken.i]?.ref || !annotations?.[tokens[currentToken.i].index]) {
         setContent(null);
-        setRefresh(0);
+        //setRefresh(0);
         return;
       }
 
@@ -266,7 +342,7 @@ const AnnotationPopup = React.memo(
       const list = ids.reduce((arr, id, i) => {
         const variable = tokenAnnotations[id].variable;
         const value = tokenAnnotations[id].value;
-        const codeMap = variableMap?.[variable]?.codeMap || {};
+        const codeMap = showValues?.[variable]?.codeMap || {};
         const color = tokenAnnotations[id].color || getColor(value, codeMap);
 
         arr.push(
@@ -278,32 +354,24 @@ const AnnotationPopup = React.memo(
             }}
             onMouseOver={() => setCurrentToken({ i: null })}
           >
-            <b>{variable}</b>
-            {": " + value}
+            {/* <b>{variable}</b>
+            {": " + value} */}
+            <b>{value}</b>
           </List.Item>
         );
         return arr;
       }, []);
 
       setContent(<List>{list}</List>);
-      setRefresh(0);
-    }, [tokens, currentToken, setCurrentToken, annotations, variableMap, setRefresh]);
-
-    useEffect(() => {
-      // ugly hack, but popup won't scroll along, so refresh position at intervalls if content is not null
-      if (!content) return;
-      const timer = setTimeout(() => {
-        setRefresh(refresh + 1);
-      }, 200);
-      return () => clearTimeout(timer);
-    }, [refresh, content]);
+      //setRefresh(0);
+    }, [tokens, currentToken, setCurrentToken, annotations, showValues]);
 
     return (
       <Popup
         mountNode={fullScreenNode || undefined}
         context={tokens?.[currentToken.i]?.ref}
         basic
-        hoverable={false}
+        hoverable={true}
         position="top left"
         open={true}
         style={{
@@ -313,6 +381,7 @@ const AnnotationPopup = React.memo(
           zIndex: 100,
           background: "var(--background)",
           color: "var(--text)",
+          fontSize: "1em",
         }}
       >
         {content}

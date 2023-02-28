@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Icon } from "semantic-ui-react";
-import AnnotateTable from "./AnnotateTable";
+import AnnotationList from "./AnnotationList";
 import Document from "../../Document/Document";
 import AnnotateTaskManual from "./AnnotateTaskManual";
 
@@ -25,8 +25,7 @@ const BODYSTYLE = {
 
 const AnnotateGrid = styled.div`
   display: grid;
-  grid-gap: 1em;
-  grid-template-areas: "documentContainer table";
+  grid-template-areas: "documentContainer annotationList";
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 1fr;
   height: 100%;
@@ -34,7 +33,7 @@ const AnnotateGrid = styled.div`
   overflow: auto;
 
   @media screen and (max-width: 700px) {
-    grid-template-areas: "table" "documentContainer";
+    grid-template-areas: "annotationList" "documentContainer";
     grid-template-columns: 1fr;
     grid-template-rows: 0% 100%;
     grid-gap: 0;
@@ -44,24 +43,31 @@ const AnnotateGrid = styled.div`
     grid-area: documentContainer;
     overflow: auto;
     height: 100%;
-    border-right: 1px solid var(--secondary);
+    //border-right: 1px solid var(--primary-light);
+    /* width */
 
     .document {
       height: calc(100% - 35px);
       overflow: auto;
     }
     .bottomBar {
+      //position: relative;
+      //z-index: 100;
       display: flex;
       padding: 0;
       height: 35px;
-      background: var(--secondary);
+      color: var(--text-inversed-fixed);
+      background: var(--primary-dark);
     }
   }
 
-  & .table {
-    grid-area: table;
+  & .annotationList {
+    grid-area: annotationList;
     overflow: auto;
-    border-bottom: 1px solid;
+    //border-bottom: 1px solid;
+    //height: 100%;
+    position: relative;
+    z-index: 1;
   }
 `;
 
@@ -104,6 +110,8 @@ const AnnotateTask = ({
   if (unit.unit.importedAnnotations && (!ann || ann.length === 0) && unit.status !== "DONE")
     ann = unit.unit.importedAnnotations;
 
+  console.log(variableMap);
+
   return (
     <AnnotateGrid>
       <div className="documentContainer">
@@ -133,9 +141,9 @@ const AnnotateTask = ({
           <NextUnitButton unit={unit} annotations={annotations} nextUnit={nextUnit} />
         </div>
       </div>
-      <div className="table">
+      <div className="annotationList">
         <div style={{}}>
-          <AnnotateTable tokens={tokens} variableMap={variableMap} annotations={annotations} />
+          <AnnotationList tokens={tokens} variableMap={variableMap} annotations={annotations} />
         </div>
       </div>
     </AnnotateGrid>
@@ -189,7 +197,7 @@ const annotationsHaveChanged = (old: Annotation[], current: Annotation[]) => {
 
 const getCleanAnnotations = (annotations: Annotation[]) => {
   return annotations.map((na) => {
-    return {
+    const a: Annotation = {
       variable: na.variable,
       value: na.value,
       field: na.field,
@@ -197,6 +205,15 @@ const getCleanAnnotations = (annotations: Annotation[]) => {
       length: na.length,
       text: na.text,
     };
+    if (na.parents)
+      a.parents = na.parents.map((p) => ({
+        variable: p.variable,
+        value: p.value,
+        offset: p.offset,
+        relationVariable: p.relationVariable,
+        relationValue: p.relationValue,
+      }));
+    return a;
   });
 };
 
@@ -251,8 +268,13 @@ const NextUnitButton = ({ unit, annotations, nextUnit }: NextUnitButtonProps) =>
       loading={tempDisable === "loading"}
       primary
       fluid
-      size="tiny"
-      style={{ borderRadius: "0", padding: "5px", marginLeft: "30px", marginRight: "0px" }}
+      style={{
+        cursor: "pointer",
+        borderRadius: "0",
+        padding: "5px",
+        marginLeft: "30px",
+        marginRight: "0px",
+      }}
       onClick={onNext}
     >
       <Icon name="play" />

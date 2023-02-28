@@ -12,7 +12,7 @@ const Overlay = styled.div`
   height: 100%;
   backdrop-filter: blur(0.8px);
   border: 1px solid black;
-  z-index: 10;
+  z-index: 0;
 `;
 
 interface FocusOverlayProps {

@@ -23,14 +23,13 @@ const AnnotateTaskManual = ({ fullScreenNode }: AnnotateTaskManualProps) => {
       position="bottom left"
       trigger={
         <StyledButton
-          secondary
           icon="keyboard"
           size="huge"
           onClick={() => setOpen(!open)}
           style={{
             background: "transparent",
             cursor: "pointer",
-            color: "var(--text-inversed)",
+            color: "inherit",
             padding: "4px 5px 4px 5px",
             zIndex: 800,
           }}

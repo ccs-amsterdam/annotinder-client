@@ -18,7 +18,7 @@ import {
 } from "../../../types";
 import styled from "styled-components";
 
-const DocumentContent = styled.div<{ grid: FieldGrid; centered: boolean }>`
+const DocumentContent = styled.div<{ grid: FieldGrid; centered: boolean; highLines: boolean }>`
   display: ${(p) => (p.grid?.areas ? "grid" : null)};
   grid-template-rows: ${(p) => p.grid?.rows};
   grid-template-columns: ${(p) => p.grid?.columns};
@@ -27,6 +27,41 @@ const DocumentContent = styled.div<{ grid: FieldGrid; centered: boolean }>`
   padding-top: 0px;
   padding-bottom: 0px;
   width: 100%;
+  z-index: 1;
+
+  p {
+    line-height: ${(p) => (p.highLines ? "2em" : "1.5em")};
+  }
+`;
+
+const BodyContainer = styled.div`
+  height: 100%;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto;
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 0;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--primary-light);
+    border-radius: 0;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+  }
 `;
 
 interface BodyProps {
@@ -40,6 +75,7 @@ interface BodyProps {
   bodyStyle: CSSProperties;
   focus: string[];
   centered: boolean;
+  readOnly: boolean;
 }
 
 const Body = ({
@@ -53,6 +89,7 @@ const Body = ({
   bodyStyle = {},
   focus,
   centered,
+  readOnly,
 }: BodyProps) => {
   const [content, setContent] = useState<(ReactElement | ReactElement[])[]>([]);
   const fieldRefs: FieldRefs = useMemo(() => ({}), []);
@@ -89,16 +126,11 @@ const Body = ({
   return (
     <>
       <Ref innerRef={containerRef}>
-        <div
+        <BodyContainer
           key="bodycontainer"
+          id="bodycontainer"
           className="BodyContainer"
           style={{
-            height: "100%",
-            flex: "1 1 auto",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            overflow: "auto",
             ...bodyStyle,
           }}
         >
@@ -121,6 +153,7 @@ const Body = ({
             />
             <DocumentContent
               centered={centered}
+              highLines={!readOnly}
               grid={grid}
               key="content"
               className="DocumentContent"
@@ -128,7 +161,7 @@ const Body = ({
               {content}
             </DocumentContent>
           </div>
-        </div>
+        </BodyContainer>
       </Ref>
     </>
   );
