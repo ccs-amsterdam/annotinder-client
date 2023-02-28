@@ -491,8 +491,10 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
           position: "fixed",
           minWidth: "50%",
           zIndex: 1000,
-          background: "#dfeffb",
-          border: "1px solid #136bae",
+          display: "flex",
+          flexDirection: "column",
+          background: "white",
+          border: "1px solid var(--primary-dark)",
         }}
       >
         <h2>Create job coder</h2>
@@ -500,16 +502,17 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
           <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
         </div>
         <br />
-
-        <StyledButton
-          fluid
-          secondary
-          onClick={() => {
-            copyToClipboard(link?.url);
-          }}
-        >
-          Copy link
-        </StyledButton>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <CustomButton
+            size={2}
+            className="primary"
+            onClick={() => {
+              copyToClipboard(link?.url);
+            }}
+          >
+            Copy link
+          </CustomButton>
+        </div>
       </Segment>
     </Portal>
   );
