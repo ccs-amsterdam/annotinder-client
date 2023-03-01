@@ -55,6 +55,7 @@ const AnnotateGrid = styled.div`
       //z-index: 100;
       display: flex;
       padding: 0;
+      padding-left: 2rem;
       height: 35px;
       color: var(--text-inversed-fixed);
       background: var(--primary-dark);
@@ -109,8 +110,6 @@ const AnnotateTask = ({
   let ann = unit.unit.annotations;
   if (unit.unit.importedAnnotations && (!ann || ann.length === 0) && unit.status !== "DONE")
     ann = unit.unit.importedAnnotations;
-
-  console.log(variableMap);
 
   return (
     <AnnotateGrid>

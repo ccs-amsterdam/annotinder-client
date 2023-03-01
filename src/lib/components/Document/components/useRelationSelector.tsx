@@ -39,6 +39,7 @@ const useRelationSelector = (
   const triggerFunction = useCallback(
     (index: number, span: Span) => {
       const [from, to] = [annotations[span[0]], annotations[span[1]]];
+      if (!from || !to) return;
 
       const { relationOptions, edgeOptions } = getOptions(
         from,

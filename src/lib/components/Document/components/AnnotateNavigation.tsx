@@ -138,6 +138,7 @@ const AnnotateNavigation = ({
             showValues={showValues}
             triggerSelectionPopup={triggerSelectionPopup}
           />
+
           <Arrow
             id={"create relation"}
             tokens={tokens}

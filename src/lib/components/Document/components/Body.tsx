@@ -41,27 +41,6 @@ const BodyContainer = styled.div`
   flex-direction: column;
   align-items: center;
   overflow: auto;
-
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 0;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background-color: var(--primary-light);
-    border-radius: 0;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
-  }
 `;
 
 interface BodyProps {

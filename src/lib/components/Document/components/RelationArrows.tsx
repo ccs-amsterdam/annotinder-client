@@ -23,9 +23,11 @@ const RelationArrows = ({ tokens, annotations, showValues, triggerSelectionPopup
 
         const id = `${ann.variable}|${ann.value}|${ann.span[0]} - ${parent.relationVariable}|${parent.relationValue} - ${parent.variable}|${parent.value}|${parent.span[0]}`;
 
-        const relationCodeMap = showValues[parent.relationVariable].codeMap;
-        const fromCodeMap = showValues[ann.variable].codeMap;
-        const toCodeMap = showValues[parent.variable].codeMap;
+        const relationCodeMap = showValues[parent.relationVariable]?.codeMap;
+        if (!relationCodeMap) continue;
+
+        const fromCodeMap = showValues[ann.variable]?.codeMap;
+        const toCodeMap = showValues[parent.variable]?.codeMap;
 
         arrows.push({
           id,

@@ -8,14 +8,24 @@ interface AnnotationListProps {
   annotations: Annotation[];
 }
 
+const VariableNames = styled.div`
+  font-size: 2rem;
+  padding: 2rem 1rem;
+  color: var(--primary-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: bold;
+`;
+
 const StyledDiv = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   font-size: 1.6rem;
-  min-height: 70vh;
+  min-height: 20vh;
+  padding: 0rem 0rem 0rem 0.5rem;
 
-  border-radius: 5px;
   margin: 0.5rem 0.5rem 0 0.5rem;
   border-collapse: collapse;
   text-align: left;
@@ -28,10 +38,9 @@ const StyledDiv = styled.div`
     cursor: pointer;
     margin: 0.2rem;
 
-    .value {
+    .label {
       display: flex;
-      width: 30%;
-      min-width: 120px;
+      width: 100%;
       border-radius: 5px;
       text-align: center;
       padding: 0.5rem 0.3rem;
@@ -51,18 +60,18 @@ const StyledDiv = styled.div`
         z-index: -1;
       }
     }
-    .value span {
+    .label span {
+      width: 30%;
       margin: auto;
     }
   }
   .relation {
     display: flex;
     flex-direction: column;
-    align-items: center;
     cursor: pointer;
     border-radius: 8px;
-    margin: 0.2rem;
-    padding: 0.2rem;
+    margin: 0.4rem 0.7rem 0rem 0.2rem;
+    padding: 0.2rem 0.2rem 0 0.2rem;
     border: 1px solid var(--background-inversed-fixed);
 
     color: var(--text-fixed);
@@ -102,12 +111,29 @@ const StyledDiv = styled.div`
   .text {
     margin: auto;
     line-height: 1.5rem;
-    padding: 0.15rem 0.5rem;
+    padding: 0.15rem 1rem 0.15rem 0.5rem;
     max-height: 5rem;
     overflow: auto;
     width: 70%;
     text-align: justify;
     hyphens: auto;
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+      //background: white;
+      border-radius: 10px;
+      //border: 1px solid #121212;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background-color: #121212;
+      border-radius: 5px;
+    }
   }
   .right {
     text-align: right;
@@ -116,8 +142,20 @@ const StyledDiv = styled.div`
 
 const AnnotationList = ({ tokens, variableMap, annotations }: AnnotationListProps) => {
   if (!variableMap || Object.keys(variableMap).length === 0) return null;
+  const variables = Object.keys(variableMap);
 
-  return <StyledDiv>{listAnnotations(tokens, variableMap, annotations)}</StyledDiv>;
+  return (
+    <div>
+      <VariableNames>
+        <div className="variableNames">
+          {variables.map((v) => {
+            return <h3 key={v}>{v}</h3>;
+          })}
+        </div>
+      </VariableNames>
+      <StyledDiv>{listAnnotations(tokens, variableMap, annotations)}</StyledDiv>
+    </div>
+  );
 };
 
 const listAnnotations = (tokens: Token[], variableMap: VariableMap, annotations: Annotation[]) => {
@@ -187,12 +225,12 @@ const ShowSpanAnnotation = ({
 
   return (
     <div className={"annotation"} onClick={() => onClick(annotation.token_span)}>
-      <div className="value" style={{ background: color || null }}>
+      <div className="label" style={{ background: color || null }}>
         <span>{label}</span>
+        <p className="text" title={text}>
+          {text}
+        </p>
       </div>
-      <p className="text" title={text}>
-        {text}
-      </p>
     </div>
   );
 };

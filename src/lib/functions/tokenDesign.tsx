@@ -8,8 +8,8 @@ import { CodeMap } from "../types";
  * @param {*} codeMap         object with annotation values as keys, where values are objects with (at least) a color field
  * @returns
  */
-export const getColor = (annotationCode: string | number, codeMap: CodeMap) => {
-  if (codeMap[annotationCode]) {
+export const getColor = (annotationCode: string | number, codeMap?: CodeMap) => {
+  if (codeMap?.[annotationCode]) {
     let color;
     color = codeMap[annotationCode].color;
     return standardizeColor(color, "50");

@@ -7,11 +7,12 @@ const GlobalStyle = createGlobalStyle`
     ${AnnotatorStyle}
 
     :root {
-  --font-size: 1.6rem;
+    --font-size: 1.6rem;
 
     --primary: #673AB7;
     --primary-dark: #3B2667;
     --primary-light: #D1C4E9;
+    --primary-text: #c0b1dd;
     
     --secondary: #03DAC6;
     --secondary-dark: #018786;
@@ -21,7 +22,7 @@ const GlobalStyle = createGlobalStyle`
     --background-transparent: #1b1c1dbb; 
     --background-fixed: white;
     --background-inversed: #ffffff;
-    --background-inversed-fixed: #1b1c1d;
+    --background-inversed-fixed: #121212;
   
     --text: white;
     --text-fixed: black;
@@ -52,6 +53,27 @@ const GlobalStyle = createGlobalStyle`
     background: var(--background);
     color: var(--text);
     font-family: Helvetica, Arial, sans-serif;
+  }
+
+  div::-webkit-scrollbar, p::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  div::-webkit-scrollbar-track, p::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 0;
+  }
+
+  /* Handle */
+  div::-webkit-scrollbar-thumb, p::-webkit-scrollbar-thumb {
+    background-color: var(--primary-light);
+    border-radius: 0;
+  }
+
+  /* Handle on hover */
+  div::-webkit-scrollbar-thumb:hover, p::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
   }
 
   h1 {

@@ -48,7 +48,7 @@ const BodyDiv = styled.div`
   display: flex;
   flex-flow: column;
   width: 100%;
-  padding: 0px 10px 5px 10px;
+  padding: 0px 10px 10px 10px;
   color: var(--text-inversed-fixed);
   font-size: inherit;
 `;
