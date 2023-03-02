@@ -206,6 +206,7 @@ const getCleanAnnotations = (annotations: Annotation[]) => {
     };
     if (na.parents)
       a.parents = na.parents.map((p) => ({
+        field: p.field,
         variable: p.variable,
         value: p.value,
         offset: p.offset,

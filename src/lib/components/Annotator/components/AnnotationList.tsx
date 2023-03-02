@@ -185,7 +185,17 @@ const listAnnotations = (tokens: Token[], variableMap: VariableMap, annotations:
     for (let parent of annotation.parents || []) {
       const row = (
         <ShowRelation
-          key={"relation" + parent.value + parent.offset + "_" + i}
+          key={
+            "relation" +
+            parent.relationVariable +
+            "-" +
+            parent.relationValue +
+            "-" +
+            parent.value +
+            parent.offset +
+            "_" +
+            i
+          }
           variableMap={variableMap}
           annotation={annotation}
           parent={parent}

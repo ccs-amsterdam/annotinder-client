@@ -21,7 +21,7 @@ import {
 import { useCallback } from "react";
 import styled from "styled-components";
 
-const DocumentContainer = styled.div<{ cursor: string }>`
+const DocumentContainer = styled.div`
   display: flex;
   position: relative;
   height: 100%;
@@ -31,7 +31,6 @@ const DocumentContainer = styled.div<{ cursor: string }>`
   background: var(--background);
   z-index: 100;
   font-size: var(--font-size);
-  cursor: ${(props) => props.cursor};
 `;
 
 interface DocumentProps {
@@ -136,11 +135,10 @@ const Document = ({
   const selectorOpen = variableType === "relation" ? relationSelectorOpen : codeSelectorOpen;
   const selector = variableType === "relation" ? relationSelector : codeSelector;
 
-  let cursor = "default";
-  if (variableType === "relation") cursor = "crosshair";
+  const annotationMode = variableType === "relation" ? "relationMode" : "spanMode";
 
   return (
-    <DocumentContainer cursor={cursor}>
+    <DocumentContainer className={annotationMode}>
       <SelectVariable
         variables={variables}
         variable={variable}
@@ -163,7 +161,7 @@ const Document = ({
 
       <AnnotateNavigation
         tokens={unitStates.doc.tokens}
-        variableType={variableType}
+        variable={variableMap?.[variable]}
         showValues={showValues}
         annotations={unitStates.spanAnnotations}
         disableAnnotations={!onChangeAnnotations || !variableMap}

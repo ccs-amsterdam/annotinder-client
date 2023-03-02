@@ -42,6 +42,8 @@ const RelationArrows = ({ tokens, annotations, showValues, triggerSelectionPopup
     }
   }
 
+  const usedPositions: Record<string, number> = {};
+
   return (
     <>
       {arrows.map((arrowProps, i) => (
@@ -50,6 +52,7 @@ const RelationArrows = ({ tokens, annotations, showValues, triggerSelectionPopup
           tokens={tokens}
           onClick={() => triggerSelectionPopup(0, arrowProps.tokenSelection)}
           {...arrowProps}
+          usedPositions={usedPositions}
         />
       ))}
     </>

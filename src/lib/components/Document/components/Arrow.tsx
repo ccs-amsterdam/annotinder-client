@@ -13,6 +13,7 @@ interface Props {
   fromColor?: string;
   toColor?: string;
   onClick?: () => void;
+  usedPositions?: Record<number, Record<number, boolean>>;
 }
 
 const StyledG = styled.g<{ interactive: boolean }>`
@@ -22,8 +23,8 @@ const StyledG = styled.g<{ interactive: boolean }>`
   animation: fadeIn 1s;
 
   cursor: pointer;
-  --strokewidth: 0.5rem;
-  --radius: 0.5rem;
+  --strokewidth: 0.3rem;
+  --radius: 0.4rem;
   --opacity: 0.7;
   --bigpolyOpacity: 0;
   --smallpolyOpacity: 1;
@@ -55,6 +56,9 @@ const StyledG = styled.g<{ interactive: boolean }>`
     --radius: 1rem;
     --bigpolyOpacity: 1;
     --smallpolyOpacity: 0;
+    position: relative;
+
+    z-index: 10000;
   }
 
   .arrow {
@@ -87,6 +91,7 @@ export default function Arrow({
   fromColor,
   toColor,
   onClick,
+  usedPositions,
 }: Props) {
   if (tokenSelection.length !== 2) return;
   const elX = tokens[tokenSelection[0]]?.ref?.current;
@@ -128,14 +133,35 @@ export default function Arrow({
     if (x === "right" && y === "top") return [pend.x - xoffset, pend.y - yoffset];
     if (x === "right" && y === "bottom") return [pend.x - xoffset, pend.y + p.h + yoffset];
   }
-  const [p1x, p1y] = getXY(p1, p1end, fromX, fromY);
-  const [p2x, p2y] = getXY(p2, p2end, toX, toY);
-  const bow = p1y === p2y ? 0.15 : 0;
+  let [p1x, p1y] = getXY(p1, p1end, fromX, fromY);
+  let [p2x, p2y] = getXY(p2, p2end, toX, toY);
+  let bow = p1y === p2y ? 0.1 : 0;
+
+  if (usedPositions) {
+    // if arrow positions already exist, curve the arrow a bit to avoid overlaps
+    const relationString = `${p1x},${p1y},${p2x},${p2y}`;
+    if (!usedPositions[relationString]) usedPositions[relationString] = 0;
+    bow = bow + usedPositions[relationString] * 0.15;
+    usedPositions[relationString] += 1;
+
+    const fromPositionString = `${p1x},${p1y}`;
+    if (!usedPositions[fromPositionString]) usedPositions[fromPositionString] = 0;
+    const fromOffset = usedPositions[fromPositionString] * 10;
+    p1x -= fromX === "right" ? fromOffset : -fromOffset;
+    usedPositions[fromPositionString] += 1;
+
+    const toPositionString = `${p2x},${p2y}`;
+    if (!usedPositions[toPositionString]) usedPositions[toPositionString] = 0;
+    const toOffset = usedPositions[toPositionString] * 10;
+    p2x -= toX === "right" ? toOffset : -toOffset;
+    usedPositions[toPositionString] += 1;
+  }
 
   const arrow = getArrow(p1x, p1y, p2x, p2y, {
     bow: bow,
-    stretchMin: 50,
-    stretchMax: 100,
+    stretch: 0,
+    stretchMin: 0,
+    stretchMax: 300,
     straights: false,
     //flip: flip,
   });

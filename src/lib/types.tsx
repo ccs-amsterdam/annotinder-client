@@ -48,14 +48,17 @@ export interface Annotation {
 }
 
 export interface SpanParent {
+  field: string;
   variable: string;
   value: string | number;
   offset: number;
   relationVariable: string;
   relationValue: string;
+  // from here it's just internal stuff for visualization
   relationColor?: string;
   color?: string;
   span?: Span;
+
   text?: string;
 }
 
@@ -283,6 +286,10 @@ export interface Variable {
 
 // for fast lookup of relation codes, indexed as: variable -> value -> relation_code_value -> relation_code_object
 export type ValidRelation = Record<string, Record<string, Record<string, Code>>>;
+
+// for fast lookup of tokens in relation selection mode
+export type ValidTokenRelations = Record<number, Record<string, boolean>>;
+export type ValidTokenDestinations = Record<number, boolean>;
 
 export type VariableType = "span" | "relation";
 

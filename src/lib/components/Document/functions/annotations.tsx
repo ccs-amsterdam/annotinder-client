@@ -44,6 +44,7 @@ export const exportSpanAnnotations = (
       if (ann[id].parents)
         ann_obj["parents"] = ann[id].parents.map((p) => {
           const parent = {
+            field: p.field,
             variable: p.variable,
             value: p.value,
             offset: p.offset,
@@ -231,6 +232,7 @@ export const updateRelations = (annotations: SpanAnnotations) => {
       ann.parents = ann.parents.filter((p) => {
         for (const toAnn of uniqueAnn) {
           if (
+            p.field === toAnn.field &&
             p.variable === toAnn.variable &&
             p.value === toAnn.value &&
             p.offset === toAnn.offset
@@ -271,7 +273,13 @@ export const toggleRelationAnnotation = (
   // first, delete the relation (if it exists)
   if (ann.parents) {
     ann.parents = ann.parents.filter((p) => {
-      const same = p.variable === to.variable && p.value === to.value && p.offset === to.offset;
+      const same =
+        p.field === to.field &&
+        p.variable === to.variable &&
+        p.value === to.value &&
+        p.offset === to.offset &&
+        p.relationVariable === relation.variable &&
+        p.relationValue === relation.code;
       return !same;
     });
     if (ann.parents.length === 0) delete ann.parents;
@@ -282,6 +290,7 @@ export const toggleRelationAnnotation = (
 
   if (!ann.parents) ann.parents = [];
   ann.parents.push({
+    field: to.field,
     variable: to.variable,
     value: to.value,
     offset: to.offset,

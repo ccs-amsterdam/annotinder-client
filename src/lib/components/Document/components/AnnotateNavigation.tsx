@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { AnnotationEvents } from "./AnnotationEvents";
 import { Popup, List } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
 import standardizeColor from "../../../functions/standardizeColor";
+import { getValidTokenRelations, getValidTokenDestinations } from "../functions/relations";
+
 import {
+  Variable,
   VariableMap,
   SetState,
   Token,
@@ -13,13 +16,14 @@ import {
   TriggerSelectionPopup,
   FullScreenNode,
   VariableType,
+  ValidTokenRelations,
+  ValidTokenDestinations,
 } from "../../../types";
-import Arrow from "./Arrow";
-import RelationArrows from "./RelationArrows";
+import DrawArrows from "./DrawArrows";
 
 interface AnnotateNavigationProps {
   tokens: Token[];
-  variableType: VariableType;
+  variable: Variable;
   showValues: VariableMap;
   annotations: SpanAnnotations;
   disableAnnotations: boolean;
@@ -37,7 +41,7 @@ interface AnnotateNavigationProps {
  */
 const AnnotateNavigation = ({
   tokens,
-  variableType,
+  variable,
   showValues,
   annotations,
   disableAnnotations,
@@ -49,11 +53,37 @@ const AnnotateNavigation = ({
 }: AnnotateNavigationProps) => {
   const [currentToken, setCurrentToken] = useState({ i: null });
   const [tokenSelection, setTokenSelection] = useState<TokenSelection>([]);
-  const [, setRefresh] = useState(0);
+  const variableType = variable?.type;
+
+  const validRelations: ValidTokenRelations = useMemo(
+    () => getValidTokenRelations(annotations, variable),
+    [annotations, variable]
+  );
+  const validDestinations: ValidTokenDestinations = useMemo(
+    () => getValidTokenDestinations(annotations, validRelations, tokenSelection),
+    [annotations, validRelations, tokenSelection]
+  );
 
   useEffect(() => {
-    highlightAnnotations(tokens, annotations, showValues, editMode, showAll, variableType);
-  }, [tokens, annotations, showValues, editMode, showAll, variableType]);
+    highlightAnnotations(
+      tokens,
+      validDestinations || validRelations,
+      annotations,
+      showValues,
+      editMode,
+      showAll,
+      variableType
+    );
+  }, [
+    tokens,
+    validRelations,
+    validDestinations,
+    annotations,
+    showValues,
+    editMode,
+    showAll,
+    variableType,
+  ]);
 
   useEffect(() => {
     setSelectionAsCSSClass(tokens, variableType, tokenSelection);
@@ -67,30 +97,6 @@ const AnnotateNavigation = ({
     setCurrentToken({ i: null });
     setTokenSelection([]);
   }, [tokens]);
-
-  useEffect(() => {
-    // ugly hack, but ensures that popup and arrows are redrawn
-    // when positions change and on body scroll
-    setRefresh(0);
-    const refreshNow = () => setRefresh((refresh) => refresh + 1);
-    const interval = setInterval(refreshNow, 500);
-
-    // seems nicer, but we need to interval anyway because we can't
-    // watch for changes in the bodycontainer
-    const bodycontainer = document.getElementById("bodycontainer");
-    if (bodycontainer) bodycontainer.addEventListener("scroll", refreshNow);
-
-    return () => {
-      if (bodycontainer) bodycontainer.removeEventListener("scroll", refreshNow);
-      clearInterval(interval);
-    };
-  }, [tokens]);
-
-  const validArrow =
-    tokenSelection?.[0] &&
-    annotations[tokenSelection[0]] &&
-    tokenSelection?.[1] &&
-    annotations[tokenSelection[1]];
 
   return (
     <>
@@ -116,43 +122,21 @@ const AnnotateNavigation = ({
         />
       )}
 
-      {/* this is where the relation arrows are drawn */}
-      {variableType === "relation" && (
-        <svg
-          style={{
-            position: "absolute",
-            marginTop: "-40px", // need to correct for menu bar
-            top: 0,
-            left: 0,
-            height: "calc(100% + 40px)",
-            overflow: "hidden",
-            //height: window.innerHeight,
-            width: "100%",
-            zIndex: 1000,
-            pointerEvents: "none",
-          }}
-        >
-          <RelationArrows
-            tokens={tokens}
-            annotations={annotations}
-            showValues={showValues}
-            triggerSelectionPopup={triggerSelectionPopup}
-          />
-
-          <Arrow
-            id={"create relation"}
-            tokens={tokens}
-            tokenSelection={tokenSelection}
-            edgeColor={validArrow ? "var(--primary)" : "var(--text)"}
-          />
-        </svg>
-      )}
+      <DrawArrows
+        variable={variable}
+        tokens={tokens}
+        annotations={annotations}
+        showValues={showValues}
+        triggerSelectionPopup={triggerSelectionPopup}
+        tokenSelection={tokenSelection}
+      />
     </>
   );
 };
 
 const highlightAnnotations = (
   tokens: Token[],
+  validTokens: ValidTokenRelations | ValidTokenDestinations,
   annotations: SpanAnnotations,
   showValues: VariableMap,
   editMode: boolean,
@@ -165,12 +149,20 @@ const highlightAnnotations = (
     const token = tokens[i];
     if (!token.ref?.current) continue;
 
-    if (editMode) {
+    if (editMode || variableType === "relation") {
       token.ref.current.style.cursor = null;
-    } else if (variableType === "relation") {
-      token.ref.current.style.cursor = "crosshair";
     } else {
       token.ref.current.style.cursor = "text";
+    }
+
+    if (variableType === "relation") {
+      const canSelect = !validTokens || validTokens[token.index];
+      //token.ref.current.style.cursor = canSelect ? "crosshair" : "not-allowed";
+      if (canSelect) {
+        token.ref.current.classList.add("can-select");
+      } else {
+        token.ref.current.classList.remove("can-select");
+      }
     }
 
     let tokenAnnotations = allowedAnnotations(annotations?.[token.index], showValues, showAll);
@@ -183,13 +175,6 @@ const highlightAnnotations = (
     }
 
     setAnnotationAsCSSClass(token, tokenAnnotations, showValues);
-
-    if (editMode) {
-      token.ref.current.style.cursor = "pointer";
-    }
-    if (variableType === "relation") {
-      token.ref.current.style.cursor = "crosshair";
-    }
   }
 };
 
@@ -293,11 +278,11 @@ const setSelectionAsCSSClass = (
     //if (to === null) return false;
     if (from > to) [to, from] = [from, to];
 
-    // if type is relation, only show first and last token. Otherwise,
+    // if type is relation, only show last token. Otherwise,
     // (if type is "span") show all tokens in between as well
     let selected =
       variableType === "relation"
-        ? token.arrayIndex === from || token.arrayIndex === to
+        ? token.arrayIndex === to
         : token.arrayIndex >= from && token.arrayIndex <= to;
 
     const cl = token.ref.current.classList;
@@ -307,7 +292,9 @@ const setSelectionAsCSSClass = (
       cl.add("selected");
       left ? cl.add("start") : cl.remove("start");
       right ? cl.add("end") : cl.remove("end");
-    } else cl.remove("selected");
+    } else {
+      cl.remove("selected");
+    }
   }
 };
 

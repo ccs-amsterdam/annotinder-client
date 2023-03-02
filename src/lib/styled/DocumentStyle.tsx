@@ -17,6 +17,17 @@ export default css`
     color: var(--text-light);
   }
 
+  .relationMode {
+    cursor: not-allowed;
+  }
+  .relationMode span.token {
+    opacity: 0.6;
+  }
+  .relationMode span.token.can-select {
+    opacity: 1;
+    cursor: crosshair;
+  }
+
   span.token.codingUnit {
     font-size: 1.2em;
     //background-color: var(--background-transparent);
@@ -29,6 +40,7 @@ export default css`
     color: var(--text-inversed);
     border-color: var(--text);
   }
+
   span.token.selected.start > span.pre {
     background-color: var(--primary-light) !important;
   }

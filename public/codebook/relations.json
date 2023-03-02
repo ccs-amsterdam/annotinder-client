@@ -27,8 +27,32 @@
 
       "codes": [
         {
-          "code": "Argument",
+          "code": "Factual Statement",
           "color": "green",
+          "from": {
+            "variable": "Labels",
+            "values": ["Subject"]
+          },
+          "to": {
+            "variable": "Labels",
+            "values": ["Predicate"]
+          }
+        },
+        {
+          "code": "Policy Statement",
+          "color": "red",
+          "from": {
+            "variable": "Labels",
+            "values": ["Subject"]
+          },
+          "to": {
+            "variable": "Labels",
+            "values": ["Predicate"]
+          }
+        },
+        {
+          "code": "Value Statement",
+          "color": "purple",
           "from": {
             "variable": "Labels",
             "values": ["Subject"]
