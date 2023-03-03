@@ -287,13 +287,13 @@ const ShowRelation = ({
         <span>{label}</span>
         <div>
           <i>
-            {annotation.value} 🠪 {parent.value}
+            {annotation.value} → {parent.value}
           </i>
         </div>
       </div>
       <div>
         <p className="text left" title={fromText}>
-          {fromText + " 🠪 " + toText}
+          {fromText + " → " + toText}
         </p>
       </div>
     </div>

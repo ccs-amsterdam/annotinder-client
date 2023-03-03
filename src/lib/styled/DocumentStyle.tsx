@@ -62,6 +62,7 @@ export default css`
     padding: 2px 0px;
     transition: all 0.5s ease;
     //border: 1px solid var(--background-fixed);
+
     border-left: none;
     border-right: none;
     /* cursor: pointer;; */
@@ -74,7 +75,8 @@ export default css`
     (also possible on black background, but not easy on the eyes)  */
     color: var(--text-fixed);
     position: relative;
-    z-index: 1;
+    //z-index: 1;
+
     ::after {
       content: "";
       position: absolute;

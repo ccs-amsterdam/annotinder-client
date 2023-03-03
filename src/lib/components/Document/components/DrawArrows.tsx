@@ -12,11 +12,10 @@ import RelationArrows from "./RelationArrows";
 import Arrow from "./Arrow";
 
 const StyledSvg = styled.svg`
-  position: absolute;
-  margin-top: -40px;
+  position: fixed;
   top: 0;
   left: 0;
-  height: calc(100% + 40px);
+  height: 100%;
   overflow: hidden;
   width: 100%;
   z-index: 1000;

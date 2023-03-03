@@ -142,7 +142,7 @@ const SelectEdgePage = ({ unitStates, relation, edgeOptions, setOpen }: SelectEd
     const options = validOptions.map((o) => {
       const from = o.from;
       const to = o.to;
-      const label = `${from.value} 🠪 ${to.value}`;
+      const label = `${from.value} → ${to.value}`;
 
       // check if relation already exists
       const firstFromToken = unitStates.spanAnnotations[from.span[0]];

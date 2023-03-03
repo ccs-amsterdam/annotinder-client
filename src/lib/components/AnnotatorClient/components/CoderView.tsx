@@ -12,8 +12,8 @@ const columns = [
     f: (row: RowObj) => (row.n_total ? `${row.n_coded || 0} / ${row.n_total}` : ""),
   },
   { name: "modified", title: true, date: true },
-  { name: "created", title: true, date: true },
-  { name: "creator", title: true },
+  //{ name: "created", title: true, date: true },
+  //{ name: "creator", title: true },
 ];
 
 interface CoderViewProps {

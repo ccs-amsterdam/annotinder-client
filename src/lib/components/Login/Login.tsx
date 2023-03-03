@@ -18,6 +18,7 @@ const LoginContainer = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
+  font-size: 1.4rem;
 `;
 
 const FormBox = styled.div`
@@ -51,7 +52,6 @@ const Login = ({ login, sessionList }: LoginProps) => {
     enabled: !!host,
     retry: false,
   });
-
 
   let hostLoginSuccess =
     canRegister || has_jobtoken ? hostInfoQuery.data != null : hostInfoQuery.data?.user != null;

@@ -57,7 +57,7 @@ export const HostLogin = ({
     <Form
       loading={hostInfoQuery.isFetching}
       onSubmit={submit}
-      style={{ width: "250px", maxWidth: "100%" }}
+      style={{ width: "250px", maxWidth: "100%", fontSize: "1.3rem" }}
     >
       <h3 style={{ color: "var(--primary)", marginBottom: "0" }}>Sign-in</h3>
       <i>provide host and email address</i>

@@ -49,7 +49,7 @@ export default function FullDataTable({
   };
 
   useEffect(() => {
-    if (search !== "") {
+    if (!search) {
       setFilteredData(fullData);
       return;
     }
