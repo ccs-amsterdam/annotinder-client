@@ -27,6 +27,9 @@ export default css`
     opacity: 1;
     cursor: crosshair;
   }
+  .editMode span.token.annotated {
+    cursor: pointer;
+  }
 
   span.token.codingUnit {
     font-size: 1.2em;
@@ -146,5 +149,26 @@ export default css`
   .menu > .selected {
     background: var(--primary) !important;
     color: var(--text-inversed) !important;
+  }
+
+  .buttonBackground {
+    /* add white background for dark mode. Annotation colors are customizable,
+    so we use opacity on a white background to ensure text readability.
+    (also possible on black background, but not easy on the eyes)  */
+    color: var(--text-fixed);
+    position: relative;
+    //z-index: 1;
+
+    ::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      z-index: -1;
+      border-radius: inherit;
+    }
   }
 `;

@@ -63,6 +63,7 @@ export const AnnotationEvents = ({
   const [mover, setMover] = useState(null);
   const [holdSpace, setHoldSpace] = useState(false);
   const [holdArrow, setHoldArrow] = useState<Arrowkeys>(null);
+
   useEffect(() => {
     if (eventsBlocked) {
       setHoldArrow(null);
@@ -340,14 +341,11 @@ const TokenMouseEvents = ({
         rmTapped(tokens, tapped.current);
         addTapped(tokens, token.index);
         tapped.current = token.index;
-
         setCurrentToken({ i: token.index });
         setTokenSelection((state: TokenSelection) => (state.length === 0 ? state : []));
       } else {
         rmTapped(tokens, tapped.current);
-        setTokenSelection((state: TokenSelection) =>
-          updateSelection(state, tokens, token.index, true)
-        );
+        setTokenSelection([token.index, token.index]);
       }
     },
     [
@@ -361,18 +359,6 @@ const TokenMouseEvents = ({
     ]
   );
 
-  const onMouseDown = useCallback(
-    (event: MouseEvent) => {
-      if (istouch.current) return; // suppress mousedown triggered by quick tap
-      // When left button pressed, start new selection
-      if (event.which === 1) {
-        selectionStarted.current = true;
-        setTokenSelection((state: TokenSelection) => (state.length === 0 ? state : []));
-      }
-    },
-    [setTokenSelection]
-  );
-
   const onMouseMove = useCallback(
     (event: MouseEvent) => {
       // If mousemove only happens if mouse is used (which you can't be sure of, because chaos),
@@ -382,8 +368,8 @@ const TokenMouseEvents = ({
 
       // When selection started (mousedown), select tokens hovered over
       if (!editMode && selectionStarted.current) {
-        //event.preventDefault();
-        if (event.which !== 1 && event.which !== 0) return null;
+        const button = event.which || event.button;
+        if (button !== 1 && button !== 0) return null;
         window.getSelection().empty();
         storeMouseTokenSelection(getToken(tokens, event));
       } else {
@@ -406,13 +392,27 @@ const TokenMouseEvents = ({
     [editMode, setCurrentToken, setTokenSelection, storeMouseTokenSelection, tokens]
   );
 
+  const onMouseDown = useCallback(
+    (event: MouseEvent) => {
+      if (istouch.current) return; // suppress mousedown triggered by quick tap
+      // When left button pressed, start new selection
+      const button = event.which || event.button;
+      if (button === 1) {
+        selectionStarted.current = true;
+        setTokenSelection((state: TokenSelection) => (state?.[0] ? [state[0], state[0]] : state));
+      }
+    },
+    [setTokenSelection]
+  );
+
   const onMouseUp = useCallback(
     (event: MouseEvent) => {
       if (istouch.current) return;
       // When left mouse key is released, create the annotation
       // note that in case of a single click, the token has not been selected (this happens on move)
       // so this way a click can still be used to open
-      if (event.which !== 1 && event.which !== 0) return null;
+      const button = event.which || event.button;
+      if (button !== 1 && button !== 0) return null;
 
       // can these be disabled? Does this solve the mac issue? (slider getting stuck on click)
       event.preventDefault();
@@ -422,9 +422,6 @@ const TokenMouseEvents = ({
       window.getSelection().empty();
       //setHoldMouseLeft(false);
       selectionStarted.current = false;
-
-      // this worked before, but is not possible due to touchend not registering position
-      //if (currentNode === null) return null;
 
       // storeMouseTokenSelection does save position to tokenSelection state, but this isn't
       // yet updated within this scope. This results in single clicks (without mousemove)
@@ -464,6 +461,7 @@ const annotationFromSelection = (
   triggerSelectionPopup: TriggerSelectionPopup
 ) => {
   let [from, to] = selection;
+  if (to === null) to = from;
   triggerSelectionPopup(tokens[to].index, [tokens[from].index, tokens[to].index]);
 };
 
@@ -631,7 +629,7 @@ const updateSelection = (
   if (index === null) return selection;
   let newSelection: TokenSelection = [...selection];
 
-  if (!add || newSelection.length === 0) return returnSelectionIfChanged(selection, [index, index]);
+  if (!add || newSelection.length === 0) return returnSelectionIfChanged(selection, [index, null]);
   if (index === null) return returnSelectionIfChanged(selection, [newSelection[0], null]);
 
   if (tokens[newSelection[0]].field === tokens[index].field) {

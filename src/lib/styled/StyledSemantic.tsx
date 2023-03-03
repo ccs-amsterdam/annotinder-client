@@ -11,7 +11,7 @@ import styled, { StyledComponent } from "styled-components";
 
 const CustomButton = styled.button<{ size?: number }>`
   font-size: ${(p) => p.size || 1}em;
-  padding: 0.7em 1em;
+  padding: 0.7em 1em 0.7em 1rem;
   margin: 0;
   color: var(--grey);
   background: var(--inactive);

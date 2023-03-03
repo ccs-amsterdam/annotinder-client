@@ -1,10 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { Divider, Icon, Ref } from "semantic-ui-react";
-import { CustomButton, StyledButton } from "../../../styled/StyledSemantic";
+import { CustomButton } from "../../../styled/StyledSemantic";
 import { moveDown, moveUp } from "../../../functions/refNavigation";
 import { CodeSelectorOption, CodeSelectorValue } from "../../../types";
+import { FaWindowClose } from "react-icons/fa";
+import styled from "styled-components";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
+
+const StyledDiv = styled.div`
+  .closeIcon {
+    cursor: pointer;
+    height: 3.5rem;
+    margin: 0rem 0.4rem;
+    border: 2px solid transparent;
+
+    svg {
+      :hover {
+        fill: var(--text);
+      }
+    }
+  }
+`;
 
 interface ButtonSelectionProps {
   id: string;
@@ -89,7 +106,6 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
   }, [active, onKeydown]);
 
   const button = (option: CodeSelectorOption, i: number) => {
-    const textColor = option.value.delete ? "var(--red)" : "var(--text)";
     const tagColor = option.value.delete ? option.color : "var(--text-inversed)";
     const tagBorderColor = option.color.slice(0, 7);
     const borderColor = option.value.delete ? "var(--red)" : "var(--text)";
@@ -98,13 +114,14 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
     return (
       <Ref key={option.label + "_" + i} innerRef={option.ref}>
         <CustomButton
+          className="buttonBackground"
           style={{
             position: "relative",
             flex: `0.2 1 auto`,
             padding: "5px",
             background: bgColor,
-            color: textColor,
             border: "3px solid",
+            color: "var(--text-fixed)",
             borderColor: i === selected ? borderColor : "var(--text-inversed)",
             margin: "1px",
           }}
@@ -147,7 +164,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
           <Ref key={option.label + "_" + i} innerRef={option.ref}>
             <CloseButton
               selected={i === selected}
-              onClick={(e, d) => onSelect(option.value, e.ctrlKey || e.altKey)}
+              onClick={(e) => onSelect(option.value, e.ctrlKey || e.altKey)}
             />
           </Ref>
         );
@@ -168,6 +185,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
             marginBottom: "10px",
           }}
         >
+          {cancelButton}
           {selectButtons}
         </div>
         {deleteButtons.length > 0 ? (
@@ -182,35 +200,27 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
         >
           {deleteButtons}
         </div>
-
-        {cancelButton}
       </div>
     );
   };
 
-  return <div key={id}>{mapButtons()}</div>;
+  return <StyledDiv key={id}>{mapButtons()}</StyledDiv>;
 };
 
 interface CloseButtonProps {
   selected: boolean;
-  onClick: (e: any, d: Object) => void;
+  onClick: (e: any) => void;
 }
 
 const CloseButton = ({ selected, onClick }: CloseButtonProps) => {
   return (
-    <StyledButton
-      icon="window close"
-      style={{
-        padding: "0px",
-        background: selected ? "var(--text-light)" : "var(--text-inversed)",
-        color: selected ? "var(--text-inversed)" : "var(--text-light)",
-        position: "absolute",
-        left: "calc(50% - 15px)",
-        top: "-15px",
-        transform: "scale(180%)",
-      }}
-      onClick={onClick}
-    />
+    <div className={`closeIcon`}>
+      <FaWindowClose
+        size="100%"
+        color={selected ? "var(--text)" : "var(--primary-text)"}
+        onClick={onClick}
+      />
+    </div>
   );
 };
 

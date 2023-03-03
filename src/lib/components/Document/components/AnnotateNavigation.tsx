@@ -149,12 +149,6 @@ const highlightAnnotations = (
     const token = tokens[i];
     if (!token.ref?.current) continue;
 
-    if (editMode || variableType === "relation") {
-      token.ref.current.style.cursor = null;
-    } else {
-      token.ref.current.style.cursor = "text";
-    }
-
     if (variableType === "relation") {
       const canSelect = !validTokens || validTokens[token.index];
       //token.ref.current.style.cursor = canSelect ? "crosshair" : "not-allowed";
@@ -269,13 +263,13 @@ const setSelectionAsCSSClass = (
   for (let token of tokens) {
     if (!token.ref?.current) continue;
     token.ref.current.classList.remove("tapped");
-    if (selection.length === 0 || selection[0] === null || selection[1] === null) {
+    if (selection.length === 0 || selection[0] === null) {
       token.ref.current.classList.remove("selected");
       continue;
     }
 
     let [from, to] = selection;
-    //if (to === null) return false;
+    if (to === null) to = from;
     if (from > to) [to, from] = [from, to];
 
     // if type is relation, only show last token. Otherwise,

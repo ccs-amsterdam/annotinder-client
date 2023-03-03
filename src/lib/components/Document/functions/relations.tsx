@@ -36,12 +36,7 @@ export const getValidTokenDestinations = (
   validRelations: ValidTokenRelations,
   tokenSelection: TokenSelection
 ): ValidTokenDestinations => {
-  if (
-    !tokenSelection?.[0] ||
-    !tokenSelection?.[1] ||
-    tokenSelection[0] === tokenSelection[1] ||
-    !validRelations?.[tokenSelection[0]]
-  )
+  if (!tokenSelection?.[0] || !tokenSelection?.[1] || !validRelations?.[tokenSelection[0]])
     return null;
 
   const valid: ValidTokenDestinations = {};

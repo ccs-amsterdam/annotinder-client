@@ -58,7 +58,7 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef }: P
         padding: "10px",
         marginTop: "14px",
         borderRadius: "5px",
-        border: "1px solid var(--primary)",
+        border: "2px solid var(--primary)",
         opacity: "0",
         transition: "opacity 250ms, width 250ms, padding 100ms, left 50ms",
       }}

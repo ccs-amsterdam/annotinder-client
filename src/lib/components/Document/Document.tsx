@@ -138,7 +138,7 @@ const Document = ({
   const annotationMode = variableType === "relation" ? "relationMode" : "spanMode";
 
   return (
-    <DocumentContainer className={annotationMode}>
+    <DocumentContainer className={`${annotationMode} ${(editMode && "editMode") || ""}`}>
       <SelectVariable
         variables={variables}
         variable={variable}
