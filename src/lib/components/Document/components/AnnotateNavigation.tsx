@@ -314,6 +314,7 @@ const AnnotationPopup = React.memo(
       const list = ids.reduce((arr, id, i) => {
         const variable = tokenAnnotations[id].variable;
         const value = tokenAnnotations[id].value;
+        if (!showValues?.[variable]) return arr;
         const codeMap = showValues?.[variable]?.codeMap || {};
         const color = tokenAnnotations[id].color || getColor(value, codeMap);
 
@@ -333,6 +334,7 @@ const AnnotationPopup = React.memo(
         return arr;
       }, []);
 
+      if (list.length === 0) return null;
       return <List>{list}</List>;
       //setRefresh(0);
     }, [tokens, currentToken, annotations, showValues]);
@@ -346,7 +348,7 @@ const AnnotationPopup = React.memo(
     const tokenRef = tokens?.[currentToken.i]?.ref;
 
     return (
-      <Popup controlledOpen={true} triggerRef={tokenRef}>
+      <Popup controlledOpen={true} triggerRef={tokenRef} noPointerEvents>
         {content}
       </Popup>
     );

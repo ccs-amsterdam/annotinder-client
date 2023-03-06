@@ -22,7 +22,7 @@ const StyledDiv = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   min-height: 20vh;
   padding: 0rem 0rem 0rem 0.5rem;
 
@@ -62,7 +62,12 @@ const StyledDiv = styled.div`
     }
     .label span {
       width: 30%;
-      margin: auto;
+      text-align: left;
+      margin: auto auto auto 0;
+      font-weight: bold;
+    }
+    .label p {
+      padding-left: 1rem;
     }
   }
   .relation {

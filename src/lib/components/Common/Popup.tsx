@@ -1,7 +1,7 @@
 import { CSSProperties, memo, ReactNode, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-const StyledDiv = styled.div`
+const StyledDiv = styled.div<{ noPointerEvents?: boolean }>`
   .Popup {
     transition: opacity 0.5s;
     overflow: auto;
@@ -15,6 +15,7 @@ const StyledDiv = styled.div`
     background: white;
     opacity: 0;
     font-size: 0.7em;
+    pointer-events: ${(p) => (p.noPointerEvents ? `none` : ``)};
   }
   button {
     border-color: var(--secondary);
@@ -29,9 +30,10 @@ interface Props {
   children: ReactNode;
   style?: CSSProperties;
   controlledOpen?: boolean;
+  noPointerEvents?: boolean;
 }
 
-function Popup({ triggerRef, children, style, controlledOpen }: Props) {
+function Popup({ triggerRef, children, style, controlledOpen, noPointerEvents }: Props) {
   const popupRef = useRef<HTMLDivElement>(null);
   const [openState, setOpen] = useState(false);
   const open = controlledOpen ?? openState;
@@ -86,7 +88,7 @@ function Popup({ triggerRef, children, style, controlledOpen }: Props) {
   }, [triggerRef, popupRef, open]);
 
   return (
-    <StyledDiv>
+    <StyledDiv noPointerEvents={noPointerEvents}>
       <div ref={popupRef} className="Popup">
         {children}
       </div>

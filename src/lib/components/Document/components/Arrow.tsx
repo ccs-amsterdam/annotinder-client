@@ -137,7 +137,7 @@ export default function Arrow({
 
   function getXY(p, pend, x, y) {
     const xoffset = 2;
-    const yoffset = 2;
+    const yoffset = 4;
     if (x === "left" && y === "top") return [p.x + xoffset, p.y - yoffset];
     if (x === "left" && y === "bottom") return [p.x + xoffset, p.y + p.h + yoffset];
     if (x === "right" && y === "top") return [pend.x - xoffset, pend.y - yoffset];
@@ -217,7 +217,7 @@ export default function Arrow({
 
         <polygon
           className="smallpolygon"
-          points="0,-5 10,0, 0,5"
+          points="0,-3 5,0, 0,3"
           fill={"var(--background-fixed)"}
           stroke={toColorNoAlpha || edgeColorNoAlpha}
           strokeWidth="3"

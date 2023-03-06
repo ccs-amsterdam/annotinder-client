@@ -30,7 +30,7 @@ const DocumentContent = styled.div<{ grid: FieldGrid; centered: boolean; highLin
   z-index: 1;
 
   p {
-    line-height: ${(p) => (p.highLines ? "2em" : "1.5em")};
+    line-height: ${(p) => (p.highLines ? "2.5em" : "1.5em")};
   }
 `;
 
