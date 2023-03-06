@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { AnnotationEvents } from "./AnnotationEvents";
-import { Popup, List } from "semantic-ui-react";
+import { List } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
 import standardizeColor from "../../../functions/standardizeColor";
 import { getValidTokenRelations, getValidTokenDestinations } from "../functions/relations";
+import Popup from "../../Common/Popup";
 
 import {
   Variable,
@@ -106,7 +107,6 @@ const AnnotateNavigation = ({
         setCurrentToken={setCurrentToken}
         annotations={annotations}
         showValues={showValues}
-        fullScreenNode={fullScreenNode}
       />
       {disableAnnotations ? null : (
         <AnnotationEvents
@@ -298,25 +298,15 @@ interface AnnotationPopupProps {
   setCurrentToken: SetState<{ i: number }>;
   annotations: SpanAnnotations;
   showValues: VariableMap;
-  fullScreenNode: any;
 }
 
 const AnnotationPopup = React.memo(
-  ({
-    tokens,
-    currentToken,
-    setCurrentToken,
-    annotations,
-    showValues,
-    fullScreenNode,
-  }: AnnotationPopupProps) => {
-    const [content, setContent] = useState(null);
+  ({ tokens, currentToken, setCurrentToken, annotations, showValues }: AnnotationPopupProps) => {
+    const ref = useRef<HTMLDivElement>();
 
-    useEffect(() => {
+    const content = useMemo(() => {
       if (!tokens?.[currentToken.i]?.ref || !annotations?.[tokens[currentToken.i].index]) {
-        setContent(null);
-        //setRefresh(0);
-        return;
+        return null;
       }
 
       const tokenAnnotations = annotations[tokens[currentToken.i].index];
@@ -334,7 +324,6 @@ const AnnotationPopup = React.memo(
               backgroundColor: color,
               padding: "0.3em",
             }}
-            onMouseOver={() => setCurrentToken({ i: null })}
           >
             {/* <b>{variable}</b>
             {": " + value} */}
@@ -344,28 +333,20 @@ const AnnotationPopup = React.memo(
         return arr;
       }, []);
 
-      setContent(<List>{list}</List>);
+      return <List>{list}</List>;
       //setRefresh(0);
-    }, [tokens, currentToken, setCurrentToken, annotations, showValues]);
+    }, [tokens, currentToken, annotations, showValues]);
+
+    useEffect(() => {
+      const tokenRef = tokens?.[currentToken.i]?.ref;
+      if (!tokenRef) return;
+    }, [ref, tokens, currentToken]);
+
+    if (!content) return null;
+    const tokenRef = tokens?.[currentToken.i]?.ref;
 
     return (
-      <Popup
-        mountNode={fullScreenNode || undefined}
-        context={tokens?.[currentToken.i]?.ref}
-        basic
-        hoverable={true}
-        position="top left"
-        open={true}
-        style={{
-          margin: "0",
-          padding: "0",
-          border: "1px solid",
-          zIndex: 100,
-          background: "var(--background)",
-          color: "var(--text)",
-          fontSize: "1em",
-        }}
-      >
+      <Popup controlledOpen={true} triggerRef={tokenRef}>
         {content}
       </Popup>
     );

@@ -191,7 +191,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
         {deleteButtons.length > 0 ? (
           <b>
             <Divider style={{ margin: "5px" }} />
-            <Icon name="trash alternate" /> Delete codes
+            <Icon name="trash alternate" /> Delete
           </b>
         ) : null}
         <div

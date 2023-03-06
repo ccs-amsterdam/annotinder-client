@@ -61,22 +61,6 @@ const DrawArrows = ({
 
   if (variable?.type !== "relation") return null;
 
-  // if there is a token selection, check if it departs from a valid annotation
-  // let validArrow = false;
-  // let from = tokenSelection?.[0] && tokenSelection?.[1] && annotations[tokenSelection[0]];
-  // if (from) {
-  //   for (const f of Object.values(from)) {
-  //     const fromCodes =
-  //       variable?.validFrom?.[f.variable]?.["*"] ||
-  //       variable?.validFrom?.[f.variable]?.[f.value] ||
-  //       null;
-  //     if (fromCodes) {
-  //       validArrow = true;
-  //       break;
-  //     }
-  //   }
-  // }
-
   return (
     <StyledSvg>
       <RelationArrows

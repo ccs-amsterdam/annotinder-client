@@ -298,12 +298,15 @@ export interface CodeSelectorValue {
   variable?: string;
   span?: Span;
   value?: string | number | Code;
-  relation?: {
-    from: Annotation;
-    to: Annotation;
-  };
+  relationOption?: RelationOption;
   delete?: boolean;
   cancel?: boolean;
+}
+
+export interface RelationOption {
+  relations: Code[];
+  from: Annotation;
+  to: Annotation;
 }
 
 /** This one's intentionally flexible, because the codeselector popup handles multiple types of selections */

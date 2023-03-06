@@ -1,4 +1,5 @@
 import { useState, useCallback, ReactElement, useMemo, useEffect } from "react";
+import standardizeColor from "../../../functions/standardizeColor";
 import useWatchChange from "../../../hooks/useWatchChange";
 import {
   UnitStates,
@@ -6,7 +7,7 @@ import {
   TriggerSelectionPopup,
   Variable,
   Code,
-  Annotation,
+  RelationOption,
   AnnotationMap,
   CodeSelectorOption,
   CodeSelectorValue,
@@ -16,12 +17,6 @@ import { createId, toggleRelationAnnotation } from "../functions/annotations";
 import AnnotationPortal from "./AnnotationPortal";
 import PopupSelection from "./PopupSelection";
 
-interface EdgeOption {
-  validRelations: Record<string, boolean>;
-  from: Annotation;
-  to: Annotation;
-}
-
 const useRelationSelector = (
   unitStates: UnitStates,
   variable: Variable
@@ -29,9 +24,8 @@ const useRelationSelector = (
   const [open, setOpen] = useState(false);
   const [positionRef, setPositionRef] = useState<any>(null);
 
-  const [relationOptions, setRelationOptions] = useState<Code[]>();
-  const [relation, setRelation] = useState<Code>(null);
-  const [edgeOptions, setEdgeOptions] = useState<EdgeOption[]>();
+  const [edge, setEdge] = useState<RelationOption>(null);
+  const [edgeOptions, setEdgeOptions] = useState<CodeSelectorOption[]>();
 
   const tokens = unitStates.doc.tokens;
   const annotations = unitStates.spanAnnotations;
@@ -41,45 +35,30 @@ const useRelationSelector = (
       const [from, to] = [annotations[span[0]], annotations[span[1]]];
       if (!from || !to) return;
 
-      const { relationOptions, edgeOptions } = getOptions(
-        from,
-        to,
-        variable.validFrom,
-        variable.validTo
-      );
+      const edgeOptions = getOptions(from, to, variable.validFrom, variable.validTo);
 
-      if (relationOptions.length === 0) return;
-      if (relationOptions.length === 1) {
-        const relation = relationOptions[0];
-        setRelation(relation);
+      if (edgeOptions.length === 0) return;
+      if (edgeOptions.length === 1) {
+        const edge = edgeOptions[0];
+        setEdge(edge.value.relationOption as RelationOption);
       } else {
-        setRelation(null);
-        setRelationOptions(relationOptions);
+        setEdge(null);
+        setEdgeOptions(edgeOptions);
       }
-      setEdgeOptions(edgeOptions);
       setPositionRef(tokens?.[span?.[1]]?.ref);
       setOpen(true);
     },
-    [tokens, variable, annotations, setRelationOptions, setEdgeOptions]
+    [tokens, variable, annotations, setEdgeOptions]
   );
 
   if (useWatchChange([tokens, variable])) setOpen(false);
 
   const popup = (
     <AnnotationPortal open={open} setOpen={setOpen} positionRef={positionRef}>
-      {relation === null ? (
-        <SelectRelationPage
-          relationOptions={relationOptions}
-          setRelation={setRelation}
-          setOpen={setOpen}
-        />
+      {edge === null ? (
+        <SelectEdgePage edgeOptions={edgeOptions} setEdge={setEdge} setOpen={setOpen} />
       ) : (
-        <SelectEdgePage
-          unitStates={unitStates}
-          relation={relation}
-          edgeOptions={edgeOptions}
-          setOpen={setOpen}
-        />
+        <SelectRelationPage edge={edge} unitStates={unitStates} setOpen={setOpen} />
       )}
     </AnnotationPortal>
   );
@@ -87,86 +66,80 @@ const useRelationSelector = (
   return [popup, triggerFunction, open];
 };
 
-interface SelectRelationPageProps {
-  relationOptions: Code[];
-  setRelation: (relation: Code) => void;
+interface SelectEdgePageProps {
+  edgeOptions: CodeSelectorOption[];
+  setEdge: (edge: RelationOption) => void;
   setOpen: (open: boolean) => void;
 }
 
-const SelectRelationPage = ({ relationOptions, setRelation, setOpen }: SelectRelationPageProps) => {
+const SelectEdgePage = ({ edgeOptions, setEdge, setOpen }: SelectEdgePageProps) => {
   const onSelect = useCallback(
     (value: CodeSelectorValue, ctrlKey: boolean) => {
       if (value.cancel) setOpen(false);
-      setRelation(value.value as Code);
+      setEdge(value.relationOption as RelationOption);
     },
-    [setRelation, setOpen]
+    [setEdge, setOpen]
   );
 
-  if (!relationOptions) return null;
-  const options: CodeSelectorOption[] = relationOptions.map((o) => ({
-    value: { value: o },
-    label: o.code,
-    color: o.color,
-  }));
-  return <PopupSelection header={"Select relation type"} options={options} onSelect={onSelect} />;
+  return (
+    <PopupSelection
+      header={`Select pair of annotations`}
+      options={edgeOptions}
+      onSelect={onSelect}
+    />
+  );
 };
 
-interface SelectEdgePageProps {
+interface SelectRelationPageProps {
+  edge: RelationOption;
   unitStates: UnitStates;
-  relation: Code;
-  edgeOptions: EdgeOption[];
   setOpen: (open: boolean) => void;
 }
 
-const SelectEdgePage = ({ unitStates, relation, edgeOptions, setOpen }: SelectEdgePageProps) => {
+const SelectRelationPage = ({ edge, unitStates, setOpen }: SelectRelationPageProps) => {
   const onSelect = useCallback(
     (value: CodeSelectorValue, ctrlKey: boolean) => {
-      if (value.cancel) setOpen(false);
-
+      if (value.cancel) {
+        setOpen(false);
+        return;
+      }
       const annotations = toggleRelationAnnotation(
         unitStates.spanAnnotations,
-        value.relation.from,
-        value.relation.to,
-        relation,
+        edge.from,
+        edge.to,
+        value.value as Code,
         value.delete
       );
       unitStates.setSpanAnnotations({ ...annotations });
       setOpen(false);
     },
-    [setOpen, unitStates, relation]
+    [setOpen, edge, unitStates]
   );
 
-  const options = useMemo(() => {
-    if (!edgeOptions) return null;
-    const validOptions = edgeOptions.filter((o) => o.validRelations[relation.code]);
-    const options = validOptions.map((o) => {
-      const from = o.from;
-      const to = o.to;
-      const label = `${from.value} → ${to.value}`;
+  const options: CodeSelectorOption[] = useMemo(() => {
+    if (!edge) return null;
 
-      // check if relation already exists
-      const firstFromToken = unitStates.spanAnnotations[from.span[0]];
-      const parents = firstFromToken[createId(from)]?.parents;
-      const deleteRelation =
-        parents &&
-        parents.some(
-          (p) =>
-            p.variable === to.variable &&
-            p.value === to.value &&
-            p.offset === to.offset &&
-            p.relationVariable === relation.variable &&
-            p.relationValue === relation.code
-        );
+    const options = edge.relations.map((code) => {
+      const firstFromToken = unitStates.spanAnnotations[edge.from.span[0]];
+      const parents = firstFromToken[createId(edge.from)]?.parents;
+      const deleteRelation = parents?.some(
+        (p) =>
+          p.variable === edge.to.variable &&
+          p.value === edge.to.value &&
+          p.offset === edge.to.offset &&
+          p.relationVariable === code.variable &&
+          p.relationValue === code.code
+      );
 
       return {
-        value: { relation: { from, to }, delete: deleteRelation },
-        label,
-        color: "white",
+        value: { value: code, delete: deleteRelation },
+        label: code.code,
+        color: standardizeColor(code.color, "50"),
       };
     });
 
     return options;
-  }, [edgeOptions, relation, unitStates.spanAnnotations]);
+  }, [edge, unitStates.spanAnnotations]);
 
   useEffect(() => {
     if (options.length === 1 && !options[0].value.delete) {
@@ -175,10 +148,9 @@ const SelectEdgePage = ({ unitStates, relation, edgeOptions, setOpen }: SelectEd
   }, [options, onSelect]);
 
   if (!options) return null;
-
   return (
     <PopupSelection
-      header={`Assign "${relation.code}" relation`}
+      header={`${edge.from.value} → ${edge.to.value}`}
       options={options}
       onSelect={onSelect}
     />
@@ -191,8 +163,7 @@ function getOptions(
   validFrom: ValidRelation,
   validTo: ValidRelation
 ) {
-  const relationOptionsSet: Set<Code> = new Set();
-  const edgeOptions: EdgeOption[] = [];
+  const edgeRelations: Record<string, CodeSelectorValue> = {};
 
   for (let f of Object.values(from)) {
     const fromCodes = validFrom?.[f.variable]?.["*"] || validFrom?.[f.variable]?.[f.value] || null;
@@ -202,22 +173,33 @@ function getOptions(
       const toCodes = validTo?.[t.variable]?.["*"] || validTo?.[t.variable]?.[t.value] || null;
       if (!toCodes) continue;
 
-      const relationsLookup: Record<string, boolean> = {};
+      const relations: Code[] = [];
       for (let fromCode of Object.keys(fromCodes)) {
         if (!toCodes[fromCode]) continue;
-        relationsLookup[fromCode] = true;
-        relationOptionsSet.add(fromCodes[fromCode]);
+        relations.push(fromCodes[fromCode]);
       }
-      edgeOptions.push({
-        validRelations: relationsLookup,
-        from: f,
-        to: t,
-      });
+
+      const key = `${from.variable}:${from.value}:${to.variable}:${to.value}`;
+      if (!edgeRelations[key]) {
+        edgeRelations[key] = {
+          relationOption: { relations, from: f, to: t },
+        };
+      } else {
+        edgeRelations[key].relationOption.relations = [
+          ...edgeRelations[key].relationOption.relations,
+          ...relations,
+        ];
+      }
     }
   }
 
-  const relationOptions: Code[] = Array.from(relationOptionsSet);
-  return { relationOptions, edgeOptions };
+  const edgeOptions: CodeSelectorOption[] = Object.values(edgeRelations).map((value) => ({
+    label: `${value.relationOption.from.value} → ${value.relationOption.to.value}`,
+    color: "white",
+    value,
+  }));
+
+  return edgeOptions;
 }
 
 export default useRelationSelector;

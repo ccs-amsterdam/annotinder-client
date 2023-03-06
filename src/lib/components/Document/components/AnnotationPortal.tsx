@@ -30,10 +30,12 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef }: P
     // scrollheight/width to calculate size without requiring loop
     let portalWidth = portalref.current.clientWidth;
     let portalHeight = portalref.current.clientHeight;
+    let portalY = portalref.current.offsetTop;
     const interval = setInterval(() => {
       const sameHeight = portalref.current.clientHeight === portalHeight;
       const sameWidth = portalref.current.clientWidth === portalWidth;
-      if (sameHeight && sameWidth) return;
+      const sameY = portalref.current.offsetTop === portalY;
+      if (sameHeight && sameWidth && sameY) return;
       fitPortalOnScreen(portalref.current, positionRef.current);
       portalWidth = portalref.current.clientWidth;
     }, 100);
@@ -49,6 +51,9 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef }: P
       style={{
         left: 0,
         top: 0,
+        overflow: "auto",
+        fontSize: "1.2rem",
+        maxHeight: "70%",
         position: "fixed",
         minWidth: smallscreen ? "100%" : "300px",
         maxWidth: "min(100%, 600px)",

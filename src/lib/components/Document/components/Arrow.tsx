@@ -21,6 +21,8 @@ const StyledG = styled.g<{ interactive: boolean }>`
   font-size: 0em;
   transition: all 0.3s;
   animation: fadeIn 1s;
+  position: relative;
+  z-index: 10;
 
   cursor: pointer;
   --strokewidth: 0.3rem;
@@ -28,6 +30,27 @@ const StyledG = styled.g<{ interactive: boolean }>`
   --opacity: 0.7;
   --bigpolyOpacity: 0;
   --smallpolyOpacity: 1;
+
+
+  &:hover {
+    opacity: 1;
+    font-size: 1.2rem;
+    --strokewidth: 2rem;
+    --opacity: 1;
+    --radius: 1rem;
+    --bigpolyOpacity: 1;
+    --smallpolyOpacity: 0;
+    
+  }
+
+  path {
+    position: relative,
+    z-index: var(--z);
+  }
+
+  path {
+    pointer-events: none;
+  }
 
   circle {
     r: var(--radius);
@@ -46,19 +69,6 @@ const StyledG = styled.g<{ interactive: boolean }>`
   }
   .smallpolygon {
     opacity: var(--smallpolyOpacity);
-  }
-
-  &:hover {
-    opacity: 1;
-    font-size: 1.2rem;
-    --strokewidth: 2rem;
-    --opacity: 1;
-    --radius: 1rem;
-    --bigpolyOpacity: 1;
-    --smallpolyOpacity: 0;
-    position: relative;
-
-    z-index: 10000;
   }
 
   .arrow {
@@ -141,7 +151,7 @@ export default function Arrow({
     // if arrow positions already exist, curve the arrow a bit to avoid overlaps
     const relationString = `${p1x},${p1y},${p2x},${p2y}`;
     if (!usedPositions[relationString]) usedPositions[relationString] = 0;
-    bow = bow + usedPositions[relationString] * 0.15;
+    bow = bow + usedPositions[relationString] * 0.05;
     usedPositions[relationString] += 1;
 
     const fromPositionString = `${p1x},${p1y}`;
@@ -186,14 +196,6 @@ export default function Arrow({
   return (
     <>
       <StyledG onClick={onClick} interactive={!!onClick}>
-        {/* <path
-          id={id}
-          className="arrow background"
-          d={`M${sx},${sy} Q${cx},${cy} ${ex},${ey}`}
-          stroke={"var(--background)"}
-          fill="none"
-          strokeWidth="5"
-        /> */}
         <path
           id={id}
           className="arrow"
