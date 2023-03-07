@@ -27,7 +27,7 @@ export default function renderMarkdown(
           margin: "0px 10px 0px 10px",
           //width: "100%",
           fontSize: "1em",
-          alignSelf: "center",
+          //alignSelf: "center",
           ...(markdown_field.style || {}),
         }}
       >

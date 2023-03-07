@@ -116,7 +116,7 @@ const renderField = (
         padding: "10px 0px 10px 0px",
         margin: "0px 10px 0px 10px",
         textAlign: "justify",
-        alignSelf: "center",
+        //alignSelf: "center",
         ...(textField.style || {}),
       }}
     >

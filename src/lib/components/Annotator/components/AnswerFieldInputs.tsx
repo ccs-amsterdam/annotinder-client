@@ -221,11 +221,11 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
   function onFocus() {
     const el = item?.ref?.current;
     if (!el) return null;
-    const scrollActive = () => el.scrollIntoView();
-    setTimeout(scrollActive, 10);
-    setTimeout(scrollActive, 200);
-    setTimeout(scrollActive, 500);
-    setTimeout(scrollActive, 1000);
+    let times = 0;
+    const interval = setInterval(() => {
+      el.scrollIntoView();
+      if (++times > 20) clearInterval(interval);
+    }, 50);
   }
 
   if (item?.type === "number") {
