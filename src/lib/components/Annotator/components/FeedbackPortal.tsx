@@ -38,6 +38,10 @@ const RetryPortalContent = styled.div`
     width: 3.5rem;
     transform: translateY(1.5rem);
     left: calc(50% - 2.5rem);
+
+    svg:hover {
+      fill: var(--text);
+    }
   }
 `;
 
@@ -141,7 +145,6 @@ const ApplaudPortal = ({ action, reportSuccess }: ApplaudPortalProps) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    console.log(action);
     if (action?.action === "applaud" && reportSuccess) setOpen(true);
     setTimeout(() => setOpen(false), 600);
   }, [action, reportSuccess]);

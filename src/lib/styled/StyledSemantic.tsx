@@ -76,14 +76,14 @@ const StyledButton = styled(Button)`
     color: white !important;
   }
   &.secondary {
-    background: var(--secondary) !important;
+    background: StyledButt var(--secondary) !important;
     color: white !important;
   }
 `;
 
 const StyledModal: StyledComponent<typeof Modal, any, {}, never> = styled(Modal)`
   border: 1px solid var(--background-inversed);
-  font-size: 0.9em !important;
+  font-size: var(--font-size) !important;
 
   & .header,
   .content,

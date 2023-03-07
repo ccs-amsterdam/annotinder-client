@@ -134,7 +134,6 @@ const AnnotateTask = ({
             instruction={codebook?.settings?.instruction}
             autoInstruction={codebook?.settings?.auto_instruction || false}
             sessionData={sessionData}
-            fullScreenNode={fullScreenNode}
           />
           <AnnotateTaskManual fullScreenNode={fullScreenNode} />
           <NextUnitButton unit={unit} annotations={annotations} nextUnit={nextUnit} />

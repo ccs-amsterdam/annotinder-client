@@ -5,6 +5,7 @@ import { FieldRefs } from "../../../types";
 
 const Overlay = styled.div`
   background: linear-gradient(135deg, #aaa8 25%, #ddd8 50%, #bbb7 75%, #ccc9 100%);
+  pointer-events: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -12,7 +13,7 @@ const Overlay = styled.div`
   height: 100%;
   backdrop-filter: blur(0.8px);
   border: 1px solid black;
-  z-index: 0;
+  z-index: 2;
 `;
 
 interface FocusOverlayProps {
@@ -32,7 +33,7 @@ const FocusOverlay = ({ fieldRefs, focus, containerRef }: FocusOverlayProps) => 
         const fieldWithoutNr = field.replace(/[.][0-9]+$/, "");
         if (f === field || f === fieldWithoutNr) {
           nomatch = false;
-          cl.add("focus");
+          cl.add("overlayFocus");
           if (first) {
             containerRef.current.style.scrollBehavior = "smooth";
             setTimeout(
@@ -47,7 +48,7 @@ const FocusOverlay = ({ fieldRefs, focus, containerRef }: FocusOverlayProps) => 
           }
         }
       }
-      if (nomatch) cl.remove("focus");
+      if (nomatch) cl.remove("overlayFocus");
     }
   });
 

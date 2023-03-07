@@ -427,11 +427,11 @@ const TokenMouseEvents = ({
       // yet updated within this scope. This results in single clicks (without mousemove)
       // not registering. So if there is no current selection, directly use currentNode as position.
       if (tokenSelection.length > 0 && tokenSelection[0] !== null && tokenSelection[1] !== null) {
+        if (!currentNode && tokenSelection[0] === tokenSelection[1]) return;
         annotationFromSelection(tokens, tokenSelection, triggerSelectionPopup);
       } else {
-        if (currentNode !== null) {
-          annotationFromSelection(tokens, [currentNode, currentNode], triggerSelectionPopup);
-        }
+        if (currentNode === null) return;
+        annotationFromSelection(tokens, [currentNode, currentNode], triggerSelectionPopup);
       }
     },
     [storeMouseTokenSelection, tokenSelection, tokens, triggerSelectionPopup]

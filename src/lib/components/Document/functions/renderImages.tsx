@@ -16,7 +16,7 @@ const StyledFigure = styled.figure<{ hasCaption: boolean }>`
 `;
 
 const StyledImg = styled.img<{ size: Size }>`
-  border: 2px solid grey; // DON"T CHANGE BORDER WIDTH WITHOUT ADJUSTING OFFSET IN getImagePosition.js
+  border: 2px solid transparent; // DON"T CHANGE BORDER WIDTH WITHOUT ADJUSTING OFFSET IN getImagePosition.js
   margin: auto;
   background: white;
   max-width: 100%;

@@ -83,7 +83,7 @@ const AskFullScreenModal = ({ handle, askFullScreenSetting }: AskFullScreenModal
             Fullscreen
           </StyledButton>
           <StyledButton
-            secondary
+            primary
             size="large"
             onClick={() => {
               if (handle.active) handle.exit();

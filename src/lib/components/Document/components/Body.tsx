@@ -18,7 +18,11 @@ import {
 } from "../../../types";
 import styled from "styled-components";
 
-const DocumentContent = styled.div<{ grid: FieldGrid; centered: boolean; highLines: boolean }>`
+const DocumentContent = styled.div<{
+  grid: FieldGrid;
+  centered: boolean;
+  highLines: boolean;
+}>`
   display: ${(p) => (p.grid?.areas ? "grid" : null)};
   grid-template-rows: ${(p) => p.grid?.rows};
   grid-template-columns: ${(p) => p.grid?.columns};
@@ -124,12 +128,6 @@ const Body = ({
               width: "100%",
             }}
           >
-            <FocusOverlay
-              key="focusoverlay"
-              fieldRefs={fieldRefs}
-              focus={focus}
-              containerRef={containerRef}
-            />
             <DocumentContent
               centered={centered}
               highLines={!readOnly}
@@ -137,6 +135,12 @@ const Body = ({
               key="content"
               className="DocumentContent"
             >
+              <FocusOverlay
+                key="focusoverlay"
+                fieldRefs={fieldRefs}
+                focus={focus}
+                containerRef={containerRef}
+              />
               {content}
             </DocumentContent>
           </div>

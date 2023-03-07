@@ -1,24 +1,29 @@
-import { useEffect, useRef, useState } from "react";
-import { TransitionablePortal } from "semantic-ui-react";
-import { FullScreenNode, SessionData } from "../../../types";
+import { useEffect, useState } from "react";
+import { SessionData } from "../../../types";
 import Markdown from "../../Common/Markdown";
-import { StyledModal, StyledButton } from "../../../styled/StyledSemantic";
+import styled from "styled-components";
+import { FaQuestionCircle } from "react-icons/fa";
+import Modal from "../../Common/Modal";
+
+const QuestionMarkButton = styled.div`
+  height: 2.5rem;
+  vertical-align: middle;
+  margin: 0.3rem;
+  cursor: pointer;
+
+  svg:hover {
+    fill: var(--secondary);
+  }
+`;
 
 interface InstructionsProps {
   instruction: string;
   autoInstruction: boolean;
   sessionData: SessionData;
-  fullScreenNode: FullScreenNode;
 }
 
-const Instructions = ({
-  instruction,
-  autoInstruction,
-  sessionData,
-  fullScreenNode,
-}: InstructionsProps) => {
+const Instructions = ({ instruction, autoInstruction, sessionData }: InstructionsProps) => {
   const [open, setOpen] = useState(false);
-  const modalRef = useRef(null);
 
   useEffect(() => {
     if (!instruction) {
@@ -43,53 +48,14 @@ const Instructions = ({
   if (!instruction) return null;
 
   return (
-    <TransitionablePortal
-      closeOnTriggerClick
-      transition={{ duration: 200 }}
-      mountNode={fullScreenNode || undefined}
-      onClose={() => setOpen(false)}
-      open={open}
-      style={{ zIndex: 800 }}
-      trigger={
-        <StyledButton
-          size="huge"
-          icon="help circle"
-          style={{
-            position: "relative",
-            background: "transparent",
-            cursor: "pointer",
-            color: "var(--text-inversed-fixed)",
-            padding: "4px 5px",
-
-            zIndex: 800,
-          }}
-          onClick={() => setOpen(true)}
-        />
-      }
-    >
-      <StyledModal
-        ref={modalRef}
-        closeIcon
-        mountNode={fullScreenNode || undefined}
-        open={true}
-        dimmer="blurring"
-        onClose={() => setOpen(false)}
-        style={{ zIndex: 900 }}
-      >
-        <StyledModal.Content
-          scrolling
-          style={{
-            zIndex: 900,
-            maxHeight: "calc(100vh - 10rem)",
-            background: "var(--background)",
-            color: "var(--text)",
-            border: "1px solid var(--background-inversed)",
-          }}
-        >
-          <Markdown>{instruction}</Markdown>
-        </StyledModal.Content>
-      </StyledModal>
-    </TransitionablePortal>
+    <>
+      <Modal open={open} setOpen={setOpen}>
+        <Markdown>{instruction}</Markdown>
+      </Modal>
+      <QuestionMarkButton>
+        <FaQuestionCircle size="100%" onClick={(e) => setOpen(!open)} />
+      </QuestionMarkButton>
+    </>
   );
 };
 

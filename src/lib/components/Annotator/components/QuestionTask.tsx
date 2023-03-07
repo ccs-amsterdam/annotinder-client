@@ -43,7 +43,7 @@ const ContentWindow = styled.div`
     z-index: 100;
   }
 
-  &::after {
+  /* &::after {
     content: "";
     display: block;
     position: absolute;
@@ -52,7 +52,7 @@ const ContentWindow = styled.div`
     width: 100%;
     background: linear-gradient(transparent, var(--background) 90%);
     z-index: 100;
-  }
+  } */
 `;
 
 const SwipeableBox = styled.div`
@@ -216,7 +216,6 @@ const QuestionTask = ({
             instruction={question?.instruction || codebook?.settings?.instruction}
             autoInstruction={codebook?.settings?.auto_instruction || false}
             sessionData={sessionData}
-            fullScreenNode={fullScreenNode}
           />
         </QuestionForm>
       </QuestionMenu>
