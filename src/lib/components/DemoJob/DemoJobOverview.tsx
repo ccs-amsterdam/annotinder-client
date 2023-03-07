@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import JobServerDemo from "./classes/JobServerDemo";
 import Annotator from "../Annotator/Annotator";
-import { Grid, Menu, Icon } from "semantic-ui-react";
+import { Grid, Menu, Icon, Dimmer, Loader } from "semantic-ui-react";
 import { CustomButton } from "../../styled/StyledSemantic";
 import FullDataTable from "../AnnotatorClient/components/FullDataTable";
 import QRCodeCanvas from "qrcode.react";
@@ -13,12 +13,17 @@ import { DarkModeButton } from "../Common/Theme";
 const DemoJobOverview = () => {
   const [job, setJob] = useState(null);
   const [searchParams] = useSearchParams();
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     let codebook = searchParams.get("codebook");
     let units = searchParams.get("units");
-    if (!codebook || !units) return setJob(null);
-    getJobServer(units, codebook, setJob);
-  }, [searchParams]);
+    if (!codebook || !units) {
+      setLoading(false);
+      return setJob(null);
+    }
+    getJobServer(units, codebook, setJob).finally(() => setLoading(false));
+  }, [searchParams, setLoading]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -38,6 +43,12 @@ const DemoJobOverview = () => {
     };
   }, [job]);
 
+  if (loading)
+    return (
+      <Dimmer active={true}>
+        <Loader />
+      </Dimmer>
+    );
   if (job === null) return <DemoSelector />;
   return <Annotator jobServer={job} askFullScreen />;
 };
