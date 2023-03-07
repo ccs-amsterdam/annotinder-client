@@ -157,7 +157,11 @@ const Items = ({
         if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
       }
     }
+
+    // repeat with some delays, because on mobile the keyboard can pop up and mess things up
     setTimeout(scrollActive, 10);
+    setTimeout(scrollActive, 200);
+    setTimeout(scrollActive, 500);
     setTimeout(scrollActive, 1000);
   }, [selectedItem, items, scrollRef]);
 
