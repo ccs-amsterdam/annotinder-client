@@ -59,6 +59,8 @@ const StyledDiv = styled.div<{ open: boolean }>`
       width: auto;
       overflow: auto;
       max-height: 100%;
+      text-align: justify;
+      hyphens: auto;
 
       h1,
       h2,
