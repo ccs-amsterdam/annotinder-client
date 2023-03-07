@@ -47,6 +47,16 @@ const BodyContainer = styled.div`
   overflow: auto;
 `;
 
+const LoadingImages = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 100;
+  background-color: var(--background-transparent);
+`;
+
 interface BodyProps {
   tokens: Token[];
   text_fields: TextField[];
@@ -77,6 +87,7 @@ const Body = ({
   const [content, setContent] = useState<(ReactElement | ReactElement[])[]>([]);
   const fieldRefs: FieldRefs = useMemo(() => ({}), []);
   const containerRef = useRef(null);
+  const [imagesLoaded, setImagesLoaded] = useState(true);
 
   useEffect(() => {
     // immitates componentdidupdate to scroll to the textUnit after rendering tokens
@@ -94,7 +105,7 @@ const Body = ({
   useEffect(() => {
     if (!tokens) return;
     const text = renderText(tokens, text_fields, containerRef, fieldRefs);
-    const images = renderImages(image_fields, containerRef);
+    const images = renderImages(image_fields, setImagesLoaded, containerRef);
     const markdown = renderMarkdown(markdown_fields, fieldRefs);
 
     const content: (ReactElement | ReactElement[])[] = [];
@@ -103,7 +114,7 @@ const Body = ({
     if (markdown) for (const f of markdown_fields) content.push(markdown[f.name]);
     setContent(content);
     setTimeout(() => onReady(), 50);
-  }, [tokens, text_fields, image_fields, markdown_fields, onReady, fieldRefs]);
+  }, [tokens, text_fields, image_fields, markdown_fields, onReady, setImagesLoaded, fieldRefs]);
 
   if (tokens === null) return null;
   return (
@@ -128,6 +139,7 @@ const Body = ({
               width: "100%",
             }}
           >
+            {imagesLoaded ? null : <LoadingImages />}
             <DocumentContent
               centered={centered}
               highLines={!readOnly}

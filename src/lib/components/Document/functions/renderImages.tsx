@@ -15,13 +15,13 @@ const StyledFigure = styled.figure<{ hasCaption: boolean }>`
   }
 `;
 
-const StyledImg = styled.img<{ size: Size }>`
+const StyledImg = styled.img<{ size: Size; fixedSize?: Size }>`
   border: 2px solid transparent; // DON"T CHANGE BORDER WIDTH WITHOUT ADJUSTING OFFSET IN getImagePosition.js
   margin: auto;
   background: white;
   max-width: 100%;
-  width: ${(p) => p.size.width}px;
-  height: ${(p) => p.size.height}px;
+  width: ${(p) => p.fixedSize?.width || `${p.size.width} + px`};
+  height: ${(p) => p.fixedSize?.height || `${p.size.height} + px`};
 `;
 
 /** Simple interface for image size */
@@ -33,15 +33,27 @@ interface Size {
 /** Returns a record where keys are image field names and values are react elements that render the image */
 export default function renderImages(
   image_fields: ImageField[],
+  setImagesLoaded: (loaded: boolean) => any,
   containerRef: any
 ): RenderedImages {
   const images: RenderedImages = {};
-  for (let image_field of image_fields) {
+
+  setImagesLoaded(image_fields.length === 0);
+
+  const imagesLoaded: boolean[] = Array(image_fields.length).fill(false);
+  function onImageLoad(index: number) {
+    imagesLoaded[index] = true;
+    if (!imagesLoaded.some((i) => !i)) setImagesLoaded(true);
+  }
+
+  for (let i = 0; i < image_fields.length; i++) {
+    const image_field = image_fields[i];
     images[image_field.name] = (
       <AnnotatableImage
         key={"image-" + image_field.name}
         ref={containerRef}
         image_field={image_field}
+        onImageLoad={() => onImageLoad(i)}
       />
     );
   }
@@ -50,60 +62,71 @@ export default function renderImages(
 
 interface AnnotatableImageProps {
   image_field: ImageField;
+  onImageLoad: () => any;
 }
 
-const AnnotatableImage = React.forwardRef(({ image_field }: AnnotatableImageProps, ref) => {
-  const container = ref;
-  const img = useRef();
-  const [size, setSize] = useState({ height: undefined, width: undefined });
-  const extraspace = image_field.caption ? 56 : 6; // reserve 50 px for caption + 6 for border
+const AnnotatableImage = React.forwardRef(
+  ({ image_field, onImageLoad }: AnnotatableImageProps, ref) => {
+    const container = ref;
+    const img = useRef<HTMLImageElement>(null);
+    const [size, setSize] = useState({ height: undefined, width: undefined });
+    const extraspace = image_field.caption ? 56 : 6; // reserve 50 px for caption + 6 for border
 
-  useEffect(() => {
-    const onResize = () => updateImageSize(img, container, setSize, extraspace);
+    useEffect(() => {
+      const onResize = () => updateImageSize(img, container, setSize, extraspace);
 
-    onResize();
-    // Listen for changes to screen size and orientation
-    window.addEventListener("resize", onResize);
-    if (window?.screen?.orientation) {
-      window.screen.orientation?.addEventListener("change", onResize);
-    }
-    return () => {
-      window.removeEventListener("resize", onResize);
+      onResize();
+      // Listen for changes to screen size and orientation
+      window.addEventListener("resize", onResize);
       if (window?.screen?.orientation) {
-        window.screen.orientation.removeEventListener("change", onResize);
+        window.screen.orientation?.addEventListener("change", onResize);
       }
-    };
-  }, [extraspace, container, img]);
+      return () => {
+        window.removeEventListener("resize", onResize);
+        if (window?.screen?.orientation) {
+          window.screen.orientation.removeEventListener("change", onResize);
+        }
+      };
+    }, [extraspace, container, img]);
 
-  // value should not be an array, because this is resolved in unfoldFields,
-  // but typescript doesn't catch that.
-  const value = Array.isArray(image_field.value) ? image_field.value[0] : image_field.value;
-  let src = image_field.base64 ? `data:image/jpeg;base64,${value}` : value;
+    useEffect(() => {
+      if (img?.current?.complete) onImageLoad();
+    }, [img, onImageLoad]);
 
-  return (
-    <StyledFigure
-      className="field"
-      hasCaption={!!image_field.caption}
-      style={{
-        gridArea: image_field.grid_area,
-        ...image_field?.style,
-      }}
-    >
-      <StyledImg
-        ref={img}
-        size={size}
-        draggable={false}
-        className="AnnotatableImage"
-        onLoad={() => updateImageSize(img, container, setSize, extraspace)}
-        data-imagefieldname={image_field.name}
-        key={image_field.name}
-        alt={image_field.alt}
-        src={src}
-      />
-      <figcaption>{image_field.caption}</figcaption>
-    </StyledFigure>
-  );
-});
+    // value should not be an array, because this is resolved in unfoldFields,
+    // but typescript doesn't catch that.
+    const value = Array.isArray(image_field.value) ? image_field.value[0] : image_field.value;
+    let src = image_field.base64 ? `data:image/jpeg;base64,${value}` : value;
+
+    return (
+      <StyledFigure
+        className="field"
+        hasCaption={!!image_field.caption}
+        style={{
+          gridArea: image_field.grid_area,
+          ...image_field?.style,
+        }}
+      >
+        <StyledImg
+          ref={img}
+          size={size}
+          draggable={false}
+          className="AnnotatableImage"
+          onLoad={() => {
+            onImageLoad();
+            updateImageSize(img, container, setSize, extraspace);
+          }}
+          onError={() => onImageLoad()}
+          data-imagefieldname={image_field.name}
+          key={image_field.name}
+          alt={image_field.alt}
+          src={src}
+        />
+        <figcaption>{image_field.caption}</figcaption>
+      </StyledFigure>
+    );
+  }
+);
 
 const updateImageSize = (
   img: any,
