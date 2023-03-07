@@ -65,7 +65,7 @@
       "codebook": {
         "type": "questions",
         "settings": {
-          "instruction": "# Codebook instruction\n\nYou can integrate your codebook instructions direclty in your codingjobs. These instructions will be shown the first time users open a unit with this codebook, and they can open it again by clicking the questionmark at the bottom-left\n\nIn the current example we ask users to answer two questions\n\n### Question 1: Favourite type of animal\nThe first question is about your favourite animal\n\n### Question 2: How many animals of this type do you have?\nVery important to know",
+          "instruction": "# Codebook instruction\n\nYou can integrate your codebook instructions directly in your codingjobs. These instructions will be shown the first time users open a unit with this codebook, and they can open it again by clicking the questionmark at the bottom-left\n\nIn the current example we ask users to answer two questions\n\n### Question 1: Favourite type of animal\nThe first question is about your favourite animal\n\n### Question 2: How many animals of this type do you have?\nVery important to know",
           "auto_instruction": true
         },
         "questions": [

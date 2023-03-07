@@ -147,13 +147,16 @@ const Items = ({
   useEffect(() => {
     scrollToMiddle(scrollRef?.current, items?.[selectedItem]?.ref?.current, 0.5);
     const selectedel = items?.[selectedItem]?.ref?.current;
-    if (selectedel) {
-      setTimeout(() => selectedel.focus(), 10); // otherwise react keeps complaining
-    } else {
-      setTimeout(() => {
+
+    function scrollActive() {
+      if (selectedel) {
+        selectedel.focus();
+      } else {
         if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
-      }, 10);
+      }
     }
+    const timeout = setTimeout(scrollActive, 100);
+    return () => clearTimeout(timeout);
   }, [selectedItem, items, scrollRef]);
 
   return (

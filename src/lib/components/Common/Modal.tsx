@@ -30,7 +30,7 @@ const StyledDiv = styled.div<{ open: boolean }>`
     font-size: var(--font-size);
     position: relative;
     display: flex;
-    width: min(80%, 600px);
+    width: min(90%, 600px);
     height: min(90%, 600px);
     margin: auto;
 
