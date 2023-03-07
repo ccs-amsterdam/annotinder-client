@@ -145,12 +145,14 @@ const Items = ({
   }, [blockEvents, done, items, onSelect, onFinish, answerItems, selectedItem, setSelectedItem]);
 
   useEffect(() => {
-    scrollToMiddle(scrollRef?.current, items?.[selectedItem]?.ref?.current, 0.5);
-    const selectedel = items?.[selectedItem]?.ref?.current;
+    const scrollEl = scrollRef.current;
+    const selectedEl = items?.[selectedItem]?.ref?.current;
 
     function scrollActive() {
-      if (selectedel) {
-        selectedel.focus();
+      if (selectedEl && scrollEl) {
+        selectedEl.focus();
+        scrollToMiddle(scrollEl, selectedEl, 0.5);
+        selectedEl.scrollIntoView();
       } else {
         if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
       }
