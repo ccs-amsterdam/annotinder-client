@@ -173,7 +173,7 @@ const DemoJobLink = ({ units, codebook }: DemoJobLinkProps) => {
   if (!units || !codebook) return null;
   const url = `${
     window.location.origin + window.location.pathname
-  }demo?units=${units}&codebook=${codebook}`;
+  }?units=${units}&codebook=${codebook}`;
 
   const onClick = () => {
     setSearchParams({ units, codebook });
