@@ -155,8 +155,9 @@ const Items = ({
         if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
       }
     }
-    const timeout = setTimeout(scrollActive, 100);
-    return () => clearTimeout(timeout);
+    setTimeout(scrollActive, 100);
+    const interval = setInterval(scrollActive, 1000);
+    return () => clearInterval(interval);
   }, [selectedItem, items, scrollRef]);
 
   return (
