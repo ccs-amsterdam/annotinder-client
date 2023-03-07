@@ -160,9 +160,6 @@ const Items = ({
 
     // repeat with some delays, because on mobile the keyboard can pop up and mess things up
     setTimeout(scrollActive, 10);
-    setTimeout(scrollActive, 200);
-    setTimeout(scrollActive, 500);
-    setTimeout(scrollActive, 1000);
   }, [selectedItem, items, scrollRef]);
 
   return (
@@ -218,9 +215,18 @@ interface InputProps {
 }
 
 const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
-  //const ref = useRef();
   item.ref = useRef();
   const value = answerItems?.[itemIndex]?.values?.[0]; // for all non-multiple forms
+
+  function onFocus() {
+    const el = item?.ref?.current;
+    if (!el) return null;
+    const scrollActive = () => el.scrollIntoView();
+    setTimeout(scrollActive, 10);
+    setTimeout(scrollActive, 200);
+    setTimeout(scrollActive, 500);
+    setTimeout(scrollActive, 1000);
+  }
 
   if (item?.type === "number") {
     return (
@@ -235,6 +241,7 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
           maxWidth: "150px",
           textAlign: "center",
         }}
+        onFocus={onFocus}
         onChange={(e) => {
           if (!answerItems?.[itemIndex]) return;
           let value = e.target.value;
@@ -255,6 +262,7 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
         ref={item.ref as RefObject<HTMLTextAreaElement>}
         rows={item?.rows || 5}
         value={value || ""}
+        onFocus={onFocus}
         onChange={(e) => {
           if (!answerItems?.[itemIndex]) return;
           const value = e.target.value === "" ? null : e.target.value;
@@ -279,6 +287,7 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
           textAlign: "center",
           background: answerItems[itemIndex].invalid ? "#fa1e1e4d" : "white",
         }}
+        onFocus={onFocus}
         onChange={(e) => {
           if (!answerItems?.[itemIndex]) return;
           const value = e.target.value === "" ? null : e.target.value;
@@ -296,6 +305,7 @@ const Input = ({ answerItems, onSelect, item, itemIndex }: InputProps) => {
       autoComplete={item?.autocomplete}
       value={value || ""}
       style={{ maxWidth: "300px", textAlign: "center" }}
+      onFocus={onFocus}
       onChange={(e) => {
         if (!answerItems?.[itemIndex]) return;
         const value = e.target.value === "" ? null : e.target.value;
