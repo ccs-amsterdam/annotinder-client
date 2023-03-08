@@ -128,9 +128,9 @@ const AnswerField = ({
     transition,
   }: OnSelectParams = {}) => {
     // this bad boy is used in all of the AnswerField sub-components to write values.
-    // it's a bit complicated here, but it makes the code within the sub-components easier
+    // it's a bit complicated here, but it makes the code within the sub-components easier.
     // answerItems is an array of objects, where each object is an item.
-    //    if a question has no items, it is still an array of length 1 for consistency
+    //    if a question has no items (i.e. just a single value), it is still an array of length 1 for consistency
     // each item object has a .value, which is an array of multiple values
     //    if an item can only have 1 value, it is still an array of length 1 for consistency
 

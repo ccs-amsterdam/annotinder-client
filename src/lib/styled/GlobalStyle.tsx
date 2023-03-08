@@ -3,10 +3,10 @@ import DocumentStyle from "./DocumentStyle";
 import AnnotatorStyle from "./AnnotatorStyle";
 
 const GlobalStyle = createGlobalStyle`
-    ${DocumentStyle}
-    ${AnnotatorStyle}
+  ${DocumentStyle}
+  ${AnnotatorStyle}
 
-    :root {
+  :root {
     --font-size: 1.6rem;
 
     --primary: #673AB7;
@@ -44,11 +44,21 @@ const GlobalStyle = createGlobalStyle`
     --active: #00000022;
   }
 
+  *,
+  *:before,
+  *:after {
+    box-sizing: inherit;
+  }
+
+
   html {
+    line-height: 1.15;
+    box-sizing: border-box;
     font-size: 62.5%;
   }
   
   body {
+    margin: 0;
     overscroll-behavior: contain;
     background: var(--background);
     color: var(--text);
@@ -56,7 +66,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   div::-webkit-scrollbar, p::-webkit-scrollbar {
-    width: 10px;
+    width: 5px;
   }
 
   /* Track */
@@ -67,13 +77,13 @@ const GlobalStyle = createGlobalStyle`
 
   /* Handle */
   div::-webkit-scrollbar-thumb, p::-webkit-scrollbar-thumb {
-    background-color: var(--primary-light);
+    background-color: var(--primary);
     border-radius: 0;
   }
 
   /* Handle on hover */
   div::-webkit-scrollbar-thumb:hover, p::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
+    background: var(--primary-dark);
   }
 
   h1 {
@@ -83,40 +93,50 @@ const GlobalStyle = createGlobalStyle`
   h1 {
   min-height: 1em;
   font-size: 2em;
-}
+  }
 
-h2 {
-  font-size: 1.71428571em;
-}
+  h2 {
+    font-size: 1.71428571em;
+  }
 
-h3 {
-  font-size: 1.28571429em;
-}
+  h3 {
+    font-size: 1.28571429em;
+  }
 
-h4 {
-  font-size: 1.07142857em;
-}
+  h4 {
+    font-size: 1.07142857em;
+  }
 
-h5 {
-  font-size: 1em;
-}
-  
-@keyframes fadeIn {
-    0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@keyframes slideIn {
-  0% { transform: translateX(0); opacity: 0 }
-  10% { transform: translateX(0); opacity: 1 }
-  50% { transform: translateX(0); }
-  100% { transform: translateX(100%); }
-}
-
-.flex {
-  flex: 1 1 auto;
-}
+  h5 {
+    font-size: 1em;
+  }
     
+
+  .flex {
+    flex: 1 1 auto;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes fadeIn {
+      0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes slideIn {
+    0% { transform: translateX(0); opacity: 0 }
+    10% { transform: translateX(0); opacity: 1 }
+    50% { transform: translateX(0); }
+    100% { transform: translateX(100%); }
+  }
+      
 
 `;
 

@@ -17,6 +17,7 @@ import {
   Token,
 } from "../../../types";
 import styled from "styled-components";
+import { Loader } from "../../../styled/Styled";
 
 const DocumentContent = styled.div<{
   grid: FieldGrid;
@@ -45,16 +46,6 @@ const BodyContainer = styled.div`
   flex-direction: column;
   align-items: center;
   overflow: auto;
-`;
-
-const LoadingImages = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  z-index: 100;
-  background-color: var(--background-transparent);
 `;
 
 interface BodyProps {
@@ -139,7 +130,7 @@ const Body = ({
               width: "100%",
             }}
           >
-            {imagesLoaded ? null : <LoadingImages />}
+            <Loader active={!imagesLoaded} />
             <DocumentContent
               centered={centered}
               highLines={!readOnly}
