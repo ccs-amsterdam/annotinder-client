@@ -192,7 +192,6 @@ const QuestionTask = ({
               annotations={annotations}
               showAll={true}
               onReady={onNewUnit}
-              fullScreenNode={fullScreenNode}
               focus={question?.fields}
               centered
             />

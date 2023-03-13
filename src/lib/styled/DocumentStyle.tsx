@@ -68,6 +68,7 @@ export default css`
     vertical-align: bottom;
     box-shadow: none;
     box-sizing: border-box;
+    hyphens: none;
 
     /* add white background for dark mode. Annotation colors are customizable,
     so we use opacity on a white background to ensure text readability.

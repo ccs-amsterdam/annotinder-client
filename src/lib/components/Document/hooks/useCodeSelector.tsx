@@ -1,9 +1,9 @@
 import React, { useState, ReactElement } from "react";
 
-import SelectVariablePage from "./SelectVariablePage";
-import SelectAnnotationPage from "./SelectAnnotationPage";
-import NewCodePage from "./NewCodePage";
-import AnnotationPortal from "./AnnotationPortal";
+import SelectVariablePage from "../components/SelectVariablePage";
+import SelectAnnotationPage from "../components/SelectAnnotationPage";
+import NewCodePage from "../components/NewCodePage";
+import AnnotationPortal from "../components/AnnotationPortal";
 import {
   SetState,
   Span,

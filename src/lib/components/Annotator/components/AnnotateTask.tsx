@@ -125,7 +125,6 @@ const AnnotateTask = ({
             returnTokens={setTokens}
             returnVariableMap={setVariableMap}
             blockEvents={blockEvents}
-            fullScreenNode={fullScreenNode}
             bodyStyle={BODYSTYLE}
           />
         </div>

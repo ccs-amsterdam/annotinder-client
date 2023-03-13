@@ -44,6 +44,7 @@ export interface Annotation {
   span?: Span;
   token_span?: Span;
   color?: string;
+  comment?: string;
   parents?: SpanParent[];
 }
 
@@ -337,6 +338,16 @@ export interface CodeSelectorDropdownOption {
 }
 
 export type TokenSelection = [number, number] | [];
+
+/** used to manage keyboard navigation */
+export interface Mover {
+  position: number;
+  startposition: number;
+  ntokens: number;
+  counter: number;
+}
+
+export type Arrowkeys = "ArrowRight" | "ArrowLeft" | "ArrowUp" | "ArrowDown";
 
 ///// CONDITIONALS
 

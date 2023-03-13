@@ -1,9 +1,9 @@
 import React, { useState, useEffect, CSSProperties } from "react";
 import AnnotateNavigation from "./components/AnnotateNavigation";
 import Body from "./components/Body";
-import useCodeSelector from "./components/useCodeSelector";
-import useRelationSelector from "./components/useRelationSelector";
-import useUnit from "./components/useUnit";
+import useCodeSelector from "./hooks/useCodeSelector";
+import useRelationSelector from "./hooks/useRelationSelector";
+import useUnit from "./hooks/useUnit";
 import SelectVariable from "./components/SelectVariable";
 
 import useVariableMap from "./components/useVariableMap";
@@ -15,7 +15,6 @@ import {
   SpanAnnotations,
   Token,
   SetState,
-  FullScreenNode,
   VariableValueMap,
 } from "../../types";
 import { useCallback } from "react";
@@ -67,8 +66,6 @@ interface DocumentProps {
   onReady?: Function;
   /** a boolean value for blocking all event listeners */
   blockEvents?: boolean;
-  /** in fullscreenmode popups require a mountNode */
-  fullScreenNode?: FullScreenNode;
   /** Names of fields to focus on, or Annotation objects to focus on */
   focus?: string[];
   /** Should the text be centered? */
@@ -93,7 +90,6 @@ const Document = ({
   returnVariableMap,
   onReady,
   blockEvents,
-  fullScreenNode,
   focus,
   centered,
   bodyStyle,
@@ -169,7 +165,6 @@ const Document = ({
         triggerSelectionPopup={triggerSelectionPopup}
         eventsBlocked={selectorOpen || blockEvents}
         showAll={showAll}
-        fullScreenNode={fullScreenNode}
       />
 
       {selector || null}

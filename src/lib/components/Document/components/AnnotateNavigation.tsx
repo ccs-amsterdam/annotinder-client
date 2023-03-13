@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import { AnnotationEvents } from "./AnnotationEvents";
+import React, { useEffect, useMemo, useRef } from "react";
+import useAnnotationEvents from "../hooks/useAnnotationEvents";
 import { List } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
 import standardizeColor from "../../../functions/standardizeColor";
@@ -9,13 +9,11 @@ import Popup from "../../Common/Popup";
 import {
   Variable,
   VariableMap,
-  SetState,
   Token,
   SpanAnnotations,
   AnnotationMap,
   TokenSelection,
   TriggerSelectionPopup,
-  FullScreenNode,
   VariableType,
   ValidTokenRelations,
   ValidTokenDestinations,
@@ -32,7 +30,6 @@ interface AnnotateNavigationProps {
   triggerSelectionPopup: TriggerSelectionPopup;
   eventsBlocked: boolean;
   showAll: boolean;
-  fullScreenNode: FullScreenNode;
 }
 
 /**
@@ -50,10 +47,15 @@ const AnnotateNavigation = ({
   triggerSelectionPopup,
   showAll,
   eventsBlocked,
-  fullScreenNode,
 }: AnnotateNavigationProps) => {
-  const [currentToken, setCurrentToken] = useState({ i: null });
-  const [tokenSelection, setTokenSelection] = useState<TokenSelection>([]);
+  const { currentToken, tokenSelection } = useAnnotationEvents(
+    tokens,
+    annotations,
+    triggerSelectionPopup,
+    editMode,
+    eventsBlocked || disableAnnotations
+  );
+
   const variableType = variable?.type;
 
   const validRelations: ValidTokenRelations = useMemo(
@@ -90,38 +92,14 @@ const AnnotateNavigation = ({
     setSelectionAsCSSClass(tokens, variableType, tokenSelection);
   }, [tokens, variableType, tokenSelection, editMode]);
 
-  useEffect(() => {
-    setTokenSelection([]);
-  }, [annotations]);
-
-  useEffect(() => {
-    setCurrentToken({ i: null });
-    setTokenSelection([]);
-  }, [tokens]);
-
   return (
     <>
       <AnnotationPopup
         tokens={tokens}
         currentToken={currentToken}
-        setCurrentToken={setCurrentToken}
         annotations={annotations}
         showValues={showValues}
       />
-      {disableAnnotations ? null : (
-        <AnnotationEvents
-          tokens={tokens}
-          annotations={annotations}
-          currentToken={currentToken}
-          setCurrentToken={setCurrentToken}
-          tokenSelection={tokenSelection}
-          setTokenSelection={setTokenSelection}
-          triggerSelectionPopup={triggerSelectionPopup}
-          editMode={editMode}
-          eventsBlocked={eventsBlocked}
-        />
-      )}
-
       <DrawArrows
         variable={variable}
         tokens={tokens}
@@ -295,13 +273,12 @@ const setSelectionAsCSSClass = (
 interface AnnotationPopupProps {
   tokens: Token[];
   currentToken: { i: number };
-  setCurrentToken: SetState<{ i: number }>;
   annotations: SpanAnnotations;
   showValues: VariableMap;
 }
 
 const AnnotationPopup = React.memo(
-  ({ tokens, currentToken, setCurrentToken, annotations, showValues }: AnnotationPopupProps) => {
+  ({ tokens, currentToken, annotations, showValues }: AnnotationPopupProps) => {
     const ref = useRef<HTMLDivElement>();
 
     const content = useMemo(() => {

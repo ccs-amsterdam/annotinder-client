@@ -14,8 +14,8 @@ import {
   ValidRelation,
 } from "../../../types";
 import { createId, toggleRelationAnnotation } from "../functions/annotations";
-import AnnotationPortal from "./AnnotationPortal";
-import PopupSelection from "./PopupSelection";
+import AnnotationPortal from "../components/AnnotationPortal";
+import PopupSelection from "../components/PopupSelection";
 
 const useRelationSelector = (
   unitStates: UnitStates,

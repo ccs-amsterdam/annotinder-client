@@ -28,6 +28,9 @@ const getNode = (e: TouchEvent | MouseEvent): [Element, boolean] => {
       let position = e.touches[0];
       n = document.elementFromPoint(position.clientX, position.clientY);
     }
+    if (e.type === "contextmenu") {
+      n = e.target as Element;
+    }
 
     if (n.parentElement) {
       if (n.parentElement.className === "item") return [null, false];
