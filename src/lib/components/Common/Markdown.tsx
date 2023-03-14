@@ -8,7 +8,7 @@ interface MarkdownProps {
 
 const Markdown = ({ children, style = {} }: MarkdownProps) => {
   return (
-    <div style={{ textAlign: "justify", hyphens: "auto", ...style }}>
+    <div style={{ ...style }}>
       <ReactMarkdown linkTarget={"_blank"}>{children}</ReactMarkdown>
     </div>
   );

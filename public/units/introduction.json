@@ -378,7 +378,7 @@
         "questions": [
           {
             "name": "train1",
-            "question": "Try giving the wrong answer",
+            "question": "This is the first question",
             "codes": [
               { "code": "Wrong", "color": "crimson", "swipe": "left" },
               { "code": "Correct", "color": "lightgreen", "swipe": "right" }
@@ -387,7 +387,7 @@
           },
           {
             "name": "train2",
-            "question": "Try giving the wrong answer",
+            "question": "This is the second",
             "codes": [
               { "code": "Wrong", "color": "crimson", "swipe": "left" },
               { "code": "Correct", "color": "lightgreen", "swipe": "right" }

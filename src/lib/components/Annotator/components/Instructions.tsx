@@ -50,7 +50,7 @@ const Instructions = ({ instruction, autoInstruction, sessionData }: Instruction
   return (
     <>
       <Modal open={open} setOpen={setOpen}>
-        <Markdown>{instruction}</Markdown>
+        <Markdown style={{ textAlign: "justify", hyphens: "auto" }}>{instruction}</Markdown>
       </Modal>
       <QuestionMarkButton>
         <FaQuestionCircle size="100%" onClick={(e) => setOpen(!open)} />
