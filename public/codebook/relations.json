@@ -24,11 +24,41 @@
     },
     {
       "type": "relation",
-
       "codes": [
         {
-          "code": "Factual Statement",
-          "color": "green",
+          "code": "Statement of Fact",
+          "color": "green"
+        },
+        {
+          "code": "Statement of Value",
+          "color": "orange"
+        },
+        {
+          "code": "Statement of Policy",
+          "color": "magenta"
+        },
+        {
+          "code": "Fulcrum",
+          "color": "yellow"
+        },
+
+        {
+          "code": "Lever",
+          "color": "orange"
+        },
+
+        {
+          "code": "Premise",
+          "color": "purple"
+        },
+        {
+          "code": "Co-premise",
+          "color": "crimson"
+        }
+      ],
+      "relations": [
+        {
+          "codes": ["Statement of Fact", "Statement of Value", "Statement of Policy"],
           "from": {
             "variable": "Labels",
             "values": ["Subject"]
@@ -39,11 +69,21 @@
           }
         },
         {
-          "code": "Policy Statement",
-          "color": "red",
+          "codes": ["Fulcrum", "Lever"],
           "from": {
             "variable": "Labels",
             "values": ["Subject"]
+          },
+          "to": {
+            "variable": "Labels",
+            "values": ["Subject"]
+          }
+        },
+        {
+          "codes": ["Fulcrum", "Lever"],
+          "from": {
+            "variable": "Labels",
+            "values": ["Predicate"]
           },
           "to": {
             "variable": "Labels",
@@ -51,11 +91,10 @@
           }
         },
         {
-          "code": "Value Statement",
-          "color": "purple",
+          "codes": ["Premise", "Co-premise"],
           "from": {
             "variable": "Labels",
-            "values": ["Subject"]
+            "values": ["Predicate"]
           },
           "to": {
             "variable": "Labels",

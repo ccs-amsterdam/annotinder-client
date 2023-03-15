@@ -7,6 +7,7 @@ import {
   VariableType,
   VariableMap,
   ValidRelation,
+  Code,
 } from "../../../types";
 
 export default function useVariableMap(
@@ -26,7 +27,8 @@ export default function useVariableMap(
         obj[key] = cm[key];
         return obj;
       }, {});
-      const [validFrom, validTo] = getValidRelationCodes(variable.type, variable.codes);
+      const [validFrom, validTo] = getValidRelationCodes(variable.relations, variable.codeMap);
+
       vm[variable.name] = { ...variable, codeMap: cm, validFrom, validTo };
     }
 
@@ -81,7 +83,7 @@ export default function useVariableMap(
       // that are valid options for the relation codes
       let showValues: VariableMap;
       let variableType: VariableType = "span";
-      if (fullVariableMap?.[selectedVariable]?.type === "relation") {
+      if (fullVariableMap?.[selectedVariable]?.relations) {
         variableType = "relation";
         showValues = getRelationShowValues(vmap, fullVariableMap, selectedVariable);
       } else {
@@ -108,21 +110,21 @@ const getRelationShowValues = (
   selectedVariable: string
 ) => {
   let showValues: VariableMap = { [selectedVariable]: vmap[selectedVariable] };
-
   let valuemap: VariableValueMap | null = {};
-  for (let code of fullVariableMap[selectedVariable].codes) {
-    if (!code.from || !code.to) {
-      // if any code doesn't specify from or to, we need to show everything
+
+  for (let relation of fullVariableMap[selectedVariable].relations || []) {
+    if (!relation.from || !relation.to) {
+      // if any relation doesn't specify from or to, we need to show everything
       showValues = fullVariableMap;
       valuemap = null;
       break;
     }
 
-    const codeRelations: CodeRelation[] = [];
-    if (code.from) codeRelations.push(code.from);
-    if (code.to) codeRelations.push(code.to);
+    const relations: CodeRelation[] = [];
+    if (relation.from) relations.push(relation.from);
+    if (relation.to) relations.push(relation.to);
 
-    for (let cr of codeRelations) {
+    for (let cr of relations) {
       if (!valuemap[cr.variable]) valuemap[cr.variable] = {};
       const values = cr.values || Object.keys(fullVariableMap[cr.variable].codeMap);
       for (let v of values) valuemap[cr.variable][v] = true;
@@ -145,27 +147,41 @@ const getRelationShowValues = (
  * If variable of type relation, prepare efficient lookup for
  * valid from/to annotations
  */
-function getValidRelationCodes(variableType, codes) {
-  if (variableType !== "relation") return [null, null];
+function getValidRelationCodes(relations, codeMap) {
+  if (!relations) return [null, null];
   const validFrom: ValidRelation = {};
   const validTo: ValidRelation = {};
 
-  function addValidRelation(valid: ValidRelation, variable, values, code) {
+  function addValidRelation(valid: ValidRelation, relationId, variable, values, codes) {
+    if (!variable) {
+      if (!valid["*"]) valid["*"] = { "*": {} };
+      valid["*"]["*"][relationId] = codes;
+      return;
+    }
     if (!valid[variable]) valid[variable] = {};
+    // if we include a code_id, which is just the relation index, we can use that
+    // to connect the from/to values
+
     if (values) {
       for (let value of values) {
         if (!valid[variable][value]) valid[variable][value] = {};
-        valid[variable][value][code.code] = code;
+        valid[variable][value][relationId] = codes;
       }
     } else {
       if (!valid[variable]["*"]) valid[variable]["*"] = {};
-      valid[variable]["*"][code.code] = code;
+      for (let code of Object.keys(codeMap)) {
+        valid[variable]["*"][code][relationId] = codes;
+      }
     }
   }
 
-  for (let code of codes) {
-    addValidRelation(validFrom, code.from.variable, code.from.values, code);
-    addValidRelation(validTo, code.to.variable, code.to.values, code);
+  for (let i = 0; i < relations.length; i++) {
+    const relation = relations[i];
+    if (!relation.codes) relation.codes = Object.keys(codeMap);
+    const codes: Code[] = [];
+    for (let code of relation.codes) if (codeMap[code]) codes.push(codeMap[code]);
+    addValidRelation(validFrom, i, relation?.from?.variable, relation?.from?.values, codes);
+    addValidRelation(validTo, i, relation?.to?.variable, relation?.to?.values, codes);
   }
 
   return [validFrom, validTo];

@@ -10,20 +10,22 @@ export const getValidTokenRelations = (
   annotations: SpanAnnotations,
   variable: Variable
 ): ValidTokenRelations => {
-  if (variable?.type !== "relation") return null;
+  if (!variable?.relations) return null;
   const valid: ValidTokenRelations = {};
 
   for (let i of Object.keys(annotations)) {
     for (let v of Object.values(annotations[i])) {
-      const fromCodes =
+      const relationIds =
         variable?.validFrom?.[v.variable]?.["*"] ||
         variable?.validFrom?.[v.variable]?.[v.value] ||
         null;
-      if (!fromCodes) continue;
+      if (!relationIds) continue;
       if (!valid[i]) valid[i] = {};
-      for (let fromCode of Object.values(fromCodes)) {
-        for (let value of fromCode.to?.values || []) {
-          valid[i][fromCode.to?.variable + "|" + value] = true;
+
+      for (let relationId of Object.keys(relationIds)) {
+        const to = variable.relations?.[relationId]?.to;
+        for (let value of to?.values || []) {
+          valid[i][to?.variable + "|" + value] = true;
         }
       }
     }

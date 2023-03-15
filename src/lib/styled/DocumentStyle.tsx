@@ -146,4 +146,19 @@ export default css`
     background: var(--primary) !important;
     color: var(--text-inversed) !important;
   }
+
+  .buttonBackground {
+    position: relative;
+    ::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      z-index: -1;
+      border-radius: inherit;
+    }
+  }
 `;

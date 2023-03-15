@@ -274,6 +274,7 @@ export interface Variable {
   name: string;
   type?: VariableType; // if missing, defaults to "span"
   codes: Code[];
+  relations?: Relation[];
   instruction: string;
   buttonMode?: "all" | "recent";
   searchBox?: boolean;
@@ -285,8 +286,22 @@ export interface Variable {
   validTo?: ValidRelation;
 }
 
+export interface Relation {
+  codes?: string[];
+  from?: CodeRelation;
+  to?: CodeRelation;
+}
+
 // for fast lookup of relation codes, indexed as: variable -> value -> relation_code_value -> relation_code_object
-export type ValidRelation = Record<string, Record<string, Record<string, Code>>>;
+//export type ValidRelation = Record<string, Record<string, Record<string, Code>>>;
+
+export interface ValidRelation {
+  [variable: string]: {
+    [value: string]: {
+      [relationId: number]: Code[];
+    };
+  };
+}
 
 // for fast lookup of tokens in relation selection mode
 export type ValidTokenRelations = Record<number, Record<string, boolean>>;
@@ -604,10 +619,6 @@ export interface Code {
   code: string;
   parent: string;
   color: string;
-
-  // For relation type codes
-  from?: CodeRelation;
-  to?: CodeRelation;
 
   active: boolean;
   activeParent: any;

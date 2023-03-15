@@ -23,6 +23,7 @@ import DrawArrows from "./DrawArrows";
 interface AnnotateNavigationProps {
   tokens: Token[];
   variable: Variable;
+  variableType: VariableType;
   showValues: VariableMap;
   annotations: SpanAnnotations;
   disableAnnotations: boolean;
@@ -40,6 +41,7 @@ interface AnnotateNavigationProps {
 const AnnotateNavigation = ({
   tokens,
   variable,
+  variableType,
   showValues,
   annotations,
   disableAnnotations,
@@ -55,8 +57,6 @@ const AnnotateNavigation = ({
     editMode,
     eventsBlocked || disableAnnotations
   );
-
-  const variableType = variable?.type;
 
   const validRelations: ValidTokenRelations = useMemo(
     () => getValidTokenRelations(annotations, variable),

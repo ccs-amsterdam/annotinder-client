@@ -136,7 +136,7 @@ export default function Arrow({
   }
 
   function getXY(p, pend, x, y) {
-    const xoffset = 2;
+    const xoffset = 9;
     const yoffset = 4;
     if (x === "left" && y === "top") return [p.x + xoffset, p.y - yoffset];
     if (x === "left" && y === "bottom") return [p.x + xoffset, p.y + p.h + yoffset];

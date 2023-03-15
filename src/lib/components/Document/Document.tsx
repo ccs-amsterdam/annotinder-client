@@ -158,6 +158,7 @@ const Document = ({
       <AnnotateNavigation
         tokens={unitStates.doc.tokens}
         variable={variableMap?.[variable]}
+        variableType={variableType}
         showValues={showValues}
         annotations={unitStates.spanAnnotations}
         disableAnnotations={!onChangeAnnotations || !variableMap}
