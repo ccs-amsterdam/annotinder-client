@@ -304,7 +304,7 @@ export interface ValidRelation {
 }
 
 // for fast lookup of tokens in relation selection mode
-export type ValidTokenRelations = Record<number, Record<string, boolean>>;
+export type ValidTokenRelations = Record<number, Record<string, Record<string, boolean>>>;
 export type ValidTokenDestinations = Record<number, boolean>;
 
 export type VariableType = "span" | "relation";

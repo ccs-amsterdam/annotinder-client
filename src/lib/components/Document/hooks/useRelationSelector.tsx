@@ -167,6 +167,8 @@ function getOptions(from: AnnotationMap, to: AnnotationMap, variable: Variable) 
     if (!fromRelations) continue;
 
     for (let t of Object.values(to)) {
+      if (f.offset === t.offset && f.variable === t.variable && f.value === t.value) continue;
+
       const toRelations = validTo?.[t.variable]?.["*"] || validTo?.[t.variable]?.[t.value] || null;
       if (!toRelations) continue;
 

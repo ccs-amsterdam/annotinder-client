@@ -22,10 +22,13 @@ export const getValidTokenRelations = (
       if (!relationIds) continue;
       if (!valid[i]) valid[i] = {};
 
+      const fromKey = v.variable + "|" + v.value;
+      if (!valid[i][fromKey]) valid[i][fromKey] = {};
+
       for (let relationId of Object.keys(relationIds)) {
         const to = variable.relations?.[relationId]?.to;
         for (let value of to?.values || []) {
-          valid[i][to?.variable + "|" + value] = true;
+          valid[i][fromKey][to?.variable + "|" + value] = true;
         }
       }
     }
@@ -45,9 +48,19 @@ export const getValidTokenDestinations = (
   const validIds = validRelations?.[tokenSelection[0]];
   if (!validIds) return valid;
 
-  for (let i of Object.keys(annotations)) {
-    for (let id of Object.keys(validIds)) {
-      if (annotations[i]?.[id]) {
+  const startAnnotations = annotations[tokenSelection[0]];
+
+  for (let fromKey of Object.keys(startAnnotations)) {
+    if (!validIds[fromKey]) continue; // skip if there are no destinations at all
+    const sa = startAnnotations[fromKey];
+    for (let i of Object.keys(annotations)) {
+      for (let toKey of Object.keys(annotations[i])) {
+        if (!validIds[fromKey][toKey]) continue;
+
+        // destination cannot be starting annotation
+        const a = annotations[i][toKey];
+        if (a.variable === sa.variable && a.value === sa.value && a.offset === sa.offset) continue;
+
         valid[i] = true;
       }
     }
