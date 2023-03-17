@@ -1,7 +1,21 @@
-import { Code, Token, Annotation, SpanAnnotations, FieldAnnotations } from "../../../types";
+import {
+  Code,
+  Token,
+  Annotation,
+  SpanAnnotations,
+  FieldAnnotations,
+  RelationAnnotations,
+  Span,
+} from "../../../types";
 
 export const createId = (annotation: any): string => {
   return annotation.variable + "|" + annotation.value;
+};
+
+export const createRelationNodeId = (annotation: any): string => {
+  return (
+    annotation.field + "|" + annotation.offset + "|" + annotation.variable + "|" + annotation.value
+  );
 };
 
 export const exportSpanAnnotations = (
@@ -18,6 +32,7 @@ export const exportSpanAnnotations = (
       if (index !== "unit") if (ann[id].index !== ann[id].span[0]) continue;
 
       const ann_obj: Annotation = {
+        type: "span",
         variable: ann[id].variable,
         value: ann[id].value,
         field: ann[id].field,
@@ -28,48 +43,40 @@ export const exportSpanAnnotations = (
 
       if (SpanAndText) {
         const span = ann[id].span;
-        const text = tokens
-          .slice(span[0], span[1] + 1)
-          .map((t: Token, i: number) => {
-            let string = t.text;
-            if (i > 0) string = t.pre + string;
-            if (i < span[1] - span[0]) string = string + t.post;
-            return string;
-          })
-          .join("");
+        const text = getSpanText(span, tokens);
         ann_obj["text"] = text;
         ann_obj["token_span"] = span;
       }
 
-      if (ann[id].parents)
-        ann_obj["parents"] = ann[id].parents.map((p) => {
-          const parent = {
-            field: p.field,
-            variable: p.variable,
-            value: p.value,
-            offset: p.offset,
-            relationVariable: p.relationVariable,
-            relationValue: p.relationValue,
-            //relationColor: p.relationColor,
-            //color: p.color,
-          };
+      //   if (ann[id].parents)
+      //     ann_obj["parents"] = ann[id].parents.map((p) => {
+      //       const parent = {
+      //         field: p.field,
+      //         variable: p.variable,
+      //         value: p.value,
+      //         offset: p.offset,
+      //         relationVariable: p.relationVariable,
+      //         relationValue: p.relationValue,
+      //         //relationColor: p.relationColor,
+      //         //color: p.color,
+      //       };
 
-          if (SpanAndText) {
-            const span = p.span;
-            const text = tokens
-              .slice(span[0], span[1] + 1)
-              .map((t: Token, i: number) => {
-                let string = t.text;
-                if (i > 0) string = t.pre + string;
-                if (i < span[1] - span[0]) string = string + t.post;
-                return string;
-              })
-              .join("");
-            parent["text"] = text;
-            parent["span"] = span;
-          }
-          return parent;
-        });
+      //       if (SpanAndText) {
+      //         const span = p.span;
+      //         const text = tokens
+      //           .slice(span[0], span[1] + 1)
+      //           .map((t: Token, i: number) => {
+      //             let string = t.text;
+      //             if (i > 0) string = t.pre + string;
+      //             if (i < span[1] - span[0]) string = string + t.post;
+      //             return string;
+      //           })
+      //           .join("");
+      //         parent["text"] = text;
+      //         parent["span"] = span;
+      //       }
+      //       return parent;
+      //     });
 
       un_ann.push(ann_obj);
     }
@@ -78,13 +85,57 @@ export const exportSpanAnnotations = (
   return uniqueAnnotations;
 };
 
+export const exportRelationAnnotations = (
+  relationAnnotations: RelationAnnotations,
+  tokens: Token[],
+  spanAndText = false
+) => {
+  if (!relationAnnotations) return [];
+  const ra: Annotation[] = [];
+  for (const from of Object.values(relationAnnotations)) {
+    for (const to of Object.values(from)) {
+      for (const relation of Object.values(to)) {
+        const ann: Annotation = {
+          type: "relation",
+          field: relation.field,
+          variable: relation.variable,
+          value: relation.value,
+          from: {
+            field: relation.from.field,
+            variable: relation.from.variable,
+            value: relation.from.value,
+            offset: relation.from.offset,
+            length: relation.from.length,
+          },
+          to: {
+            field: relation.to.field,
+            variable: relation.to.variable,
+            value: relation.to.value,
+            offset: relation.to.offset,
+            length: relation.to.length,
+          },
+        };
+        if (spanAndText) {
+          ann.from.span = relation.from.span;
+          ann.from.text = getSpanText(relation.from.span, tokens);
+          ann.to.span = relation.to.span;
+          ann.to.text = getSpanText(relation.to.span, tokens);
+        }
+
+        ra.push(ann);
+      }
+    }
+  }
+  return ra;
+};
+
 export const exportFieldAnnotations = (fieldAnnotations: FieldAnnotations) => {
   if (!fieldAnnotations) return [];
   if (Object.keys(fieldAnnotations).length === 0) return [];
   const fa: Annotation[] = [];
   for (const field of Object.keys(fieldAnnotations)) {
     for (const key of Object.keys(fieldAnnotations[field])) {
-      fa.push({ field, ...fieldAnnotations[field][key] });
+      fa.push({ type: "field", field, ...fieldAnnotations[field][key] });
     }
   }
   return fa;
@@ -123,20 +174,36 @@ export const importSpanAnnotations = (
   }
 
   for (let ann of annArray) {
-    currentAnnotations = toggleSpanAnnotation(currentAnnotations, ann, false, false, false);
+    currentAnnotations = toggleSpanAnnotation(currentAnnotations, ann, false, false);
   }
 
-  return updateRelations(currentAnnotations);
+  return currentAnnotations;
+};
+
+export const importRelationAnnotations = (annotationsArray: Annotation[]) => {
+  const relationAnnotations: RelationAnnotations = {};
+  for (let a of annotationsArray || []) {
+    if (a.type !== "relation") continue;
+    const fromId = createRelationNodeId(a.from);
+    const toId = createRelationNodeId(a.to);
+    const relationId = createId(a);
+
+    if (!relationAnnotations[fromId]) relationAnnotations[fromId] = {};
+    if (!relationAnnotations[fromId][toId]) relationAnnotations[fromId][toId] = {};
+    relationAnnotations[fromId][toId][relationId] = a;
+  }
+  return relationAnnotations;
 };
 
 export const importFieldAnnotations = (annotationsArray: Annotation[]) => {
   const fieldAnnotations: FieldAnnotations = {};
   for (let a of annotationsArray || []) {
     const field = a.field || "";
-    if (a.offset == null) {
+    if (a.type === "field") {
       if (!fieldAnnotations[field]) fieldAnnotations[field] = {};
       const key = a.variable + "." + a.value;
       fieldAnnotations[field][key] = {
+        type: "field",
         variable: a.variable,
         value: a.value,
         color: a.color,
@@ -150,8 +217,7 @@ export const toggleSpanAnnotation = (
   annotations: SpanAnnotations,
   newAnnotation: Annotation,
   rm: boolean,
-  keep_empty: boolean,
-  update_relations: boolean
+  keep_empty: boolean
 ): SpanAnnotations => {
   // Add span annotations in a way that prevents double assignments of the same value to the same token
   const id = createId(newAnnotation);
@@ -200,6 +266,7 @@ export const toggleSpanAnnotation = (
       delete annotations[index][createId({ ...newAnnotation, value: "EMPTY" })];
 
       annotations[index][id] = {
+        type: "span",
         index: index,
         variable: newAnnotation.variable,
         span: [newAnnotation.span[0], newAnnotation.span[1]],
@@ -208,46 +275,68 @@ export const toggleSpanAnnotation = (
         field: newAnnotation.field,
         offset: newAnnotation.offset,
         color: newAnnotation.color,
-        parents: newAnnotation.parents,
       };
     }
   }
 
-  if (update_relations) return updateRelations(annotations);
+  //if (update_relations) return updateRelations(annotations);
   return annotations;
 };
 
-export const updateRelations = (annotations: SpanAnnotations) => {
-  const uniqueAnn = [];
+export const syncRelationsToSpans = (
+  spanAnnotations: SpanAnnotations,
+  relationAnnotations: RelationAnnotations
+): RelationAnnotations => {
+  if (!spanAnnotations || !relationAnnotations) return {};
+  const spanAnn = spanAnnotationNodeLookup(spanAnnotations);
 
-  for (const positionAnnotations of Object.values(annotations)) {
-    for (const ann of Object.values(positionAnnotations)) {
-      if (ann.index !== ann.span[0]) continue; // relations are only included on first token of span
-      uniqueAnn.push(ann);
+  for (let fromId of Object.keys(relationAnnotations)) {
+    if (!spanAnn[fromId]) {
+      delete relationAnnotations[fromId];
+      continue;
+    }
+    for (let toId of Object.keys(relationAnnotations[fromId])) {
+      if (!spanAnn[toId]) {
+        delete relationAnnotations[fromId][toId];
+        continue;
+      }
+
+      for (let a of Object.values(relationAnnotations[fromId][toId])) {
+        a.from = spanAnn[fromId];
+        a.to = spanAnn[toId];
+      }
     }
   }
 
-  for (const ann of uniqueAnn) {
-    if (ann.parents) {
-      ann.parents = ann.parents.filter((p) => {
-        for (const toAnn of uniqueAnn) {
-          if (
-            p.field === toAnn.field &&
-            p.variable === toAnn.variable &&
-            p.value === toAnn.value &&
-            p.offset === toAnn.offset
-          ) {
-            // if match found, keep the relation, and also update the span
-            // When importing annotations, this has to be performed at least once
-            p.span = toAnn.span;
-            return true;
-          }
-        }
-        return false;
-      });
+  return relationAnnotations;
+};
+
+export const syncSpansToRelations = (
+  spanAnnotations: SpanAnnotations,
+  relationAnnotations: RelationAnnotations
+): RelationAnnotations => {
+  if (!spanAnnotations || !relationAnnotations) return {};
+  const spanAnn = spanAnnotationNodeLookup(spanAnnotations);
+
+  for (let fromId of Object.keys(relationAnnotations)) {
+    if (!spanAnn[fromId]) {
+      delete relationAnnotations[fromId];
+      continue;
+    }
+    for (let toId of Object.keys(relationAnnotations[fromId])) {
+      if (!spanAnn[toId]) {
+        delete relationAnnotations[fromId][toId];
+        continue;
+      }
+
+      for (let a of Object.values(relationAnnotations[fromId][toId])) {
+        a.from = spanAnn[fromId];
+        a.to = spanAnn[toId];
+      }
     }
   }
-  return annotations;
+
+  return relationAnnotations;
 };
 
 /**
@@ -258,48 +347,76 @@ export const updateRelations = (annotations: SpanAnnotations) => {
  * this annotation is also the only one that's used to export annotations
  */
 export const toggleRelationAnnotation = (
-  annotations: SpanAnnotations,
+  annotations: RelationAnnotations,
+  //annotations: SpanAnnotations,
   from: Annotation,
   to: Annotation,
   relation: Code,
   rm: boolean
 ) => {
-  const fromId = createId(from);
-  const ann = annotations[from.span[0]]?.[fromId];
+  const fromId = createRelationNodeId(from);
+  const toId = createRelationNodeId(to);
+  const relationId = relation.variable + "|" + relation.code;
 
-  // this shouldn't happen, but just in case
-  if (!ann) return;
+  if (!annotations[fromId]) annotations[fromId] = {};
+  if (!annotations[fromId][toId]) annotations[fromId][toId] = {};
 
-  // first, delete the relation (if it exists)
-  if (ann.parents) {
-    ann.parents = ann.parents.filter((p) => {
-      const same =
-        p.field === to.field &&
-        p.variable === to.variable &&
-        p.value === to.value &&
-        p.offset === to.offset &&
-        p.relationVariable === relation.variable &&
-        p.relationValue === relation.code;
-      return !same;
-    });
-    if (ann.parents.length === 0) delete ann.parents;
+  if (!rm) {
+    annotations[fromId][toId][relationId] = {
+      type: "relation",
+      variable: relation.variable,
+      value: relation.code,
+      color: relation.color,
+      from,
+      to,
+    };
+  } else {
+    if (annotations[fromId][toId][relationId]) delete annotations[fromId][toId][relationId];
   }
 
-  // if we're just removing, we're done
-  if (rm) return annotations;
-
-  if (!ann.parents) ann.parents = [];
-  ann.parents.push({
-    field: to.field,
-    variable: to.variable,
-    value: to.value,
-    offset: to.offset,
-    relationVariable: relation.variable,
-    relationValue: relation.code,
-    span: to.span,
-  });
+  if (!annotations[fromId][toId]) delete annotations[fromId][toId];
+  if (!annotations[fromId]) delete annotations[fromId];
 
   return annotations;
+};
+
+export const getRelations = (
+  annotations: RelationAnnotations,
+  from: Annotation,
+  to: Annotation
+) => {
+  const fromId = createRelationNodeId(from);
+  const toId = createRelationNodeId(to);
+
+  if (annotations[fromId] && annotations[fromId][toId]) {
+    return annotations[fromId][toId];
+  }
+  return {};
+};
+
+const getSpanText = (span: Span, tokens: Token[]) => {
+  const text = tokens
+    .slice(span[0], span[1] + 1)
+    .map((t: Token, i: number) => {
+      let string = t.text;
+      if (i > 0) string = t.pre + string;
+      if (i < span[1] - span[0]) string = string + t.post;
+      return string;
+    })
+    .join("");
+  return text;
+};
+
+const spanAnnotationNodeLookup = (annotations: SpanAnnotations) => {
+  const spanLookup: Record<string, Annotation> = {};
+
+  for (const positionAnnotations of Object.values(annotations)) {
+    for (const ann of Object.values(positionAnnotations)) {
+      if (ann.index !== ann.span[0]) continue; // relations are only included on first token of span
+      spanLookup[createRelationNodeId(ann)] = ann;
+    }
+  }
+  return spanLookup;
 };
 
 const prepareSpanAnnotations = (annotations: Annotation[]): SpanAnnotations => {
@@ -309,7 +426,8 @@ const prepareSpanAnnotations = (annotations: Annotation[]): SpanAnnotations => {
   // used in Tokens for matching to token indices
   return annotations.reduce((obj, ann) => {
     // annotations are only span annotations if they have a field, offset and length
-    if (ann.field == null || ann.offset == null || ann.length == null) return obj;
+    if (ann.type !== "span") return obj;
+    //if (ann.field == null || ann.offset == null || ann.length == null) return obj;
 
     if (!obj[ann.field]) obj[ann.field] = {};
     if (!obj[ann.field][ann.offset]) obj[ann.field][ann.offset] = { start: [], end: [] };

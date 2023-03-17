@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Dropdown, Ref } from "semantic-ui-react";
-import { createId, toggleSpanAnnotation } from "../functions/annotations";
+import { createId } from "../functions/annotations";
 import { getColor } from "../../../functions/tokenDesign";
 import ButtonSelection from "./ButtonSelection";
 import {
@@ -16,6 +16,7 @@ import {
   CodeSelectorDropdownOption,
   CodeMap,
 } from "../../../types";
+import AnnotationManager from "../functions/AnnotationManager";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -24,12 +25,11 @@ interface NewCodepageProps {
   variable: string;
   variableMap: VariableMap;
   annotations: SpanAnnotations;
-  setAnnotations: SetState<SpanAnnotations>;
+  annotationManager: AnnotationManager;
   editMode: boolean;
   span: Span;
   setOpen: SetState<boolean>;
   codeHistory: CodeHistory;
-  setCodeHistory: SetState<CodeHistory>;
 }
 
 const NewCodePage = ({
@@ -37,12 +37,11 @@ const NewCodePage = ({
   variable,
   variableMap,
   annotations,
-  setAnnotations,
+  annotationManager,
   editMode,
   span,
   setOpen,
   codeHistory,
-  setCodeHistory,
 }: NewCodepageProps) => {
   const textInputRef = useRef(null);
   const [focusOnButtons, setFocusOnButtons] = useState(true);
@@ -97,7 +96,7 @@ const NewCodePage = ({
       return;
     }
 
-    updateAnnotations(tokens, value, setAnnotations, setCodeHistory, editMode);
+    updateSpanAnnotations(tokens, value, annotationManager, editMode);
     if (!variableMap?.[variable]?.multiple && !ctrlKey) {
       setOpen(false);
     }
@@ -298,15 +297,15 @@ const getTextSnippet = (tokens: Token[], span: Span, maxlength = 12) => {
   return text.join("");
 };
 
-const updateAnnotations = (
+const updateSpanAnnotations = (
   tokens: Token[],
   value: CodeSelectorValue,
-  setAnnotations: SetState<SpanAnnotations>,
-  setCodeHistory: SetState<CodeHistory>,
+  annotationManager: AnnotationManager,
   editMode: boolean
 ) => {
   const [from, to] = value.span;
   const annotation: Annotation = {
+    type: "span",
     variable: value.variable,
     value: value.value as string | number,
     span: value.span,
@@ -316,20 +315,7 @@ const updateAnnotations = (
     field: tokens[from].field,
   };
 
-  setAnnotations((state: SpanAnnotations) =>
-    toggleSpanAnnotation({ ...state }, annotation, value.delete, editMode, true)
-  );
-
-  setCodeHistory((state: CodeHistory) => {
-    if (!state?.[annotation.variable]) state[annotation.variable] = [];
-    return {
-      ...state,
-      [annotation.variable]: [
-        annotation.value,
-        ...state[annotation.variable].filter((v: string) => v !== annotation.value),
-      ],
-    };
-  });
+  annotationManager.updateSpanAnnotations(annotation, value.delete, editMode);
 };
 
 export default React.memo(NewCodePage);

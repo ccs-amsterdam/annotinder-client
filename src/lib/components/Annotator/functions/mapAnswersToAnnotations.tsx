@@ -107,7 +107,7 @@ export const addAnnotationsFromAnswer = (
       if (valueMap[item][value]) continue;
       // case 3
       const variable = createVariable(answer.variable, item);
-      const annotation: Annotation = { variable, value };
+      const annotation: Annotation = { type: "field", variable, value };
       if (answer.field != null) annotation.field = answer.field;
       if (answer.offset != null) annotation.offset = answer.offset;
       if (answer.length != null) annotation.length = answer.length;

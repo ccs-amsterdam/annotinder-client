@@ -80,7 +80,7 @@ const StyledDiv = styled.div<{ open: boolean }>`
       bottom: 0;
       z-index: 10001;
       width: 3.5rem;
-      transform: translateY(1.45rem);
+      transform: translateY(1.4rem);
       left: calc(50% - 2.5rem);
 
       svg:hover {

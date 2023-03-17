@@ -59,6 +59,12 @@ const AnnotateGrid = styled.div`
       height: 35px;
       color: var(--text-inversed-fixed);
       background: var(--primary-dark);
+      border-radius: 2px;
+
+      button {
+        border-top-right-radius: 2px !important;
+        border-bottom-right-radius: 2px !important;
+      }
     }
   }
 
@@ -195,22 +201,16 @@ const annotationsHaveChanged = (old: Annotation[], current: Annotation[]) => {
 const getCleanAnnotations = (annotations: Annotation[]) => {
   return annotations.map((na) => {
     const a: Annotation = {
+      type: na.type,
       variable: na.variable,
       value: na.value,
       field: na.field,
       offset: na.offset,
       length: na.length,
       text: na.text,
+      from: na.from,
+      to: na.to,
     };
-    if (na.parents)
-      a.parents = na.parents.map((p) => ({
-        field: p.field,
-        variable: p.variable,
-        value: p.value,
-        offset: p.offset,
-        relationVariable: p.relationVariable,
-        relationValue: p.relationValue,
-      }));
     return a;
   });
 };

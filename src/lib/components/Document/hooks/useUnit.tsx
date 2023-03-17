@@ -8,11 +8,17 @@ import {
   Unit,
   SpanAnnotations,
   FieldAnnotations,
+  RelationAnnotations,
   VariableValueMap,
   UnitStates,
 } from "../../../types";
 import useWatchChange from "../../../hooks/useWatchChange";
-import { exportFieldAnnotations, exportSpanAnnotations } from "../functions/annotations";
+import {
+  exportFieldAnnotations,
+  exportSpanAnnotations,
+  exportRelationAnnotations,
+} from "../functions/annotations";
+import AnnotationManager from "../functions/AnnotationManager";
 import { scrollToMiddle } from "../../../functions/scroll";
 
 /**
@@ -35,6 +41,16 @@ const useUnit = (
   const [codeHistory, setCodeHistory] = useState<CodeHistory>({});
   const [spanAnnotations, setSpanAnnotations] = useState<SpanAnnotations | null>(null);
   const [fieldAnnotations, setFieldAnnotations] = useState<FieldAnnotations | null>(null);
+  const [relationAnnotations, setRelationAnnotations] = useState<RelationAnnotations | null>(null);
+
+  const [annotationManager] = useState<AnnotationManager>(
+    new AnnotationManager(
+      setSpanAnnotations,
+      setRelationAnnotations,
+      setFieldAnnotations,
+      setCodeHistory
+    )
+  );
   const [safetyCheck, setSafetyCheck] = useState<Token[]>(null);
 
   const doc = unit.unit;
@@ -42,10 +58,14 @@ const useUnit = (
   if (useWatchChange([unit, annotations])) {
     const unitAnnotations = annotations || unit.unit.annotations || [];
     unit = { ...unit, unit: { ...unit.unit, annotations: [...unitAnnotations] } };
-    const [spanAnnotations, fieldAnnotations] = getAnnotations(doc, unit.unit.annotations);
+    const [spanAnnotations, fieldAnnotations, relationAnnotations] = getAnnotations(
+      doc,
+      unit.unit.annotations
+    );
     initializeCodeHistory(unit.unit.annotations, setCodeHistory);
     setSpanAnnotations(spanAnnotations);
     setFieldAnnotations(fieldAnnotations);
+    setRelationAnnotations(relationAnnotations);
     setSafetyCheck(doc.tokens);
 
     if (spanAnnotations && Object.keys(spanAnnotations).length > 0) {
@@ -69,6 +89,10 @@ const useUnit = (
     return exportSpanAnnotations(spanAnnotations, doc.tokens, true);
   }, [spanAnnotations, doc]);
 
+  const exportedRelationAnnotations: Annotation[] = useMemo(() => {
+    return exportRelationAnnotations(relationAnnotations, doc.tokens, true);
+  }, [relationAnnotations, doc]);
+
   const exportedFieldAnnotations: Annotation[] = useMemo(() => {
     return exportFieldAnnotations(fieldAnnotations);
   }, [fieldAnnotations]);
@@ -78,11 +102,16 @@ const useUnit = (
     if (!onChangeAnnotations) return;
     // check if same unit, to prevent annotations from spilling over due to race conditions
     if (safetyCheck !== doc.tokens) return;
-    onChangeAnnotations([...exportedSpanAnnotations, ...exportedFieldAnnotations]);
+    onChangeAnnotations([
+      ...exportedSpanAnnotations,
+      ...exportedFieldAnnotations,
+      ...exportedRelationAnnotations,
+    ]);
   }, [
     doc.tokens,
     exportedSpanAnnotations,
     exportedFieldAnnotations,
+    exportedRelationAnnotations,
     onChangeAnnotations,
     safetyCheck,
   ]);
@@ -90,9 +119,9 @@ const useUnit = (
   return {
     doc,
     spanAnnotations,
-    setSpanAnnotations,
     fieldAnnotations,
-    setFieldAnnotations,
+    relationAnnotations,
+    annotationManager,
     codeHistory,
     setCodeHistory,
   };

@@ -14,6 +14,7 @@ const SelectVariableContainer = styled.div`
   flex-direction: column;
   border-top: 1px solid var(--background-fixed);
   border-bottom: 1px solid var(--background-fixed);
+  border-radius: 2px;
 
   padding: 10px 5px 3px 5px;
   background: var(--primary);

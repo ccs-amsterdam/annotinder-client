@@ -17,15 +17,17 @@ import {
   VariableType,
   ValidTokenRelations,
   ValidTokenDestinations,
+  RelationAnnotations,
 } from "../../../types";
 import DrawArrows from "./DrawArrows";
 
 interface AnnotateNavigationProps {
   tokens: Token[];
+  spanAnnotations: SpanAnnotations;
+  relationAnnotations: RelationAnnotations;
   variable: Variable;
   variableType: VariableType;
   showValues: VariableMap;
-  annotations: SpanAnnotations;
   disableAnnotations: boolean;
   editMode: boolean;
   triggerSelectionPopup: TriggerSelectionPopup;
@@ -40,10 +42,11 @@ interface AnnotateNavigationProps {
  */
 const AnnotateNavigation = ({
   tokens,
+  spanAnnotations,
+  relationAnnotations,
   variable,
   variableType,
   showValues,
-  annotations,
   disableAnnotations,
   editMode,
   triggerSelectionPopup,
@@ -52,26 +55,26 @@ const AnnotateNavigation = ({
 }: AnnotateNavigationProps) => {
   const { currentToken, tokenSelection } = useAnnotationEvents(
     tokens,
-    annotations,
+    spanAnnotations,
     triggerSelectionPopup,
     editMode,
     eventsBlocked || disableAnnotations
   );
 
   const validRelations: ValidTokenRelations = useMemo(
-    () => getValidTokenRelations(annotations, variable),
-    [annotations, variable]
+    () => getValidTokenRelations(spanAnnotations, variable),
+    [spanAnnotations, variable]
   );
   const validDestinations: ValidTokenDestinations = useMemo(
-    () => getValidTokenDestinations(annotations, validRelations, tokenSelection),
-    [annotations, validRelations, tokenSelection]
+    () => getValidTokenDestinations(spanAnnotations, validRelations, tokenSelection),
+    [spanAnnotations, validRelations, tokenSelection]
   );
 
   useEffect(() => {
     highlightAnnotations(
       tokens,
       validDestinations || validRelations,
-      annotations,
+      spanAnnotations,
       showValues,
       editMode,
       showAll,
@@ -81,7 +84,7 @@ const AnnotateNavigation = ({
     tokens,
     validRelations,
     validDestinations,
-    annotations,
+    spanAnnotations,
     showValues,
     editMode,
     showAll,
@@ -97,13 +100,13 @@ const AnnotateNavigation = ({
       <AnnotationPopup
         tokens={tokens}
         currentToken={currentToken}
-        annotations={annotations}
+        annotations={spanAnnotations}
         showValues={showValues}
       />
       <DrawArrows
         variable={variable}
         tokens={tokens}
-        annotations={annotations}
+        annotations={relationAnnotations}
         showValues={showValues}
         triggerSelectionPopup={triggerSelectionPopup}
         tokenSelection={tokenSelection}

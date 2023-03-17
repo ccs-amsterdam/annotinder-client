@@ -1,4 +1,4 @@
-const standardizeColor = (str: string, alpha: string = null) => {
+const standardizeColor = (str?: string, alpha: string = null) => {
   if (!str) return null;
   if (str.slice(0, 6) === "var(--") return str; // ignore if css color variable
   // https://stackoverflow.com/questions/1573053/javascript-function-to-convert-color-names-to-hex-codes

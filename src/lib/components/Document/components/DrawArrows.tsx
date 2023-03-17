@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   Variable,
   TokenSelection,
-  SpanAnnotations,
+  RelationAnnotations,
   Token,
   TriggerSelectionPopup,
   VariableMap,
@@ -25,7 +25,7 @@ const StyledSvg = styled.svg`
 interface DrawArrowsProps {
   variable: Variable;
   tokens: Token[];
-  annotations: SpanAnnotations;
+  annotations: RelationAnnotations;
   showValues: VariableMap;
   triggerSelectionPopup: TriggerSelectionPopup;
   tokenSelection: TokenSelection;

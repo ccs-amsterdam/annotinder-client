@@ -12,7 +12,7 @@ import {
   CodeSelectorOption,
   CodeSelectorValue,
 } from "../../../types";
-import { createId, toggleRelationAnnotation } from "../functions/annotations";
+import { getRelations } from "../functions/annotations";
 import AnnotationPortal from "../components/AnnotationPortal";
 import PopupSelection from "../components/PopupSelection";
 
@@ -101,14 +101,13 @@ const SelectRelationPage = ({ edge, unitStates, setOpen }: SelectRelationPagePro
         setOpen(false);
         return;
       }
-      const annotations = toggleRelationAnnotation(
-        unitStates.spanAnnotations,
+
+      unitStates.annotationManager.updateRelationAnnotations(
         edge.from,
         edge.to,
         value.value as Code,
         value.delete
       );
-      unitStates.setSpanAnnotations({ ...annotations });
       setOpen(false);
     },
     [setOpen, edge, unitStates]
@@ -117,27 +116,18 @@ const SelectRelationPage = ({ edge, unitStates, setOpen }: SelectRelationPagePro
   const options: CodeSelectorOption[] = useMemo(() => {
     if (!edge) return null;
 
+    const relations = getRelations(unitStates.relationAnnotations, edge.from, edge.to);
     const options = edge.relations.map((code) => {
-      const firstFromToken = unitStates.spanAnnotations[edge.from.span[0]];
-      const parents = firstFromToken[createId(edge.from)]?.parents;
-      const deleteRelation = parents?.some(
-        (p) =>
-          p.variable === edge.to.variable &&
-          p.value === edge.to.value &&
-          p.offset === edge.to.offset &&
-          p.relationVariable === code.variable &&
-          p.relationValue === code.code
-      );
-
+      const isNew = !relations[code.variable + "|" + code.code];
       return {
-        value: { value: code, delete: deleteRelation },
+        value: { value: code, delete: !isNew },
         label: code.code,
         color: standardizeColor(code.color, "50"),
       };
     });
 
     return options;
-  }, [edge, unitStates.spanAnnotations]);
+  }, [edge, unitStates.relationAnnotations]);
 
   useEffect(() => {
     if (options.length === 0) return setOpen(false);

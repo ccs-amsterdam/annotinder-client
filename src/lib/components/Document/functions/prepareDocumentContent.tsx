@@ -1,4 +1,8 @@
-import { importFieldAnnotations, importSpanAnnotations } from "./annotations";
+import {
+  importFieldAnnotations,
+  importSpanAnnotations,
+  importRelationAnnotations,
+} from "./annotations";
 import {
   Doc,
   ImageField,
@@ -7,6 +11,7 @@ import {
   TextField,
   Unit,
   FieldAnnotations,
+  RelationAnnotations,
   Annotation,
   UnitContent,
 } from "../../../types";
@@ -35,7 +40,7 @@ export const getDoc = (unit: Unit): Doc => {
 export const getAnnotations = (
   doc: Doc,
   annotations: Annotation[]
-): [SpanAnnotations, FieldAnnotations] => {
+): [SpanAnnotations, FieldAnnotations, RelationAnnotations] => {
   let spanAnnotations: SpanAnnotations = {};
   //if (d.importedAnnotations)
   //  spanAnnotations = importSpanAnnotations([...d.importedAnnotations], d.tokens, spanAnnotations);
@@ -47,8 +52,9 @@ export const getAnnotations = (
   //   spanAnnotations = importSpanAnnotations(tokenAnnotations, d.tokens, spanAnnotations);
 
   const fieldAnnotations: FieldAnnotations = importFieldAnnotations(annotations);
+  const relationAnnotations: RelationAnnotations = importRelationAnnotations(annotations);
 
-  return [spanAnnotations, fieldAnnotations];
+  return [spanAnnotations, fieldAnnotations, relationAnnotations];
 };
 
 function prepareGrid(d: any) {

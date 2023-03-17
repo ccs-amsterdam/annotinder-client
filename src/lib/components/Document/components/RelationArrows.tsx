@@ -1,46 +1,50 @@
+import { useMemo } from "react";
+import standardizeColor from "../../../functions/standardizeColor";
 import { getColor } from "../../../functions/tokenDesign";
-import { SpanAnnotations, Token, VariableMap, Span } from "../../../types";
+import { RelationAnnotations, Token, VariableMap, Span } from "../../../types";
 import Arrow from "./Arrow";
 
 interface Props {
   tokens: Token[];
-  annotations: SpanAnnotations;
+  annotations: RelationAnnotations;
   showValues: VariableMap;
   triggerSelectionPopup: (index: number, span: Span) => void;
 }
 
 const RelationArrows = ({ tokens, annotations, showValues, triggerSelectionPopup }: Props) => {
-  const arrows = [];
+  const arrows = useMemo(() => {
+    const arrows = [];
+    if (!annotations) return arrows;
+    for (let from of Object.values(annotations)) {
+      for (let to of Object.values(from)) {
+        for (let r of Object.values(to)) {
+          if (!r || !r.from || !r.to) continue;
+          const ann = r.from;
+          const parent = r.to;
+          const id = `${ann.variable}|${ann.value}|${ann.span[0]} - ${r.variable}|${r.value} - ${parent.variable}|${parent.value}|${parent.span[0]}`;
 
-  for (let positionAnnotations of Object.values(annotations)) {
-    for (let ann of Object.values(positionAnnotations)) {
-      if (ann.span[0] !== ann.index) continue;
-      if (!ann.parents) continue;
+          let [from, to] = [ann.span[0], parent.span[0]];
+          let [fromEnd, toEnd] = [ann.span[1], parent.span[1]];
 
-      for (let parent of ann.parents) {
-        let [from, to] = [ann.span[0], parent.span[0]];
-        let [fromEnd, toEnd] = [ann.span[1], parent.span[1]];
+          const relationCodeMap = showValues[r.variable]?.codeMap;
+          if (!relationCodeMap) continue;
+          const fromCodeMap = showValues[ann.variable]?.codeMap;
+          const toCodeMap = showValues[parent.variable]?.codeMap;
 
-        const id = `${ann.variable}|${ann.value}|${ann.span[0]} - ${parent.relationVariable}|${parent.relationValue} - ${parent.variable}|${parent.value}|${parent.span[0]}`;
-
-        const relationCodeMap = showValues[parent.relationVariable]?.codeMap;
-        if (!relationCodeMap) continue;
-
-        const fromCodeMap = showValues[ann.variable]?.codeMap;
-        const toCodeMap = showValues[parent.variable]?.codeMap;
-
-        arrows.push({
-          id,
-          tokenSelection: [from, to],
-          tokenSelectionEnd: [fromEnd, toEnd],
-          relation: parent.relationValue,
-          edgeColor: parent.relationColor || getColor(parent.relationValue, relationCodeMap),
-          fromColor: ann.color || getColor(ann.value, fromCodeMap),
-          toColor: parent.color || getColor(parent.value, toCodeMap),
-        });
+          arrows.push({
+            id,
+            tokenSelection: [from, to],
+            tokenSelectionEnd: [fromEnd, toEnd],
+            relation: r.value,
+            edgeColor: standardizeColor(r.color, "50") || getColor(r.value, relationCodeMap),
+            fromColor: standardizeColor(ann.color, "50") || getColor(ann.value, fromCodeMap),
+            toColor: standardizeColor(parent.color, "50") || getColor(parent.value, toCodeMap),
+          });
+        }
       }
     }
-  }
+    return arrows;
+  }, [annotations, showValues]);
 
   const usedPositions: Record<string, number> = {};
 

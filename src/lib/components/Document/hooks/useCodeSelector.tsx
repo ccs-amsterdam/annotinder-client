@@ -87,12 +87,11 @@ const useCodeSelector = (
           variable={variable}
           variableMap={variableMap}
           annotations={unitStates.spanAnnotations}
-          setAnnotations={unitStates.setSpanAnnotations}
+          annotationManager={unitStates.annotationManager}
           span={span}
           editMode={editMode}
           setOpen={setOpen}
           codeHistory={unitStates.codeHistory}
-          setCodeHistory={unitStates.setCodeHistory}
         />
       </>
     </AnnotationPortal>

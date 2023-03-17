@@ -26,7 +26,7 @@ const StyledG = styled.g<{ interactive: boolean }>`
 
   cursor: pointer;
   --strokewidth: 0.3rem;
-  --radius: 0.4rem;
+  --radius: 0.35rem;
   --opacity: 0.7;
   --bigpolyOpacity: 0;
   --smallpolyOpacity: 1;
@@ -136,7 +136,7 @@ export default function Arrow({
   }
 
   function getXY(p, pend, x, y) {
-    const xoffset = 9;
+    const xoffset = 6;
     const yoffset = 4;
     if (x === "left" && y === "top") return [p.x + xoffset, p.y - yoffset];
     if (x === "left" && y === "bottom") return [p.x + xoffset, p.y + p.h + yoffset];
@@ -151,18 +151,18 @@ export default function Arrow({
     // if arrow positions already exist, curve the arrow a bit to avoid overlaps
     const relationString = `${p1x},${p1y},${p2x},${p2y}`;
     if (!usedPositions[relationString]) usedPositions[relationString] = 0;
-    bow = bow + usedPositions[relationString] * 0.05;
+    bow = bow + usedPositions[relationString] * 0.07;
     usedPositions[relationString] += 1;
 
     const fromPositionString = `${p1x},${p1y}`;
     if (!usedPositions[fromPositionString]) usedPositions[fromPositionString] = 0;
-    const fromOffset = usedPositions[fromPositionString] * 10;
+    const fromOffset = usedPositions[fromPositionString] * 13;
     p1x -= fromX === "right" ? fromOffset : -fromOffset;
     usedPositions[fromPositionString] += 1;
 
     const toPositionString = `${p2x},${p2y}`;
     if (!usedPositions[toPositionString]) usedPositions[toPositionString] = 0;
-    const toOffset = usedPositions[toPositionString] * 10;
+    const toOffset = usedPositions[toPositionString] * 13;
     p2x -= toX === "right" ? toOffset : -toOffset;
     usedPositions[toPositionString] += 1;
   }
@@ -217,7 +217,7 @@ export default function Arrow({
 
         <polygon
           className="smallpolygon"
-          points="0,-3 5,0, 0,3"
+          points="-5,-3 3,0, -5,3"
           fill={"var(--background-fixed)"}
           stroke={toColorNoAlpha || edgeColorNoAlpha}
           strokeWidth="3"

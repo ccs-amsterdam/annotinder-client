@@ -7,6 +7,7 @@ import {
   CSSProperties,
 } from "react";
 import { SemanticWIDTHS } from "semantic-ui-react";
+import AnnotationManager from "./components/Document/functions/AnnotationManager";
 import Backend from "./components/Login/Backend";
 // common interfaces
 
@@ -34,6 +35,7 @@ export type Span = [number, number];
 export type Status = "DONE" | "IN_PROGRESS";
 
 export interface Annotation {
+  type?: "field" | "span" | "relation" | "relation_span";
   variable: string;
   value?: string | number;
   field?: string;
@@ -45,22 +47,9 @@ export interface Annotation {
   token_span?: Span;
   color?: string;
   comment?: string;
-  parents?: SpanParent[];
-}
 
-export interface SpanParent {
-  field: string;
-  variable: string;
-  value: string | number;
-  offset: number;
-  relationVariable: string;
-  relationValue: string;
-  // from here it's just internal stuff for visualization
-  relationColor?: string;
-  color?: string;
-  span?: Span;
-
-  text?: string;
+  from?: Annotation;
+  to?: Annotation;
 }
 
 ////// LOGIN
@@ -111,6 +100,12 @@ export interface SpanAnnotations {
 /** Annotations that only have a field (or empty field for entire document) */
 export interface FieldAnnotations {
   [field: string]: AnnotationMap;
+}
+
+export interface RelationAnnotations {
+  [from: string]: {
+    [to: string]: AnnotationMap;
+  };
 }
 
 ///// CODEBOOK
@@ -714,9 +709,12 @@ export interface RawTokenColumn {
 export interface UnitStates {
   doc: Doc;
   spanAnnotations: SpanAnnotations | null;
-  setSpanAnnotations: SetState<SpanAnnotations | null>;
+  //setSpanAnnotations: SetState<SpanAnnotations | null>;
   fieldAnnotations: SpanAnnotations | null;
-  setFieldAnnotations: SetState<FieldAnnotations | null>;
+  //setFieldAnnotations: SetState<FieldAnnotations | null>;
+  relationAnnotations: RelationAnnotations;
+  //setRelationAnnotations: SetState<RelationAnnotations | null>;
+  annotationManager: AnnotationManager;
   codeHistory: CodeHistory;
   setCodeHistory: SetState<CodeHistory>;
 }

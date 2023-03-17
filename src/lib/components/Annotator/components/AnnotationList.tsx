@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { getColor } from "../../../functions/tokenDesign";
-import { Annotation, VariableMap, Span, Token, SpanParent } from "../../../types";
+import { Annotation, VariableMap, Span, Token } from "../../../types";
 
 interface AnnotationListProps {
   tokens: Token[];
@@ -41,7 +41,7 @@ const StyledDiv = styled.div`
     .label {
       display: flex;
       width: 100%;
-      border-radius: 5px;
+      border-radius: 4px;
       text-align: center;
       padding: 0.5rem 0.3rem;
       border: 1px solid var(--background-inversed-fixed);
@@ -74,7 +74,7 @@ const StyledDiv = styled.div`
     display: flex;
     flex-direction: column;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 4px;
     margin: 0.4rem 0.7rem 0rem 0.2rem;
     padding: 0.2rem 0.2rem 0 0.2rem;
     border: 1px solid var(--background-inversed-fixed);
@@ -106,6 +106,10 @@ const StyledDiv = styled.div`
       width: 100%;
       padding: 0rem 0.4rem;
       justify-content: space-between;
+
+      div {
+        text-align: right;
+      }
     }
 
     p {
@@ -165,7 +169,6 @@ const AnnotationList = ({ tokens, variableMap, annotations }: AnnotationListProp
 
 const listAnnotations = (tokens: Token[], variableMap: VariableMap, annotations: Annotation[]) => {
   const rows = [];
-  let i = 0;
 
   const onClick = (span: Span, end?: boolean) => {
     if (!span) return;
@@ -174,44 +177,30 @@ const listAnnotations = (tokens: Token[], variableMap: VariableMap, annotations:
   };
 
   for (const annotation of annotations) {
-    const text = annotation.text || "";
-
-    const row = (
-      <ShowSpanAnnotation
-        key={"span" + i}
-        variableMap={variableMap}
-        annotation={annotation}
-        onClick={onClick}
-        text={text}
-      />
-    );
-    if (row !== null) rows.push(row);
-
-    for (let parent of annotation.parents || []) {
-      const row = (
-        <ShowRelation
-          key={
-            "relation" +
-            parent.relationVariable +
-            "-" +
-            parent.relationValue +
-            "-" +
-            parent.value +
-            parent.offset +
-            "_" +
-            i
-          }
+    if (annotation.type === "span") {
+      const text = annotation.text || "";
+      rows.push(
+        <ShowSpanAnnotation
+          key={"span" + rows.length}
           variableMap={variableMap}
           annotation={annotation}
-          parent={parent}
           onClick={onClick}
-          fromText={text}
-          toText={parent.text}
+          text={text}
         />
       );
-      if (row !== null) rows.push(row);
     }
-    i++;
+    if (annotation.type === "relation") {
+      if (!annotation.from && annotation.to) continue;
+
+      rows.push(
+        <ShowRelation
+          key={"relation" + rows.length}
+          variableMap={variableMap}
+          annotation={annotation}
+          onClick={onClick}
+        />
+      );
+    }
   }
   return rows;
 };
@@ -234,9 +223,7 @@ const ShowSpanAnnotation = ({
 
   if (!codeMap?.[annotation.value] || !codeMap[annotation.value].active) return null;
   const color = getColor(annotation.value, codeMap);
-  const label = codeMap[annotation.value]?.foldToParent
-    ? `${codeMap[annotation.value].foldToParent} - ${annotation.value}`
-    : annotation.value;
+  const label = annotation.value;
 
   return (
     <div className={"annotation"} onClick={() => onClick(annotation.token_span)}>
@@ -253,34 +240,18 @@ const ShowSpanAnnotation = ({
 interface ShowRelationProps {
   variableMap: VariableMap;
   annotation: Annotation;
-  parent: SpanParent;
   onClick: (span: Span, end: boolean) => void;
-  fromText: string;
-  toText: string;
 }
 
-const ShowRelation = ({
-  variableMap,
-  annotation,
-  parent,
-  onClick,
-  fromText,
-  toText,
-}: ShowRelationProps) => {
-  let codeMap = variableMap?.[parent?.relationVariable]?.codeMap;
+const ShowRelation = ({ variableMap, annotation, onClick }: ShowRelationProps) => {
+  let codeMap = variableMap?.[annotation.variable]?.codeMap;
   if (!codeMap) return null;
 
-  const color = getColor(parent.relationValue, codeMap);
-  const label = codeMap[parent.relationValue]?.foldToParent
-    ? `${codeMap[parent.relationValue].foldToParent} - ${parent.relationValue}`
-    : parent.relationValue;
+  const color = getColor(annotation.value, codeMap);
+  const label = annotation.value;
+  if (!annotation.from.span || !annotation.to.span) return null;
 
-  if (!annotation.token_span || !parent.span) return null;
-
-  const relationSpan: Span =
-    annotation.token_span[0] < parent.span[0]
-      ? [annotation.token_span[1], parent.span[0]]
-      : [annotation.token_span[0], parent.span[1]];
+  const relationSpan: Span = [annotation.from.span[0], annotation.to.span[1]];
 
   return (
     <div
@@ -292,14 +263,12 @@ const ShowRelation = ({
         <span>{label}</span>
         <div>
           <i>
-            {annotation.value} → {parent.value}
+            {annotation.from.value} → {annotation.to.value}
           </i>
         </div>
       </div>
       <div>
-        <p className="text left" title={fromText}>
-          {fromText + " → " + toText}
-        </p>
+        <p className="text left">{annotation.from.text + " → " + annotation.to.text}</p>
       </div>
     </div>
   );

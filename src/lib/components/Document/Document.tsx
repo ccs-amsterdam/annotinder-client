@@ -118,7 +118,7 @@ const Document = ({
     if (returnVariableMap) returnVariableMap(variableMap);
   }, [variableMap, returnVariableMap]);
 
-  const setSpanAnnotations = unitStates.setSpanAnnotations;
+  const setSpanAnnotations = unitStates.annotationManager.setSpanAnnotations;
   const onBodyReady = useCallback(() => {
     if (onReady) onReady();
     setSpanAnnotations((spanAnnotations: SpanAnnotations) => ({ ...spanAnnotations })); //trigger DOM update after token refs have been prepared
@@ -157,10 +157,11 @@ const Document = ({
 
       <AnnotateNavigation
         tokens={unitStates.doc.tokens}
+        spanAnnotations={unitStates.spanAnnotations}
+        relationAnnotations={unitStates.relationAnnotations}
         variable={variableMap?.[variable]}
         variableType={variableType}
         showValues={showValues}
-        annotations={unitStates.spanAnnotations}
         disableAnnotations={!onChangeAnnotations || !variableMap}
         editMode={editMode}
         triggerSelectionPopup={triggerSelectionPopup}
