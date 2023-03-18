@@ -26,6 +26,7 @@ const Container = styled.div`
   flex-direction: column;
   height: 100%;
   background: var(--background);
+  //border-top: 1px solid var(--text);
 `;
 
 const ContentWindow = styled.div`

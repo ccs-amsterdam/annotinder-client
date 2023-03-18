@@ -11,7 +11,7 @@ const StyledDiv = styled.div<{ open: boolean }>`
   width: 100%;
   height: 100%;
   padding-top: 50px;
-  transition: all 0.3s;
+  transition: all 0.2s;
 
   ${(p) =>
     p.open
@@ -34,7 +34,7 @@ const StyledDiv = styled.div<{ open: boolean }>`
     height: min(90%, 600px);
     margin: auto;
 
-    transition: all 0.3s;
+    transition: all 0.2s;
     border: 3px solid var(--primary);
     box-shadow: 0 0 10px var(--primary-dark);
     border-radius: 5px;
@@ -109,7 +109,7 @@ const Modal = ({ children, open, setOpen }: ModalProps) => {
 
     function onClick(e: any) {
       if (closeIconEl && closeIconEl.contains(e.target)) setOpen(false);
-      e.stopPropagation();
+      //e.stopPropagation();
       if (modalEl && !modalEl.contains(e.target)) {
         setOpen(false);
       }

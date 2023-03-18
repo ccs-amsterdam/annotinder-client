@@ -60,6 +60,7 @@ interface BodyProps {
   focus: string[];
   centered: boolean;
   readOnly: boolean;
+  currentUnitReady: boolean;
 }
 
 const Body = ({
@@ -74,6 +75,7 @@ const Body = ({
   focus,
   centered,
   readOnly,
+  currentUnitReady,
 }: BodyProps) => {
   const [content, setContent] = useState<(ReactElement | ReactElement[])[]>([]);
   const fieldRefs: FieldRefs = useMemo(() => ({}), []);
@@ -108,6 +110,7 @@ const Body = ({
   }, [tokens, text_fields, image_fields, markdown_fields, onReady, setImagesLoaded, fieldRefs]);
 
   if (tokens === null) return null;
+
   return (
     <>
       <Ref innerRef={containerRef}>
@@ -130,7 +133,7 @@ const Body = ({
               width: "100%",
             }}
           >
-            <Loader active={!imagesLoaded} />
+            <Loader active={!imagesLoaded || !currentUnitReady} radius={0} />
             <DocumentContent
               centered={centered}
               highLines={!readOnly}

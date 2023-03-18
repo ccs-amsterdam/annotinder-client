@@ -4,7 +4,6 @@ import {
   TokenSelection,
   ValidTokenRelations,
   ValidTokenDestinations,
-  RelationAnnotations,
 } from "../../../types";
 
 export const getValidTokenRelations = (

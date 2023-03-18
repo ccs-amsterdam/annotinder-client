@@ -57,7 +57,7 @@ const ApplaudIcon = styled.div`
 
   div {
     margin: auto;
-    width: 20%;
+    width: 15rem;
   }
 `;
 

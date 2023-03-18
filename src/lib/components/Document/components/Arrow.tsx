@@ -126,9 +126,9 @@ export default function Arrow({
   let [toX, toY] = ["left", "top"];
 
   if (p1end.x - p2.x < -50) fromX = "right";
-  if (p2end.x - p1.x < -50) toX = "right";
-  if (p1.y - p2.y < 0) fromY = "bottom";
-  if (p2.y - p1.y < 0) toY = "bottom";
+  if (fromX === "left" && p2end.x - p1.x < -50) toX = "right";
+  if (p1.y - p2.y < -5) fromY = "bottom";
+  if (fromY === "top" && p2.y - p1.y < -5) toY = "bottom";
 
   if (p2.x < p1.x && p1.y === p2.y) {
     fromY = "bottom";
@@ -145,7 +145,7 @@ export default function Arrow({
   }
   let [p1x, p1y] = getXY(p1, p1end, fromX, fromY);
   let [p2x, p2y] = getXY(p2, p2end, toX, toY);
-  let bow = p1y === p2y ? 0.1 : 0;
+  let bow = Math.abs(p1y - p2y) < 10 ? 0.1 : 0;
 
   if (usedPositions) {
     // if arrow positions already exist, curve the arrow a bit to avoid overlaps

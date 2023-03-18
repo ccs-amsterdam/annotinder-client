@@ -41,18 +41,12 @@ export const getAnnotations = (
   doc: Doc,
   annotations: Annotation[]
 ): [SpanAnnotations, FieldAnnotations, RelationAnnotations] => {
-  let spanAnnotations: SpanAnnotations = {};
-  //if (d.importedAnnotations)
-  //  spanAnnotations = importSpanAnnotations([...d.importedAnnotations], d.tokens, spanAnnotations);
-  if (annotations)
-    spanAnnotations = importSpanAnnotations([...annotations], doc.tokens, spanAnnotations);
-
-  // const tokenAnnotations = importTokenAnnotations(d.tokens);
-  // if (tokenAnnotations.length > 0)
-  //   spanAnnotations = importSpanAnnotations(tokenAnnotations, d.tokens, spanAnnotations);
-
+  const spanAnnotations = importSpanAnnotations([...annotations], doc.tokens);
   const fieldAnnotations: FieldAnnotations = importFieldAnnotations(annotations);
-  const relationAnnotations: RelationAnnotations = importRelationAnnotations(annotations);
+  const relationAnnotations: RelationAnnotations = importRelationAnnotations(
+    annotations,
+    doc.tokens
+  );
 
   return [spanAnnotations, fieldAnnotations, relationAnnotations];
 };

@@ -71,7 +71,7 @@ const NewCodePage = ({
 
           // In editmode, use the original span so that the full annotation is replaced/removed.
           // In open annotation mode, only edit the span of the current selection
-          if (!editMode) a.span = span;
+          //if (!editMode) a.span = span;
 
           if (a.variable !== variable) continue;
           const annId = a.span[0] + "_" + id;
@@ -174,26 +174,13 @@ const NewCodePage = ({
 
         // check if more than one annotation of same value in this span.
 
-        const multiple = existing.find((e) => {
-          return createId(e) !== createId(o) && e.value === o.value;
+        buttonOptions.push({
+          tag: o.value,
+          label: '"' + getTextSnippet(tokens, o.span) + '"',
+          color: getColor(o.value, codeMap),
+          value: { ...o, delete: true },
+          textColor: "var(--red)",
         });
-        if (multiple) {
-          // if multiple, add text snippet as label (and move code to tag) to disambiguate,
-          buttonOptions.push({
-            tag: o.value,
-            label: '"' + getTextSnippet(tokens, o.span) + '"',
-            color: getColor(o.value, codeMap),
-            value: { ...o, delete: true },
-            textColor: "var(--red)",
-          });
-        } else {
-          buttonOptions.push({
-            label: o.value,
-            color: getColor(o.value, codeMap),
-            value: { ...o, delete: true },
-            textColor: "var(--red)",
-          });
-        }
       }
     }
 

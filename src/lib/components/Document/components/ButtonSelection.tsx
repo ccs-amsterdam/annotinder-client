@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Divider, Icon, Ref } from "semantic-ui-react";
+import React, { useState, useEffect, useMemo } from "react";
 import { CustomButton } from "../../../styled/StyledSemantic";
 import { moveDown, moveUp } from "../../../functions/refNavigation";
 import { CodeSelectorOption, CodeSelectorValue } from "../../../types";
 import { FaWindowClose } from "react-icons/fa";
 import styled from "styled-components";
+import { RiDeleteBin2Line } from "react-icons/ri";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -32,9 +32,8 @@ interface ButtonSelectionProps {
 
 const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps) => {
   const [selected, setSelected] = useState(1);
-  const [allOptions, setAllOptions] = useState<CodeSelectorOption[]>([]);
 
-  useEffect(() => {
+  const allOptions: CodeSelectorOption[] = useMemo(() => {
     // add cancel button and (most importantly) add refs used for navigation
     const cancelOption: CodeSelectorOption = {
       label: "CLOSE",
@@ -43,11 +42,11 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
       textColor: "var(--text-inversed)",
     };
 
-    let allOptions = [cancelOption, ...options];
+    let allOptions: CodeSelectorOption[] = [cancelOption, ...options];
     for (let option of allOptions) option.ref = React.createRef();
-    setAllOptions(allOptions);
     setSelected(1);
-  }, [options, setAllOptions]);
+    return allOptions;
+  }, [options]);
 
   const onKeydown = React.useCallback(
     (event: KeyboardEvent) => {
@@ -105,51 +104,49 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
     };
   }, [active, onKeydown]);
 
-  const button = (option: CodeSelectorOption, i: number) => {
-    const tagColor = option.value.delete ? option.color : "var(--text-inversed)";
-    const tagBorderColor = option.color.slice(0, 7);
-    const borderColor = option.value.delete ? "var(--red)" : "var(--text)";
-    const bgColor = option.color;
-
+  const button = (option: CodeSelectorOption, i: number, rm: boolean) => {
     return (
-      <Ref key={option.label + "_" + i} innerRef={option.ref}>
-        <CustomButton
-          className="buttonBackground"
-          style={{
-            position: "relative",
-            flex: `0.2 1 auto`,
-            padding: "5px",
-            background: bgColor,
-            border: "3px solid",
-            color: "var(--text-fixed)",
-            borderColor: i === selected ? borderColor : "var(--text-inversed)",
-            margin: "1px",
-          }}
-          key={option.label + "_" + i}
-          onMouseOver={() => setSelected(i)}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onSelect(option.value, e.ctrlKey || e.altKey);
-          }}
-        >
+      <CustomButton
+        ref={option.ref as React.RefObject<HTMLButtonElement>}
+        key={option.label + "_" + i}
+        selected={i === selected}
+        //className="buttonBackground"
+        style={{
+          position: "relative",
+          flex: `0.2 1 auto`,
+          padding: rm ? "5px 30px 5px 5px" : "5px",
+          background: option.color,
+          margin: "1px",
+        }}
+        onMouseOver={() => setSelected(i)}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onSelect(option.value, e.ctrlKey || e.altKey);
+        }}
+      >
+        <span>
           {option.tag ? (
-            <span
-              style={{
-                display: "inline-block",
-                float: "left",
-                background: tagColor,
-                color: "black",
-                borderRadius: "0px",
-                border: `2px solid ${tagBorderColor}`,
-                padding: "2px",
-                margin: "-4px 4px -4px -2px",
-              }}
-            >{`${option.tag} `}</span>
+            <span style={{ fontSize: "1.2rem", fontWeight: "bold" }}>{option.tag}: </span>
           ) : null}
-          <span>{option.label}</span>
-        </CustomButton>
-      </Ref>
+          {option.label}
+        </span>
+        {rm && (
+          <div
+            style={{
+              position: "absolute",
+              right: 3,
+              top: 0,
+              fontSize: "2.5rem",
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <RiDeleteBin2Line />
+          </div>
+        )}
+      </CustomButton>
     );
   };
 
@@ -161,15 +158,21 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
     for (let option of allOptions) {
       if (option.value.cancel)
         cancelButton = (
-          <Ref key={option.label + "_" + i} innerRef={option.ref}>
-            <CloseButton
-              selected={i === selected}
+          <div
+            key={option.label + "_" + i}
+            className={`closeIcon`}
+            ref={option.ref as React.RefObject<HTMLDivElement>}
+          >
+            <FaWindowClose
+              size="100%"
+              color={selected ? "var(--text)" : "var(--primary-light)"}
               onClick={(e) => onSelect(option.value, e.ctrlKey || e.altKey)}
+              onMouseOver={() => setSelected(0)}
             />
-          </Ref>
+          </div>
         );
-      else if (option.value.delete) deleteButtons.push(button(option, i));
-      else selectButtons.push(button(option, i));
+      else if (option.value.delete) deleteButtons.push(button(option, i, true));
+      else selectButtons.push(button(option, i, false));
 
       i++;
     }
@@ -189,10 +192,10 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
           {selectButtons}
         </div>
         {deleteButtons.length > 0 ? (
-          <b>
-            <Divider style={{ margin: "5px" }} />
-            <Icon name="trash alternate" /> Delete
-          </b>
+          <>
+            <div style={{ height: "5px", borderTop: "1px solid var(--primary-text)" }} />
+            <i>delete annotations</i>
+          </>
         ) : null}
         <div
           key={id + "_2"}
@@ -205,23 +208,6 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
   };
 
   return <StyledDiv key={id}>{mapButtons()}</StyledDiv>;
-};
-
-interface CloseButtonProps {
-  selected: boolean;
-  onClick: (e: any) => void;
-}
-
-const CloseButton = ({ selected, onClick }: CloseButtonProps) => {
-  return (
-    <div className={`closeIcon`}>
-      <FaWindowClose
-        size="100%"
-        color={selected ? "var(--text)" : "var(--primary-text)"}
-        onClick={onClick}
-      />
-    </div>
-  );
 };
 
 export default ButtonSelection;

@@ -9,7 +9,7 @@ export const CenteredDiv = styled.div`
 `;
 
 export const Loader = styled.div<{ active?: boolean; radius?: number }>`
-  --r: ${(p) => (p.radius ? p.radius + "px" : "40px")};
+  --r: ${(p) => (p.radius != null ? p.radius + "px" : "40px")};
   display: ${(p) => (p.active ? "block" : "none")};
   position: absolute;
   top: 0;

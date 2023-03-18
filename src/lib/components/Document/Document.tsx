@@ -12,7 +12,6 @@ import {
   VariableMap,
   Unit,
   Annotation,
-  SpanAnnotations,
   Token,
   SetState,
   VariableValueMap,
@@ -97,6 +96,10 @@ const Document = ({
   const [variable, setVariable] = useState(null);
 
   const unitStates = useUnit(unit, annotations, returnTokens, onChangeAnnotations);
+
+  // keep track of current tokens object, to prevent rendering annotations on the wrong text
+  const [currentUnit, setCurrentUnit] = useState(unitStates.doc);
+
   const [variableMap, showValues, variableType, editMode] = useVariableMap(
     variables,
     variable,
@@ -118,11 +121,10 @@ const Document = ({
     if (returnVariableMap) returnVariableMap(variableMap);
   }, [variableMap, returnVariableMap]);
 
-  const setSpanAnnotations = unitStates.annotationManager.setSpanAnnotations;
   const onBodyReady = useCallback(() => {
     if (onReady) onReady();
-    setSpanAnnotations((spanAnnotations: SpanAnnotations) => ({ ...spanAnnotations })); //trigger DOM update after token refs have been prepared
-  }, [onReady, setSpanAnnotations]);
+    setCurrentUnit(unitStates.doc);
+  }, [onReady, unitStates.doc, setCurrentUnit]);
 
   if (!unitStates.doc.tokens && !unitStates.doc.image_fields) return null;
 
@@ -132,6 +134,8 @@ const Document = ({
   const selector = variableType === "relation" ? relationSelector : codeSelector;
 
   const annotationMode = variableType === "relation" ? "relationMode" : "spanMode";
+
+  const currentUnitReady = currentUnit === unitStates.doc;
 
   return (
     <DocumentContainer className={`${annotationMode} ${(editMode && "editMode") || ""}`}>
@@ -153,12 +157,13 @@ const Document = ({
         focus={focus}
         centered={centered}
         readOnly={!onChangeAnnotations}
+        currentUnitReady={currentUnitReady}
       />
 
       <AnnotateNavigation
         tokens={unitStates.doc.tokens}
-        spanAnnotations={unitStates.spanAnnotations}
-        relationAnnotations={unitStates.relationAnnotations}
+        spanAnnotations={currentUnitReady ? unitStates.spanAnnotations : {}}
+        relationAnnotations={currentUnitReady ? unitStates.relationAnnotations : {}}
         variable={variableMap?.[variable]}
         variableType={variableType}
         showValues={showValues}

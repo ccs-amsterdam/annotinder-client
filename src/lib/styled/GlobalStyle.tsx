@@ -18,11 +18,11 @@ const GlobalStyle = createGlobalStyle`
     --secondary-dark: #018786;
     --secondary-light: #a7ffeb;
 
-    --background: #121212
+    --background: #222;
     --background-transparent: #1b1c1dbb; 
     --background-fixed: white;
     --background-inversed: #ffffff;
-    --background-inversed-fixed: #121212;
+    --background-inversed-fixed: #222;
   
     --text: white;
     --text-fixed: black;

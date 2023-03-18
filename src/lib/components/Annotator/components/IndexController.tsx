@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Icon } from "semantic-ui-react";
+import { FaCheck, FaStepBackward, FaStepForward } from "react-icons/fa";
 import styled from "styled-components";
 import useWatchChange from "../../../hooks/useWatchChange";
 import { SetState } from "../../../types";
@@ -13,11 +13,12 @@ const IndexControllerBar = styled.div`
   padding: 0px;
   border-radius: 0;
   font-size: 1.4rem;
-  background: var(--background-inversed-fixed);
+  background: transparent;
 
   & > div {
     margin-right: 3px;
     display: flex;
+    gap: 0.5rem;
   }
 `;
 
@@ -25,43 +26,37 @@ const Slider = styled.input<{ progress: number }>`
   flex: 1 1 0px;
   margin-top: 0px;
   min-width: 1px;
-  border: 1px solid white;
   background: linear-gradient(
     to right,
-    ${(props) => `var(--primary-light) ${props.progress}%,
-    white ${props.progress}% 100%,
-    white 100%`}
+    ${(props) => `var(--primary) ${props.progress}%,
+    var(--primary-light) ${props.progress}% 100%,
+    var(--primary-light) 100%`}
   );
 `;
 
 const IndexLabel = styled.div`
-  height: 24px;
-  padding: 0px 3px 0px 3px;
-  margin: 0 2.5px 0px 0px;
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr 0.7rem 1fr;
-  line-height: 24px;
+  display: flex;
   text-align: center;
   white-space: nowrap;
-  font-size: 1.2rem;
+  font-size: 1.6rem;
+
   font-weight: bold;
-  border-radius: 2px;
-  background: var(--primary);
-  color: var(--text-inversed-fixed);
-  border: 1px solid white;
+  color: var(--primary-text);
 
   & div {
-    minwidth: 1rem;
+    min-width: 1.6rem;
+    margin: auto;
   }
 `;
 
-const StyledIcon = styled(Icon)`
-  cursor: pointer !important;
-  height: 24px !important;
-  line-height: 24px !important;
-  font-size: 20px !important;
-  color: var(--text-inversed-fixed) !important;
+const Icon = styled.div<{ disabled?: boolean }>`
+  font-size: 2.5rem;
+  cursor: ${(p) => (p.disabled ? "default" : "pointer")};
+  color: ${(p) => (p.disabled ? "grey" : "var(--primary-text)")};
+
+  svg:hover {
+    fill: ${(p) => (p.disabled ? "grey" : "var(--secondary)")};
+  }
 `;
 
 interface IndexControllerProps {
@@ -129,26 +124,24 @@ const IndexController = ({
     <IndexControllerBar>
       <div>
         {canGoBack || canGoForward ? (
-          <StyledIcon
-            name="step backward"
+          <Icon
             onClick={() => updatePage(Math.max(1, activePage - 1))}
             disabled={!canGoBack || activePage === 1}
-          />
+          >
+            <FaStepBackward />
+          </Icon>
         ) : null}
         <IndexLabel>
           {sliderPage > n ? (
-            <div>done</div>
+            <div>
+              <FaCheck />
+            </div>
           ) : (
-            <>
-              <div>{sliderPage}</div>
-              &frasl;
-              <div>{n}</div>
-            </>
+            <div>{sliderPage}</div>
           )}
         </IndexLabel>
         {canGoForward || canGoBack ? (
-          <StyledIcon
-            name="step forward"
+          <Icon
             onClick={() => {
               if (canGoForward) {
                 updatePage(activePage + 1);
@@ -157,7 +150,9 @@ const IndexController = ({
               }
             }}
             disabled={!canGoForward && activePage >= progressN + 1}
-          />
+          >
+            <FaStepForward />
+          </Icon>
         ) : null}
       </div>
       <Slider

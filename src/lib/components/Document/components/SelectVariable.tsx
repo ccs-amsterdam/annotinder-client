@@ -9,60 +9,84 @@ interface SelectVariableProps {
   editAll: boolean;
 }
 
-const SelectVariableContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  border-top: 1px solid var(--background-fixed);
-  border-bottom: 1px solid var(--background-fixed);
-  border-radius: 2px;
-
-  padding: 10px 5px 3px 5px;
-  background: var(--primary);
-  color: var(--text-inversed-fixed);
+const StyledDiv = styled.div<{ description: boolean }>`
+  //border-bottom: 1px solid var(--primary);
   position: relative;
-  z-index: 10000;
+  flex: 1 1 auto;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 10;
+    width: calc(100% - 1rem); // 1rem for the scrollbar
+    height: 1rem;
+    background: linear-gradient(var(--background), transparent 70%);
+    //backdrop-filter: blur(5px);
+    z-index: 1000;
+  }
 
   .Description {
-    margin: auto;
-    padding: 0 1.5rem;
-    padding-bottom: 0.4rem;
-    font-size: 1.6rem;
+    //margin: auto;
+    //background: var(--primary-dark);
+    color: var(--primary-text);
+    display: flex;
+    flex-direction: column;
+    font-size: 1.4rem;
+    text-align: center;
+    padding: 0.5rem 1rem;
 
-    .Variable {
-      border: 2px solid white;
-      border-radius: 5px;
-      margin-right: 0.5rem;
-      padding: 0.1rem 0.7rem;
+    .Text {
+      max-height: ${(p) => (p.description ? "5rem" : "0rem")};
+      overflow: auto;
+
+      transition: max-height 0.4s;
+    }
+
+    .ShowDescription {
+      //margin: auto;
+      cursor: pointer;
+    }
+  }
+
+  .VariableButtons {
+    display: flex;
+    //border-top: 1px solid var(--background-fixed);
+    //border-bottom: 1px solid var(--background-fixed);
+    //border-radius: 2px;
+
+    //background: var(--primary-dark);
+    color: var(--text-inversed-fixed);
+    position: relative;
+    z-index: 10000;
+    display: flex;
+    word-wrap: break-word;
+    font-size: 1.6rem;
+    justify-content: flex-start;
+    padding: 0.5rem 1rem;
+    gap: 1rem;
+
+    button {
+      flex: 1 1 auto;
+      padding: 0.4rem 0.7rem;
+      background: var(--primary);
+      border-radius: 4px;
+      border: 1px solid var(--primary-light);
+      color: var(--primary-light);
+
+      cursor: pointer;
+
+      &:hover,
+      &.active {
+        border: 2px solid var(--text) !important;
+        background: var(--primary);
+        color: white;
+      }
     }
   }
 `;
 
-const VariableButtons = styled.div`
-  display: flex;
-  word-wrap: break-word;
-  font-size: 1.6rem;
-  justify-content: center;
-`;
-
-const VariableButton = styled.button`
-  margin: 0 0.2rem 0.4rem 0.2rem;
-  padding: 0.2rem 0.7rem;
-  background: var(--primary);
-  border-radius: 5px;
-  border: 2px solid var(--primary-light);
-  color: var(--primary-light);
-
-  cursor: pointer;
-
-  &:hover,
-  &.active {
-    border: 2px solid white;
-    background: var(--primary);
-    color: white;
-  }
-`;
-
 const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVariableProps) => {
+  //const [showDescription, setShowDescription] = React.useState(true);
   const variableNames: string[] = useMemo(() => {
     let variableNames: string[] = [];
     if (variables != null && variables?.length > 0) {
@@ -135,18 +159,20 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
   if (variable === "EDIT ALL") helpText = "Show and edit all variables";
 
   return (
-    <SelectVariableContainer>
+    <StyledDiv description={true}>
+      <div className="Description">
+        <div className="Text">{helpText}</div>
+        {/* <div className="ShowDescription" onClick={() => setShowDescription(!showDescription)}>
+          {showDescription ? "hide task" : "show task"}
+        </div> */}
+      </div>
       <VariableMenu
         variable={variable}
         setVariable={setVariable}
         variables={variables}
         variableNames={variableNames}
       />
-      <div className="Description">
-        {helpText}
-        {/* <span className="Variable">{variable || ""}</span> {helpText}{" "} */}
-      </div>
-    </SelectVariableContainer>
+    </StyledDiv>
   );
 };
 
@@ -169,19 +195,19 @@ const VariableMenu = ({ variable, setVariable, variables, variableNames }: Varia
 
   if (variableNames?.length === 1) return null;
   return (
-    <VariableButtons>
+    <div className="VariableButtons">
       {variableNames.map((name) => {
         return (
-          <VariableButton
+          <button
             key={name}
             className={name === variable ? "active" : ""}
             onClick={() => setVariable(name)}
           >
             {name}
-          </VariableButton>
+          </button>
         );
       })}
-    </VariableButtons>
+    </div>
   );
 };
 

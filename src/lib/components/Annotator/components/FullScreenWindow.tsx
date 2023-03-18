@@ -4,6 +4,7 @@ import { FullScreenNode } from "../../../types";
 import { StyledButton, StyledModal } from "../../../styled/StyledSemantic";
 import useSessionStorage from "../../../hooks/useSessionStorage";
 import { Icon } from "semantic-ui-react";
+import { FaCompress, FaExpand } from "react-icons/fa";
 
 interface FullSceenWindowProps {
   children: (fullSceenNode: FullScreenNode, fullSceenButton: ReactElement) => ReactElement;
@@ -105,23 +106,8 @@ interface FullScreenButtonProps {
 }
 
 const FullScreenButton = ({ handle }: FullScreenButtonProps) => {
-  return (
-    <StyledButton
-      size="massive"
-      icon={handle.active ? "compress" : "expand"}
-      style={{
-        background: "transparent",
-        color: "var(--text-inversed-fixed)",
-        margin: "0",
-        zIndex: 100,
-        padding: "1px 1px 3px 1px",
-        fontSize: "20px",
-      }}
-      onClick={() => {
-        handle.active ? handle.exit() : handle.enter();
-      }}
-    />
-  );
+  if (handle.active) return <FaCompress onClick={() => handle.exit()} />;
+  return <FaExpand onClick={() => handle.enter()} />;
 };
 
 export default FullScreenWindow;

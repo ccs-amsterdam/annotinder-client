@@ -9,7 +9,7 @@ import {
   onMouseMove,
   onMouseDown,
   onMouseUp,
-  onContextMenu,
+  //onContextMenu,
   movePosition,
 } from "../functions/eventFunctions";
 import { SpanAnnotations, Token, TokenSelection, Arrowkeys, Span } from "../../../types";
@@ -176,9 +176,9 @@ export default function useAnnotationEvents(
       );
     }
 
-    function onContextMenuEvent(event: MouseEvent) {
-      onContextMenu(event, tokens);
-    }
+    // function onContextMenuEvent(event: MouseEvent) {
+    //   onContextMenu(event, tokens);
+    // }
 
     function onKeyUpEvent(event: KeyboardEvent) {
       onKeyUp(
@@ -208,7 +208,7 @@ export default function useAnnotationEvents(
 
     window.addEventListener("keydown", onKeyDownEvent);
     window.addEventListener("keyup", onKeyUpEvent);
-    document.addEventListener("contextmenu", onContextMenuEvent);
+    //document.addEventListener("contextmenu", onContextMenuEvent);
     document.addEventListener("mousedown", onMouseDownEvent);
     document.addEventListener("mousemove", onMouseMoveEvent);
     document.addEventListener("mouseup", onMouseUpEvent);
@@ -217,7 +217,7 @@ export default function useAnnotationEvents(
     return () => {
       window.removeEventListener("keydown", onKeyDownEvent);
       window.removeEventListener("keyup", onKeyUpEvent);
-      document.removeEventListener("contextmenu", onContextMenuEvent);
+      //document.removeEventListener("contextmenu", onContextMenuEvent);
       document.removeEventListener("mousedown", onMouseDownEvent);
       document.removeEventListener("mousemove", onMouseMoveEvent);
       document.removeEventListener("mouseup", onMouseUpEvent);

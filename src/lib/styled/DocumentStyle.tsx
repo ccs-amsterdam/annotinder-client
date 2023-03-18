@@ -60,7 +60,7 @@ export default css`
   span.token.annotated > span {
     /* line-height: 1.5em; */
     padding: 2px 0px;
-    transition: all 0.5s ease;
+    transition: background 0.3s ease;
     //border: 1px solid var(--background-fixed);
     border-left: none;
     border-right: none;
@@ -75,7 +75,7 @@ export default css`
     (also possible on black background, but not easy on the eyes)  */
     color: var(--text-fixed);
     position: relative;
-    z-index: 1;
+    //z-index: 1;
     ::after {
       content: "";
       position: absolute;

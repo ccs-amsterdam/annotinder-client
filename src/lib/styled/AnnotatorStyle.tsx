@@ -27,10 +27,10 @@ export default css`
     width: 10px;
     height: 24px;
     padding: 0;
-    background: var(--primary);
+    background: var(--primary-dark);
     cursor: pointer;
     border-radius: 0px;
-    border: 1px solid var(--text);
+    //border: 1px solid var(--text);
   }
 
   .fullscreen {

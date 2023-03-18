@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Question, Answer, AnswerItem, SetState } from "../../../types";
-import { CustomButton } from "../../../styled/StyledSemantic";
 
 import styled from "styled-components";
 
@@ -71,19 +70,18 @@ export default function QuestionIndexStep({
         // size question buttons so that those near the selected question are largest
         const dist = Math.pow(1.5, -Math.abs(questionIndex - i));
         return (
-          <CustomButton
+          <button
             key={i}
-            size={0.6}
             style={{
+              borderRadius: "5px",
               transition: "all 0.2s",
               opacity: Math.max(dist, 0.2),
               padding: `5px ${dist * 15}px`,
               marginRight: `${3 * dist}px`,
               height: `${10 * dist}px`,
               border: `1px solid`,
-              borderColor: i === questionIndex ? "var(--text-fixed)" : "var(--text-inversed-fixed)",
+              borderColor: i === questionIndex ? "var(--background-fixed)" : "transparent",
               background: getColor(i),
-              color: "var(--text-fixed)",
             }}
             onClick={() => {
               if (canSelect?.[i]) {

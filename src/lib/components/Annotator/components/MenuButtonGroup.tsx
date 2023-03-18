@@ -1,32 +1,40 @@
 import { ReactElement } from "react";
 import styled from "styled-components";
-import { Icon } from "semantic-ui-react";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 const StyledButtonGroup = styled.div`
+  border-radius: 10px;
   --buttongroup-height: 0px;
+
+  &:focus,
   &:hover,
   &:active {
     --buttongroup-height: 1000px;
   }
-  font-size: 18px;
+  font-size: 2.5rem;
   z-index: 1000;
   cursor: pointer;
   position: relative;
 
   & .Burger {
     display: none;
-    padding: 5px;
-    font-size: 18px;
+    padding: 3px 5px 0px 5px;
+    font-size: 2.5rem;
     height: 35px;
     width: 30px;
   }
 
   & .Buttons {
-    transition: max-height 0.2s, border 1s;
+    transition: max-height 0.2s;
     padding-top: 2px;
     overflow: hidden;
     display: flex;
     align-items: center;
+    padding: 0.4rem;
+
+    svg {
+      margin-left: 1rem;
+    }
   }
 
   @media (max-width: 500px) {
@@ -34,25 +42,33 @@ const StyledButtonGroup = styled.div`
       display: block;
     }
     & .Buttons {
-      background: var(--background-inversed-fixed);
-      border: 0px double var(--background-fixed);
+      background: var(--background);
       position: absolute;
       padding-top: 0px;
-      width: 38px;
-      top: 34px;
-      left: -3px;
+      top: 0px;
+      left: -3.7rem;
       z-index: 1000;
       flex-direction: column;
       max-height: var(--buttongroup-height);
+      width: 7rem;
+      transition: max-height 0s;
+      overflow: hidden;
+      svg {
+        margin-left: 0rem;
+      }
     }
     & .Buttons * {
-      padding: 0.5rem 0rem;
+      margin: 1rem 0rem;
     }
+    &:focus .Buttons,
     &:hover .Buttons,
     &:active .Buttons {
-      transition: max-height 1s, border 0s;
-      border: 3px double var(--background-fixed);
-      border-top: 0px;
+      background: var(--primary-text);
+      border-radius: 5px;
+      color: var(--text-inversed);
+      transition: max-height 1s;
+      //border: 3px double var(--background-fixed);
+      //border-top: 0px;
     }
   }
 `;
@@ -63,9 +79,14 @@ interface MenuButtonGroupProps {
 
 const MenuButtonGroup = ({ children }: MenuButtonGroupProps) => {
   return (
-    <StyledButtonGroup>
+    <StyledButtonGroup
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+    >
       <div className="Burger">
-        <Icon name="content" />
+        <GiHamburgerMenu />
       </div>
       <div className="Buttons">{children}</div>
     </StyledButtonGroup>

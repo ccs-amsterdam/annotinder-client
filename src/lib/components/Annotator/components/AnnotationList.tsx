@@ -16,6 +16,7 @@ const VariableNames = styled.div`
   flex-direction: column;
   align-items: center;
   font-weight: bold;
+  //border-top: 1px solid var(--background-fixed);
 `;
 
 const StyledDiv = styled.div`
@@ -249,9 +250,9 @@ const ShowRelation = ({ variableMap, annotation, onClick }: ShowRelationProps) =
 
   const color = getColor(annotation.value, codeMap);
   const label = annotation.value;
-  if (!annotation.from.span || !annotation.to.span) return null;
+  if (!annotation.from.token_span || !annotation.to.token_span) return null;
 
-  const relationSpan: Span = [annotation.from.span[0], annotation.to.span[1]];
+  const relationSpan: Span = [annotation.from.token_span[0], annotation.to.token_span[1]];
 
   return (
     <div

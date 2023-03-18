@@ -1,28 +1,20 @@
 import { useEffect } from "react";
-import styled from "styled-components";
+import { FaMoon, FaSun } from "react-icons/fa";
+import { RiFontSize2 } from "react-icons/ri";
 import useLocalStorage from "../../hooks/useLocalStorage";
-import { StyledButton } from "../../styled/StyledSemantic";
-
-const ThemeButton = styled(StyledButton)<{ iconcolor: string }>`
-  color: ${(props) => props.iconcolor} !important;
-  background: transparent !important;
-  padding: 5px !important;
-  font-size: inherit !important;
-  margin: 0 !important;
-`;
 
 const dark = {
-  background: "#121212",
-  "background-transparent": "#121212bb",
+  background: "#222",
+  "background-transparent": "#222b",
   "background-inversed": "white",
   text: "white",
   "text-light": "darkgrey",
   "text-inversed": "black",
 
-  primary: "#8256cf",
-  "primary-dark": "#673AB7",
+  primary: "#673AB7",
+  "primary-dark": "#3B2667",
   "primary-light": "#c0b1dd",
-  "primary-text": "#c0b1dd",
+  "primary-text": "#e4d8fa",
 };
 const light = {
   background: "white",
@@ -35,7 +27,7 @@ const light = {
   primary: "#673AB7",
   "primary-dark": "#3B2667",
   "primary-light": "#c0b1dd",
-  "primary-text": "#673AB7",
+  "primary-text": "#3B2667",
 };
 
 const themes = [
@@ -51,18 +43,24 @@ export const DarkModeButton = ({ color }: ThemeSelectorProps) => {
   const [theme, setTheme] = useLocalStorage("theme", "light");
   const selected = themes.findIndex((t) => t.name === theme);
 
-  setCSS(themes[selected].theme);
+  setCSS(themes[selected]?.theme);
 
-  return (
-    <ThemeButton
-      iconcolor={color}
-      icon={themes[selected].icon}
-      onClick={(e, d) => {
-        const next = selected < themes.length - 1 ? selected + 1 : 0;
-        setTheme(themes[next].name);
-      }}
-    />
-  );
+  //   <ThemeButton
+  //   iconcolor={color}
+  //   icon={themes[selected].icon}
+  //   onClick={(e, d) => {
+  //     const next = selected < themes.length - 1 ? selected + 1 : 0;
+  //     setTheme(themes[next].name);
+  //   }}
+  // />
+
+  const onClick = () => {
+    const next = selected < themes.length - 1 ? selected + 1 : 0;
+    setTheme(themes[next].name);
+  };
+
+  if (theme === "light") return <FaSun onClick={onClick} />;
+  return <FaMoon onClick={onClick} />;
 };
 
 const fontsizeOptions = [
@@ -77,16 +75,12 @@ export const FontSizeButton = ({ color }: ThemeSelectorProps) => {
 
   document.documentElement.style.setProperty(`--font-size`, fontsizeOptions[selected].size);
 
-  return (
-    <ThemeButton
-      iconcolor={color}
-      icon={fontsizeOptions[selected].icon}
-      onClick={(e, d) => {
-        const next = selected < fontsizeOptions.length - 1 ? selected + 1 : 0;
-        setTheme(fontsizeOptions[next].name);
-      }}
-    />
-  );
+  const onClick = () => {
+    const next = selected < fontsizeOptions.length - 1 ? selected + 1 : 0;
+    setTheme(fontsizeOptions[next].name);
+  };
+
+  return <RiFontSize2 onClick={onClick} />;
 };
 
 export const useTheme = () => {

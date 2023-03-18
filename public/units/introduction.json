@@ -569,6 +569,7 @@
       ],
       "importedAnnotations": [
         {
+          "type": "span",
           "field": "text",
           "variable": "some variable",
           "value": "Some label",
@@ -576,6 +577,7 @@
           "length": 11
         },
         {
+          "type": "span",
           "field": "text",
           "variable": "some variable",
           "value": "Another label",
@@ -583,6 +585,7 @@
           "length": 18
         },
         {
+          "type": "span",
           "field": "text",
           "variable": "some variable",
           "value": "EMPTY",

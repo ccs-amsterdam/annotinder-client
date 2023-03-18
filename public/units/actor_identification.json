@@ -20,6 +20,7 @@
       ],
       "importedAnnotations": [
         {
+          "type": "span",
           "field": "title",
           "variable": "actor",
           "value": "Mary",
@@ -27,6 +28,7 @@
           "length": 4
         },
         {
+          "type": "span",
           "field": "title",
           "variable": "actor",
           "value": "Lamb",
@@ -34,6 +36,7 @@
           "length": 4
         },
         {
+          "type": "span",
           "field": "text",
           "variable": "actor",
           "value": "Mary",
@@ -41,6 +44,7 @@
           "length": 4
         },
         {
+          "type": "span",
           "field": "text",
           "variable": "actor",
           "value": "Lamb",
@@ -48,6 +52,7 @@
           "length": 4
         },
         {
+          "type": "span",
           "field": "text",
           "variable": "actor",
           "value": "EMPTY",
@@ -55,6 +60,7 @@
           "length": 3
         },
         {
+          "type": "span",
           "field": "text",
           "variable": "actor",
           "value": "EMPTY",
@@ -62,6 +68,7 @@
           "length": 3
         },
         {
+          "type": "span",
           "field": "text",
           "variable": "actor",
           "value": "Hannibal Lecter",
@@ -69,6 +76,7 @@
           "length": 4
         },
         {
+          "type": "span",
           "field": "text",
           "variable": "actor",
           "value": "EMPTY",
@@ -99,6 +107,7 @@
 
       "importedAnnotations": [
         {
+          "type": "span",
           "variable": "actor",
           "value": "Barack Obama",
           "field": "title",
@@ -107,6 +116,7 @@
         },
 
         {
+          "type": "span",
           "variable": "actor",
           "value": "EMPTY",
           "field": "text",
@@ -114,6 +124,7 @@
           "length": 2
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "America / Americans",
           "field": "text",
@@ -121,6 +132,7 @@
           "length": 8
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "EMPTY",
           "field": "text",
@@ -128,6 +140,7 @@
           "length": 1
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "EMPTY",
           "field": "text",
@@ -135,6 +148,7 @@
           "length": 2
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "EMPTY",
           "field": "text",
@@ -142,6 +156,7 @@
           "length": 3
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "EMPTY",
           "field": "text",
@@ -149,6 +164,7 @@
           "length": 3
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "George Bush",
           "field": "text",
@@ -156,6 +172,7 @@
           "length": 14
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "EMPTY",
           "field": "text",
@@ -163,6 +180,7 @@
           "length": 3
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "EMPTY",
           "field": "text",
@@ -170,6 +188,7 @@
           "length": 2
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "America / Americans",
           "field": "text",
@@ -177,6 +196,7 @@
           "length": 9
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "America / Americans",
           "field": "text",
@@ -184,6 +204,7 @@
           "length": 7
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "EMPTY",
           "field": "text",
@@ -191,6 +212,7 @@
           "length": 5
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "EMPTY",
           "field": "text",
@@ -198,6 +220,7 @@
           "length": 2
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "EMPTY",
           "field": "text",
@@ -205,6 +228,7 @@
           "length": 10
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "EMPTY",
           "field": "text",
@@ -212,6 +236,7 @@
           "length": 3
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "EMPTY",
           "field": "text",
@@ -219,6 +244,7 @@
           "length": 3
         },
         {
+          "type": "span",
           "variable": "actor",
           "value": "America / Americans",
           "field": "text",

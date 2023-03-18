@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Icon } from "semantic-ui-react";
 import AnnotationList from "./AnnotationList";
 import Document from "../../Document/Document";
 import AnnotateTaskManual from "./AnnotateTaskManual";
@@ -14,8 +13,8 @@ import {
   SessionData,
 } from "../../../types";
 import Instructions from "./Instructions";
-import { StyledButton } from "../../../styled/StyledSemantic";
 import styled from "styled-components";
+import { FaStepForward } from "react-icons/fa";
 
 const NEXTDELAY = 500;
 const BODYSTYLE = {
@@ -221,6 +220,34 @@ interface NextUnitButtonProps {
   nextUnit: () => void;
 }
 
+const NextUnitButtonStyle = styled.button`
+  background: var(--primary);
+  color: white;
+  flex: 1 1 auto;
+  border: none;
+  margin-left: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.7rem;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--secondary);
+    color: black;
+  }
+  &:disabled {
+    background: var(--primary);
+    color: grey;
+    cursor: not-allowed;
+  }
+
+  svg {
+    font-size: 2rem;
+  }
+`;
+
 const NextUnitButton = ({ unit, annotations, nextUnit }: NextUnitButtonProps) => {
   const [tempDisable, setTempDisable] = useState("ready");
 
@@ -261,23 +288,12 @@ const NextUnitButton = ({ unit, annotations, nextUnit }: NextUnitButtonProps) =>
   });
 
   return (
-    <StyledButton
-      disabled={tempDisable !== "ready"}
-      loading={tempDisable === "loading"}
-      primary
-      fluid
-      style={{
-        cursor: "pointer",
-        borderRadius: "0",
-        padding: "5px",
-        marginLeft: "30px",
-        marginRight: "0px",
-      }}
-      onClick={onNext}
-    >
-      <Icon name="play" />
-      Go to next unit
-    </StyledButton>
+    <NextUnitButtonStyle onClick={onNext} disabled={tempDisable !== "ready"}>
+      <div>
+        <FaStepForward />
+      </div>
+      <div>Go to next unit</div>
+    </NextUnitButtonStyle>
   );
 };
 
