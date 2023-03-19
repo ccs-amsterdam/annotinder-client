@@ -5,14 +5,14 @@ export const scrollToMiddle = (parent: HTMLElement, child: HTMLElement, position
   // position should be value between 0 and 1 for relative position between top (0) and bottom (1)
   if (!parent || !child) return;
   const parentBounding = parent.getBoundingClientRect();
-  const clientBounding = child.getBoundingClientRect();
+  const childBounding = child.getBoundingClientRect();
 
   const parentTop = parentBounding.top;
   const parentHeight = parentBounding.height;
-  const clientTop = clientBounding.top;
+  const childTop = childBounding.top;
   const topToCenter = parentHeight / (1 / position); // position 1/4 down from top
 
-  parent.scrollTop = parent.scrollTop + clientTop - (topToCenter + parentTop);
+  parent.scrollTop = parent.scrollTop + childTop - (topToCenter + parentTop);
 };
 
 export const keepInView = (parent: HTMLElement, child: HTMLElement) => {
@@ -20,23 +20,26 @@ export const keepInView = (parent: HTMLElement, child: HTMLElement) => {
   // position should be value between 0 and 1 for relative position between top (0) and bottom (1)
   if (!parent || !child) return;
   const parentBounding = parent.getBoundingClientRect();
-  const clientBounding = child.getBoundingClientRect();
+  const childBounding = child.getBoundingClientRect();
 
   const parentTop = parentBounding.top;
   const parentHeight = parentBounding.height;
-  const clientTop = clientBounding.top;
-  const clientHeight = clientBounding.height;
+  const childTop = childBounding.top;
+  const childBottom = childBounding.bottom;
+  const childHeight = childBounding.height;
 
-  const needUp = clientTop - parentTop < 50;
-  const needDown = clientTop > parentTop + parentHeight * 0.9;
+  const needUp = childTop - parentTop < 50;
+  const needDown = childBottom > parentTop + parentHeight * 0.9;
 
   //if (needUp > 0) parent.scrollTop = parent.scrollTop + needUp;
   if (needDown) {
-    let scrollTo = parent.scrollTop + clientTop - (parentHeight * 0.9 + parentTop);
-    scrollTo += Math.max(clientHeight, parentHeight * 0.9);
+    let scrollTo = parent.scrollTop + childTop - (parentHeight * 0.9 + parentTop);
+    scrollTo += Math.max(childHeight, parentHeight * 0.9);
     parent.scrollTop = scrollTo;
   }
   if (needUp) {
-    parent.scrollTop = parent.scrollTop + clientTop - (parentHeight * 0.1 + parentTop);
+    let scrollTo = parent.scrollTop + childTop - (parentHeight * 0.1 + parentTop);
+    scrollTo -= Math.max(childHeight, parentHeight * 0.1);
+    parent.scrollTop = scrollTo;
   }
 };

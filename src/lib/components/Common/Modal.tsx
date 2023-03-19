@@ -114,8 +114,17 @@ const Modal = ({ children, open, setOpen }: ModalProps) => {
         setOpen(false);
       }
     }
+
+    function onKeyDown(e: any) {
+      if (e.key === "Escape") setOpen(false);
+    }
+
     containerEl.addEventListener("click", onClick);
-    return () => containerEl.removeEventListener("click", onClick);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      containerEl.removeEventListener("click", onClick);
+      document.removeEventListener("keydown", onKeyDown);
+    };
   }, [container, modal, open, closeIcon, setOpen]);
 
   return (

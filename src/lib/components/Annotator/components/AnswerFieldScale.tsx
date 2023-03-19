@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, createRef, RefObject } from "react";
-import { Ref, Icon } from "semantic-ui-react";
 import { keepInView } from "../../../functions/scroll";
 import { OnSelectParams, AnswerOption, AnswerItem, QuestionItem } from "../../../types";
-import { StyledButton } from "../../../styled/StyledSemantic";
+import { Button } from "../../../styled/StyledSemantic";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import styled from "styled-components";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -23,6 +24,25 @@ interface ScaleProps {
   questionIndex: number;
   scrollRef: RefObject<HTMLDivElement>;
 }
+
+const StyledDiv = styled.div`
+  height: 100%;
+  position: relative;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--background-inversed-fixed);
+  color: var(--text-inversed-fixed);
+  display: flex;
+  flex-direction: column;
+
+  .ScaleLabel {
+    font-size: 1.4rem;
+    svg {
+      font-size: 2rem;
+      transform: translateY(0.4rem);
+    }
+  }
+`;
 
 const Scale = React.memo(
   ({
@@ -113,17 +133,9 @@ const Scale = React.memo(
     const nAnswered = answerItems.filter((iv) => iv.values?.[0] != null).length;
     const done = nAnswered === answerItems.length;
 
+    console.log(selectedItem);
     return (
-      <div
-        style={{
-          height: "100%",
-          position: "relative",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          background: "var(--background-inversed-fixed)",
-          color: "var(--text-inversed-fixed)",
-        }}
-      >
+      <StyledDiv>
         <div
           style={{
             flex: "1 1 auto",
@@ -133,27 +145,14 @@ const Scale = React.memo(
             color: "var(--primary-light)",
           }}
         >
-          <div
-            style={{
-              //position: "absolute",
-              width: "50%",
-              background: "transparent",
-            }}
-          >
-            <Icon name="arrow left" />
+          <div className="ScaleLabel ">
+            <FaAngleLeft />
             {left.code}
           </div>
 
-          <div
-            style={{
-              //position: "absolute",
-              width: "50%",
-
-              textAlign: "right",
-            }}
-          >
+          <div className="ScaleLabel ">
             {right.code}
-            <Icon name="arrow right" style={{ marginLeft: "5px" }} />
+            <FaAngleRight />
           </div>
         </div>
 
@@ -167,27 +166,21 @@ const Scale = React.memo(
           continueButtonRef={continueButtonRef}
           scrollRef={scrollRef}
         />
-        <div ref={continueButtonRef}>
-          <StyledButton
-            primary
-            fluid
-            size="mini"
-            disabled={!done}
-            icon={done ? "play" : null}
-            content={done ? "Continue" : `${nAnswered} / ${answerItems.length}`}
-            style={{
-              textAlign: "center",
-              color: done ? null : "var(--text-inversed-fixed)",
-              margin: "10px 0 0 0",
-              background: done ? null : "white",
-              border: `5px solid ${selectedItem < 0 ? "black" : "#ece9e9"}`,
-            }}
-            onClick={() => {
-              onFinish();
-            }}
-          />
-        </div>
-      </div>
+
+        <Button
+          ref={continueButtonRef}
+          className={selectedItem === -1 ? "selected" : ""}
+          fluid
+          primary
+          disabled={!done}
+          selected={selectedItem === -1}
+          onClick={() => {
+            onFinish();
+          }}
+        >
+          {done ? "Continue" : `${nAnswered} / ${answerItems.length}`}
+        </Button>
+      </StyledDiv>
     );
   }
 );
@@ -258,6 +251,7 @@ const Items = ({
               ref={rowRefs?.current?.[itemIndex]}
               style={{
                 display: "flex",
+                gap: "0.5rem",
                 margin: "auto",
                 maxWidth: "min(400px, 100%)",
                 padding: "0px 5px",
@@ -275,10 +269,10 @@ const Items = ({
             </div>
             <div
               style={{
-                width: "100%",
+                minHeight: "2.5rem",
                 textAlign: "center",
-                fontSize: "1em",
-                color: "var(--primary-light)",
+                fontSize: "1.2rem",
+                color: "var(--secondary)",
               }}
             >
               <i>
@@ -301,6 +295,36 @@ interface ItemProps {
   onSelect: (params: OnSelectParams) => void;
 }
 
+const ItemButton = styled.div<{
+  selected?: boolean;
+  current?: boolean;
+  customColor?: string;
+  color?: string;
+}>`
+  flex: 1 1 0px;
+  border-radius: 4px;
+  background: ${(p) => (p.customColor ? "white" : "var(--primary)")};
+  border: 2px solid ${(p) => {
+    if (p.selected) return "white";
+    if (p.current) return "var(--secondary)";
+    return p.customColor ? "grey" : "var(--primary)";
+  }};
+  
+  button {
+    width: 100%;
+    height: 100%;
+    padding: 4px 0 2px 0;
+    background-color: ${(p) => (p.current || p.selected ? "var(--secondary)" : p.color)};
+    font-weight: bold;
+    font-size: 0.8em;
+    text-shadow: 0px 0px 5px #ffffff77,
+    border-radius: 10px;
+    border-color: transparent;
+    color: ${(p) => (p.customColor || p.current ? "black" : "white")};
+    cursor: pointer;
+  }
+`;
+
 const Item = ({
   answerItems,
   selectedItem,
@@ -313,53 +337,35 @@ const Item = ({
   return (
     <>
       {options.map((option, buttonIndex: number) => {
-        let bordercolor = "var(--background-inversed-fixed)";
         const isCurrent = options[buttonIndex].code === answerItems?.[itemIndex]?.values[0];
         const isSelected = buttonIndex === selectedButton && itemIndex === selectedItem;
-        if (isCurrent) bordercolor = "var(--background-fixed)";
-        if (isSelected) bordercolor = "var(--background-fixed)";
 
         // if option doesn't have color, we use primary color as background and
         // use opacity of buttoncolor to show a gradient
-        const background = option.color ? "transparent" : "var(--primary)";
-        const opacity = buttonIndex * colorstep;
-        const bgcolor = `rgb(0,0,0, ${opacity}%)`;
+
+        let color = option.color;
+        if (!color) {
+          const opacity = buttonIndex * colorstep;
+          color = `rgb(0,0,0, ${opacity}%)`;
+        }
 
         return (
-          <div
+          <ItemButton
             key={option.code}
-            style={{
-              flex: "1 1 0px",
-              borderRadius: "5px",
-              border: `0.5px solid ${background}`,
-              //margin: "0px 5px",
-              background,
-            }}
+            selected={isSelected}
+            current={isCurrent}
+            customColor={option.color}
+            color={color}
           >
-            <Ref key={option.code} innerRef={option.ref}>
-              <StyledButton
-                fluid
-                style={{
-                  padding: "2px 0",
-                  backgroundColor: isCurrent ? "var(--secondary)" : option.color || bgcolor,
-                  fontWeight: "bold",
-                  fontSize: "0.8em",
-                  textShadow: "0px 0px 5px #ffffff77",
-                  borderRadius: "inherit",
-                  color: "var(--text-inversed-fixed)",
-                  border: `3px solid ${bordercolor}`,
-                }}
-                key={option.code}
-                value={option.code}
-                compact
-                onClick={(e, d) => {
-                  onSelect({ value: options[buttonIndex].code, itemIndex });
-                }}
-              >
-                {buttonIndex + 1}
-              </StyledButton>
-            </Ref>
-          </div>
+            <button
+              ref={option.ref as React.RefObject<HTMLButtonElement>}
+              onClick={() => {
+                onSelect({ value: options[buttonIndex].code, itemIndex });
+              }}
+            >
+              {buttonIndex + 1}
+            </button>
+          </ItemButton>
         );
       })}
     </>

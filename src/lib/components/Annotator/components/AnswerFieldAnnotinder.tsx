@@ -1,8 +1,9 @@
 import useSpeedBump from "../../../hooks/useSpeedBump";
 import React, { useEffect } from "react";
-import { Ref, Icon, SemanticICONS } from "semantic-ui-react";
 import { SwipeOptions, Swipes, AnswerItem, OnSelectParams, AnswerOption } from "../../../types";
-import { StyledButton } from "../../../styled/StyledSemantic";
+import { CodeButton } from "../../../styled/StyledSemantic";
+import styled from "styled-components";
+import { FaArrowLeft, FaArrowRight, FaArrowUp } from "react-icons/fa";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -18,6 +19,11 @@ interface AnnotinderProps {
   /** If true, all eventlisteners are stopped */
   blockEvents: boolean;
 }
+
+const CodeButtonGroup = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
 
 const Annotinder = React.memo(
   ({ answerItems, swipeOptions, onSelect, swipe, blockEvents }: AnnotinderProps) => {
@@ -72,17 +78,8 @@ const Annotinder = React.memo(
     const value = answerItems?.[0]?.values?.[0];
 
     return (
-      <StyledButton.Group
-        fluid
-        style={{
-          display: "flex",
-          height: "100%",
-          width: "100%",
-          fontSize: "inherit",
-          margin: "0",
-        }}
-      >
-        {["left", "up", "right"].map((direction: "left" | "right" | "up") => {
+      <CodeButtonGroup>
+        {["left", "up", "right"].map((direction: "left" | "right" | "up", i) => {
           return (
             <AnnotinderStyledButton
               key={direction}
@@ -94,7 +91,7 @@ const Annotinder = React.memo(
             />
           );
         })}
-      </StyledButton.Group>
+      </CodeButtonGroup>
     );
   }
 );
@@ -114,50 +111,39 @@ const AnnotinderStyledButton = ({
   onSelect,
   speedbump,
 }: AnnotinderStyledButtonProps) => {
-  let icon: SemanticICONS = "arrow left";
+  let icon = <FaArrowLeft />;
   let option: AnswerOption = swipeOptions.left;
   if (direction === "up") {
-    icon = "arrow up";
+    icon = <FaArrowUp />;
     option = swipeOptions.up;
   }
   if (direction === "right") {
-    icon = "arrow right";
+    icon = <FaArrowRight />;
     option = swipeOptions.right;
   }
   if (!option) return null;
 
   return (
-    <Ref key={option.code} innerRef={option.ref}>
-      <StyledButton
-        disabled={option == null}
-        loading={speedbump}
-        onClick={(e, d) => {
-          if (speedbump) return;
+    <CodeButton
+      className={`flex`}
+      key={option.code}
+      ref={option.ref as React.RefObject<HTMLButtonElement>}
+      background={option.color}
+      disabled={option == null || speedbump}
+      selected={option.code === value}
+      onDark={true}
+      onClick={(e) => {
+        onSelect({
+          value: option?.code,
+          finish: true,
+          transition: { direction, color: option.color },
+        });
+      }}
+    >
+      {icon}
 
-          onSelect({
-            value: option?.code,
-            finish: true,
-            transition: { direction, color: option.color },
-          });
-        }}
-        size="mini"
-        style={{
-          height: "100%",
-          fontSize: "inherit",
-          borderRadius: "10px",
-          border: `4px solid ${
-            value === option?.code ? "var(--text-inversed-fixed)" : "var(--text-fixed)"
-          }`,
-          background: option?.color || "var(--text-inversed-fixed)",
-        }}
-      >
-        <div style={{ fontWeight: "bold", color: "var(--text-inversed-fixed)" }}>
-          <Icon name={option?.code ? (icon as SemanticICONS) : null} />
-          <br />
-          <span>{option?.code || ""}</span>
-        </div>
-      </StyledButton>
-    </Ref>
+      <span>{option?.code || ""}</span>
+    </CodeButton>
   );
 };
 

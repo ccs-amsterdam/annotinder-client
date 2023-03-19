@@ -114,7 +114,7 @@ const RemoveSession = ({ session, sessionKey, rmSession }: RemoveSessionProps) =
         Are you sure you wish to sign out?
       </StyledModal.Content>
       <StyledModal.Actions>
-        <StyledButton.Group fluid>
+        <div>
           <StyledButton
             onClick={() => {
               rmSession(sessionKey);
@@ -125,7 +125,7 @@ const RemoveSession = ({ session, sessionKey, rmSession }: RemoveSessionProps) =
             Sign out
           </StyledButton>
           <StyledButton onClick={() => setOpen(false)}>Cancel</StyledButton>
-        </StyledButton.Group>
+        </div>
       </StyledModal.Actions>
     </StyledModal>
   );

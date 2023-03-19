@@ -93,13 +93,14 @@ const ArchiveButton = ({ row, backend, setData, style }: ArchiveButtonProps) => 
 
   return (
     <StyledButton
-      icon={row.archived ? "eye slash" : "eye"}
-      onClick={(e, d) => {
+      onClick={() => {
         //toggleJobArchived(row.id, backend, setData);
         setJobSettings(row.id, backend, { archived: !row.archived }, setData, null);
       }}
       style={{ padding: "5px", background: row.archived ? "#f76969" : "", ...style }}
-    />
+    >
+      {row.archived ? "inactive" : "active"}
+    </StyledButton>
   );
 };
 

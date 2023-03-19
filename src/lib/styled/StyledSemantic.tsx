@@ -1,4 +1,4 @@
-import { Button, Modal, Pagination, Table } from "semantic-ui-react";
+import { Modal, Pagination, Table } from "semantic-ui-react";
 import styled, { StyledComponent } from "styled-components";
 
 // Use styled components to customize semantic ui components.
@@ -9,35 +9,47 @@ import styled, { StyledComponent } from "styled-components";
 // therefore we'll run all semantic ui components via custom styled versions,
 // so that we can gradually replace them.
 
-const CustomButton = styled.button<{ size?: number; selected?: boolean }>`
+const CodeButton = styled.button<{
+  color?: string;
+  background?: string;
+  borderColor?: string;
+  size?: number;
+  selected?: boolean;
+  current?: boolean;
+  afterBackground?: string;
+  onDark?: boolean;
+  compact?: boolean;
+}>`
   font-size: ${(p) => p.size || 1.5}rem;
-  padding: 0.7em 1em 0.7em 1rem;
+  padding: ${(p) => (p.compact ? "0.5rem" : "0.5rem")};
+  min-height: ${(p) => (p.compact ? "" : "5rem")};
   margin: 0;
-  color: ${(p) => (p.selected ? "white" : "black")};
-  background: var(--inactive);
+
   cursor: pointer;
   border: 3px solid;
-  border-color: ${(p) => (p.selected ? "var(--text)" : "var(--background)")};
-  //border: 1px solid var(--grey);
-  border-radius: 6px;
+  border-radius: 5px;
   position: relative;
+  transition: background-color 0.15s;
+  overflow-wrap: break-word;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-  transition: background-color 0.2s;
+  text-decoration: ${(p) => (p.current ? "underline" : "")};
+  color: ${(p) => (p.selected || p.current ? "white" : "#222")};
+  border-color: ${(p) => {
+    if (p.onDark) {
+      if (p.selected || p.current) return "var(--background-fixed)";
+      return "var(--background-inversed-fixed)";
+    }
+    if (p.selected || p.current) return "var(--background-inversed-fixed)";
+    return "var(--background-fixed)";
+  }};
+  background: ${(p) => p.background || "var(--primary)"};
+  flex: ${(p) => (p.compact ? "0.2 1 auto" : "1 1 auto")};
 
-  &.primary {
-    background: var(--primary);
-    color: white;
-    &:hover {
-      background: var(--primary-dark);
-    }
-  }
-  &.secondary {
-    background: var(--secondary);
-    color: white;
-    &:hover {
-      background: var(--secondary-dark);
-    }
-  }
   & > i {
     margin: 0;
   }
@@ -54,11 +66,6 @@ const CustomButton = styled.button<{ size?: number; selected?: boolean }>`
     border-radius: 0;
   }
 
-  :hover,
-  :active {
-    background: var(--active);
-  }
-
   ::after {
     content: "";
     position: absolute;
@@ -66,22 +73,115 @@ const CustomButton = styled.button<{ size?: number; selected?: boolean }>`
     left: 0;
     width: 100%;
     height: 100%;
-    background: ${(p) => (p.selected ? "#555" : "#fff")};
+    background: ${(p) => (p.selected || p.current ? "#555" : p.afterBackground || "#fff")};
     z-index: -1;
-    //border-radius: 5px;
+    border: 3px solid ${(p) => (p.selected || p.current ? "#555" : p.afterBackground || "#fff")};
+    //border-radius: 3px;
+  }
+
+  :disabled {
+    color: grey;
+    cursor: not-allowed;
   }
 `;
 
-const StyledButton = styled(Button)`
-  font-size: inherit !important;
+const StyledButton = styled.button<{
+  size?: number;
+  primary?: boolean;
+  secondary?: boolean;
+  fluid?: boolean;
+  selected?: boolean;
+}>`
+  font-size: ${(p) => p.size || 1.5}rem;
+  padding: 0.7em 1em 0.7em 1rem;
+  margin: 0;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
 
-  &.primary {
-    background: var(--primary) !important;
-    color: white !important;
+  position: relative;
+  transition: all 0.15s;
+
+  &.left {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
   }
-  &.secondary {
-    background: StyledButt var(--secondary) !important;
-    color: white !important;
+  &.right {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  &.middle {
+    border-radius: 0;
+  }
+
+  svg {
+    transform: translateY(${(p) => p.size * (1 / 7.5) || 0.2 + "rem"});
+    margin-right: 0.5rem;
+  }
+
+  ${(p) => {
+    if (p.primary) {
+      return `
+      background: var(--primary);
+      color: white;
+      .selected, :hover, :active {
+        background: var(--primary-dark);
+      }
+        `;
+    }
+    if (p.secondary) {
+      return `
+      background: var(--secondary);
+      color: #222;
+      .selected, :hover, :active {
+        background: var(--secondary-dark);
+        color: white;
+      }
+        `;
+    }
+  }}
+
+  :disabled {
+    cursor: not-allowed;
+  }
+
+  :disabled::after {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: #8888;
+  }
+
+  ${(p) => {
+    if (p.fluid)
+      return `
+      width: 100%;
+      flex: 1 1 auto;
+    `;
+  }}
+`;
+
+const Button = StyledButton;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+
+  & > button {
+    border-radius: 0;
+  }
+
+  & > button:first-of-type {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+  & > button:last-of-type {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
   }
 `;
 
@@ -139,7 +239,9 @@ const StyledPagination = styled(Pagination)`
 `;
 
 export {
-  CustomButton,
+  Button,
+  ButtonGroup,
+  CodeButton,
   StyledButton,
   StyledModal,
   StyledContainer,

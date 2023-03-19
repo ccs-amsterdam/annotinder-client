@@ -69,8 +69,6 @@ const Inputs = ({
         primary
         fluid
         disabled={!done}
-        icon={done ? "play" : null}
-        content={done ? "Continue" : "Please complete the form to continue"}
         style={{
           padding: "1rem 1.5rem 0.9rem",
           minHeight: "30px",
@@ -83,7 +81,9 @@ const Inputs = ({
           // so some of the previous logic doesn't hold
           onFinish();
         }}
-      />
+      >
+        {done ? "Continue" : "Please complete the form to continue"}
+      </StyledButton>
     </div>
   );
 };

@@ -59,6 +59,7 @@ const AnnotateGrid = styled.div`
       color: var(--text-inversed-fixed);
       background: var(--primary-dark);
       border-radius: 2px;
+      align-items: center;
 
       button {
         border-top-right-radius: 2px !important;
@@ -232,6 +233,8 @@ const NextUnitButtonStyle = styled.button`
   gap: 0.5rem;
   font-size: 1.7rem;
   cursor: pointer;
+  height: 100%;
+  transition: background-color 0.1s;
 
   &:hover {
     background: var(--secondary);

@@ -108,7 +108,6 @@ const SearchCode = React.memo(
           <div style={{ minWidth: "100px", height: "100%" }}>
             <StyledButton
               primary
-              icon="play"
               fluid
               style={{
                 height: "100%",

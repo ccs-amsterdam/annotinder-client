@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import IndexController from "./IndexController";
 import Finished from "./Finished";
 import { CodeBook, FullScreenNode, JobServer, SetState } from "../../../types";
-import { CustomButton } from "../../../styled/StyledSemantic";
+import { Button } from "../../../styled/StyledSemantic";
 import { DarkModeButton, FontSizeButton } from "../../Common/Theme";
 import MenuButtonGroup from "./MenuButtonGroup";
 import styled from "styled-components";
@@ -147,17 +147,18 @@ const BackToOverview = (props: { jobServer: JobServer; setOpen: (open: boolean) 
     <BackToOverviewStyle>
       <h3>Do you want to leave the current session?</h3>
       <div className="buttons">
-        <CustomButton
-          className="primary flex"
+        <Button
+          fluid
+          primary
           onClick={() => {
             navigate(props.jobServer.return_link);
           }}
         >
           Leave
-        </CustomButton>
-        <CustomButton className="secondary flex" onClick={() => props.setOpen(false)}>
+        </Button>
+        <Button fluid secondary onClick={() => props.setOpen(false)}>
           Stay
-        </CustomButton>
+        </Button>
       </div>
     </BackToOverviewStyle>
   );

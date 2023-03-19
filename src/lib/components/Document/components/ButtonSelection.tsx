@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { CustomButton } from "../../../styled/StyledSemantic";
+import { CodeButton } from "../../../styled/StyledSemantic";
 import { moveDown, moveUp } from "../../../functions/refNavigation";
 import { CodeSelectorOption, CodeSelectorValue } from "../../../types";
 import { FaWindowClose } from "react-icons/fa";
@@ -106,17 +106,15 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
 
   const button = (option: CodeSelectorOption, i: number, rm: boolean) => {
     return (
-      <CustomButton
+      <CodeButton
         ref={option.ref as React.RefObject<HTMLButtonElement>}
         key={option.label + "_" + i}
         selected={i === selected}
+        background={option.color}
         //className="buttonBackground"
+        compact
         style={{
-          position: "relative",
-          flex: `0.2 1 auto`,
-          padding: rm ? "5px 30px 5px 5px" : "5px",
-          background: option.color,
-          margin: "1px",
+          paddingRight: rm ? "3rem" : "",
         }}
         onMouseOver={() => setSelected(i)}
         onClick={(e) => {
@@ -137,7 +135,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
               position: "absolute",
               right: 3,
               top: 0,
-              fontSize: "2.5rem",
+              fontSize: "2rem",
               display: "flex",
               alignItems: "center",
               height: "100%",
@@ -146,7 +144,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
             <RiDeleteBin2Line />
           </div>
         )}
-      </CustomButton>
+      </CodeButton>
     );
   };
 
@@ -165,7 +163,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
           >
             <FaWindowClose
               size="100%"
-              color={selected ? "var(--text)" : "var(--primary-light)"}
+              color={selected === 0 ? "var(--text)" : "var(--primary-light)"}
               onClick={(e) => onSelect(option.value, e.ctrlKey || e.altKey)}
               onMouseOver={() => setSelected(0)}
             />

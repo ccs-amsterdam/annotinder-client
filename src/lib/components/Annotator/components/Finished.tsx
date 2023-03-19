@@ -51,11 +51,7 @@ const Finished = ({ jobServer }: FinishedProps) => {
               >
                 {" "}
                 <br />
-                <StyledButton
-                  primary
-                  size="huge"
-                  content={debriefing.data.link_text || "Click here!"}
-                />
+                <StyledButton primary>{debriefing.data.link_text || "Click here!"}</StyledButton>
               </a>
             ) : null}
             {debriefing.data.qr ? (

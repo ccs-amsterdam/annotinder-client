@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import JobServerDemo from "./classes/JobServerDemo";
 import Annotator from "../Annotator/Annotator";
 import { Grid, Menu, Icon, Dimmer, Loader } from "semantic-ui-react";
-import { CustomButton } from "../../styled/StyledSemantic";
+import { Button, ButtonGroup } from "../../styled/StyledSemantic";
 import FullDataTable from "../AnnotatorClient/components/FullDataTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../functions/copyToClipboard";
@@ -192,25 +192,20 @@ const DemoJobLink = ({ units, codebook }: DemoJobLinkProps) => {
 
   return (
     <div>
-      <div style={{ display: "flex" }}>
-        <CustomButton
-          className="primary flex left"
-          size={1.2}
-          disabled={!units || !codebook}
-          onClick={onClick}
-        >
+      <ButtonGroup>
+        <Button primary fluid disabled={!units || !codebook} onClick={onClick}>
           Start Demo
-        </CustomButton>
-        <CustomButton
-          size={1.2}
-          className="secondary flex right"
+        </Button>
+        <Button
+          fluid
+          secondary
           onClick={() => {
             copyToClipboard(url);
           }}
         >
           Copy link
-        </CustomButton>
-      </div>
+        </Button>
+      </ButtonGroup>
       <br />
       <div style={{ textAlign: "center", width: "100%", marginTop: "10px" }}>
         <QRCodeCanvas value={encodeURI(url)} size={300} />

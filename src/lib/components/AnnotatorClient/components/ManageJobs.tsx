@@ -1,6 +1,6 @@
 import { useState, useEffect, CSSProperties } from "react";
-import { Icon, Checkbox, Dropdown, Container, Portal, Segment } from "semantic-ui-react";
-import { StyledButton, StyledTable, CustomButton } from "../../../styled/StyledSemantic";
+import { Checkbox, Dropdown, Container, Portal, Segment } from "semantic-ui-react";
+import { StyledButton, StyledTable, Button } from "../../../styled/StyledSemantic";
 import { useCSVDownloader } from "react-papaparse";
 import JobsTable from "./JobsTable";
 import QRCodeCanvas from "qrcode.react";
@@ -8,6 +8,7 @@ import copyToClipboard from "../../../functions/copyToClipboard";
 import Backend from "../../Login/Backend";
 import { Job, User, SetState } from "../../../types";
 import styled from "styled-components";
+import { FaList } from "react-icons/fa";
 
 const JobsGrid = styled.div`
   padding: 1em;
@@ -234,27 +235,15 @@ const JobDetails = ({ backend, job, setJob, jobId, setJobs }: JobDetailsProps) =
           type={Type.Button}
           filename={`annotations_${job?.id}_${job?.title}.csv`}
           data={annotations?.data}
-          style={{ cursor: "pointer", border: "0", padding: "0", width: "100%" }}
+          style={{ display: "flex", cursor: "pointer", border: "0", padding: "0", width: "100%" }}
         >
-          <StyledButton
-            fluid
-            disabled={annotations?.data.length === 0}
-            primary
-            content={
-              annotations?.data.length > 0 ? "Download annotations" : "There are no annotations :("
-            }
-            icon="download"
-            labelPosition="left"
-          />
+          <StyledButton fluid disabled={annotations?.data.length === 0 || loading} primary>
+            {annotations?.data.length > 0 ? "Download annotations" : "There are no annotations :("}
+          </StyledButton>
         </CSVDownloader>
       ) : (
-        <StyledButton
-          fluid
-          loading={loading}
-          onClick={getAnnotations}
-          disabled={annotations !== null}
-        >
-          <Icon name="list" />
+        <StyledButton fluid onClick={getAnnotations} disabled={annotations !== null || loading}>
+          <FaList />
           Get annotations
         </StyledButton>
       )}
@@ -312,7 +301,7 @@ const JobUsers = ({ backend, job }: JobUsersProps) => {
           options={options}
           style={{ width: "100%" }}
         />
-        <StyledButton icon="save" disabled={!changed} primary onClick={onSave} />
+        <StyledButton disabled={!changed} primary onClick={onSave} />
       </div>
       {changed ? (
         <span style={{ float: "right", color: "var(--orange)" }}>
@@ -382,20 +371,13 @@ const AnnotationProgress = ({ job, annotations }: AnnotationProgressProps) => {
         type={Type.Button}
         filename={`progress_${job?.id}_${job?.title}.csv`}
         data={summaryCSV}
-        style={{ cursor: "pointer", border: "0", padding: "0", width: "100%" }}
+        style={{ display: "flex", cursor: "pointer", border: "0", padding: "0", width: "100%" }}
       >
-        <StyledButton
-          fluid
-          disabled={annotations?.data.length === 0}
-          secondary
-          content={
-            annotations?.data.length > 0
-              ? "Download progress summary"
-              : "There are no annotations :("
-          }
-          icon="download"
-          labelPosition="left"
-        />
+        <StyledButton fluid disabled={annotations?.data.length === 0} secondary>
+          {annotations?.data.length > 0
+            ? "Download progress summary"
+            : "There are no annotations :("}
+        </StyledButton>
       </CSVDownloader>
       <br />
       <br />
@@ -482,7 +464,7 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
       onOpen={() => setOpen(true)}
       hoverable
       mouseLeaveDelay={9999999}
-      trigger={<CustomButton style={{ padding: "5px", ...style }}>Get Job Token</CustomButton>}
+      trigger={<Button style={{ padding: "5px", ...style }}>Get Job Token</Button>}
     >
       <Segment
         style={{
@@ -503,7 +485,7 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
         </div>
         <br />
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <CustomButton
+          <Button
             size={2}
             className="primary"
             onClick={() => {
@@ -511,7 +493,7 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
             }}
           >
             Copy link
-          </CustomButton>
+          </Button>
         </div>
       </Segment>
     </Portal>

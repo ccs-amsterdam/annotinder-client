@@ -82,6 +82,7 @@ export default function QuestionIndexStep({
               border: `1px solid`,
               borderColor: i === questionIndex ? "var(--background-fixed)" : "transparent",
               background: getColor(i),
+              cursor: "pointer",
             }}
             onClick={() => {
               if (canSelect?.[i]) {

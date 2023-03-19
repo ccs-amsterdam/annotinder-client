@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, RefObject } from "react";
 import { Ref } from "semantic-ui-react";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
-import { scrollToMiddle } from "../../../functions/scroll";
+import { keepInView } from "../../../functions/scroll";
 import { AnswerOption, OnSelectParams } from "../../../types";
 import useSpeedBump from "../../../hooks/useSpeedBump";
-import { StyledButton } from "../../../styled/StyledSemantic";
+import { CodeButton, StyledButton } from "../../../styled/StyledSemantic";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -72,12 +72,6 @@ const SelectCode = React.memo(
 
           if (event.key === "ArrowDown") {
             setSelected(moveDown(buttons, selected));
-
-            scrollToMiddle(
-              scrollRef?.current,
-              buttons?.[selected]?.ref?.current.parentElement,
-              0.5
-            );
           }
 
           if (event.key === "ArrowLeft") {
@@ -86,13 +80,9 @@ const SelectCode = React.memo(
 
           if (event.key === "ArrowUp") {
             setSelected(moveUp(buttons, selected));
-            scrollToMiddle(
-              container?.current,
-              buttons?.[selected]?.ref?.current.parentElement,
-              0.5
-            );
           }
 
+          keepInView(scrollRef?.current, buttons?.[selected]?.ref?.current);
           return;
         }
 
@@ -148,76 +138,39 @@ const SelectCode = React.memo(
       const minWidthStr = vertical ? "100%" : minWidth + "px";
 
       return options.map((option, i) => {
-        let bordercolor = "var(--background-inversed-fixed)";
         const isCurrent = values.includes(option.code);
-        if (isCurrent) bordercolor = "var(--background-fixed)";
-        if (i === selected) bordercolor = "var(--background-fixed)";
 
         return (
-          <div
+          <CodeButton
+            ref={option.ref as React.RefObject<HTMLButtonElement>}
+            background={option.color}
+            selected={i === selected}
+            current={isCurrent}
             key={option.code}
+            value={option.code}
+            onDark
+            //onMouseOver={() => setSelected(i)}
+            onClick={() => {
+              if (speedbump) return;
+
+              onSelect({
+                value: option.code,
+                itemIndex: 0,
+                multiple: multiple,
+                finish: !multiple,
+                transition: { color: option.color },
+              }); // !multiple tells not to finish unit if multiple is true
+            }}
             style={{
               flex: `${Math.max(1 / perRow, 1 / options.length)} 1 0px`,
-              //flex: "1 1 auto",
+              display: "flex",
               minWidth: minWidthStr,
               width: sameSize ? minWidthStr : null,
               textAlign: "center",
             }}
           >
-            <Ref key={option.code} innerRef={option.ref}>
-              <StyledButton
-                fluid
-                loading={speedbump}
-                style={{
-                  backgroundColor: option.color,
-                  overflowWrap: "break-word",
-                  padding: "15px 5px",
-                  transition: "padding 0.2s",
-                  fontWeight: "bold",
-                  textShadow: "0px 0px 5px var(--background-inversed-fixed)",
-                  color: "var(--text-inversed-fixed)",
-                  borderRadius: "13.5px",
-                  fontSize: "inherit",
-                  position: "relative",
-                  height: "100%",
-                  border: `3px solid ${bordercolor}`,
-                }}
-                key={option.code}
-                value={option.code}
-                compact
-                //onMouseOver={() => setSelected(i)}
-                onClick={(e, d) => {
-                  if (speedbump) return;
-
-                  onSelect({
-                    value: d.value,
-                    itemIndex: 0,
-                    multiple: multiple,
-                    finish: !multiple,
-                    transition: { color: option.color },
-                  }); // !multiple tells not to finish unit if multiple is true
-                }}
-              >
-                {option.code}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "0",
-                    left: "0",
-                    height: "100%",
-                    width: "100%",
-                    borderStyle: "solid",
-                    borderRadius: "10px",
-                    backgroundColor: i === selected ? "#ffffff33" : "transparent",
-                    borderColor: isCurrent
-                      ? "var(--background-fixed)"
-                      : "var(--background-inversed-fixed)",
-                    borderWidth: isCurrent ? "3px" : "3px",
-                  }}
-                ></div>
-              </StyledButton>
-            </Ref>
-          </div>
+            {option.code}
+          </CodeButton>
         );
       });
     };
@@ -244,9 +197,7 @@ const SelectCode = React.memo(
             <Ref key={"finishbutton"} innerRef={finishbutton}>
               <StyledButton
                 primary
-                icon="play"
                 fluid
-                size="mini"
                 style={{
                   height: "100%",
                   border: `5px solid ${

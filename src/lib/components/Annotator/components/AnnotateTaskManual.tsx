@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FaKeyboard } from "react-icons/fa";
 
 import {
   StyledTable,
@@ -22,18 +23,9 @@ const AnnotateTaskManual = ({ fullScreenNode }: AnnotateTaskManualProps) => {
       onClose={() => setOpen(false)}
       position="bottom left"
       trigger={
-        <StyledButton
-          icon="keyboard"
-          size="huge"
-          onClick={() => setOpen(!open)}
-          style={{
-            background: "transparent",
-            cursor: "pointer",
-            color: "inherit",
-            padding: "4px 5px 4px 5px",
-            zIndex: 800,
-          }}
-        />
+        <div onClick={() => setOpen(!open)}>
+          <FaKeyboard />
+        </div>
       }
     >
       <StyledModal.Header>Controls</StyledModal.Header>
@@ -178,7 +170,7 @@ const AnnotateTaskManual = ({ fullScreenNode }: AnnotateTaskManualProps) => {
         </StyledContainer>
       </StyledModal.Content>
       <StyledModal.Actions>
-        <StyledButton content="Close" onClick={() => setOpen(false)} positive />
+        <StyledButton onClick={() => setOpen(false)}>Close</StyledButton>
       </StyledModal.Actions>
     </StyledModal>
   );

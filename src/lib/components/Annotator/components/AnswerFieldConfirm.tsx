@@ -55,15 +55,15 @@ const Confirm = ({ onSelect, button, swipe, blockEvents }: ConfirmProps) => {
       <StyledButton
         fluid
         primary
-        content={button || "Continue"}
-        size="huge"
         style={{ height: "100%", border: `2px solid ${borderColor}`, color: textColor }}
         onClick={() => {
           setPressed(true);
           setTimeout(() => setPressed(false), 400);
           onSelect({ value: "confirmed", finish: true });
         }}
-      />
+      >
+        {button || "Continue"}
+      </StyledButton>
     </div>
   );
 };

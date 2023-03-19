@@ -73,7 +73,6 @@ const AskFullScreenModal = ({ handle, askFullScreenSetting }: AskFullScreenModal
         <div style={{ display: "flex", height: "30%" }}>
           <StyledButton
             primary
-            size="large"
             onClick={() => {
               if (!handle.active) handle.enter();
               setAskFullScreen(false);
@@ -85,7 +84,6 @@ const AskFullScreenModal = ({ handle, askFullScreenSetting }: AskFullScreenModal
           </StyledButton>
           <StyledButton
             primary
-            size="large"
             onClick={() => {
               if (handle.active) handle.exit();
               setAskFullScreen(false);
