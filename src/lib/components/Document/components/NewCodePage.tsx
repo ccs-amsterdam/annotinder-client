@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Dropdown, Ref } from "semantic-ui-react";
-import { createId } from "../functions/annotations";
 import { getColor } from "../../../functions/tokenDesign";
 import ButtonSelection from "./ButtonSelection";
 import {

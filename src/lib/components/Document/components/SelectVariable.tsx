@@ -78,8 +78,8 @@ const StyledDiv = styled.div<{ description: boolean }>`
       &:hover,
       &.active {
         border: 2px solid var(--text) !important;
-        background: var(--primary);
-        color: white;
+        background: var(--secondary);
+        color: black;
       }
     }
   }
