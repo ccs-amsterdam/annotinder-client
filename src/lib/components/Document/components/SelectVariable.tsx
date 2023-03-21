@@ -11,8 +11,10 @@ interface SelectVariableProps {
 
 const StyledDiv = styled.div<{ description: boolean }>`
   //border-bottom: 1px solid var(--primary);
+  border-radius: 3px;
   position: relative;
   flex: 1 1 auto;
+  background: var(--primary);
 
   &::after {
     content: "";
@@ -27,13 +29,14 @@ const StyledDiv = styled.div<{ description: boolean }>`
 
   .Description {
     //margin: auto;
-    //background: var(--primary-dark);
-    color: var(--primary-text);
+    //background: var(--secondary);
+    color: white;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     font-size: 1.4rem;
     text-align: center;
-    padding: 0.5rem 1rem;
+    padding: 0rem 1rem 0.5rem 1rem;
 
     .Text {
       max-height: ${(p) => (p.description ? "5rem" : "0rem")};
@@ -61,12 +64,12 @@ const StyledDiv = styled.div<{ description: boolean }>`
     display: flex;
     word-wrap: break-word;
     font-size: 1.6rem;
-    justify-content: flex-start;
+    justify-content: center;
     padding: 0.5rem 1rem;
     gap: 1rem;
 
     button {
-      flex: 1 1 auto;
+      flex: 0 1 auto;
       padding: 0.4rem 0.7rem;
       background: var(--primary);
       border-radius: 4px;
@@ -77,9 +80,8 @@ const StyledDiv = styled.div<{ description: boolean }>`
 
       &:hover,
       &.active {
-        border: 2px solid var(--text) !important;
-        background: var(--secondary);
-        color: black;
+        border: 2px solid white !important;
+        color: white;
       }
     }
   }
@@ -160,18 +162,18 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
 
   return (
     <StyledDiv description={true}>
-      <div className="Description">
-        <div className="Text">{helpText}</div>
-        {/* <div className="ShowDescription" onClick={() => setShowDescription(!showDescription)}>
-          {showDescription ? "hide task" : "show task"}
-        </div> */}
-      </div>
       <VariableMenu
         variable={variable}
         setVariable={setVariable}
         variables={variables}
         variableNames={variableNames}
       />
+      <div className="Description">
+        <div className="Text">{helpText}</div>
+        {/* <div className="ShowDescription" onClick={() => setShowDescription(!showDescription)}>
+          {showDescription ? "hide task" : "show task"}
+        </div> */}
+      </div>
     </StyledDiv>
   );
 };

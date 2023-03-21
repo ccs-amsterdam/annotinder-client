@@ -9,6 +9,7 @@ const QuestionMarkButton = styled.div`
   height: 2.5rem;
   vertical-align: middle;
   margin: 0.3rem;
+  font-size: 2rem;
   cursor: pointer;
 
   svg:hover {
@@ -53,7 +54,7 @@ const Instructions = ({ instruction, autoInstruction, sessionData }: Instruction
         <Markdown style={{ textAlign: "justify", hyphens: "auto" }}>{instruction}</Markdown>
       </Modal>
       <QuestionMarkButton>
-        <FaQuestionCircle size="100%" onClick={(e) => setOpen(!open)} />
+        <FaQuestionCircle onClick={(e) => setOpen(!open)} />
       </QuestionMarkButton>
     </>
   );

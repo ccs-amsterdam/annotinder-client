@@ -44,8 +44,8 @@ const CodeButton = styled.button<{
       if (p.selected || p.current) return "var(--background-fixed)";
       return "var(--background-inversed-fixed)";
     }
-    if (p.selected || p.current) return "var(--background-inversed-fixed)";
-    return "var(--background-fixed)";
+    if (p.selected || p.current) return "var(--background-inversed)";
+    return "var(--background)";
   }};
   background: ${(p) => p.background || "var(--primary)"};
   flex: ${(p) => (p.compact ? "0.2 1 auto" : "1 1 auto")};
@@ -73,9 +73,18 @@ const CodeButton = styled.button<{
     left: 0;
     width: 100%;
     height: 100%;
-    background: ${(p) => (p.selected || p.current ? "#555" : p.afterBackground || "#fff")};
+    background: ${(p) => {
+      if (!p.selected && !p.current) return "#fff";
+      if (p.selected && p.current) return "#555";
+      return "#999";
+    }};
     z-index: -1;
-    border: 3px solid ${(p) => (p.selected || p.current ? "#555" : p.afterBackground || "#fff")};
+    /* border: 3px solid
+      ${(p) => {
+      if (!p.selected && !p.current) return "#fff";
+      if (p.selected && p.current) return "#555";
+      return "#999";
+    }}; */
     //border-radius: 3px;
   }
 
@@ -90,7 +99,6 @@ const StyledButton = styled.button<{
   primary?: boolean;
   secondary?: boolean;
   fluid?: boolean;
-  selected?: boolean;
 }>`
   font-size: ${(p) => p.size || 1.5}rem;
   padding: 0.7em 1em 0.7em 1rem;
@@ -124,7 +132,7 @@ const StyledButton = styled.button<{
       return `
       background: var(--primary);
       color: white;
-      .selected, :hover, :active {
+      &.selected, :hover, :active {
         background: var(--primary-dark);
       }
         `;
@@ -133,7 +141,7 @@ const StyledButton = styled.button<{
       return `
       background: var(--secondary);
       color: #222;
-      .selected, :hover, :active {
+      &.selected, :hover, :active {
         background: var(--secondary-dark);
         color: white;
       }
@@ -143,17 +151,6 @@ const StyledButton = styled.button<{
 
   :disabled {
     cursor: not-allowed;
-  }
-
-  :disabled::after {
-    position: absolute;
-    content: "";
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background: #8888;
   }
 
   ${(p) => {

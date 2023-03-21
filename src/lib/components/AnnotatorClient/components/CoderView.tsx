@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import FullDataTable from "./FullDataTable";
-import { Grid } from "semantic-ui-react";
 import Backend from "../../Login/Backend";
 import { RowObj, Job } from "../../../types";
+import styled from "styled-components";
 
 const columns = [
   { name: "title", title: true },
@@ -12,9 +12,14 @@ const columns = [
     f: (row: RowObj) => (row.n_total ? `${row.n_coded || 0} / ${row.n_total}` : ""),
   },
   { name: "modified", title: true, date: true },
-  //{ name: "created", title: true, date: true },
-  //{ name: "creator", title: true },
+  { name: "created", title: true, date: true },
 ];
+
+const StyledDiv = styled.div`
+  h2 {
+    text-align: center;
+  }
+`;
 
 interface CoderViewProps {
   backend: Backend;
@@ -22,14 +27,10 @@ interface CoderViewProps {
 
 export default function CoderView({ backend }: CoderViewProps) {
   return (
-    <Grid centered stackable>
-      <Grid.Row>
-        <Grid.Column textAlign="center" width="10">
-          <h2>Coding jobs</h2>
-          <CoderJobsTable backend={backend} />
-        </Grid.Column>
-      </Grid.Row>
-    </Grid>
+    <StyledDiv>
+      <h2>Coding jobs</h2>
+      <CoderJobsTable backend={backend} />
+    </StyledDiv>
   );
 }
 
@@ -56,11 +57,13 @@ const CoderJobsTable = ({ backend }: { backend: Backend }) => {
   const started = jobs ? jobs.filter((j) => j.modified != null) : [];
   const newjobs = jobs ? jobs.filter((j) => j.modified == null) : [];
   return (
-    <FullDataTable
-      fullData={[...started, ...newjobs]}
-      setFullData={setJobs}
-      columns={columns}
-      onClick={onClick}
-    />
+    <>
+      <FullDataTable
+        fullData={[...started, ...newjobs]}
+        setFullData={setJobs}
+        columns={columns}
+        onClick={onClick}
+      />
+    </>
   );
 };

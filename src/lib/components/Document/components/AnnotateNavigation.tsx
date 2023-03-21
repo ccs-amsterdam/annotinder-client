@@ -56,6 +56,7 @@ const AnnotateNavigation = ({
   const { currentToken, tokenSelection } = useAnnotationEvents(
     tokens,
     spanAnnotations,
+    relationAnnotations,
     triggerSelectionPopup,
     editMode,
     eventsBlocked || disableAnnotations

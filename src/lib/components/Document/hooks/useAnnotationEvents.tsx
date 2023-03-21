@@ -12,7 +12,14 @@ import {
   //onContextMenu,
   movePosition,
 } from "../functions/eventFunctions";
-import { SpanAnnotations, Token, TokenSelection, Arrowkeys, Span } from "../../../types";
+import {
+  SpanAnnotations,
+  Token,
+  TokenSelection,
+  Arrowkeys,
+  Span,
+  RelationAnnotations,
+} from "../../../types";
 
 /**
  * This is a hugely elaborate component for managing navigation (key, mouse and touch events)
@@ -22,7 +29,8 @@ import { SpanAnnotations, Token, TokenSelection, Arrowkeys, Span } from "../../.
  */
 export default function useAnnotationEvents(
   tokens: Token[],
-  annotations: SpanAnnotations,
+  spanAnnotations: SpanAnnotations,
+  relationAnnotations: RelationAnnotations,
   triggerSelectionPopup: any,
   editMode: boolean,
   eventsBlocked: boolean
@@ -54,7 +62,7 @@ export default function useAnnotationEvents(
   // reset selections when data changes
   useEffect(() => {
     setTokenSelection([]);
-  }, [annotations]);
+  }, [spanAnnotations, relationAnnotations]);
   useEffect(() => {
     setCurrentToken({ i: null });
     setTokenSelection([]);
@@ -124,7 +132,8 @@ export default function useAnnotationEvents(
     holdSpace,
     setCurrentToken,
     editMode,
-    annotations,
+    spanAnnotations,
+    relationAnnotations,
     setTokenSelection,
   ]);
 

@@ -13,12 +13,12 @@ const StyledButtonGroup = styled.div`
   }
   font-size: 2.5rem;
   z-index: 1000;
-  cursor: pointer;
   position: relative;
 
   & .Burger {
+    cursor: pointer;
     display: none;
-    padding: 3px 5px 0px 5px;
+    padding: 5px 5px 0px 5px;
     font-size: 2.5rem;
     height: 35px;
     width: 30px;
@@ -33,7 +33,12 @@ const StyledButtonGroup = styled.div`
     padding: 0.4rem;
 
     svg {
+      cursor: pointer;
       margin-left: 1rem;
+    }
+
+    div {
+      margin: 0;
     }
   }
 
@@ -44,7 +49,7 @@ const StyledButtonGroup = styled.div`
     & .Buttons {
       background: var(--background);
       position: absolute;
-      padding-top: 0px;
+      padding-top: 5px;
       top: 0px;
       left: -3.7rem;
       z-index: 1000;
@@ -53,6 +58,7 @@ const StyledButtonGroup = styled.div`
       width: 7rem;
       transition: max-height 0s;
       overflow: hidden;
+
       svg {
         margin-left: 0rem;
       }
@@ -79,12 +85,7 @@ interface MenuButtonGroupProps {
 
 const MenuButtonGroup = ({ children }: MenuButtonGroupProps) => {
   return (
-    <StyledButtonGroup
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      }}
-    >
+    <StyledButtonGroup>
       <div className="Burger">
         <GiHamburgerMenu />
       </div>

@@ -27,11 +27,11 @@ const useRelationSelector = (
   const [edgeOptions, setEdgeOptions] = useState<CodeSelectorOption[]>();
 
   const tokens = unitStates.doc.tokens;
-  const annotations = unitStates.spanAnnotations;
+  const spanAnnotations = unitStates.spanAnnotations;
 
   const triggerFunction = useCallback(
     (index: number, span: Span) => {
-      const [from, to] = [annotations[span[0]], annotations[span[1]]];
+      const [from, to] = [spanAnnotations[span[0]], spanAnnotations[span[1]]];
       if (!from || !to) return;
 
       const edgeOptions = getOptions(from, to, variable);
@@ -46,7 +46,7 @@ const useRelationSelector = (
       setPositionRef(tokens?.[span?.[1]]?.ref);
       setOpen(true);
     },
-    [tokens, variable, annotations, setEdgeOptions]
+    [tokens, variable, spanAnnotations, setEdgeOptions]
   );
 
   if (useWatchChange([tokens, variable])) setOpen(false);

@@ -210,11 +210,9 @@ export const toggleSpanAnnotation = (
     if (annotations[index]) {
       if (annotations[index][id]) {
         // first, delete any relations to this annotations
-
         // if the new annotation overlaps with an existing annotations, loop over the existing annotation to remove it entirely
         const old = annotations[index][id];
-        const oldSpan = old.span;
-        for (let i = oldSpan[0]; i <= oldSpan[1]; i++) {
+        for (let i = old.span[0]; i <= old.span[1]; i++) {
           // since we go from the span, we are actually certain the annotation exists at these indices
           // but we just double check for stability
           if (annotations[i]) {
@@ -263,34 +261,6 @@ export const toggleSpanAnnotation = (
 
   //if (update_relations) return updateRelations(annotations);
   return annotations;
-};
-
-export const syncRelationsToSpans = (
-  spanAnnotations: SpanAnnotations,
-  relationAnnotations: RelationAnnotations
-): RelationAnnotations => {
-  if (!spanAnnotations || !relationAnnotations) return {};
-  const spanAnn = spanAnnotationNodeLookup(spanAnnotations);
-
-  for (let fromId of Object.keys(relationAnnotations)) {
-    if (!spanAnn[fromId]) {
-      delete relationAnnotations[fromId];
-      continue;
-    }
-    for (let toId of Object.keys(relationAnnotations[fromId])) {
-      if (!spanAnn[toId]) {
-        delete relationAnnotations[fromId][toId];
-        continue;
-      }
-
-      for (let a of Object.values(relationAnnotations[fromId][toId])) {
-        a.from = spanAnn[fromId];
-        a.to = spanAnn[toId];
-      }
-    }
-  }
-
-  return relationAnnotations;
 };
 
 /**
@@ -358,18 +328,6 @@ const getSpanText = (span: Span, tokens: Token[]) => {
     })
     .join("");
   return text;
-};
-
-const spanAnnotationNodeLookup = (annotations: SpanAnnotations) => {
-  const spanLookup: Record<string, Annotation> = {};
-
-  for (const positionAnnotations of Object.values(annotations)) {
-    for (const ann of Object.values(positionAnnotations)) {
-      if (ann.index !== ann.span[0]) continue; // relations are only included on first token of span
-      spanLookup[createSpanId(ann)] = ann;
-    }
-  }
-  return spanLookup;
 };
 
 export const importTokenSpanAnnotations = (tokens: Token[]) => {

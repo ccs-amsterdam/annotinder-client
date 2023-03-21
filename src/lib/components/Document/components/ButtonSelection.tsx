@@ -31,7 +31,7 @@ interface ButtonSelectionProps {
 }
 
 const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps) => {
-  const [selected, setSelected] = useState(1);
+  const [selected, setSelected] = useState(0);
 
   const allOptions: CodeSelectorOption[] = useMemo(() => {
     // add cancel button and (most importantly) add refs used for navigation
@@ -44,7 +44,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
 
     let allOptions: CodeSelectorOption[] = [cancelOption, ...options];
     for (let option of allOptions) option.ref = React.createRef();
-    setSelected(1);
+    setSelected(0);
     return allOptions;
   }, [options]);
 

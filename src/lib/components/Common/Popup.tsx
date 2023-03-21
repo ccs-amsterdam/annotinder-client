@@ -17,12 +17,6 @@ const StyledDiv = styled.div<{ noPointerEvents?: boolean }>`
     font-size: 0.7em;
     pointer-events: ${(p) => (p.noPointerEvents ? `none` : ``)};
   }
-  button {
-    border-color: var(--secondary);
-  }
-  .cancel {
-    margin-top: 0.5rem;
-  }
 `;
 
 interface Props {
@@ -47,15 +41,16 @@ function Popup({ triggerRef, children, style, controlledOpen, noPointerEvents }:
       if (open) {
         const { x, y, height } = trigger.getBoundingClientRect();
 
-        const offset = 10;
-        let top = y - popup.scrollHeight - offset;
-        let left = x;
+        const offsetY = 10;
+        const offsetX = 10;
+        let top = y - popup.scrollHeight - offsetY;
+        let left = x - offsetX;
 
         // Ensure popup doesn't go off screen
         top = Math.max(0, Math.min(top, window.innerHeight - popup.scrollHeight));
         const overY = top + popup.scrollHeight - y;
-        if (overY > 0) top = y + height + offset;
-        left = Math.max(0, Math.min(left, window.innerWidth - popup.clientWidth));
+        if (overY > 0) top = y + height + offsetY;
+        left = Math.max(0, Math.min(left, window.innerWidth - popup.clientWidth - offsetX));
 
         popup.style["max-height"] = "95vh";
         popup.style.border = "1px solid black";
@@ -75,11 +70,13 @@ function Popup({ triggerRef, children, style, controlledOpen, noPointerEvents }:
   }, [open, children, triggerRef]);
 
   useEffect(() => {
-    if (!open) return;
+    const trigger = triggerRef.current;
+
     function onClick(e: any) {
-      const trigger = triggerRef.current;
       const popup = popupRef.current;
-      if (popup && trigger && !popup.contains(e.target) && !trigger.contains(e.target)) {
+      const onTrigger = trigger.contains(e.target);
+      if (onTrigger) return setOpen(!open);
+      if (popup && !popup.contains(e.target)) {
         setOpen(false);
       }
     }

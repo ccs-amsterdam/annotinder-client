@@ -133,7 +133,6 @@ const Scale = React.memo(
     const nAnswered = answerItems.filter((iv) => iv.values?.[0] != null).length;
     const done = nAnswered === answerItems.length;
 
-    console.log(selectedItem);
     return (
       <StyledDiv>
         <div
@@ -173,7 +172,6 @@ const Scale = React.memo(
           fluid
           primary
           disabled={!done}
-          selected={selectedItem === -1}
           onClick={() => {
             onFinish();
           }}

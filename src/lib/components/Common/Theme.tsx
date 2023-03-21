@@ -35,11 +35,7 @@ const themes = [
   { name: "dark", theme: dark, icon: "moon" },
 ];
 
-interface ThemeSelectorProps {
-  color: string;
-}
-
-export const DarkModeButton = ({ color }: ThemeSelectorProps) => {
+export const DarkModeButton = () => {
   const [theme, setTheme] = useLocalStorage("theme", "light");
   const selected = themes.findIndex((t) => t.name === theme);
 
@@ -59,8 +55,8 @@ export const DarkModeButton = ({ color }: ThemeSelectorProps) => {
     setTheme(themes[next].name);
   };
 
-  if (theme === "light") return <FaSun onClick={onClick} />;
-  return <FaMoon onClick={onClick} />;
+  if (theme === "light") return <FaSun onClick={onClick} style={{ cursor: "pointer" }} />;
+  return <FaMoon onClick={onClick} style={{ cursor: "pointer" }} />;
 };
 
 const fontsizeOptions = [
@@ -69,7 +65,7 @@ const fontsizeOptions = [
   { name: "large", size: "2rem", icon: "text height" },
 ];
 
-export const FontSizeButton = ({ color }: ThemeSelectorProps) => {
+export const FontSizeButton = () => {
   const [theme, setTheme] = useLocalStorage("fontsize", "medium");
   const selected = fontsizeOptions.findIndex((t) => t.name === theme);
 

@@ -107,8 +107,8 @@ const JobController = ({
           <HeartContainer damage={health?.damage} maxDamage={health?.maxDamage} />
           <div>
             <MenuButtonGroup>
-              <FontSizeButton color="var(--primary-text)" />
-              <DarkModeButton color="var(--primary-text)" />
+              <FontSizeButton />
+              <DarkModeButton />
               {fullScreenButton}
               {!cantLeave && <FaWindowClose onClick={() => setOpenExitModal(!openExitModal)} />}
             </MenuButtonGroup>

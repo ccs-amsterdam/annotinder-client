@@ -1,18 +1,64 @@
-import React, { ReactElement, useState } from "react";
-import { Icon, List, Menu, Popup } from "semantic-ui-react";
+import { ReactElement, useRef, useState } from "react";
+import { FaHome, FaUser } from "react-icons/fa";
 import { SetState } from "../../../types";
 import { DarkModeButton } from "../../Common/Theme";
 import Backend from "../../Login/Backend";
 import CoderView from "./CoderView";
 import ManageJobs from "./ManageJobs";
 import ManageUsers from "./ManageUsers";
+import styled from "styled-components";
+import MenuButtonGroup from "../../Annotator/components/MenuButtonGroup";
+import Popup from "../../Common/Popup";
 
 interface HomeProps {
   backend: Backend;
   authForm: ReactElement;
 }
 
-const background: string = null;
+const StyledDiv = styled.div`
+  .Content {
+    margin-top: 5rem;
+  }
+`;
+
+const Menu = styled.ul`
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 3px 10px 0px 10px;
+  gap: 1rem;
+  font-size: 1.6rem;
+  color: var(--text);
+
+  .RightSide {
+    padding-top: 5px;
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  li {
+    cursor: pointer;
+    padding: 1.5rem 0.5rem 0.5rem 0.5rem;
+
+    &.active {
+      border-bottom: 2px solid var(--primary);
+    }
+  }
+`;
+
+const PopupContent = styled.div`
+  padding: 1rem;
+  font-size: 1.5rem;
+  svg {
+    margin-right: 1rem;
+  }
+  .authform {
+    display: flex;
+    justify-content: center;
+  }
+`;
 
 export default function Home({ backend, authForm }: HomeProps) {
   const [menuItem, setMenuItem] = useState("coderView");
@@ -32,34 +78,15 @@ export default function Home({ backend, authForm }: HomeProps) {
   };
 
   return (
-    <div
-      style={{
-        margin: "auto",
-        height: "100%",
-        maxWidth: "1200px",
-        width: "100%",
-        backgroundImage: background ? `url(${background})` : "none",
-        backgroundSize: `100vw 100vh`,
-      }}
-    >
+    <StyledDiv>
       <MenuBar
         backend={backend}
         authForm={authForm}
         menuItem={menuItem}
         setMenuItem={setMenuItem}
       />
-      <div style={{ height: "5%" }}></div>
-      <div
-        style={{
-          position: "relative",
-          height: "calc(95% - 50px)",
-          width: "100%",
-          overflow: "auto",
-        }}
-      >
-        {renderItem()}
-      </div>
-    </div>
+      <div className="Content">{renderItem()}</div>
+    </StyledDiv>
   );
 }
 
@@ -83,49 +110,48 @@ interface MenuBarProps {
 }
 
 const MenuBar = ({ backend, authForm, menuItem, setMenuItem }: MenuBarProps) => {
-  return (
-    <Menu
-      pointing
-      secondary
-      style={{ fontSize: "1.5rem", marginBottom: "10px", borderBottom: "0px" }}
-    >
-      {menuItems.map((item) => {
-        if (item.onlyAdmin && !backend?.is_admin) return null;
-        return (
-          <Menu.Item
-            key={item.label}
-            name={item.label}
-            active={menuItem === item.value}
-            onClick={() => setMenuItem(item.value)}
-            style={{ background: "transparent", color: "var(--text)" }}
-          />
-        );
-      })}
+  const userButtonRef = useRef<HTMLDivElement>(null);
 
-      <DarkModeButton color="var(--text)" />
-      <Popup
-        position="bottom right"
-        on="click"
-        trigger={
-          <Menu.Item position="right">
-            <Icon name="user" style={{ cursor: "pointer" }} />
-          </Menu.Item>
-        }
-      >
-        <Popup.Content style={{ fontSize: "1.5rem" }}>
-          <List>
-            <List.Item>
-              <List.Icon name="home" />
-              <List.Content>{backend.host.replace(/http[s]?:\/\//, "")}</List.Content>
-            </List.Item>
-            <List.Item>
-              <List.Icon name="user" />
-              <List.Content>{backend.name}</List.Content>
-            </List.Item>
-          </List>
-          <div style={{ width: "200px" }}>{authForm}</div>
-        </Popup.Content>
+  return (
+    <>
+      <Menu>
+        {menuItems.map((item) => {
+          if (item.onlyAdmin && !backend?.is_admin) return null;
+          return (
+            <li
+              key={item.label}
+              className={menuItem === item.value ? "active" : ""}
+              onClick={() => setMenuItem(item.value)}
+            >
+              {item.label}
+            </li>
+          );
+        })}
+
+        <div className="RightSide">
+          <MenuButtonGroup>
+            <DarkModeButton />
+            <div ref={userButtonRef}>
+              <FaUser />
+            </div>
+          </MenuButtonGroup>
+        </div>
+      </Menu>
+      <Popup triggerRef={userButtonRef}>
+        <PopupContent>
+          <div>
+            <FaHome />
+            <span>{backend.host.replace(/http[s]?:\/\//, "")}</span>
+          </div>
+          <div>
+            <FaUser />
+            <span>{backend.name}</span>
+          </div>
+          <div className="authform" style={{ width: "200px" }}>
+            {authForm}
+          </div>
+        </PopupContent>
       </Popup>
-    </Menu>
+    </>
   );
 };
