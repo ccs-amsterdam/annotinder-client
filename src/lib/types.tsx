@@ -31,19 +31,25 @@ export type FullScreenNode = MutableRefObject<HTMLDivElement | null>;
 
 ///// ANNOTATIONS
 export type Span = [number, number];
+export type Edge = [number, number];
 
 export type Status = "DONE" | "IN_PROGRESS";
 
 export interface Annotation {
-  type?: "field" | "span" | "relation" | "relation_span";
+  type?: "field" | "span" | "relation";
+  id?: string;
   variable: string;
   value?: string | number;
   field?: string;
   offset?: number;
   length?: number;
+  fromId?: string;
+  toId?: string;
+
   index?: number;
   text?: string;
   span?: Span;
+  edge?: Edge;
   token_span?: Span;
   color?: string;
   comment?: string;
@@ -106,6 +112,10 @@ export interface RelationAnnotations {
   [from: string]: {
     [to: string]: AnnotationMap;
   };
+}
+
+export interface TokenAnnotations {
+  [index: number | string]: AnnotationMap;
 }
 
 ///// CODEBOOK

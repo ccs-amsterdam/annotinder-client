@@ -93,12 +93,12 @@
         {
           "codes": ["Premise", "Co-premise"],
           "from": {
-            "variable": "Labels",
-            "values": ["Predicate"]
+            "variable": "Relations",
+            "values": ["Statement of Fact", "Statement of Value", "Statement of Policy"]
           },
           "to": {
-            "variable": "Labels",
-            "values": ["Predicate"]
+            "variable": "Relations",
+            "values": ["Statement of Fact", "Statement of Value", "Statement of Policy"]
           }
         }
       ],

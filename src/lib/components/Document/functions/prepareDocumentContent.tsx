@@ -2,6 +2,7 @@ import {
   importFieldAnnotations,
   importSpanAnnotations,
   importRelationAnnotations,
+  addSpanIndices,
 } from "./annotations";
 import {
   Doc,
@@ -41,12 +42,10 @@ export const getAnnotations = (
   doc: Doc,
   annotations: Annotation[]
 ): [SpanAnnotations, FieldAnnotations, RelationAnnotations] => {
-  const spanAnnotations = importSpanAnnotations([...annotations], doc.tokens);
+  annotations = addSpanIndices(annotations, doc.tokens);
+  const spanAnnotations = importSpanAnnotations(annotations);
   const fieldAnnotations: FieldAnnotations = importFieldAnnotations(annotations);
-  const relationAnnotations: RelationAnnotations = importRelationAnnotations(
-    annotations,
-    doc.tokens
-  );
+  const relationAnnotations: RelationAnnotations = importRelationAnnotations(annotations);
 
   return [spanAnnotations, fieldAnnotations, relationAnnotations];
 };

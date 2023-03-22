@@ -78,7 +78,7 @@ export default function useVariableMap(
       }
 
       // we use a separate variableMap called showValues that tells Document what annotations
-      // to show. This is the same for "span" variables, but for "relation"
+      // to show. These are the same for "span" variables, but for "relation"
       // variables we want to only show the annotations
       // that are valid options for the relation codes
       let showValues: VariableMap;
@@ -128,6 +128,11 @@ const getRelationShowValues = (
       if (!valuemap[cr.variable]) valuemap[cr.variable] = {};
       const values = cr.values || Object.keys(fullVariableMap[cr.variable].codeMap);
       for (let v of values) valuemap[cr.variable][v] = true;
+    }
+
+    for (let relationValue of relation.codes) {
+      if (!valuemap[selectedVariable]) valuemap[selectedVariable] = {};
+      valuemap[selectedVariable][relationValue] = true;
     }
   }
 

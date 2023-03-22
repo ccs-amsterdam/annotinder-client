@@ -19,17 +19,15 @@ const RelationArrows = ({ tokens, annotations, showValues, triggerSelectionPopup
       for (let to of Object.values(from)) {
         for (let r of Object.values(to)) {
           if (!r || !r.from || !r.to) continue;
-          const ann = r.from;
-          const parent = r.to;
-          const id = `${ann.variable}|${ann.value}|${ann.span[0]} - ${r.variable}|${r.value} - ${parent.variable}|${parent.value}|${parent.span[0]}`;
+          const id = `${r.from.variable}|${r.from.value}|${r.from.offset} - ${r.variable}|${r.value} - ${r.to.variable}|${r.to.value}|${r.to.offset}`;
 
-          let [from, to] = [ann.span[0], parent.span[0]];
-          let [fromEnd, toEnd] = [ann.span[1], parent.span[1]];
+          let [from, fromEnd] = r.from.type === "relation" ? r.from.edge : r.from.span;
+          let [to, toEnd] = r.to.type === "relation" ? r.to.edge : r.to.span;
 
           const relationCodeMap = showValues[r.variable]?.codeMap;
           if (!relationCodeMap) continue;
-          const fromCodeMap = showValues[ann.variable]?.codeMap;
-          const toCodeMap = showValues[parent.variable]?.codeMap;
+          const fromCodeMap = showValues[r.from.variable]?.codeMap;
+          const toCodeMap = showValues[r.to.variable]?.codeMap;
 
           arrows.push({
             id,
@@ -37,8 +35,8 @@ const RelationArrows = ({ tokens, annotations, showValues, triggerSelectionPopup
             tokenSelectionEnd: [fromEnd, toEnd],
             relation: r.value,
             edgeColor: standardizeColor(r.color, "50") || getColor(r.value, relationCodeMap),
-            fromColor: standardizeColor(ann.color, "50") || getColor(ann.value, fromCodeMap),
-            toColor: standardizeColor(parent.color, "50") || getColor(parent.value, toCodeMap),
+            fromColor: standardizeColor(r.from.color, "50") || getColor(r.from.value, fromCodeMap),
+            toColor: standardizeColor(r.to.color, "50") || getColor(r.to.value, toCodeMap),
           });
         }
       }

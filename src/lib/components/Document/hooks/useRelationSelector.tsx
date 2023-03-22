@@ -7,12 +7,13 @@ import {
   TriggerSelectionPopup,
   Variable,
   Code,
+  RelationAnnotations,
   RelationOption,
-  AnnotationMap,
+  Annotation,
   CodeSelectorOption,
   CodeSelectorValue,
 } from "../../../types";
-import { getRelations } from "../functions/annotations";
+import { createSpanId, getRelations } from "../functions/annotations";
 import AnnotationPortal from "../components/AnnotationPortal";
 import PopupSelection from "../components/PopupSelection";
 
@@ -28,11 +29,16 @@ const useRelationSelector = (
 
   const tokens = unitStates.doc.tokens;
   const spanAnnotations = unitStates.spanAnnotations;
+  const relationAnnotations = unitStates.relationAnnotations;
 
   const triggerFunction = useCallback(
     (index: number, span: Span) => {
-      const [from, to] = [spanAnnotations[span[0]], spanAnnotations[span[1]]];
-      if (!from || !to) return;
+      const [fromMap, toMap] = [spanAnnotations[span[0]], spanAnnotations[span[1]]];
+      if (!fromMap || !toMap) return;
+      let [from, to] = [Object.values(fromMap), Object.values(toMap)];
+
+      from = addRelationAnnotations(from, relationAnnotations);
+      to = addRelationAnnotations(to, relationAnnotations);
 
       const edgeOptions = getOptions(from, to, variable);
       if (edgeOptions.length === 0) return;
@@ -46,7 +52,7 @@ const useRelationSelector = (
       setPositionRef(tokens?.[span?.[1]]?.ref);
       setOpen(true);
     },
-    [tokens, variable, spanAnnotations, setEdgeOptions]
+    [tokens, variable, spanAnnotations, relationAnnotations, setEdgeOptions]
   );
 
   if (useWatchChange([tokens, variable])) setOpen(false);
@@ -146,18 +152,40 @@ const SelectRelationPage = ({ edge, unitStates, setOpen }: SelectRelationPagePro
   );
 };
 
-function getOptions(from: AnnotationMap, to: AnnotationMap, variable: Variable) {
+function addRelationAnnotations(
+  annotations: Annotation[],
+  relationAnnotations: RelationAnnotations
+) {
+  const addAnnotations: Annotation[] = [];
+
+  for (let annotation of annotations) {
+    const spanId = createSpanId(annotation);
+    if (!relationAnnotations[spanId]) continue;
+    for (let relationMap of Object.values(relationAnnotations[spanId]) || []) {
+      for (let relation of Object.values(relationMap)) addAnnotations.push(relation as Annotation);
+    }
+  }
+  return [...annotations, ...addAnnotations];
+}
+
+function getOptions(from: Annotation[], to: Annotation[], variable: Variable) {
   const edgeRelations: Record<string, CodeSelectorValue> = {};
   const validFrom = variable.validFrom;
   const validTo = variable.validTo;
 
-  for (let f of Object.values(from)) {
+  for (let f of from) {
     const fromRelations =
       validFrom?.[f.variable]?.["*"] || validFrom?.[f.variable]?.[f.value] || null;
     if (!fromRelations) continue;
 
-    for (let t of Object.values(to)) {
-      if (f.offset === t.offset && f.variable === t.variable && f.value === t.value) continue;
+    for (let t of to) {
+      // if (f.type === "span" && t.type === "span") {
+      //   if (f.offset === t.offset && f.variable === t.variable && f.value === t.value) continue;
+      // }
+      // if (f.type === "relation" && t.type === "relation") {
+      //   if (f.)
+      // }
+      if (f.id === t.id) continue;
 
       const toRelations = validTo?.[t.variable]?.["*"] || validTo?.[t.variable]?.[t.value] || null;
       if (!toRelations) continue;

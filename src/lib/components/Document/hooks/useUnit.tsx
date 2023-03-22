@@ -66,7 +66,7 @@ const useUnit = (
     setSpanAnnotations(spanAnnotations);
     setFieldAnnotations(fieldAnnotations);
     setRelationAnnotations(relationAnnotations);
-    setSafetyCheck(doc.tokens);
+    setTimeout(() => setSafetyCheck(doc.tokens), 0);
 
     if (spanAnnotations && Object.keys(spanAnnotations).length > 0) {
       // the select function is only available if the input annotations have
@@ -86,11 +86,11 @@ const useUnit = (
   // If annotations change, prepare memoised version in standard annotation
   // array format. Then when one of these changes, a side effect performs onChangeAnnotations.
   const exportedSpanAnnotations: Annotation[] = useMemo(() => {
-    return exportSpanAnnotations(spanAnnotations, doc.tokens, true);
+    return exportSpanAnnotations(spanAnnotations, doc.tokens);
   }, [spanAnnotations, doc]);
 
   const exportedRelationAnnotations: Annotation[] = useMemo(() => {
-    return exportRelationAnnotations(relationAnnotations, doc.tokens, true);
+    return exportRelationAnnotations(relationAnnotations, doc.tokens);
   }, [relationAnnotations, doc]);
 
   const exportedFieldAnnotations: Annotation[] = useMemo(() => {
@@ -100,7 +100,7 @@ const useUnit = (
   useEffect(() => {
     // side effect to pass annotations back to the parent
     if (!onChangeAnnotations) return;
-    // check if same unit, to prevent annotations from spilling over due to race conditions
+    // check if same unit to prevent annotations from spilling over due to race conditions
     if (safetyCheck !== doc.tokens) return;
     onChangeAnnotations([
       ...exportedSpanAnnotations,

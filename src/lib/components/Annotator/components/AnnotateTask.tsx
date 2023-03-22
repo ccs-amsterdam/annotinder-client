@@ -202,14 +202,15 @@ const getCleanAnnotations = (annotations: Annotation[]) => {
   return annotations.map((na) => {
     const a: Annotation = {
       type: na.type,
+      id: na.id,
       variable: na.variable,
       value: na.value,
       field: na.field,
       offset: na.offset,
       length: na.length,
-      text: na.text,
-      from: na.from,
-      to: na.to,
+      //text: na.text,
+      fromId: na.fromId,
+      toId: na.toId,
     };
     return a;
   });
