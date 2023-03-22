@@ -2,7 +2,7 @@ import {
   importFieldAnnotations,
   importSpanAnnotations,
   importRelationAnnotations,
-  addSpanIndices,
+  addTokenIndices,
 } from "./annotations";
 import {
   Doc,
@@ -12,7 +12,7 @@ import {
   TextField,
   Unit,
   FieldAnnotations,
-  RelationAnnotations,
+  RelationAnnotation,
   Annotation,
   UnitContent,
 } from "../../../types";
@@ -41,11 +41,11 @@ export const getDoc = (unit: Unit): Doc => {
 export const getAnnotations = (
   doc: Doc,
   annotations: Annotation[]
-): [SpanAnnotations, FieldAnnotations, RelationAnnotations] => {
-  annotations = addSpanIndices(annotations, doc.tokens);
+): [SpanAnnotations, FieldAnnotations, RelationAnnotation[]] => {
+  annotations = addTokenIndices(annotations, doc.tokens);
   const spanAnnotations = importSpanAnnotations(annotations);
   const fieldAnnotations: FieldAnnotations = importFieldAnnotations(annotations);
-  const relationAnnotations: RelationAnnotations = importRelationAnnotations(annotations);
+  const relationAnnotations: RelationAnnotation[] = importRelationAnnotations(annotations);
 
   return [spanAnnotations, fieldAnnotations, relationAnnotations];
 };

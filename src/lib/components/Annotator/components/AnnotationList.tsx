@@ -1,12 +1,7 @@
+import { useMemo } from "react";
 import styled from "styled-components";
 import { getColor } from "../../../functions/tokenDesign";
-import { Annotation, VariableMap, Span, Token } from "../../../types";
-
-interface AnnotationListProps {
-  tokens: Token[];
-  variableMap: VariableMap;
-  annotations: Annotation[];
-}
+import { Annotation, VariableMap, AnnotationMap, TriggerSelector } from "../../../types";
 
 const VariableNames = styled.div`
   font-size: 2rem;
@@ -150,7 +145,19 @@ const StyledDiv = styled.div`
   }
 `;
 
-const AnnotationList = ({ tokens, variableMap, annotations }: AnnotationListProps) => {
+interface AnnotationListProps {
+  variableMap: VariableMap;
+  annotations: Annotation[];
+  selectors: Record<string, TriggerSelector>;
+}
+
+const AnnotationList = ({ variableMap, annotations, selectors }: AnnotationListProps) => {
+  const annMap: AnnotationMap = useMemo(() => {
+    const annMap: AnnotationMap = {};
+    for (let a of annotations || []) annMap[a.id] = a;
+    return annMap;
+  }, [annotations]);
+
   if (!variableMap || Object.keys(variableMap).length === 0) return null;
   const variables = Object.keys(variableMap);
 
@@ -163,19 +170,18 @@ const AnnotationList = ({ tokens, variableMap, annotations }: AnnotationListProp
           })}
         </div>
       </VariableNames>
-      <StyledDiv>{listAnnotations(tokens, variableMap, annotations)}</StyledDiv>
+      <StyledDiv>{listAnnotations(variableMap, annotations, annMap, selectors)}</StyledDiv>
     </div>
   );
 };
 
-const listAnnotations = (tokens: Token[], variableMap: VariableMap, annotations: Annotation[]) => {
+const listAnnotations = (
+  variableMap: VariableMap,
+  annotations: Annotation[],
+  annMap: AnnotationMap,
+  selectors: Record<string, TriggerSelector>
+) => {
   const rows = [];
-
-  const onClick = (span: Span, end?: boolean) => {
-    if (!span) return;
-    const token = tokens?.[span[end ? 1 : 0]];
-    if (token?.select) token.select(span);
-  };
 
   for (const annotation of annotations) {
     if (annotation.type === "span") {
@@ -185,7 +191,13 @@ const listAnnotations = (tokens: Token[], variableMap: VariableMap, annotations:
           key={"span" + rows.length}
           variableMap={variableMap}
           annotation={annotation}
-          onClick={onClick}
+          onClick={() => {
+            selectors?.span({
+              index: annotation.token_span[0],
+              from: annotation.token_span[0],
+              to: annotation.token_span[1],
+            });
+          }}
           text={text}
         />
       );
@@ -198,8 +210,15 @@ const listAnnotations = (tokens: Token[], variableMap: VariableMap, annotations:
           key={"relation" + rows.length}
           variableMap={variableMap}
           annotation={annotation}
-          annotations={annotations}
-          onClick={onClick}
+          annMap={annMap}
+          onClick={() => {
+            selectors?.relation({
+              from: annotation.edge[0],
+              to: annotation.edge[1],
+              fromId: annotation.fromId,
+              toId: annotation.toId,
+            });
+          }}
         />
       );
     }
@@ -210,7 +229,7 @@ const listAnnotations = (tokens: Token[], variableMap: VariableMap, annotations:
 interface ShowSpanAnnotationProps {
   variableMap: VariableMap;
   annotation: Annotation;
-  onClick: (span: Span) => void;
+  onClick: () => void;
   text: string;
 }
 
@@ -228,7 +247,7 @@ const ShowSpanAnnotation = ({
   const label = annotation.value;
 
   return (
-    <div className={"annotation"} onClick={() => onClick(annotation.token_span)}>
+    <div className={"annotation"} onClick={onClick}>
       <div className="label" style={{ background: color || null }}>
         <span>{label}</span>
         <p className="text" title={text}>
@@ -242,11 +261,11 @@ const ShowSpanAnnotation = ({
 interface ShowRelationProps {
   variableMap: VariableMap;
   annotation: Annotation;
-  annotations: Annotation[];
-  onClick: (span: Span, end: boolean) => void;
+  annMap: AnnotationMap;
+  onClick: () => void;
 }
 
-const ShowRelation = ({ variableMap, annotation, annotations, onClick }: ShowRelationProps) => {
+const ShowRelation = ({ variableMap, annotation, annMap, onClick }: ShowRelationProps) => {
   let codeMap = variableMap?.[annotation.variable]?.codeMap;
   if (!codeMap) return null;
 
@@ -256,11 +275,7 @@ const ShowRelation = ({ variableMap, annotation, annotations, onClick }: ShowRel
   //const relationSpan: Span = [annotation.from.token_span[0], annotation.to.token_span[1]];
 
   return (
-    <div
-      className={"relation"}
-      onClick={() => onClick(annotation.token_span, true)}
-      style={{ background: color || null }}
-    >
+    <div className={"relation"} onClick={onClick} style={{ background: color || null }}>
       <div className="header">
         <span>{label}</span>
         {/* <div>

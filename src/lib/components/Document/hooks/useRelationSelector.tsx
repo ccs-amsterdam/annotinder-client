@@ -3,24 +3,24 @@ import standardizeColor from "../../../functions/standardizeColor";
 import useWatchChange from "../../../hooks/useWatchChange";
 import {
   UnitStates,
-  Span,
-  TriggerSelectionPopup,
   Variable,
   Code,
-  RelationAnnotations,
+  RelationAnnotation,
   RelationOption,
   Annotation,
   CodeSelectorOption,
   CodeSelectorValue,
+  TriggerSelector,
+  TriggerSelectorParams,
 } from "../../../types";
-import { createSpanId, getRelations } from "../functions/annotations";
+import { getRelationMap } from "../functions/annotations";
 import AnnotationPortal from "../components/AnnotationPortal";
 import PopupSelection from "../components/PopupSelection";
 
 const useRelationSelector = (
   unitStates: UnitStates,
   variable: Variable
-): [ReactElement, TriggerSelectionPopup, boolean] => {
+): [ReactElement, TriggerSelector, boolean] => {
   const [open, setOpen] = useState(false);
   const [positionRef, setPositionRef] = useState<any>(null);
 
@@ -32,15 +32,23 @@ const useRelationSelector = (
   const relationAnnotations = unitStates.relationAnnotations;
 
   const triggerFunction = useCallback(
-    (index: number, span: Span) => {
-      const [fromMap, toMap] = [spanAnnotations[span[0]], spanAnnotations[span[1]]];
+    (selection: TriggerSelectorParams) => {
+      if (!selection?.from || !selection?.to) return;
+      const [fromMap, toMap] = [spanAnnotations[selection.from], spanAnnotations[selection.to]];
       if (!fromMap || !toMap) return;
-      let [from, to] = [Object.values(fromMap), Object.values(toMap)];
+      let [fromAnn, toAnn] = [Object.values(fromMap), Object.values(toMap)];
 
-      from = addRelationAnnotations(from, relationAnnotations);
-      to = addRelationAnnotations(to, relationAnnotations);
+      fromAnn = addRelationAnnotations(fromAnn, relationAnnotations);
+      toAnn = addRelationAnnotations(toAnn, relationAnnotations);
 
-      const edgeOptions = getOptions(from, to, variable);
+      let edgeOptions = getOptions(fromAnn, toAnn, variable);
+      if (selection.fromId && selection.toId) {
+        edgeOptions = edgeOptions.filter((option) => {
+          const { from, to } = option?.value?.relationOption;
+          return from?.id === selection.fromId && to?.id === selection.toId;
+        });
+      }
+
       if (edgeOptions.length === 0) return;
       if (edgeOptions.length === 1) {
         const edge = edgeOptions[0];
@@ -49,7 +57,7 @@ const useRelationSelector = (
         setEdge(null);
         setEdgeOptions(edgeOptions);
       }
-      setPositionRef(tokens?.[span?.[1]]?.ref);
+      setPositionRef(tokens?.[selection.to]?.ref);
       setOpen(true);
     },
     [tokens, variable, spanAnnotations, relationAnnotations, setEdgeOptions]
@@ -58,7 +66,7 @@ const useRelationSelector = (
   if (useWatchChange([tokens, variable])) setOpen(false);
 
   const popup = (
-    <AnnotationPortal open={open} setOpen={setOpen} positionRef={positionRef}>
+    <AnnotationPortal open={open} setOpen={setOpen} positionRef={positionRef} minY={30}>
       {edge === null ? (
         <SelectEdgePage edgeOptions={edgeOptions} setEdge={setEdge} setOpen={setOpen} />
       ) : (
@@ -122,7 +130,7 @@ const SelectRelationPage = ({ edge, unitStates, setOpen }: SelectRelationPagePro
   const options: CodeSelectorOption[] = useMemo(() => {
     if (!edge) return null;
 
-    const relations = getRelations(unitStates.relationAnnotations, edge.from, edge.to);
+    const relations = getRelationMap(unitStates.relationAnnotations, edge.from, edge.to);
     const options = edge.relations.map((code) => {
       const isNew = !relations[code.variable + "|" + code.code];
       return {
@@ -154,15 +162,15 @@ const SelectRelationPage = ({ edge, unitStates, setOpen }: SelectRelationPagePro
 
 function addRelationAnnotations(
   annotations: Annotation[],
-  relationAnnotations: RelationAnnotations
+  relationAnnotations: RelationAnnotation[]
 ) {
-  const addAnnotations: Annotation[] = [];
+  if (!relationAnnotations) return annotations;
 
-  for (let annotation of annotations) {
-    const spanId = createSpanId(annotation);
-    if (!relationAnnotations[spanId]) continue;
-    for (let relationMap of Object.values(relationAnnotations[spanId]) || []) {
-      for (let relation of Object.values(relationMap)) addAnnotations.push(relation as Annotation);
+  const addAnnotations: Annotation[] = [];
+  for (let relation of relationAnnotations) {
+    for (let annotation of annotations) {
+      if (annotation.id === relation.fromId || annotation.id === relation.toId)
+        addAnnotations.push(relation as Annotation);
     }
   }
   return [...annotations, ...addAnnotations];
@@ -179,12 +187,6 @@ function getOptions(from: Annotation[], to: Annotation[], variable: Variable) {
     if (!fromRelations) continue;
 
     for (let t of to) {
-      // if (f.type === "span" && t.type === "span") {
-      //   if (f.offset === t.offset && f.variable === t.variable && f.value === t.value) continue;
-      // }
-      // if (f.type === "relation" && t.type === "relation") {
-      //   if (f.)
-      // }
       if (f.id === t.id) continue;
 
       const toRelations = validTo?.[t.variable]?.["*"] || validTo?.[t.variable]?.[t.value] || null;

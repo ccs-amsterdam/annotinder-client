@@ -8,7 +8,7 @@ import {
   Unit,
   SpanAnnotations,
   FieldAnnotations,
-  RelationAnnotations,
+  RelationAnnotation,
   VariableValueMap,
   UnitStates,
 } from "../../../types";
@@ -26,14 +26,12 @@ import { scrollToMiddle } from "../../../functions/scroll";
  * It also uses the returnTokens and onChangeAnnotation callback functions to give the
  * parent of Document access to the tokens and (new) annotations.
  * @param unit
- * @param returnTokens
  * @param onChangeAnnotations
  * @returns
  */
 const useUnit = (
   unit: Unit,
   annotations: Annotation[],
-  returnTokens: (value: Token[]) => void,
   onChangeAnnotations: (value: Annotation[]) => void
 ): UnitStates => {
   // Create a bunch of states
@@ -41,7 +39,7 @@ const useUnit = (
   const [codeHistory, setCodeHistory] = useState<CodeHistory>({});
   const [spanAnnotations, setSpanAnnotations] = useState<SpanAnnotations | null>(null);
   const [fieldAnnotations, setFieldAnnotations] = useState<FieldAnnotations | null>(null);
-  const [relationAnnotations, setRelationAnnotations] = useState<RelationAnnotations | null>(null);
+  const [relationAnnotations, setRelationAnnotations] = useState<RelationAnnotation[] | null>(null);
 
   const [annotationManager] = useState<AnnotationManager>(
     new AnnotationManager(
@@ -79,10 +77,6 @@ const useUnit = (
     }
   }
 
-  useEffect(() => {
-    if (returnTokens) returnTokens(doc.tokens);
-  }, [doc, returnTokens]);
-
   // If annotations change, prepare memoised version in standard annotation
   // array format. Then when one of these changes, a side effect performs onChangeAnnotations.
   const exportedSpanAnnotations: Annotation[] = useMemo(() => {
@@ -102,11 +96,14 @@ const useUnit = (
     if (!onChangeAnnotations) return;
     // check if same unit to prevent annotations from spilling over due to race conditions
     if (safetyCheck !== doc.tokens) return;
-    onChangeAnnotations([
+
+    const annotations = [
       ...exportedSpanAnnotations,
       ...exportedFieldAnnotations,
       ...exportedRelationAnnotations,
-    ]);
+    ];
+
+    onChangeAnnotations(annotations);
   }, [
     doc.tokens,
     exportedSpanAnnotations,
@@ -147,5 +144,22 @@ const initializeCodeHistory = (
   }
   setCodeHistory(codeHistory);
 };
+
+// not a bad idea, but breaks interaction with annotation list
+// function standardizeAnnotationIds(annotations: Annotation[]): Annotation[] {
+//   const idMap: Record<string, string> = {};
+//   for (let i = 0; i < annotations.length; i++) {
+//     const id = String(i);
+//     idMap[annotations[i].id] = id;
+//     annotations[i] = { ...annotations[i], id };
+//   }
+
+//   for (let annotation of annotations) {
+//     if (annotation.fromId != null) annotation.fromId = idMap[annotation.fromId];
+//     if (annotation.toId != null) annotation.toId = idMap[annotation.toId];
+//   }
+
+//   return annotations;
+// }
 
 export default useUnit;

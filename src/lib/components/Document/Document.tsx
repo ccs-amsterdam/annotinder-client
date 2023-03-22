@@ -1,7 +1,7 @@
 import React, { useState, useEffect, CSSProperties } from "react";
 import AnnotateNavigation from "./components/AnnotateNavigation";
 import Body from "./components/Body";
-import useCodeSelector from "./hooks/useCodeSelector";
+import useCodeSelector from "./hooks/useSpanSelector";
 import useRelationSelector from "./hooks/useRelationSelector";
 import useUnit from "./hooks/useUnit";
 import SelectVariable from "./components/SelectVariable";
@@ -12,9 +12,9 @@ import {
   VariableMap,
   Unit,
   Annotation,
-  Token,
   SetState,
   VariableValueMap,
+  TriggerSelector,
 } from "../../types";
 import { useCallback } from "react";
 import styled from "styled-components";
@@ -55,10 +55,12 @@ interface DocumentProps {
   /** for getting acces to annotations from the parent component
    *  If not given, Document is automatically in read only mode (i.e. cannot make annotations) */
   onChangeAnnotations?: (value: Annotation[]) => void;
-  /** for getting access to the tokens from the parent component  */
-  returnTokens?: SetState<Token[]>;
   /** returnVariableMap */
   returnVariableMap?: SetState<VariableMap>;
+  /**
+   * a callback for returning a selector function to edit annotations
+   */
+  returnSelectors?: SetState<Record<string, TriggerSelector>>;
   /** A callback function that is called when the document is ready. This is mainly usefull for
    * managing layout while waiting for document to load
    */
@@ -85,8 +87,8 @@ const Document = ({
   settings,
   showAll,
   onChangeAnnotations,
-  returnTokens,
   returnVariableMap,
+  returnSelectors,
   onReady,
   blockEvents,
   focus,
@@ -95,7 +97,7 @@ const Document = ({
 }: DocumentProps) => {
   const [variable, setVariable] = useState(null);
 
-  const unitStates = useUnit(unit, annotations, returnTokens, onChangeAnnotations);
+  const unitStates = useUnit(unit, annotations, onChangeAnnotations);
 
   // keep track of current tokens object, to prevent rendering annotations on the wrong text
   const [currentUnit, setCurrentUnit] = useState(unitStates.doc);
@@ -106,16 +108,20 @@ const Document = ({
     restrictedCodes
   );
 
-  const [codeSelector, triggerCodeSelector, codeSelectorOpen] = useCodeSelector(
+  const [spanSelectorPopup, spanSelector, spanSelectorOpen] = useCodeSelector(
     unitStates,
     variableMap,
     editMode,
     variables
   );
-  const [relationSelector, triggerRelationSelector, relationSelectorOpen] = useRelationSelector(
+  const [relationSelectorPopup, relationSelector, relationSelectorOpen] = useRelationSelector(
     unitStates,
     variableMap?.[variable]
   );
+
+  useEffect(() => {
+    returnSelectors && returnSelectors({ span: spanSelector, relation: relationSelector });
+  }, [returnSelectors, spanSelector, relationSelector]);
 
   useEffect(() => {
     if (returnVariableMap) returnVariableMap(variableMap);
@@ -126,16 +132,13 @@ const Document = ({
     setCurrentUnit(unitStates.doc);
   }, [onReady, unitStates.doc, setCurrentUnit]);
 
-  if (!unitStates.doc.tokens && !unitStates.doc.image_fields) return null;
-
-  const triggerSelectionPopup =
-    variableType === "relation" ? triggerRelationSelector : triggerCodeSelector;
-  const selectorOpen = variableType === "relation" ? relationSelectorOpen : codeSelectorOpen;
-  const selector = variableType === "relation" ? relationSelector : codeSelector;
-
+  const triggerSelector = variableType === "relation" ? relationSelector : spanSelector;
+  const selectorOpen = variableType === "relation" ? relationSelectorOpen : spanSelectorOpen;
+  const selectorPopup = variableType === "relation" ? relationSelectorPopup : spanSelectorPopup;
   const annotationMode = variableType === "relation" ? "relationMode" : "spanMode";
-
   const currentUnitReady = currentUnit === unitStates.doc;
+
+  if (!unitStates.doc.tokens && !unitStates.doc.image_fields) return null;
 
   return (
     <DocumentContainer className={`${annotationMode} ${(editMode && "editMode") || ""}`}>
@@ -163,18 +166,18 @@ const Document = ({
       <AnnotateNavigation
         tokens={unitStates.doc.tokens}
         spanAnnotations={currentUnitReady ? unitStates.spanAnnotations : {}}
-        relationAnnotations={currentUnitReady ? unitStates.relationAnnotations : {}}
+        relationAnnotations={currentUnitReady ? unitStates.relationAnnotations : []}
         variable={variableMap?.[variable]}
         variableType={variableType}
         showValues={showValues}
         disableAnnotations={!onChangeAnnotations || !variableMap}
         editMode={editMode}
-        triggerSelectionPopup={triggerSelectionPopup}
+        triggerSelector={triggerSelector}
         eventsBlocked={selectorOpen || blockEvents}
         showAll={showAll}
       />
 
-      {selector || null}
+      {selectorPopup || null}
     </DocumentContainer>
   );
 };

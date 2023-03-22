@@ -13,24 +13,24 @@ import {
   SpanAnnotations,
   AnnotationMap,
   TokenSelection,
-  TriggerSelectionPopup,
+  TriggerSelector,
   VariableType,
   ValidTokenRelations,
   ValidTokenDestinations,
-  RelationAnnotations,
+  RelationAnnotation,
 } from "../../../types";
 import DrawArrows from "./DrawArrows";
 
 interface AnnotateNavigationProps {
   tokens: Token[];
   spanAnnotations: SpanAnnotations;
-  relationAnnotations: RelationAnnotations;
+  relationAnnotations: RelationAnnotation[];
   variable: Variable;
   variableType: VariableType;
   showValues: VariableMap;
   disableAnnotations: boolean;
   editMode: boolean;
-  triggerSelectionPopup: TriggerSelectionPopup;
+  triggerSelector: TriggerSelector;
   eventsBlocked: boolean;
   showAll: boolean;
 }
@@ -49,7 +49,7 @@ const AnnotateNavigation = ({
   showValues,
   disableAnnotations,
   editMode,
-  triggerSelectionPopup,
+  triggerSelector,
   showAll,
   eventsBlocked,
 }: AnnotateNavigationProps) => {
@@ -57,7 +57,7 @@ const AnnotateNavigation = ({
     tokens,
     spanAnnotations,
     relationAnnotations,
-    triggerSelectionPopup,
+    triggerSelector,
     editMode,
     eventsBlocked || disableAnnotations
   );
@@ -109,7 +109,7 @@ const AnnotateNavigation = ({
         tokens={tokens}
         annotations={relationAnnotations}
         showValues={showValues}
-        triggerSelectionPopup={triggerSelectionPopup}
+        triggerSelector={triggerSelector}
         tokenSelection={tokenSelection}
       />
     </>

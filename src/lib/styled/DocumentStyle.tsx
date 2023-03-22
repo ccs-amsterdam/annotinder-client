@@ -13,8 +13,11 @@ export default css`
 
   span.token {
     /* vertical-align: bottom; */
-    padding-bottom: 0px;
     color: var(--text-light);
+
+    span {
+      padding: 0.35rem 0rem;
+    }
   }
 
   .relationMode {
@@ -59,7 +62,6 @@ export default css`
 
   span.token.annotated > span {
     /* line-height: 1.5em; */
-    padding: 2px 0px;
     transition: background 0.3s ease;
     //border: 1px solid var(--background-fixed);
     border-left: none;

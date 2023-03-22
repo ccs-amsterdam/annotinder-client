@@ -18,7 +18,7 @@ import {
   TokenSelection,
   Arrowkeys,
   Span,
-  RelationAnnotations,
+  RelationAnnotation,
 } from "../../../types";
 
 /**
@@ -30,7 +30,7 @@ import {
 export default function useAnnotationEvents(
   tokens: Token[],
   spanAnnotations: SpanAnnotations,
-  relationAnnotations: RelationAnnotations,
+  relationAnnotations: RelationAnnotation[],
   triggerSelectionPopup: any,
   editMode: boolean,
   eventsBlocked: boolean
@@ -82,7 +82,7 @@ export default function useAnnotationEvents(
         }
         setCurrentToken({ i: token.index });
         setTokenSelection(span);
-        triggerSelectionPopup(token.index, span);
+        triggerSelectionPopup({ index: token.index, from: span[0], to: span[1] });
       };
   }, [tokens, triggerSelectionPopup, setCurrentToken, setTokenSelection]);
 

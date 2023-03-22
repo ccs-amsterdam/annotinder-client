@@ -9,10 +9,11 @@ import {
   Span,
   SpanAnnotations,
   Token,
-  TriggerSelectionPopup,
+  TriggerSelector,
   Variable,
   VariableMap,
   UnitStates,
+  TriggerSelectorParams,
 } from "../../../types";
 import useWatchChange from "../../../hooks/useWatchChange";
 
@@ -35,12 +36,12 @@ import useWatchChange from "../../../hooks/useWatchChange";
  * @param {*} setCodeHistory
  * @returns
  */
-const useCodeSelector = (
+const useSpanSelector = (
   unitStates: UnitStates,
   variableMap: VariableMap,
   editMode: boolean,
   variables: Variable[]
-): [ReactElement, TriggerSelectionPopup, boolean] => {
+): [ReactElement, TriggerSelector, boolean] => {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(null);
   const [span, setSpan] = useState<Span>(null);
@@ -49,11 +50,12 @@ const useCodeSelector = (
 
   const triggerFunction = React.useCallback(
     // this function can be called to open the code selector.
-    (index: number, span: Span) => {
-      let [from, to] = span;
-      if (from > to) [from, to] = [to, from];
-      setSpan([from, to]);
-      setIndex(index);
+    (selection: TriggerSelectorParams) => {
+      if (!selection?.index || !selection?.from || !selection?.to) return;
+      if (selection.from > selection.to)
+        [selection.from, selection.to] = [selection.to, selection.from];
+      setSpan([selection.from, selection.to]);
+      setIndex(selection.index);
       setOpen(true);
     },
     [setIndex]
@@ -69,7 +71,7 @@ const useCodeSelector = (
   if (!variables) return [null, null, true];
 
   let popup = (
-    <AnnotationPortal open={open} setOpen={setOpen} positionRef={tokens?.[index]?.ref}>
+    <AnnotationPortal open={open} setOpen={setOpen} positionRef={tokens?.[index]?.ref} minY={30}>
       <>
         <SelectPage
           editMode={editMode}
@@ -154,4 +156,4 @@ const SelectPage = React.memo(
   }
 );
 
-export default useCodeSelector;
+export default useSpanSelector;

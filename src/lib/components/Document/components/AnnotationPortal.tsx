@@ -1,14 +1,36 @@
 import React, { useEffect, ReactElement, useRef } from "react";
+import styled from "styled-components";
 import { SetState } from "../../../types";
+
+const Portal = styled.div<{ smallScreen?: boolean }>`
+  left: 0;
+  top: 0;
+  overflow: auto;
+  font-size: 1.2rem;
+  max-height: 70%;
+  position: fixed;
+  min-width: ${(p) => (p.smallScreen ? "100%" : "300px")};
+  max-width: min(100%, 600px);
+  z-index: 100000;
+  background: var(--background);
+  color: var(--text);
+  padding: 10px;
+  margin-top: 14px;
+  border-radius: 5px;
+  border: 2px solid var(--primary);
+  opacity: 0;
+  transition: opacity 250ms, width 250ms, padding 100ms, left 50ms;
+`;
 
 interface Props {
   children: ReactElement;
   open: boolean;
   setOpen: SetState<boolean>;
   positionRef: any;
+  minY: number;
 }
 
-const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef }: Props) => {
+const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef, minY }: Props) => {
   const portalref = useRef(null);
 
   useEffect(() => {
@@ -24,7 +46,7 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef }: P
 
   useEffect(() => {
     if (!open || !portalref.current) return;
-    setTimeout(() => fitPortalOnScreen(portalref.current, positionRef.current), 10);
+    setTimeout(() => fitPortalOnScreen(portalref.current, positionRef.current, minY), 10);
 
     // replace this with the implementation in MiddleCat, which uses
     // scrollheight/width to calculate size without requiring loop
@@ -36,44 +58,23 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef }: P
       const sameWidth = portalref.current.clientWidth === portalWidth;
       const sameY = portalref.current.offsetTop === portalY;
       if (sameHeight && sameWidth && sameY) return;
-      fitPortalOnScreen(portalref.current, positionRef.current);
+      fitPortalOnScreen(portalref.current, positionRef.current, minY);
       portalWidth = portalref.current.clientWidth;
-    }, 100);
+    }, 50);
     return () => clearInterval(interval);
-  }, [open, positionRef]);
+  }, [open, positionRef, minY]);
 
   const smallscreen = window.innerWidth < 500;
 
   if (!open) return null;
   return (
-    <div
-      ref={portalref}
-      style={{
-        left: 0,
-        top: 0,
-        overflow: "auto",
-        fontSize: "1.2rem",
-        maxHeight: "70%",
-        position: "fixed",
-        minWidth: smallscreen ? "100%" : "300px",
-        maxWidth: "min(100%, 600px)",
-        zIndex: 100000,
-        background: "var(--background)",
-        color: "var(--text)",
-        padding: "10px",
-        marginTop: "14px",
-        borderRadius: "5px",
-        border: "2px solid var(--primary)",
-        opacity: "0",
-        transition: "opacity 250ms, width 250ms, padding 100ms, left 50ms",
-      }}
-    >
+    <Portal ref={portalref} smallScreen={smallscreen}>
       {children}
-    </div>
+    </Portal>
   );
 });
 
-const fitPortalOnScreen = (portalEl: HTMLElement, positionEl: HTMLElement) => {
+const fitPortalOnScreen = (portalEl: HTMLElement, positionEl: HTMLElement, minY = 0) => {
   // move portal up if it doesn't fit on screen
   if (!portalEl || !positionEl) return;
   const portal = portalEl.getBoundingClientRect();
@@ -82,8 +83,8 @@ const fitPortalOnScreen = (portalEl: HTMLElement, positionEl: HTMLElement) => {
   const windowWidth = document.documentElement.clientWidth;
 
   let up = position.y + 30;
-  if (up < 0) {
-    up = 0;
+  if (up < minY) {
+    up = minY;
   } else {
     const bottom = up + 30 + portal.height;
     const offscreen = bottom - windowHeight;

@@ -11,6 +11,7 @@ import {
   VariableMap,
   CodeBook,
   SessionData,
+  TriggerSelector,
 } from "../../../types";
 import Instructions from "./Instructions";
 import styled from "styled-components";
@@ -97,7 +98,7 @@ const AnnotateTask = ({
 }: AnnotateTaskProps) => {
   const [annotations, onChangeAnnotations] = useAnnotations(unit);
   const [variableMap, setVariableMap] = useState<VariableMap>(null);
-  const [tokens, setTokens] = useState(null);
+  const [selectors, setSelectors] = useState<Record<string, TriggerSelector>>({});
 
   const restrictedCodes = useMemo(() => {
     const restrictedCodes: VariableValueMap = {};
@@ -128,8 +129,8 @@ const AnnotateTask = ({
             variables={codebook?.variables}
             restrictedCodes={restrictedCodes}
             onChangeAnnotations={onChangeAnnotations}
-            returnTokens={setTokens}
             returnVariableMap={setVariableMap}
+            returnSelectors={setSelectors}
             blockEvents={blockEvents}
             bodyStyle={BODYSTYLE}
           />
@@ -146,7 +147,11 @@ const AnnotateTask = ({
       </div>
       <div className="annotationList">
         <div style={{}}>
-          <AnnotationList tokens={tokens} variableMap={variableMap} annotations={annotations} />
+          <AnnotationList
+            variableMap={variableMap}
+            annotations={annotations}
+            selectors={selectors}
+          />
         </div>
       </div>
     </AnnotateGrid>

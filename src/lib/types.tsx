@@ -56,6 +56,25 @@ export interface Annotation {
 
   from?: Annotation;
   to?: Annotation;
+
+  select?: () => void;
+}
+
+export interface RelationAnnotation {
+  type: "relation";
+  id: string;
+  variable: string;
+  value: string;
+  fromId: string;
+  toId: string;
+
+  // this stuff is just used internally
+  color?: string;
+  edge?: Edge;
+  from?: Annotation;
+  to?: Annotation;
+
+  select?: () => void;
 }
 
 ////// LOGIN
@@ -108,11 +127,11 @@ export interface FieldAnnotations {
   [field: string]: AnnotationMap;
 }
 
-export interface RelationAnnotations {
-  [from: string]: {
-    [to: string]: AnnotationMap;
-  };
-}
+// export interface RelationAnnotations {
+//   [from: string]: {
+//     [to: string]: AnnotationMap;
+//   };
+// }
 
 export interface TokenAnnotations {
   [index: number | string]: AnnotationMap;
@@ -722,7 +741,7 @@ export interface UnitStates {
   //setSpanAnnotations: SetState<SpanAnnotations | null>;
   fieldAnnotations: SpanAnnotations | null;
   //setFieldAnnotations: SetState<FieldAnnotations | null>;
-  relationAnnotations: RelationAnnotations;
+  relationAnnotations: RelationAnnotation[];
   //setRelationAnnotations: SetState<RelationAnnotations | null>;
   annotationManager: AnnotationManager;
   codeHistory: CodeHistory;
@@ -766,8 +785,15 @@ export interface VariableMap {
   [key: string]: Variable;
 }
 
-export interface TriggerSelectionPopup {
-  (index: number, span: Span): void;
+export interface TriggerSelectorParams {
+  index?: number;
+  from?: number;
+  to?: number;
+  fromId?: string;
+  toId?: string;
+}
+export interface TriggerSelector {
+  (TriggerSelectorParams): void;
 }
 
 ///// FULLDATATABLE

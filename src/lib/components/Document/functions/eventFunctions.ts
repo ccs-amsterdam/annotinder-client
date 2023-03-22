@@ -1,11 +1,4 @@
-import {
-  SetState,
-  Token,
-  TokenSelection,
-  Mover,
-  TriggerSelectionPopup,
-  Arrowkeys,
-} from "../../../types";
+import { SetState, Token, TokenSelection, Mover, TriggerSelector, Arrowkeys } from "../../../types";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
 import { keepInView } from "../../../functions/scroll";
 import getToken from "./getToken";
@@ -20,13 +13,13 @@ export function onKeyUp(
   setHoldArrow: SetState<Arrowkeys>,
   tokenSelection: TokenSelection,
   setMover: SetState<Mover>,
-  triggerSelectionPopup: TriggerSelectionPopup
+  triggerSelector: TriggerSelector
 ) {
   // keep track of which buttons are pressed in the state
   if (event.keyCode === 32 && holdSpace) {
     setHoldSpace(false);
     if (tokenSelection.length > 0) {
-      annotationFromSelection(tokens, tokenSelection, triggerSelectionPopup);
+      annotationFromSelection(tokens, tokenSelection, triggerSelector);
     }
     return;
   }
@@ -94,7 +87,7 @@ export function onTouchUp(
   tokenSelection: TokenSelection,
   setCurrentToken: SetState<{ i: number }>,
   setTokenSelection: SetState<TokenSelection>,
-  triggerSelectionPopup: TriggerSelectionPopup,
+  triggerSelector: TriggerSelector,
   touch: any,
   tapped: any
 ) {
@@ -116,7 +109,7 @@ export function onTouchUp(
   event.preventDefault();
 
   if (editMode) {
-    annotationFromSelection(tokens, [token.index, token.index], triggerSelectionPopup);
+    annotationFromSelection(tokens, [token.index, token.index], triggerSelector);
     return;
   }
 
@@ -132,9 +125,9 @@ export function onTouchUp(
     setTokenSelection((state: TokenSelection) => updateSelection(state, tokens, currentNode, true));
 
     if (token?.annotated && currentNode === tokenSelection[0]) {
-      annotationFromSelection(tokens, [currentNode, currentNode], triggerSelectionPopup);
+      annotationFromSelection(tokens, [currentNode, currentNode], triggerSelector);
     } else {
-      annotationFromSelection(tokens, [tokenSelection[0], currentNode], triggerSelectionPopup);
+      annotationFromSelection(tokens, [tokenSelection[0], currentNode], triggerSelector);
     }
     rmTapped(tokens, tapped.current);
     tapped.current = null;
@@ -214,7 +207,7 @@ export function onMouseUp(
   tokenSelection: TokenSelection,
   setCurrentToken: SetState<{ i: number }>,
   setTokenSelection: SetState<TokenSelection>,
-  triggerSelectionPopup: TriggerSelectionPopup,
+  triggerSelector: TriggerSelector,
   istouch: any,
   selectionStarted: any
 ) {
@@ -244,10 +237,10 @@ export function onMouseUp(
   // not registering. So if there is no current selection, directly use currentNode as position.
   if (tokenSelection.length > 0 && tokenSelection[0] !== null && tokenSelection[1] !== null) {
     if (!currentNode && tokenSelection[0] === tokenSelection[1]) return;
-    annotationFromSelection(tokens, tokenSelection, triggerSelectionPopup);
+    annotationFromSelection(tokens, tokenSelection, triggerSelector);
   } else {
     if (currentNode === null) return;
-    annotationFromSelection(tokens, [currentNode, currentNode], triggerSelectionPopup);
+    annotationFromSelection(tokens, [currentNode, currentNode], triggerSelector);
   }
 }
 
@@ -300,11 +293,15 @@ export const movePosition = (
 const annotationFromSelection = (
   tokens: Token[],
   selection: TokenSelection,
-  triggerSelectionPopup: TriggerSelectionPopup
+  triggerSelector: TriggerSelector
 ) => {
   let [from, to] = selection;
   if (to === null) to = from;
-  triggerSelectionPopup(tokens[to].index, [tokens[from].index, tokens[to].index]);
+  triggerSelector({
+    index: tokens[to].index,
+    from: tokens[from].index,
+    to: tokens[to].index,
+  });
 };
 
 const moveToken = (tokens: Token[], key: Arrowkeys, space: boolean, mover: Mover) => {

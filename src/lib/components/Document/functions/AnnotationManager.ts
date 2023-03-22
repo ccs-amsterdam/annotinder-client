@@ -3,21 +3,22 @@ import {
   Code,
   CodeHistory,
   SpanAnnotations,
-  RelationAnnotations,
+  AnnotationMap,
+  RelationAnnotation,
   FieldAnnotations,
   SetState,
 } from "../../../types";
-import { toggleSpanAnnotation, toggleRelationAnnotation, createId } from "./annotations";
+import { toggleSpanAnnotation, toggleRelationAnnotation } from "./annotations";
 
 export default class AnnotationManager {
   setSpanAnnotations: SetState<SpanAnnotations>;
-  setRelationAnnotations: SetState<RelationAnnotations>;
+  setRelationAnnotations: SetState<RelationAnnotation[]>;
   setFieldAnnotations: SetState<FieldAnnotations>;
   setCodeHistory: SetState<CodeHistory>;
 
   constructor(
     setSpanAnnotations: SetState<SpanAnnotations>,
-    setRelationAnnotations: SetState<RelationAnnotations>,
+    setRelationAnnotations: SetState<RelationAnnotation[]>,
     setFieldAnnotations: SetState<FieldAnnotations>,
     setCodeHistory: SetState<CodeHistory>
   ) {
@@ -37,9 +38,11 @@ export default class AnnotationManager {
         );
 
       this.setRelationAnnotations((relationAnnotations) => {
-        let newRelationAnnotations = syncRelationsToSpans(newSpanAnnotations, relationAnnotations);
-        newRelationAnnotations = cleanRelationsRecursively(newRelationAnnotations);
-        return { ...newRelationAnnotations };
+        let newRelationAnnotations = rmMissingSpanFromRelations(
+          newSpanAnnotations,
+          relationAnnotations
+        );
+        return [...newRelationAnnotations];
       });
 
       return { ...newSpanAnnotations };
@@ -55,8 +58,8 @@ export default class AnnotationManager {
         relation,
         rm
       );
-      newRelationAnnotations = cleanRelationsRecursively(newRelationAnnotations);
-      return { ...newRelationAnnotations };
+      newRelationAnnotations = rmMissingRelationFromRelations(newRelationAnnotations);
+      return [...newRelationAnnotations];
     });
   }
 }
@@ -69,82 +72,54 @@ function updateCodeHistory(codeHistory: CodeHistory, variable: string, value: st
   };
 }
 
-function syncRelationsToSpans(
+function rmMissingSpanFromRelations(
   spanAnnotations: SpanAnnotations,
-  relationAnnotations: RelationAnnotations
-): RelationAnnotations {
-  if (!spanAnnotations || !relationAnnotations) return {};
+  relationAnnotations: RelationAnnotation[]
+): RelationAnnotation[] {
+  if (!spanAnnotations || !relationAnnotations) return [];
   const spanAnn = spanAnnotationNodeLookup(spanAnnotations);
 
-  for (let fromId of Object.keys(relationAnnotations)) {
-    if (!spanAnn[fromId]) {
-      delete relationAnnotations[fromId];
-      continue;
-    }
-    for (let toId of Object.keys(relationAnnotations[fromId])) {
-      if (!spanAnn[toId]) {
-        delete relationAnnotations[fromId][toId];
-        continue;
-      }
+  relationAnnotations = relationAnnotations.filter((relation) => {
+    if (relation.from.type === "span" && !spanAnn[relation.from.id]) return false;
+    if (relation.to.type === "span" && !spanAnn[relation.to.id]) return false;
+    return true;
+  });
 
-      for (let a of Object.values(relationAnnotations[fromId][toId])) {
-        a.from = spanAnn[fromId];
-        a.to = spanAnn[toId];
-      }
-    }
-  }
-
-  return relationAnnotations;
+  return rmMissingRelationFromRelations(relationAnnotations);
 }
 
 /**
- * If there are nested relations, we need to loop over the relations multiple times
- * to remove all relations
+ * Removes relations if they refer to relations that have been removed.
+ *
  */
-function cleanRelationsRecursively(relationAnnotations: RelationAnnotations) {
-  let exists: Record<string, boolean> = {};
-  for (let fromKey of Object.keys(relationAnnotations || {})) {
-    if (!relationAnnotations[fromKey]) continue;
-    for (let toKey of Object.keys(relationAnnotations[fromKey])) {
-      exists[fromKey] = true;
-      exists[toKey] = true;
-    }
-  }
+function rmMissingRelationFromRelations(
+  relationAnnotations: RelationAnnotation[]
+): RelationAnnotation[] {
+  const relMap: AnnotationMap = {};
+  for (let ra of relationAnnotations) relMap[ra.id] = ra;
 
-  let done = false;
-  while (!done) {
-    done = true;
-    const newExists: Record<string, boolean> = {};
-    if (!relationAnnotations) return {};
-    for (let fromKey of Object.keys(relationAnnotations)) {
-      if (!exists[fromKey]) {
-        done = false;
-        delete relationAnnotations[fromKey];
-        continue;
-      }
-      for (let toKey of Object.keys(relationAnnotations[fromKey])) {
-        if (!exists[toKey]) {
-          done = false;
-          delete relationAnnotations[fromKey][toKey];
-          continue;
-        }
-        newExists[fromKey] = true;
-        newExists[toKey] = true;
-      }
-    }
-    exists = newExists;
-  }
+  const nBefore = relationAnnotations.length;
+  relationAnnotations = relationAnnotations.filter((ra) => {
+    const missingFrom = ra.from.type === "relation" && !relMap[ra.fromId];
+    const missingTo = ra.to.type === "relation" && !relMap[ra.toId];
+    return !missingFrom && !missingTo;
+  });
+
+  // if relations were removed, we need to repeat the procedure to see
+  // if other relations refered to the now missing ones
+  if (relationAnnotations.length < nBefore)
+    return rmMissingRelationFromRelations(relationAnnotations);
 
   return relationAnnotations;
 }
 
 function spanAnnotationNodeLookup(annotations: SpanAnnotations) {
-  const spanLookup: Record<string, Annotation> = {};
+  const spanLookup: Record<string, boolean> = {};
 
   for (const positionAnnotations of Object.values(annotations)) {
     for (const ann of Object.values(positionAnnotations)) {
-      if (ann.index !== ann.span[0]) continue; // relations are only included on first token of span
-      spanLookup[createId(ann)] = ann;
+      if (ann.index !== ann.span[0]) continue;
+      spanLookup[ann.id] = true;
     }
   }
   return spanLookup;

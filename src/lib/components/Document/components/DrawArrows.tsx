@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import {
   Variable,
   TokenSelection,
-  RelationAnnotations,
+  RelationAnnotation,
   Token,
-  TriggerSelectionPopup,
+  TriggerSelector,
   VariableMap,
 } from "../../../types";
 import styled from "styled-components";
@@ -25,9 +25,9 @@ const StyledSvg = styled.svg`
 interface DrawArrowsProps {
   variable: Variable;
   tokens: Token[];
-  annotations: RelationAnnotations;
+  annotations: RelationAnnotation[];
   showValues: VariableMap;
-  triggerSelectionPopup: TriggerSelectionPopup;
+  triggerSelector: TriggerSelector;
   tokenSelection: TokenSelection;
 }
 
@@ -36,7 +36,7 @@ const DrawArrows = ({
   tokens,
   annotations,
   showValues,
-  triggerSelectionPopup,
+  triggerSelector,
   tokenSelection,
 }: DrawArrowsProps) => {
   const [, setRefresh] = useState(0);
@@ -67,7 +67,7 @@ const DrawArrows = ({
         tokens={tokens}
         annotations={annotations}
         showValues={showValues}
-        triggerSelectionPopup={triggerSelectionPopup}
+        triggerSelector={triggerSelector}
       />
 
       <Arrow
