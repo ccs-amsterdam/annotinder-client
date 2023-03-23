@@ -15,8 +15,20 @@ export default css`
     /* vertical-align: bottom; */
     color: var(--text-light);
 
-    span {
+    .pre,
+    .text,
+    .post {
+      position: relative;
       padding: 0.35rem 0rem;
+
+      .relation {
+        position: absolute;
+        bottom: -0.5em;
+        left: 0%;
+        width: 100%;
+        height: 0.5em;
+        background: none;
+      }
     }
   }
 

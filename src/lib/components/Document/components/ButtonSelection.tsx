@@ -5,6 +5,7 @@ import { CodeSelectorOption, CodeSelectorValue } from "../../../types";
 import { FaWindowClose } from "react-icons/fa";
 import styled from "styled-components";
 import { RiDeleteBin2Line } from "react-icons/ri";
+import standardizeColor from "../../../functions/standardizeColor";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
@@ -43,7 +44,10 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
     };
 
     let allOptions: CodeSelectorOption[] = [cancelOption, ...options];
-    for (let option of allOptions) option.ref = React.createRef();
+    for (let option of allOptions) {
+      option.color = standardizeColor(option.color);
+      option.ref = React.createRef();
+    }
     setSelected(0);
     return allOptions;
   }, [options]);

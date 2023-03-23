@@ -9,10 +9,8 @@ import { CodeMap } from "../types";
  * @returns
  */
 export const getColor = (annotationCode: string | number, codeMap?: CodeMap) => {
-  if (codeMap?.[annotationCode]) {
-    let color;
-    color = codeMap[annotationCode].color;
-    return standardizeColor(color, "50");
+  if (codeMap?.[annotationCode]?.color) {
+    return codeMap[annotationCode].color;
   } else {
     if (annotationCode === "EMPTY") return "grey";
     return "#ffffff50";

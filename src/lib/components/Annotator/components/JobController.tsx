@@ -41,7 +41,7 @@ const StyledWrapper = styled.div<{ maxWidth: string; maxHeight: string }>`
     padding: 3px 5px 0px 5px;
     display: flex;
     justify-content: space-between;
-    background: var(--backgroundd);
+    background: var(--background);
     color: var(--primary-text);
     //border-bottom: 3px double var(--background-fixed);
     font-size: 2rem;

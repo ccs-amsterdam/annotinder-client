@@ -213,7 +213,8 @@ const getCleanAnnotations = (annotations: Annotation[]) => {
       field: na.field,
       offset: na.offset,
       length: na.length,
-      //text: na.text,
+      color: na.color,
+      text: na.text,
       fromId: na.fromId,
       toId: na.toId,
     };

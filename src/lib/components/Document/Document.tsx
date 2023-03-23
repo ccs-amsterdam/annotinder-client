@@ -1,7 +1,7 @@
 import React, { useState, useEffect, CSSProperties } from "react";
 import AnnotateNavigation from "./components/AnnotateNavigation";
 import Body from "./components/Body";
-import useCodeSelector from "./hooks/useSpanSelector";
+import useSpanSelector from "./hooks/useSpanSelector";
 import useRelationSelector from "./hooks/useRelationSelector";
 import useUnit from "./hooks/useUnit";
 import SelectVariable from "./components/SelectVariable";
@@ -97,10 +97,10 @@ const Document = ({
 }: DocumentProps) => {
   const [variable, setVariable] = useState(null);
 
-  const unitStates = useUnit(unit, annotations, onChangeAnnotations);
+  const [doc, annotationLib, annotationManager] = useUnit(unit, annotations, onChangeAnnotations);
 
   // keep track of current tokens object, to prevent rendering annotations on the wrong text
-  const [currentUnit, setCurrentUnit] = useState(unitStates.doc);
+  const [currentUnit, setCurrentUnit] = useState(doc);
 
   const [variableMap, showValues, variableType, editMode] = useVariableMap(
     variables,
@@ -108,14 +108,18 @@ const Document = ({
     restrictedCodes
   );
 
-  const [spanSelectorPopup, spanSelector, spanSelectorOpen] = useCodeSelector(
-    unitStates,
+  const [spanSelectorPopup, spanSelector, spanSelectorOpen] = useSpanSelector(
+    doc,
+    annotationLib,
+    annotationManager,
     variableMap,
     editMode,
     variables
   );
   const [relationSelectorPopup, relationSelector, relationSelectorOpen] = useRelationSelector(
-    unitStates,
+    doc,
+    annotationLib,
+    annotationManager,
     variableMap?.[variable]
   );
 
@@ -129,16 +133,16 @@ const Document = ({
 
   const onBodyReady = useCallback(() => {
     if (onReady) onReady();
-    setCurrentUnit(unitStates.doc);
-  }, [onReady, unitStates.doc, setCurrentUnit]);
+    setCurrentUnit(doc);
+  }, [onReady, doc, setCurrentUnit]);
 
   const triggerSelector = variableType === "relation" ? relationSelector : spanSelector;
   const selectorOpen = variableType === "relation" ? relationSelectorOpen : spanSelectorOpen;
   const selectorPopup = variableType === "relation" ? relationSelectorPopup : spanSelectorPopup;
   const annotationMode = variableType === "relation" ? "relationMode" : "spanMode";
-  const currentUnitReady = currentUnit === unitStates.doc;
+  const currentUnitReady = currentUnit === doc;
 
-  if (!unitStates.doc.tokens && !unitStates.doc.image_fields) return null;
+  if (!doc.tokens && !doc.image_fields) return null;
 
   return (
     <DocumentContainer className={`${annotationMode} ${(editMode && "editMode") || ""}`}>
@@ -149,12 +153,12 @@ const Document = ({
         editAll={settings?.editAll}
       />
       <Body
-        tokens={unitStates.doc.tokens}
-        text_fields={unitStates.doc.text_fields}
-        meta_fields={unitStates.doc.meta_fields}
-        image_fields={unitStates.doc.image_fields}
-        markdown_fields={unitStates.doc.markdown_fields}
-        grid={unitStates.doc.grid}
+        tokens={doc.tokens}
+        text_fields={doc.text_fields}
+        meta_fields={doc.meta_fields}
+        image_fields={doc.image_fields}
+        markdown_fields={doc.markdown_fields}
+        grid={doc.grid}
         onReady={onBodyReady}
         bodyStyle={bodyStyle}
         focus={focus}
@@ -164,9 +168,8 @@ const Document = ({
       />
 
       <AnnotateNavigation
-        tokens={unitStates.doc.tokens}
-        spanAnnotations={currentUnitReady ? unitStates.spanAnnotations : {}}
-        relationAnnotations={currentUnitReady ? unitStates.relationAnnotations : []}
+        tokens={doc.tokens}
+        annotationLib={annotationLib}
         variable={variableMap?.[variable]}
         variableType={variableType}
         showValues={showValues}

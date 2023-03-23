@@ -1,28 +1,29 @@
 import {
-  SpanAnnotations,
   Variable,
   TokenSelection,
   ValidTokenRelations,
   ValidTokenDestinations,
+  AnnotationLibrary,
 } from "../../../types";
 
 export const getValidTokenRelations = (
-  annotations: SpanAnnotations,
+  annotationLib: AnnotationLibrary,
   variable: Variable
 ): ValidTokenRelations => {
   if (!variable?.relations) return null;
   const valid: ValidTokenRelations = {};
 
-  for (let i of Object.keys(annotations)) {
-    for (let v of Object.values(annotations[i])) {
+  for (let i of Object.keys(annotationLib.byToken)) {
+    for (let id of annotationLib.byToken[i]) {
+      const a = annotationLib.annotations[id];
       const relationIds =
-        variable?.validFrom?.[v.variable]?.["*"] ||
-        variable?.validFrom?.[v.variable]?.[v.value] ||
+        variable?.validFrom?.[a.variable]?.["*"] ||
+        variable?.validFrom?.[a.variable]?.[a.value] ||
         null;
       if (!relationIds) continue;
       if (!valid[i]) valid[i] = {};
 
-      const fromKey = v.variable + "|" + v.value;
+      const fromKey = a.variable + "|" + a.value;
       if (!valid[i][fromKey]) valid[i][fromKey] = {};
 
       for (let relationId of Object.keys(relationIds)) {
@@ -33,11 +34,12 @@ export const getValidTokenRelations = (
       }
     }
   }
+
   return valid;
 };
 
 export const getValidTokenDestinations = (
-  annotations: SpanAnnotations,
+  annotationLib: AnnotationLibrary,
   validRelations: ValidTokenRelations,
   tokenSelection: TokenSelection
 ): ValidTokenDestinations => {
@@ -48,19 +50,21 @@ export const getValidTokenDestinations = (
   const validIds = validRelations?.[tokenSelection[0]];
   if (!validIds) return valid;
 
-  const startAnnotations = annotations[tokenSelection[0]];
+  const startAnnotationIds = annotationLib.byToken[tokenSelection[0]] || [];
+  const startAnnotations = startAnnotationIds.map((id) => annotationLib.annotations[id]);
 
-  for (let fromKey of Object.keys(startAnnotations)) {
+  for (let sa of startAnnotations) {
+    const fromKey = sa.variable + "|" + sa.value;
     if (!validIds[fromKey]) continue; // skip if there are no destinations at all
-    const sa = startAnnotations[fromKey];
-    for (let i of Object.keys(annotations)) {
-      for (let toKey of Object.keys(annotations[i])) {
-        if (!validIds[fromKey][toKey]) continue;
 
-        // destination cannot be starting annotation
-        const a = annotations[i][toKey];
-        if (a.variable === sa.variable && a.value === sa.value && a.offset === sa.offset) continue;
-
+    for (let i of Object.keys(annotationLib.byToken)) {
+      const destinationAnnotationIds = annotationLib.byToken[i];
+      for (let destinationId of destinationAnnotationIds) {
+        const da = annotationLib.annotations[destinationId];
+        const toKey = da.variable + "|" + da.value;
+        if (!validIds[fromKey][toKey]) continue; // skip if there are no destinations for this variable/value
+        if (da.variable === sa.variable && da.value === sa.value && da.offset === sa.offset)
+          continue;
         valid[i] = true;
       }
     }

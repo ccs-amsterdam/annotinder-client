@@ -1,4 +1,7 @@
-const standardizeColor = (str?: string, alpha: string = null) => {
+// standardize color format and add alpha channel.
+// Code colors are always shown on top of a white background, so opacity lightens
+// the color so that black text is always readable.
+const standardizeColor = (str?: string, alpha: string = "50") => {
   if (!str) return null;
   if (str.slice(0, 6) === "var(--") return str; // ignore if css color variable
   // https://stackoverflow.com/questions/1573053/javascript-function-to-convert-color-names-to-hex-codes

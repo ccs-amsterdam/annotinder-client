@@ -7,7 +7,6 @@ import ResponsiveContainer from "./components/Common/ResponsiveContainer";
 
 import GlobalStyle from "./styled/GlobalStyle";
 import { standardizeCodes, getCodeTreeArray, codeBookEdgesToMap } from "./functions/codebook";
-import { exportSpanAnnotations } from "./components/Document/functions/annotations";
 
 export {
   Annotator as default,
@@ -17,7 +16,6 @@ export {
   AnnotatorRClient,
   AnnotatorPythonClient,
   standardizeCodes,
-  exportSpanAnnotations,
   getCodeTreeArray,
   codeBookEdgesToMap,
   GlobalStyle,

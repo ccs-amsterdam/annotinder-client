@@ -1,70 +1,118 @@
 import {
   Annotation,
+  Span,
   Code,
+  Unit,
   CodeHistory,
-  SpanAnnotations,
   AnnotationMap,
-  RelationAnnotation,
-  FieldAnnotations,
+  AnnotationDictionary,
   SetState,
+  AnnotationID,
+  Token,
+  AnnotationLibrary,
+  VariableValueMap,
+  TokenAnnotations,
 } from "../../../types";
-import { toggleSpanAnnotation, toggleRelationAnnotation } from "./annotations";
 
 export default class AnnotationManager {
-  setSpanAnnotations: SetState<SpanAnnotations>;
-  setRelationAnnotations: SetState<RelationAnnotation[]>;
-  setFieldAnnotations: SetState<FieldAnnotations>;
-  setCodeHistory: SetState<CodeHistory>;
+  setAnnotationLib: SetState<AnnotationLibrary>;
 
-  constructor(
-    setSpanAnnotations: SetState<SpanAnnotations>,
-    setRelationAnnotations: SetState<RelationAnnotation[]>,
-    setFieldAnnotations: SetState<FieldAnnotations>,
-    setCodeHistory: SetState<CodeHistory>
-  ) {
-    this.setSpanAnnotations = setSpanAnnotations;
-    this.setRelationAnnotations = setRelationAnnotations;
-    this.setFieldAnnotations = setFieldAnnotations;
-    this.setCodeHistory = setCodeHistory;
+  constructor(setAnnotationLib: SetState<AnnotationLibrary>) {
+    this.setAnnotationLib = setAnnotationLib;
   }
 
-  updateSpanAnnotations(annotation: Annotation, rm: boolean, keep_empty: boolean = false) {
-    this.setSpanAnnotations((spanAnnotations) => {
-      const newSpanAnnotations = toggleSpanAnnotation(spanAnnotations, annotation, rm, keep_empty);
+  addAnnotation(annotation: Annotation) {
+    this.setAnnotationLib((annotationLib) => {
+      annotation.id = Date.now().toString();
+      annotation.positions = getTokenPositions(annotationLib.annotations, annotation);
+      annotationLib.annotations[annotation.id] = annotation;
+      annotationLib.codeHistory = updateCodeHistory(annotationLib.codeHistory, annotation);
 
-      if (!rm)
-        this.setCodeHistory((codeHistory: CodeHistory) =>
-          updateCodeHistory(codeHistory, annotation.variable, annotation.value)
-        );
-
-      this.setRelationAnnotations((relationAnnotations) => {
-        let newRelationAnnotations = rmMissingSpanFromRelations(
-          newSpanAnnotations,
-          relationAnnotations
-        );
-        return [...newRelationAnnotations];
-      });
-
-      return { ...newSpanAnnotations };
+      addToTokenDictionary(annotationLib.byToken, annotation);
+      return { ...annotationLib };
     });
   }
 
-  updateRelationAnnotations(from: Annotation, to: Annotation, relation: Code, rm: boolean) {
-    this.setRelationAnnotations((relationAnnotations) => {
-      let newRelationAnnotations = toggleRelationAnnotation(
-        relationAnnotations,
-        from,
-        to,
-        relation,
-        rm
-      );
-      newRelationAnnotations = rmMissingRelationFromRelations(newRelationAnnotations);
-      return [...newRelationAnnotations];
+  rmAnnotation(id: AnnotationID, keep_empty: boolean = false) {
+    this.setAnnotationLib((annotationLib) => {
+      if (!annotationLib?.annotations?.[id]) return annotationLib;
+      if (keep_empty) {
+        annotationLib.annotations[id].value = "EMPTY";
+      } else {
+        delete annotationLib.annotations[id];
+      }
+      annotationLib.annotations = rmBrokenRelations(annotationLib.annotations);
+      annotationLib.byToken = newTokenDictionary(annotationLib.annotations);
+      return { ...annotationLib };
     });
+  }
+
+  createSpanAnnotation(code: Code, from: number, to: number, tokens: Token[]) {
+    const annotation: Annotation = {
+      type: "span",
+      variable: code.variable,
+      value: code.code,
+      color: code.color,
+      span: [from, to],
+      offset: tokens[from].offset,
+      length: tokens[to].length + tokens[to].offset - tokens[from].offset,
+      field: tokens[from].field,
+      text: getSpanText([from, to], tokens),
+    };
+    this.addAnnotation(annotation);
+  }
+
+  createRelationAnnotation(code: Code, from: Annotation, to: Annotation) {
+    const annotation: Annotation = {
+      type: "relation",
+      variable: code.variable,
+      value: code.code,
+      color: code.color,
+      fromId: from.id,
+      toId: to.id,
+    };
+    this.addAnnotation(annotation);
   }
 }
 
-function updateCodeHistory(codeHistory: CodeHistory, variable: string, value: string | number) {
+export function createAnnotationLibrary(unit: Unit): AnnotationLibrary {
+  let annotationCopy = unit?.unit?.annotations || [];
+  annotationCopy = annotationCopy.map((a) => ({ ...a }));
+  const annotationArray = addTokenIndices(annotationCopy, unit.unit.tokens);
+  const annotations: AnnotationDictionary = {};
+  for (let a of annotationArray) {
+    if (a.id == null) continue; // maybe add new id if missing?
+    annotations[a.id] = a;
+  }
+
+  for (let a of Object.values(annotations) || []) {
+    a.positions = getTokenPositions(annotations, a);
+  }
+
+  return {
+    annotations,
+    byToken: newTokenDictionary(annotations),
+    codeHistory: initializeCodeHistory(annotationCopy),
+  };
+}
+
+function newTokenDictionary(annotations: AnnotationDictionary) {
+  const byToken: TokenAnnotations = {};
+  for (let annotation of Object.values(annotations)) {
+    addToTokenDictionary(byToken, annotation);
+  }
+  return byToken;
+}
+
+function addToTokenDictionary(byToken: TokenAnnotations, annotation: Annotation) {
+  for (let i of Object.keys(annotation.positions || {})) {
+    if (!byToken[i]) byToken[i] = [];
+    byToken[i].push(annotation.id);
+  }
+}
+
+function updateCodeHistory(codeHistory: CodeHistory, annotation: Annotation) {
+  const { variable, value } = annotation;
   if (!codeHistory?.[variable]) codeHistory[variable] = [];
   return {
     ...codeHistory,
@@ -72,55 +120,96 @@ function updateCodeHistory(codeHistory: CodeHistory, variable: string, value: st
   };
 }
 
-function rmMissingSpanFromRelations(
-  spanAnnotations: SpanAnnotations,
-  relationAnnotations: RelationAnnotation[]
-): RelationAnnotation[] {
-  if (!spanAnnotations || !relationAnnotations) return [];
-  const spanAnn = spanAnnotationNodeLookup(spanAnnotations);
-
-  relationAnnotations = relationAnnotations.filter((relation) => {
-    if (relation.from.type === "span" && !spanAnn[relation.from.id]) return false;
-    if (relation.to.type === "span" && !spanAnn[relation.to.id]) return false;
-    return true;
-  });
-
-  return rmMissingRelationFromRelations(relationAnnotations);
-}
-
-/**
- * Removes relations if they refer to relations that have been removed.
- *
- */
-function rmMissingRelationFromRelations(
-  relationAnnotations: RelationAnnotation[]
-): RelationAnnotation[] {
-  const relMap: AnnotationMap = {};
-  for (let ra of relationAnnotations) relMap[ra.id] = ra;
-
-  const nBefore = relationAnnotations.length;
-  relationAnnotations = relationAnnotations.filter((ra) => {
-    const missingFrom = ra.from.type === "relation" && !relMap[ra.fromId];
-    const missingTo = ra.to.type === "relation" && !relMap[ra.toId];
-    return !missingFrom && !missingTo;
-  });
+function rmBrokenRelations(annDict: AnnotationDictionary) {
+  const nBefore = Object.keys(annDict).length;
+  for (let a of Object.values(annDict)) {
+    if (a.type !== "relation") continue;
+    if (!annDict[a.fromId] || !annDict[a.toId]) delete annDict[a.id];
+  }
 
   // if relations were removed, we need to repeat the procedure to see
   // if other relations refered to the now missing ones
-  if (relationAnnotations.length < nBefore)
-    return rmMissingRelationFromRelations(relationAnnotations);
+  if (Object.keys(annDict).length < nBefore) return rmBrokenRelations(annDict);
 
-  return relationAnnotations;
+  return annDict;
 }
 
-function spanAnnotationNodeLookup(annotations: SpanAnnotations) {
-  const spanLookup: Record<string, boolean> = {};
+/**
+ * Uses the annotation offset and length to find the token indices for span annotations
+ */
+export const addTokenIndices = (annotations: Annotation[], tokens: Token[]) => {
+  const annMap: AnnotationMap = {};
 
-  for (const positionAnnotations of Object.values(annotations)) {
-    for (const ann of Object.values(positionAnnotations)) {
-      if (ann.index !== ann.span[0]) continue;
-      spanLookup[ann.id] = true;
+  // first add the span token indices, and simultaneously create an annotation map
+  for (let a of annotations || []) {
+    if (a.type === "span") {
+      a.span = [
+        getIndexFromOffset(tokens, a.field, a.offset),
+        getIndexFromOffset(tokens, a.field, a.offset + a.length - 1),
+      ];
+    }
+    annMap[a.id] = a;
+  }
+
+  return annotations;
+};
+
+function getIndexFromOffset(tokens: Token[], field: string, offset: number) {
+  for (let token of tokens) {
+    if (token.field !== field) continue;
+    if (token.offset + token.length > offset) return token.index;
+  }
+  return null;
+}
+
+const initializeCodeHistory = (annotations: Annotation[]): CodeHistory => {
+  const vvh: VariableValueMap = {};
+
+  for (let annotation of annotations) {
+    if (!vvh[annotation.variable]) {
+      vvh[annotation.variable] = { [annotation.value]: true };
+    } else {
+      vvh[annotation.variable][annotation.value] = true;
     }
   }
-  return spanLookup;
+
+  const codeHistory: CodeHistory = {};
+  for (let variable of Object.keys(vvh)) {
+    codeHistory[variable] = Object.keys(vvh[variable]);
+  }
+
+  return codeHistory;
+};
+
+const getSpanText = (span: Span, tokens: Token[]) => {
+  const text = tokens
+    .slice(span[0], span[1] + 1)
+    .map((t: Token, i: number) => {
+      let string = t.text;
+      if (i > 0) string = t.pre + string;
+      if (i < span[1] - span[0]) string = string + t.post;
+      return string;
+    })
+    .join("");
+  return text;
+};
+
+function getTokenPositions(
+  annotations: AnnotationDictionary,
+  annotation: Annotation,
+  positions: Record<number, boolean> = {}
+) {
+  if (!positions) positions = {};
+
+  if (annotation.type === "span") {
+    for (let i = annotation.span[0]; i <= annotation.span[1]; i++) {
+      positions[i] = true;
+    }
+  }
+  if (annotation.type === "relation") {
+    // recursively get the spans, and add the annotationId there
+    getTokenPositions(annotations, annotations[annotation.fromId], positions);
+    getTokenPositions(annotations, annotations[annotation.toId], positions);
+  }
+  return positions;
 }

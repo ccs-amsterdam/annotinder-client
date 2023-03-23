@@ -14,6 +14,10 @@ export default function renderText(
   //const text = { text: [] }; // yes, it would make sense to just make text an array, but for some reason React doesn't accept it
   if (tokens.length === 0) return text;
 
+  // when changing documents, make sure new tokens have unique key. Otherwise, React can keep DOM styling
+  // from the previous document. We just add the current time to the token keys.
+  const keyChain = Date.now();
+
   let field = [];
   let paragraph = [];
   let codingUnit = tokens[0].codingUnit;
@@ -57,7 +61,7 @@ export default function renderText(
     tokens[i].containerRef = containerRef;
     if (codingUnit) tokens[i].ref = React.createRef();
 
-    paragraph.push(renderToken(tokens[i], codingUnit));
+    paragraph.push(renderToken(tokens[i], codingUnit, keyChain));
   }
 
   textField = getTextField(field_name);
@@ -154,22 +158,25 @@ const renderParagraph = (
   );
 };
 
-const renderToken = (token: Token, codingUnit: boolean) => {
+const renderToken = (token: Token, codingUnit: boolean, keyChain: number) => {
   return (
     <span
-      key={"token" + token.index}
+      key={"token" + token.index + "_" + keyChain}
       ref={token.ref}
       className={codingUnit ? "token codingUnit" : "token"}
       data-tokenindex={token.arrayIndex}
     >
       <span key={"pre" + token.index} className="pre">
         {token.pre}
+        <mark className="relation" />
       </span>
       <span key={"text" + token.index} className="text">
         {token.text}
+        <mark className="relation" />
       </span>
       <span key={"post" + token.index} className="post">
         {token.post}
+        <mark className="relation" />
       </span>
     </span>
   );

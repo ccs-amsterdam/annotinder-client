@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, ReactElement } from "react";
 import styled from "styled-components";
+import standardizeColor from "../../../functions/standardizeColor";
 import { getColor } from "../../../functions/tokenDesign";
 import { Annotation, VariableMap, AnnotationMap, TriggerSelector } from "../../../types";
 
@@ -57,7 +58,7 @@ const StyledDiv = styled.div`
       }
     }
     .label span {
-      width: 30%;
+      width: 10rem;
       text-align: left;
       margin: auto auto auto 0;
       font-weight: bold;
@@ -65,8 +66,40 @@ const StyledDiv = styled.div`
     .label p {
       padding-left: 1rem;
     }
+
+    .text {
+      margin: auto;
+      line-height: 1.5rem;
+      padding: 0.15rem 1rem 0.15rem 0.5rem;
+      max-height: 5rem;
+      overflow: auto;
+      width: calc(100% - 10rem);
+      text-align: justify;
+      hyphens: auto;
+
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      /* Track */
+      ::-webkit-scrollbar-track {
+        //background: white;
+        border-radius: 10px;
+        //border: 1px solid #121212;
+      }
+
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background-color: #121212;
+        border-radius: 5px;
+      }
+    }
+    .right {
+      text-align: right;
+    }
   }
-  .relation {
+
+  .relationList {
     display: flex;
     flex-direction: column;
     cursor: pointer;
@@ -89,59 +122,47 @@ const StyledDiv = styled.div`
       z-index: -1;
     }
 
-    span {
-      font-weight: bold;
-      padding: 0.2rem;
-    }
-    div {
-      display: flex;
-      margin: 0.2rem;
-    }
-    .header {
-      display: flex;
-      width: 100%;
-      padding: 0rem 0.4rem;
-      justify-content: space-between;
+    .span {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      padding: 0;
+      margin: 0;
+      gap: 1rem;
 
-      div {
-        text-align: right;
+      .value {
+        font-weight: bold;
+        min-width: 5rem;
+      }
+      .text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-style: italic;
       }
     }
+    .relation {
+      padding: 0;
+      margin: 0;
+      font-weight: bold;
 
-    p {
-      flex: 1 1 auto;
+      &.header {
+        font-size: 1.6rem;
+        padding: 0.5rem;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
     }
-  }
-
-  .text {
-    margin: auto;
-    line-height: 1.5rem;
-    padding: 0.15rem 1rem 0.15rem 0.5rem;
-    max-height: 5rem;
-    overflow: auto;
-    width: 70%;
-    text-align: justify;
-    hyphens: auto;
-
-    ::-webkit-scrollbar {
-      width: 4px;
+    .dot {
+      margin: 0.3rem 0.25rem 0 0;
+      height: 1.2rem;
+      width: 1.2rem;
+      border-radius: 3px;
     }
-
-    /* Track */
-    ::-webkit-scrollbar-track {
-      //background: white;
-      border-radius: 10px;
-      //border: 1px solid #121212;
+    .label {
+      display: flex;
+      gap: 0.5rem;
     }
-
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-      background-color: #121212;
-      border-radius: 5px;
-    }
-  }
-  .right {
-    text-align: right;
   }
 `;
 
@@ -193,9 +214,9 @@ const listAnnotations = (
           annotation={annotation}
           onClick={() => {
             selectors?.span({
-              index: annotation.token_span[0],
-              from: annotation.token_span[0],
-              to: annotation.token_span[1],
+              index: annotation.span[0],
+              from: annotation.span[0],
+              to: annotation.span[1],
             });
           }}
           text={text}
@@ -203,7 +224,7 @@ const listAnnotations = (
       );
     }
     if (annotation.type === "relation") {
-      if (!annotation.from && annotation.to) continue;
+      if (!annotation.fromId && annotation.toId) continue;
 
       rows.push(
         <ShowRelation
@@ -213,8 +234,8 @@ const listAnnotations = (
           annMap={annMap}
           onClick={() => {
             selectors?.relation({
-              from: annotation.edge[0],
-              to: annotation.edge[1],
+              //from: annotation.edge[0],
+              //to: annotation.edge[1],
               fromId: annotation.fromId,
               toId: annotation.toId,
             });
@@ -243,7 +264,7 @@ const ShowSpanAnnotation = ({
   if (!codeMap) return null;
 
   if (!codeMap?.[annotation.value] || !codeMap[annotation.value].active) return null;
-  const color = getColor(annotation.value, codeMap);
+  const color = standardizeColor(getColor(annotation.value, codeMap));
   const label = annotation.value;
 
   return (
@@ -269,26 +290,53 @@ const ShowRelation = ({ variableMap, annotation, annMap, onClick }: ShowRelation
   let codeMap = variableMap?.[annotation.variable]?.codeMap;
   if (!codeMap) return null;
 
-  const color = getColor(annotation.value, codeMap);
-  const label = annotation.value;
+  const color = standardizeColor(getColor(annotation.value, codeMap));
   //if (!annotation.from.token_span || !annotation.to.token_span) return null;
   //const relationSpan: Span = [annotation.from.token_span[0], annotation.to.token_span[1]];
 
   return (
-    <div className={"relation"} onClick={onClick} style={{ background: color || null }}>
-      <div className="header">
-        <span>{label}</span>
-        {/* <div>
-          <i>
-            {annotation.from.value} → {annotation.to.value}
-          </i>
-        </div> */}
-      </div>
-      <div>
-        <p className="text left">{annotation.text}</p>
-      </div>
+    <div className={"relationList"} onClick={onClick} style={{ background: color || null }}>
+      {recursiveRelationText(annMap, annotation)}
     </div>
   );
 };
+
+function recursiveRelationText(
+  annMap: AnnotationMap,
+  annotation: Annotation,
+  depth: number = 0,
+  elements: ReactElement[] = []
+) {
+  const key = annotation.id + "_" + depth;
+  const marginLeft = `${depth * 1}rem`;
+
+  if (annotation.type === "span") {
+    elements.push(
+      <div key={key} className="span" style={{ marginLeft }}>
+        <div className="label">
+          <div className="dot" style={{ background: annotation.color }} />
+          <div className="value">{annotation.value}</div>
+        </div>
+        <div className="text" title={annotation.text}>
+          {annotation.text}
+        </div>
+      </div>
+    );
+  }
+  if (annotation.type === "relation") {
+    elements.push(
+      <div className={`relation ${depth === 0 && "header"}`} style={{ marginLeft }}>
+        <div className="label">
+          {depth > 0 && <div className="dot" style={{ background: annotation.color }} />}
+          <div>{annotation.value}</div>
+        </div>
+      </div>
+    );
+    recursiveRelationText(annMap, annMap[annotation.fromId], depth + 1, elements);
+    recursiveRelationText(annMap, annMap[annotation.toId], depth + 1, elements);
+  }
+
+  return elements;
+}
 
 export default AnnotationList;

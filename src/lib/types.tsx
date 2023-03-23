@@ -48,14 +48,11 @@ export interface Annotation {
 
   index?: number;
   text?: string;
+  positions?: Record<number, boolean>;
   span?: Span;
-  edge?: Edge;
-  token_span?: Span;
+
   color?: string;
   comment?: string;
-
-  from?: Annotation;
-  to?: Annotation;
 
   select?: () => void;
 }
@@ -76,6 +73,15 @@ export interface RelationAnnotation {
 
   select?: () => void;
 }
+
+export interface AnnotationLibrary {
+  annotations: AnnotationDictionary;
+  byToken: TokenAnnotations;
+  codeHistory: CodeHistory;
+}
+export type AnnotationDictionary = Record<AnnotationID, Annotation>;
+export type TokenAnnotations = Record<number, AnnotationID[]>;
+export type AnnotationID = string;
 
 ////// LOGIN
 
@@ -132,10 +138,6 @@ export interface FieldAnnotations {
 //     [to: string]: AnnotationMap;
 //   };
 // }
-
-export interface TokenAnnotations {
-  [index: number | string]: AnnotationMap;
-}
 
 ///// CODEBOOK
 
@@ -335,9 +337,12 @@ export type VariableType = "span" | "relation";
 
 /** This one's intentionally flexible, because the codeselector popup handles multiple types of selections */
 export interface CodeSelectorValue {
+  id?: AnnotationID;
+  annotation?: Annotation;
   variable?: string;
   span?: Span;
   value?: string | number | Code;
+  code?: Code;
   relationOption?: RelationOption;
   delete?: boolean;
   cancel?: boolean;
@@ -734,19 +739,6 @@ export interface RawTokenColumn {
 }
 
 ////// DOCUMENT
-
-export interface UnitStates {
-  doc: Doc;
-  spanAnnotations: SpanAnnotations | null;
-  //setSpanAnnotations: SetState<SpanAnnotations | null>;
-  fieldAnnotations: SpanAnnotations | null;
-  //setFieldAnnotations: SetState<FieldAnnotations | null>;
-  relationAnnotations: RelationAnnotation[];
-  //setRelationAnnotations: SetState<RelationAnnotations | null>;
-  annotationManager: AnnotationManager;
-  codeHistory: CodeHistory;
-  setCodeHistory: SetState<CodeHistory>;
-}
 
 export interface Doc {
   /** A processed version of a Unit, for use in the Document component */

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import { Popup } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
 import {
+  AnnotationLibrary,
   CodeSelectorOption,
   CodeSelectorValue,
   SetState,
@@ -16,7 +17,7 @@ interface SelectAnnotationPageProps {
   tokens: Token[];
   variable: string;
   setVariable: SetState<string>;
-  annotations: SpanAnnotations;
+  annotationLib: AnnotationLibrary;
   span: Span;
   setSpan: SetState<Span>;
   setOpen: SetState<boolean>;
@@ -27,7 +28,7 @@ const SelectAnnotationPage = ({
   tokens,
   variable,
   setVariable,
-  annotations,
+  annotationLib,
   span,
   setSpan,
   setOpen,
@@ -41,14 +42,13 @@ const SelectAnnotationPage = ({
       }
       setSpan(value.span);
       setVariable(value.variable);
-      //setExisting(value.annotations);
     },
     [setSpan, setVariable, setOpen]
   );
 
   const options = useMemo(() => {
-    return getAnnotationOptions(annotations, span, variableMap, tokens);
-  }, [annotations, span, variableMap, tokens]);
+    return getAnnotationOptions(annotationLib, span, variableMap, tokens);
+  }, [annotationLib, span, variableMap, tokens]);
 
   useEffect(() => {
     if (options?.length === 0) setOpen(false);
@@ -84,7 +84,7 @@ const getTextSnippet = (tokens: Token[], span: Span, maxlength = 8) => {
 };
 
 const getAnnotationOptions = (
-  annotations: SpanAnnotations,
+  annotationLib: AnnotationLibrary,
   span: Span,
   variableMap: VariableMap,
   tokens: Token[]
@@ -92,9 +92,9 @@ const getAnnotationOptions = (
   const variableSpans: any = {};
 
   for (let i = span[0]; i <= span[1]; i++) {
-    if (!annotations[i]) continue;
-    for (let id of Object.keys(annotations[i])) {
-      const annotation = annotations[i][id];
+    const annotationIds = annotationLib.byToken[i] || [];
+    for (let id of annotationIds) {
+      const annotation = annotationLib.annotations[id];
       const codeMap = variableMap?.[annotation.variable]?.codeMap;
       if (!variableMap[annotation.variable]) continue;
       if (!codeMap?.[annotation.value] && annotation.value !== "EMPTY") continue;

@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { Popup } from "semantic-ui-react";
 import { getColor, getColorGradient } from "../../../functions/tokenDesign";
-import { CodeSelectorOption, SetState, Span, SpanAnnotations, VariableMap } from "../../../types";
+import { AnnotationLibrary, CodeSelectorOption, SetState, Span, VariableMap } from "../../../types";
 import ButtonSelection from "./ButtonSelection";
 
 interface SelectVariablePageProps {
   variable: string;
   setVariable: SetState<string>;
-  annotations: SpanAnnotations;
+  annotationLib: AnnotationLibrary;
   span: Span;
   setOpen: SetState<boolean>;
   variableMap: VariableMap;
@@ -16,7 +16,7 @@ interface SelectVariablePageProps {
 export default function SelectVariablePage({
   variable,
   setVariable,
-  annotations,
+  annotationLib,
   span,
   setOpen,
   variableMap,
@@ -28,9 +28,9 @@ export default function SelectVariablePage({
     for (let v of variables) {
       const colors: Record<string | number, string> = {};
       for (let i = span[0]; i <= span[1]; i++) {
-        if (!annotations[i]) continue;
-        for (let id of Object.keys(annotations[i])) {
-          const a = annotations[i][id];
+        const annotationIds = annotationLib.byToken[i] || [];
+        for (let id of annotationIds) {
+          const a = annotationLib.annotations[id];
           if (a.variable !== v) continue;
           colors[a.value] = getColor(a.value, variableMap?.[v]?.codeMap);
         }

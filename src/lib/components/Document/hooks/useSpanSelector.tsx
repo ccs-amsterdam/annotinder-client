@@ -7,15 +7,16 @@ import AnnotationPortal from "../components/AnnotationPortal";
 import {
   SetState,
   Span,
-  SpanAnnotations,
   Token,
   TriggerSelector,
   Variable,
   VariableMap,
-  UnitStates,
   TriggerSelectorParams,
+  AnnotationLibrary,
+  Doc,
 } from "../../../types";
 import useWatchChange from "../../../hooks/useWatchChange";
+import AnnotationManager from "../functions/AnnotationManager";
 
 /**
  * This hook is an absolute monster, as it takes care of a lot of moving parts.
@@ -37,7 +38,9 @@ import useWatchChange from "../../../hooks/useWatchChange";
  * @returns
  */
 const useSpanSelector = (
-  unitStates: UnitStates,
+  doc: Doc,
+  annotationLib: AnnotationLibrary,
+  annotationManager: AnnotationManager,
   variableMap: VariableMap,
   editMode: boolean,
   variables: Variable[]
@@ -46,12 +49,12 @@ const useSpanSelector = (
   const [index, setIndex] = useState(null);
   const [span, setSpan] = useState<Span>(null);
   const [variable, setVariable] = useState(null);
-  const tokens = unitStates.doc.tokens;
+  const tokens = doc.tokens;
 
   const triggerFunction = React.useCallback(
     // this function can be called to open the code selector.
     (selection: TriggerSelectorParams) => {
-      if (!selection?.index || !selection?.from || !selection?.to) return;
+      if (selection?.index == null || selection?.from == null || selection?.to == null) return;
       if (selection.from > selection.to)
         [selection.from, selection.to] = [selection.to, selection.from];
       setSpan([selection.from, selection.to]);
@@ -79,7 +82,7 @@ const useSpanSelector = (
           variable={variable}
           setVariable={setVariable}
           variableMap={variableMap}
-          annotations={unitStates.spanAnnotations}
+          annotationLib={annotationLib}
           span={span}
           setSpan={setSpan}
           setOpen={setOpen}
@@ -88,12 +91,11 @@ const useSpanSelector = (
           tokens={tokens}
           variable={variable}
           variableMap={variableMap}
-          annotations={unitStates.spanAnnotations}
-          annotationManager={unitStates.annotationManager}
+          annotationLib={annotationLib}
+          annotationManager={annotationManager}
           span={span}
           editMode={editMode}
           setOpen={setOpen}
-          codeHistory={unitStates.codeHistory}
         />
       </>
     </AnnotationPortal>
@@ -110,7 +112,7 @@ interface SelectPageProps {
   variable: string;
   setVariable: SetState<string>;
   variableMap: any;
-  annotations: SpanAnnotations;
+  annotationLib: AnnotationLibrary;
   span: Span;
   setSpan: SetState<Span>;
   setOpen: SetState<boolean>;
@@ -123,7 +125,7 @@ const SelectPage = React.memo(
     variable,
     setVariable,
     variableMap,
-    annotations,
+    annotationLib,
     span,
     setSpan,
     setOpen,
@@ -135,7 +137,7 @@ const SelectPage = React.memo(
           variable={variable}
           setVariable={setVariable}
           variableMap={variableMap}
-          annotations={annotations}
+          annotationLib={annotationLib}
           span={span}
           setSpan={setSpan}
           setOpen={setOpen}
@@ -147,7 +149,7 @@ const SelectPage = React.memo(
           variable={variable}
           setVariable={setVariable}
           variableMap={variableMap}
-          annotations={annotations}
+          annotationLib={annotationLib}
           span={span}
           setOpen={setOpen}
         />

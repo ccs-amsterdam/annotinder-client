@@ -34,7 +34,7 @@ export const keepInView = (parent: HTMLElement, child: HTMLElement) => {
   //if (needUp > 0) parent.scrollTop = parent.scrollTop + needUp;
   if (needDown) {
     let scrollTo = parent.scrollTop + childTop - (parentHeight * 0.9 + parentTop);
-    scrollTo += Math.max(childHeight, parentHeight * 0.9);
+    scrollTo += Math.max(childHeight, parentHeight * 0.1);
     parent.scrollTop = scrollTo;
   }
   if (needUp) {

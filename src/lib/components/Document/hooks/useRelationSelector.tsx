@@ -2,23 +2,26 @@ import { useState, useCallback, ReactElement, useMemo, useEffect } from "react";
 import standardizeColor from "../../../functions/standardizeColor";
 import useWatchChange from "../../../hooks/useWatchChange";
 import {
-  UnitStates,
   Variable,
   Code,
-  RelationAnnotation,
   RelationOption,
   Annotation,
   CodeSelectorOption,
   CodeSelectorValue,
   TriggerSelector,
   TriggerSelectorParams,
+  Doc,
+  AnnotationLibrary,
+  AnnotationID,
 } from "../../../types";
-import { getRelationMap } from "../functions/annotations";
 import AnnotationPortal from "../components/AnnotationPortal";
 import PopupSelection from "../components/PopupSelection";
+import AnnotationManager from "../functions/AnnotationManager";
 
 const useRelationSelector = (
-  unitStates: UnitStates,
+  doc: Doc,
+  annotationLib: AnnotationLibrary,
+  annotationManager: AnnotationManager,
   variable: Variable
 ): [ReactElement, TriggerSelector, boolean] => {
   const [open, setOpen] = useState(false);
@@ -27,27 +30,28 @@ const useRelationSelector = (
   const [edge, setEdge] = useState<RelationOption>(null);
   const [edgeOptions, setEdgeOptions] = useState<CodeSelectorOption[]>();
 
-  const tokens = unitStates.doc.tokens;
-  const spanAnnotations = unitStates.spanAnnotations;
-  const relationAnnotations = unitStates.relationAnnotations;
+  const tokens = doc.tokens;
 
   const triggerFunction = useCallback(
     (selection: TriggerSelectorParams) => {
-      if (!selection?.from || !selection?.to) return;
-      const [fromMap, toMap] = [spanAnnotations[selection.from], spanAnnotations[selection.to]];
-      if (!fromMap || !toMap) return;
-      let [fromAnn, toAnn] = [Object.values(fromMap), Object.values(toMap)];
+      const byIndex = !!selection.from || !!selection.to;
+      const byId = !!selection.fromId || !!selection.toId;
+      if (!byIndex && !byId) return;
 
-      fromAnn = addRelationAnnotations(fromAnn, relationAnnotations);
-      toAnn = addRelationAnnotations(toAnn, relationAnnotations);
+      let fromAnn: Annotation[] = [];
+      let toAnn: Annotation[] = [];
+      if (byIndex) {
+        const fromIds = annotationLib.byToken[selection.from] || [];
+        const toIds = annotationLib.byToken[selection.to] || [];
+        if (fromIds.length === 0 || toIds.length === 0) return;
+        fromAnn = fromIds.map((id) => annotationLib.annotations[id]);
+        toAnn = toIds.map((id) => annotationLib.annotations[id]);
+      } else {
+        fromAnn = [annotationLib.annotations[selection.fromId]];
+        toAnn = [annotationLib.annotations[selection.toId]];
+      }
 
       let edgeOptions = getOptions(fromAnn, toAnn, variable);
-      if (selection.fromId && selection.toId) {
-        edgeOptions = edgeOptions.filter((option) => {
-          const { from, to } = option?.value?.relationOption;
-          return from?.id === selection.fromId && to?.id === selection.toId;
-        });
-      }
 
       if (edgeOptions.length === 0) return;
       if (edgeOptions.length === 1) {
@@ -60,7 +64,7 @@ const useRelationSelector = (
       setPositionRef(tokens?.[selection.to]?.ref);
       setOpen(true);
     },
-    [tokens, variable, spanAnnotations, relationAnnotations, setEdgeOptions]
+    [tokens, variable, annotationLib, setEdgeOptions]
   );
 
   if (useWatchChange([tokens, variable])) setOpen(false);
@@ -70,7 +74,12 @@ const useRelationSelector = (
       {edge === null ? (
         <SelectEdgePage edgeOptions={edgeOptions} setEdge={setEdge} setOpen={setOpen} />
       ) : (
-        <SelectRelationPage edge={edge} unitStates={unitStates} setOpen={setOpen} />
+        <SelectRelationPage
+          edge={edge}
+          annotationLib={annotationLib}
+          annotationManager={annotationManager}
+          setOpen={setOpen}
+        />
       )}
     </AnnotationPortal>
   );
@@ -104,44 +113,53 @@ const SelectEdgePage = ({ edgeOptions, setEdge, setOpen }: SelectEdgePageProps) 
 
 interface SelectRelationPageProps {
   edge: RelationOption;
-  unitStates: UnitStates;
+  annotationLib: AnnotationLibrary;
+  annotationManager: AnnotationManager;
   setOpen: (open: boolean) => void;
 }
 
-const SelectRelationPage = ({ edge, unitStates, setOpen }: SelectRelationPageProps) => {
+const SelectRelationPage = ({
+  edge,
+  annotationLib,
+  annotationManager,
+  setOpen,
+}: SelectRelationPageProps) => {
   const onSelect = useCallback(
     (value: CodeSelectorValue, ctrlKey: boolean) => {
       if (value.cancel) {
         setOpen(false);
-        return;
+      } else if (value.delete) {
+        annotationManager.rmAnnotation(value.id);
+      } else {
+        annotationManager.createRelationAnnotation(value.code, edge.from, edge.to);
       }
 
-      unitStates.annotationManager.updateRelationAnnotations(
-        edge.from,
-        edge.to,
-        value.value as Code,
-        value.delete
-      );
-      setOpen(false);
+      if (!ctrlKey) setOpen(false);
     },
-    [setOpen, edge, unitStates]
+    [setOpen, edge, annotationManager]
   );
 
   const options: CodeSelectorOption[] = useMemo(() => {
     if (!edge) return null;
 
-    const relations = getRelationMap(unitStates.relationAnnotations, edge.from, edge.to);
+    const existing: Record<string, AnnotationID> = {};
+    for (let annotation of Object.values(annotationLib.annotations)) {
+      if (annotation.fromId !== edge.from.id) continue;
+      if (annotation.toId !== edge.to.id) continue;
+      existing[annotation.variable + "|" + annotation.value] = annotation.id;
+    }
+
     const options = edge.relations.map((code) => {
-      const isNew = !relations[code.variable + "|" + code.code];
+      const existingId = existing[code.variable + "|" + code.code];
       return {
-        value: { value: code, delete: !isNew },
+        value: { code, id: existingId, delete: !!existingId },
         label: code.code,
         color: standardizeColor(code.color, "50"),
       };
     });
 
     return options;
-  }, [edge, unitStates.relationAnnotations]);
+  }, [edge, annotationLib]);
 
   useEffect(() => {
     if (options.length === 0) return setOpen(false);
@@ -159,22 +177,6 @@ const SelectRelationPage = ({ edge, unitStates, setOpen }: SelectRelationPagePro
     />
   );
 };
-
-function addRelationAnnotations(
-  annotations: Annotation[],
-  relationAnnotations: RelationAnnotation[]
-) {
-  if (!relationAnnotations) return annotations;
-
-  const addAnnotations: Annotation[] = [];
-  for (let relation of relationAnnotations) {
-    for (let annotation of annotations) {
-      if (annotation.id === relation.fromId || annotation.id === relation.toId)
-        addAnnotations.push(relation as Annotation);
-    }
-  }
-  return [...annotations, ...addAnnotations];
-}
 
 function getOptions(from: Annotation[], to: Annotation[], variable: Variable) {
   const edgeRelations: Record<string, CodeSelectorValue> = {};
