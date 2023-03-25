@@ -48,7 +48,7 @@ export interface Annotation {
 
   index?: number;
   text?: string;
-  positions?: Record<number, boolean>;
+  positions?: Set<number>;
   span?: Span;
 
   color?: string;
@@ -368,6 +368,8 @@ export interface CodeSelectorOption {
   textColor?: string;
   /** If the options are rendered as buttons, the ref enables navigation */
   ref?: RefObject<HTMLElement>;
+  /** A string for looking up the option in text search */
+  queryText?: string;
 }
 
 export interface CodeSelectorDropdownOption {

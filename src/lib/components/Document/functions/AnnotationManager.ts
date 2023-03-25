@@ -23,7 +23,7 @@ export default class AnnotationManager {
 
   addAnnotation(annotation: Annotation) {
     this.setAnnotationLib((annotationLib) => {
-      annotation.id = Date.now().toString();
+      annotation.id = createId();
       annotation.positions = getTokenPositions(annotationLib.annotations, annotation);
       annotationLib.annotations[annotation.id] = annotation;
       annotationLib.codeHistory = updateCodeHistory(annotationLib.codeHistory, annotation);
@@ -81,7 +81,7 @@ export function createAnnotationLibrary(unit: Unit): AnnotationLibrary {
   const annotationArray = addTokenIndices(annotationCopy, unit.unit.tokens);
   const annotations: AnnotationDictionary = {};
   for (let a of annotationArray) {
-    if (a.id == null) continue; // maybe add new id if missing?
+    if (a.id == null) a.id = createId();
     annotations[a.id] = a;
   }
 
@@ -105,10 +105,11 @@ function newTokenDictionary(annotations: AnnotationDictionary) {
 }
 
 function addToTokenDictionary(byToken: TokenAnnotations, annotation: Annotation) {
-  for (let i of Object.keys(annotation.positions || {})) {
+  if (!annotation.positions) return;
+  annotation.positions.forEach((i) => {
     if (!byToken[i]) byToken[i] = [];
     byToken[i].push(annotation.id);
-  }
+  });
 }
 
 function updateCodeHistory(codeHistory: CodeHistory, annotation: Annotation) {
@@ -197,13 +198,13 @@ const getSpanText = (span: Span, tokens: Token[]) => {
 function getTokenPositions(
   annotations: AnnotationDictionary,
   annotation: Annotation,
-  positions: Record<number, boolean> = {}
+  positions: Set<number> = new Set()
 ) {
-  if (!positions) positions = {};
+  if (!positions) positions = new Set<number>();
 
   if (annotation.type === "span") {
     for (let i = annotation.span[0]; i <= annotation.span[1]; i++) {
-      positions[i] = true;
+      positions.add(i);
     }
   }
   if (annotation.type === "relation") {
@@ -213,3 +214,7 @@ function getTokenPositions(
   }
   return positions;
 }
+
+const createId = () => {
+  return Date.now().toString();
+};

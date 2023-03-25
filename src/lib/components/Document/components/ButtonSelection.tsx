@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useDeferredValue } from "react";
 import { CodeButton } from "../../../styled/StyledSemantic";
 import { moveDown, moveUp } from "../../../functions/refNavigation";
 import { CodeSelectorOption, CodeSelectorValue } from "../../../types";
@@ -22,6 +22,40 @@ const StyledDiv = styled.div`
       }
     }
   }
+
+  .ButtonContent {
+    .Tag {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+  }
+
+  .DeleteIcon {
+    position: absolute;
+    right: 3;
+    top: 0;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  .SelectButtonsContainer {
+    position: relative;
+    .SelectButtons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 10px;
+      max-height: 15rem;
+      overflow-y: auto;
+    }
+    .SearchInput {
+      position: absolute;
+      bottom: 0rem;
+      left: 0rem;
+    }
+  }
 `;
 
 interface ButtonSelectionProps {
@@ -33,6 +67,10 @@ interface ButtonSelectionProps {
 
 const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps) => {
   const [selected, setSelected] = useState(0);
+  const [search, setSearch] = useState("");
+  const deferredSearch = useDeferredValue(search);
+  const [showN, setShowN] = useState(5);
+  const useSearch = false;
 
   const allOptions: CodeSelectorOption[] = useMemo(() => {
     // add cancel button and (most importantly) add refs used for navigation
@@ -45,12 +83,19 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
 
     let allOptions: CodeSelectorOption[] = [cancelOption, ...options];
     for (let option of allOptions) {
+      option.queryText =
+        String(option.label).toLowerCase() + " " + String(option.tag || "").toLowerCase();
       option.color = standardizeColor(option.color);
       option.ref = React.createRef();
     }
     setSelected(0);
     return allOptions;
   }, [options]);
+
+  const filteredOptions = useMemo(() => {
+    const query = deferredSearch.toLowerCase();
+    return allOptions.filter((o) => o.queryText.includes(query) || o.value.delete);
+  }, [allOptions, deferredSearch]);
 
   const onKeydown = React.useCallback(
     (event: KeyboardEvent) => {
@@ -65,21 +110,26 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
       // any arrowkey
       if (arrowKeys.includes(event.key)) {
         event.preventDefault();
+        function setSelectedAndScroll(i: number) {
+          setSelected(i);
+          let el = allOptions[i].ref.current;
+          if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
 
         if (event.key === "ArrowRight") {
-          if (selected < nbuttons - 1) setSelected(selected + 1);
+          if (selected < nbuttons - 1) setSelectedAndScroll(selected + 1);
         }
 
         if (event.key === "ArrowDown") {
-          setSelected(moveDown(allOptions, selected));
+          setSelectedAndScroll(moveDown(allOptions, selected));
         }
 
         if (event.key === "ArrowLeft") {
-          if (selected > 0) setSelected(selected - 1);
+          if (selected > 0) setSelectedAndScroll(selected - 1);
         }
 
         if (event.key === "ArrowUp") {
-          setSelected(moveUp(allOptions, selected));
+          setSelectedAndScroll(moveUp(allOptions, selected));
         }
 
         return;
@@ -127,24 +177,12 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
           onSelect(option.value, e.ctrlKey || e.altKey);
         }}
       >
-        <span>
-          {option.tag ? (
-            <span style={{ fontSize: "1.2rem", fontWeight: "bold" }}>{option.tag}: </span>
-          ) : null}
+        <span className="ButtonContent">
+          {option.tag ? <span className="Tag">{option.tag}: </span> : null}
           {option.label}
         </span>
         {rm && (
-          <div
-            style={{
-              position: "absolute",
-              right: 3,
-              top: 0,
-              fontSize: "2rem",
-              display: "flex",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
+          <div className="deleteIcon">
             <RiDeleteBin2Line />
           </div>
         )}
@@ -152,12 +190,12 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
     );
   };
 
-  const mapButtons = () => {
+  const [cancelButton, selectButtons, deleteButtons] = useMemo(() => {
     let i = 0;
     let cancelButton;
     const selectButtons = [];
     const deleteButtons = [];
-    for (let option of allOptions) {
+    for (let option of filteredOptions) {
       if (option.value.cancel)
         cancelButton = (
           <div
@@ -179,20 +217,29 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
       i++;
     }
 
-    return (
-      <div key={id + "_buttons"} style={{ textAlign: "center" }}>
-        <div
-          key={id + "_1"}
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            marginBottom: "10px",
-          }}
-        >
-          {cancelButton}
-          {selectButtons}
+    return [cancelButton, selectButtons, deleteButtons];
+  }, [filteredOptions, selected]);
+
+  return (
+    <StyledDiv key={id}>
+      <div className="Buttons" key={id + "_buttons"} style={{ textAlign: "center" }}>
+        <div className="SelectButtonsContainer">
+          <div className="SelectButtons" key={id + "_1"}>
+            {cancelButton}
+            {selectButtons}
+            {useSearch && <div style={{ height: "3rem", width: "100%" }}></div>}
+          </div>
+          {useSearch && (
+            <input
+              className="SearchInput"
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="search"
+            />
+          )}
         </div>
+
         {deleteButtons.length > 0 ? (
           <>
             <div style={{ height: "5px", borderTop: "1px solid var(--primary-text)" }} />
@@ -206,10 +253,8 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
           {deleteButtons}
         </div>
       </div>
-    );
-  };
-
-  return <StyledDiv key={id}>{mapButtons()}</StyledDiv>;
+    </StyledDiv>
+  );
 };
 
 export default ButtonSelection;

@@ -3,23 +3,10 @@ import styled from "styled-components";
 import standardizeColor from "../../../functions/standardizeColor";
 import { TokenSelection, Token } from "../../../types";
 
-interface Props {
-  id: string;
-  tokens: Token[];
-  tokenSelection: TokenSelection;
-  tokenSelectionEnd?: TokenSelection;
-  relation?: string;
-  edgeColor?: string;
-  fromColor?: string;
-  toColor?: string;
-  onClick?: () => void;
-  usedPositions?: Record<number, Record<number, boolean>>;
-}
-
 const StyledG = styled.g<{ interactive: boolean }>`
   pointer-events: ${(p) => (p.interactive ? "stroke" : "none")};
   font-size: 0em;
-  transition: all 0.3s;
+  transition: all 0.1s;
   animation: fadeIn 1s;
   position: relative;
   z-index: 10;
@@ -91,6 +78,21 @@ const StyledG = styled.g<{ interactive: boolean }>`
   }
 `;
 
+interface Props {
+  id: string;
+  tokens: Token[];
+  tokenSelection: TokenSelection;
+  tokenSelectionEnd?: TokenSelection;
+  relation?: string;
+  edgeColor?: string;
+  fromColor?: string;
+  toColor?: string;
+  onClick?: () => void;
+  usedPositions?: Record<number, Record<number, boolean>>;
+  xoffset?: number;
+  yoffset?: number;
+}
+
 export default function Arrow({
   id,
   tokens,
@@ -102,8 +104,10 @@ export default function Arrow({
   toColor,
   onClick,
   usedPositions,
+  xoffset = 3,
+  yoffset = 8,
 }: Props) {
-  if (tokenSelection.length !== 2) return;
+  if (!tokenSelection || tokenSelection.length !== 2) return;
   const elX = tokens[tokenSelection[0]]?.ref?.current;
   const elY = tokens[tokenSelection[1]]?.ref?.current;
   const elXend = tokenSelectionEnd ? tokens[tokenSelectionEnd[0]]?.ref?.current : elX;
@@ -119,8 +123,8 @@ export default function Arrow({
 
   const p1 = { x: X.x, y: X.y, h: X.height };
   const p2 = { x: Y.x, y: Y.y, h: Y.height };
-  const p1end = { x: Xend.x + Xend.width, y: Xend.y };
-  const p2end = { x: Yend.x + Yend.width, y: Yend.y };
+  const p1end = { x: Xend.x + Xend.width, y: Xend.y, h: Xend.height };
+  const p2end = { x: Yend.x + Yend.width, y: Yend.y, h: Yend.height };
 
   let [fromX, fromY] = ["left", "top"];
   let [toX, toY] = ["left", "top"];
@@ -135,13 +139,17 @@ export default function Arrow({
     toY = "bottom";
   }
 
+  // originally arrows could also leave/arive from top, but disabled this for now
+  // after adding the underline for indicating relations. keeping it in case I
+  // change my mind again
+  fromY = "bottom";
+  toY = "bottom";
+
   function getXY(p, pend, x, y) {
-    const xoffset = 6;
-    const yoffset = 4;
     if (x === "left" && y === "top") return [p.x + xoffset, p.y - yoffset];
     if (x === "left" && y === "bottom") return [p.x + xoffset, p.y + p.h + yoffset];
     if (x === "right" && y === "top") return [pend.x - xoffset, pend.y - yoffset];
-    if (x === "right" && y === "bottom") return [pend.x - xoffset, pend.y + p.h + yoffset];
+    if (x === "right" && y === "bottom") return [pend.x - xoffset, pend.y + pend.h + yoffset];
   }
   let [p1x, p1y] = getXY(p1, p1end, fromX, fromY);
   let [p2x, p2y] = getXY(p2, p2end, toX, toY);
@@ -217,7 +225,7 @@ export default function Arrow({
 
         <polygon
           className="smallpolygon"
-          points="-5,-3 3,0, -5,3"
+          points="-10,-3 -2,0, -10,3"
           fill={"var(--background-fixed)"}
           stroke={toColorNoAlpha || edgeColorNoAlpha}
           strokeWidth="3"

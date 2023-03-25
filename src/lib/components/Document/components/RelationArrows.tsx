@@ -1,10 +1,7 @@
 import { useMemo } from "react";
 import standardizeColor from "../../../functions/standardizeColor";
-import { getColor } from "../../../functions/tokenDesign";
 import {
   Token,
-  VariableMap,
-  Span,
   TriggerSelector,
   AnnotationLibrary,
   AnnotationDictionary,
@@ -15,11 +12,10 @@ import Arrow from "./Arrow";
 interface Props {
   tokens: Token[];
   annotationLib: AnnotationLibrary;
-  showValues: VariableMap;
   triggerSelector: TriggerSelector;
 }
 
-const RelationArrows = ({ tokens, annotationLib, showValues, triggerSelector }: Props) => {
+const RelationArrows = ({ tokens, annotationLib, triggerSelector }: Props) => {
   const arrows = useMemo(() => {
     const arrows = [];
     for (let r of Object.values(annotationLib.annotations)) {
@@ -36,6 +32,8 @@ const RelationArrows = ({ tokens, annotationLib, showValues, triggerSelector }: 
         id: r.id,
         tokenSelection: [from, to],
         tokenSelectionEnd: [fromEnd, toEnd],
+        fromId: r.fromId,
+        toId: r.toId,
         relation: r.value,
         edgeColor: standardizeColor(r.color, "90"),
         fromColor: standardizeColor(fromAnnotation.color, "90"),
@@ -44,7 +42,7 @@ const RelationArrows = ({ tokens, annotationLib, showValues, triggerSelector }: 
     }
 
     return arrows;
-  }, [annotationLib, showValues]);
+  }, [annotationLib]);
 
   const usedPositions: Record<string, number> = {};
 
@@ -54,12 +52,12 @@ const RelationArrows = ({ tokens, annotationLib, showValues, triggerSelector }: 
         <Arrow
           key={arrowProps.id}
           tokens={tokens}
-          onClick={() =>
+          onClick={() => {
             triggerSelector({
-              from: arrowProps.tokenSelection[0],
-              to: arrowProps.tokenSelection[1],
-            })
-          }
+              fromId: arrowProps.fromId,
+              toId: arrowProps.toId,
+            });
+          }}
           {...arrowProps}
           usedPositions={usedPositions}
         />

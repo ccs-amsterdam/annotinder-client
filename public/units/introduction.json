@@ -106,7 +106,7 @@
         },
         {
           "name": "text",
-          "value": "You can do some simple branching.",
+          "value": "You can do some simple branching. ",
           "style": {
             "textAlign": "center"
           }

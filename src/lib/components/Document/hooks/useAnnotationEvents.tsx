@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { scrollToMiddle } from "../../../functions/scroll";
 
 import {
@@ -27,17 +27,24 @@ export default function useAnnotationEvents(
   editMode: boolean,
   eventsBlocked: boolean
 ) {
-  const [currentToken, setCurrentToken] = useState({ i: 0 });
   const [tokenSelection, setTokenSelection] = useState<TokenSelection>(null);
   const [mover, setMover] = useState(null);
   const [holdSpace, setHoldSpace] = useState(false);
   const [holdArrow, setHoldArrow] = useState<Arrowkeys>(null);
 
+  const currentTokenRef = useRef(0);
+  const setCurrentToken = useCallback(
+    (i: number) => {
+      if (i === currentTokenRef.current) return;
+      if (tokens?.[i]?.ref?.current) tokens[i].ref.current.focus();
+      currentTokenRef.current = i;
+    },
+    [tokens, currentTokenRef]
+  );
+
   // onEvent functions do not need to update on rerender, so use ref to pass on values
-  const currentTokenRef = useRef(currentToken);
   const tokenSelectionRef = useRef(tokenSelection);
   const holdSpaceRef = useRef(holdSpace);
-  currentTokenRef.current = currentToken;
   tokenSelectionRef.current = tokenSelection;
   holdSpaceRef.current = holdSpace;
 
@@ -56,9 +63,9 @@ export default function useAnnotationEvents(
     setTokenSelection([]);
   }, [annotationLib]);
   useEffect(() => {
-    setCurrentToken({ i: null });
+    setCurrentToken(null);
     setTokenSelection([]);
-  }, [tokens]);
+  }, [tokens, setCurrentToken]);
 
   // Add 'methods' to tokens for performing navigation and annotation events
   useEffect(() => {
@@ -72,7 +79,7 @@ export default function useAnnotationEvents(
           scrollToMiddle(token.containerRef.current, token.ref.current, 1 / 2);
           //keepInView(token.containerRef.current, token.ref.current);
         }
-        setCurrentToken({ i: token.index });
+        setCurrentToken(token.index);
         setTokenSelection(span);
         triggerSelectionPopup({ index: token.index, from: span[0], to: span[1] });
       };
@@ -243,5 +250,5 @@ export default function useAnnotationEvents(
     eventsBlocked,
   ]);
 
-  return { currentToken, tokenSelection };
+  return tokenSelection;
 }

@@ -53,7 +53,7 @@ const NewCodePage = ({
         setOpen(false);
       }
     },
-    [annotationManager, editMode, setOpen, tokens, span, variableMap, variable]
+    [annotationManager, setOpen, tokens, span, variableMap, variable]
   );
 
   useEffect(() => {

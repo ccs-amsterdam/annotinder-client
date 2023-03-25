@@ -180,7 +180,12 @@ const Items = ({
             key={itemIndex + "_" + itemObj.label}
             style={{ padding: "10px", textAlign: "center", flex: "1 1 auto", margin: "auto" }}
           >
-            <form>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (done) onFinish();
+              }}
+            >
               <div>
                 <label style={{ color: "var(--text-inversed-fixed)", fontSize: "0.8em" }}>
                   <>

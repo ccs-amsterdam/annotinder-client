@@ -4,7 +4,6 @@ import {
   TokenSelection,
   Token,
   TriggerSelector,
-  VariableMap,
   AnnotationLibrary,
 } from "../../../types";
 import styled from "styled-components";
@@ -26,7 +25,6 @@ interface DrawArrowsProps {
   variable: Variable;
   tokens: Token[];
   annotationLib: AnnotationLibrary;
-  showValues: VariableMap;
   triggerSelector: TriggerSelector;
   tokenSelection: TokenSelection;
 }
@@ -35,7 +33,6 @@ const DrawArrows = ({
   variable,
   tokens,
   annotationLib,
-  showValues,
   triggerSelector,
   tokenSelection,
 }: DrawArrowsProps) => {
@@ -66,7 +63,6 @@ const DrawArrows = ({
       <RelationArrows
         tokens={tokens}
         annotationLib={annotationLib}
-        showValues={showValues}
         triggerSelector={triggerSelector}
       />
 
@@ -75,6 +71,7 @@ const DrawArrows = ({
         tokens={tokens}
         tokenSelection={tokenSelection}
         edgeColor={"var(--primary)"}
+        yoffset={-5}
       />
     </StyledSvg>
   );

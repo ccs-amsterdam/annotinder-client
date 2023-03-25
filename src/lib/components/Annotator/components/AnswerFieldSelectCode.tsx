@@ -82,7 +82,11 @@ const SelectCode = React.memo(
             setSelected(moveUp(buttons, selected));
           }
 
-          keepInView(scrollRef?.current, buttons?.[selected]?.ref?.current);
+          buttons?.[selected]?.ref?.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          //keepInView(scrollRef?.current, buttons?.[selected]?.ref?.current);
           return;
         }
 

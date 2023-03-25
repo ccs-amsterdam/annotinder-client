@@ -1,6 +1,5 @@
 import { SetState, Token, TokenSelection, Mover, TriggerSelector, Arrowkeys } from "../../../types";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
-import { keepInView } from "../../../functions/scroll";
 import getToken from "./getToken";
 
 const arrowkeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
@@ -31,7 +30,7 @@ export function onKeyUp(
 export function onKeyDown(
   event: KeyboardEvent,
   tokens: Token[],
-  currentToken: { i: number },
+  currentToken: number,
   setHoldSpace: SetState<boolean>,
   setHoldArrow: SetState<Arrowkeys>,
   setMover: SetState<Mover>
@@ -47,8 +46,8 @@ export function onKeyDown(
     event.preventDefault();
     if (event.repeat) return;
     setMover({
-      position: currentToken.i,
-      startposition: currentToken.i,
+      position: currentToken,
+      startposition: currentToken,
       ntokens: tokens.length,
       counter: 1,
     });
@@ -59,14 +58,11 @@ export function onKeyDown(
 export function storeMouseTokenSelection(
   currentNode: any,
   tokens: Token[],
-  setCurrentToken: SetState<{ i: number }>,
+  setCurrentToken: (i: number) => void,
   setTokenSelection: SetState<TokenSelection>
 ) {
   // select tokens that the mouse/touch is currently pointing at
-  setCurrentToken((state) => {
-    if (state.i === currentNode.index) return state;
-    return { i: currentNode.index };
-  });
+  setCurrentToken(currentNode.index);
   setTokenSelection((state: TokenSelection) =>
     updateSelection(state, tokens, currentNode.index, true)
   );
@@ -85,7 +81,7 @@ export function onTouchUp(
   tokens: Token[],
   editMode: boolean,
   tokenSelection: TokenSelection,
-  setCurrentToken: SetState<{ i: number }>,
+  setCurrentToken: (i: number) => void,
   setTokenSelection: SetState<TokenSelection>,
   triggerSelector: TriggerSelector,
   touch: any,
@@ -131,7 +127,7 @@ export function onTouchUp(
     }
     rmTapped(tokens, tapped.current);
     tapped.current = null;
-    setCurrentToken({ i: null });
+    setCurrentToken(null);
     return;
   }
 
@@ -140,7 +136,7 @@ export function onTouchUp(
     rmTapped(tokens, tapped.current);
     addTapped(tokens, token.index);
     tapped.current = token.index;
-    setCurrentToken({ i: token.index });
+    setCurrentToken(token.index);
     setTokenSelection((state: TokenSelection) => (state.length === 0 ? state : []));
   } else {
     rmTapped(tokens, tapped.current);
@@ -152,7 +148,7 @@ export function onMouseMove(
   event: MouseEvent,
   tokens: Token[],
   editMode: boolean,
-  setCurrentToken: SetState<{ i: number }>,
+  setCurrentToken: (i: number) => void,
   setTokenSelection: SetState<TokenSelection>,
   istouch: any,
   selectionStarted: any
@@ -171,18 +167,11 @@ export function onMouseMove(
   } else {
     let currentNode = getToken(tokens, event);
     if (currentNode.index !== null) {
-      setCurrentToken((state) => {
-        if (state.i === currentNode.index) return state;
-        return { i: currentNode.index };
-      });
+      setCurrentToken(currentNode.index);
       setTokenSelection((state: TokenSelection) =>
         updateSelection(state, tokens, currentNode.index, false)
       );
-    } else
-      setCurrentToken((state) => {
-        if (state.i === currentNode.index || currentNode.index === null) return state;
-        return { i: currentNode.index };
-      });
+    } else if (!currentNode.index === null) setCurrentToken(currentNode.index);
   }
 }
 
@@ -205,7 +194,7 @@ export function onMouseUp(
   event: MouseEvent,
   tokens: Token[],
   tokenSelection: TokenSelection,
-  setCurrentToken: SetState<{ i: number }>,
+  setCurrentToken: (i: number) => void,
   setTokenSelection: SetState<TokenSelection>,
   triggerSelector: TriggerSelector,
   istouch: any,
@@ -250,6 +239,7 @@ export function onContextMenu(event: MouseEvent, tokens: Token[]) {
     event.stopPropagation();
     event.preventDefault();
   }
+  //console.log(token);
 }
 
 export const movePosition = (
@@ -258,7 +248,7 @@ export const movePosition = (
   mover: Mover,
   space: boolean,
   editMode: boolean,
-  setCurrentToken: SetState<{ i: number }>,
+  setCurrentToken: (i: number) => void,
   setTokenSelection: SetState<TokenSelection>
 ) => {
   let newPosition: number;
@@ -269,22 +259,13 @@ export const movePosition = (
   }
 
   if (mover.position !== newPosition) {
-    setCurrentToken((state) => {
-      if (state.i === newPosition) return state;
-      return { i: newPosition };
-    });
+    setCurrentToken(newPosition);
     setTokenSelection((state: TokenSelection) =>
       updateSelection(state, tokens, newPosition, !editMode && space)
     );
 
-    const containerRef = tokens[newPosition].containerRef.current;
     const tokenRef = tokens[newPosition].ref.current;
-    keepInView(containerRef, tokenRef);
-
-    // const down = key === "ArrowRight" || key === "ArrowDown";
-    // tokens[newPosition].ref.current.scrollIntoView(false, {
-    //   block: down ? "start" : "end",
-    // });
+    tokenRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
   }
   return newPosition;
 };

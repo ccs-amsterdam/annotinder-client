@@ -162,6 +162,7 @@ const renderToken = (token: Token, codingUnit: boolean, keyChain: number) => {
   return (
     <span
       key={"token" + token.index + "_" + keyChain}
+      tabIndex={token.index}
       ref={token.ref}
       className={codingUnit ? "token codingUnit" : "token"}
       data-tokenindex={token.arrayIndex}

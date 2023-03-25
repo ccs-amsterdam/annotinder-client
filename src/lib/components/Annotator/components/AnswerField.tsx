@@ -16,6 +16,7 @@ const AnswerDiv = styled.div`
   overflow-y: auto;
   height: 60px;
   min-height: 200px;
+  max-height: calc(100% - 4rem);
   width: 100%;
   margin: 0;
   font-size: inherit;

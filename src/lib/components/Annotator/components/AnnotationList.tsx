@@ -295,7 +295,12 @@ const ShowRelation = ({ variableMap, annotation, annMap, onClick }: ShowRelation
   //const relationSpan: Span = [annotation.from.token_span[0], annotation.to.token_span[1]];
 
   return (
-    <div className={"relationList"} onClick={onClick} style={{ background: color || null }}>
+    <div
+      key={annotation.id}
+      className={"relationList"}
+      onClick={onClick}
+      style={{ background: color || null }}
+    >
       {recursiveRelationText(annMap, annotation)}
     </div>
   );

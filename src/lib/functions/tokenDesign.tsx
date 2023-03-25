@@ -1,4 +1,3 @@
-import standardizeColor from "./standardizeColor";
 import { CodeMap } from "../types";
 
 /**

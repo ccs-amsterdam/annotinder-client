@@ -1,4 +1,4 @@
-import { useState, useCallback, ReactElement, useMemo, useEffect } from "react";
+import { useRef, useState, useCallback, ReactElement, useMemo, useEffect } from "react";
 import standardizeColor from "../../../functions/standardizeColor";
 import useWatchChange from "../../../hooks/useWatchChange";
 import {
@@ -25,7 +25,7 @@ const useRelationSelector = (
   variable: Variable
 ): [ReactElement, TriggerSelector, boolean] => {
   const [open, setOpen] = useState(false);
-  const [positionRef, setPositionRef] = useState<any>(null);
+  const positionRef = useRef<HTMLSpanElement>(null);
 
   const [edge, setEdge] = useState<RelationOption>(null);
   const [edgeOptions, setEdgeOptions] = useState<CodeSelectorOption[]>();
@@ -46,11 +46,16 @@ const useRelationSelector = (
         if (fromIds.length === 0 || toIds.length === 0) return;
         fromAnn = fromIds.map((id) => annotationLib.annotations[id]);
         toAnn = toIds.map((id) => annotationLib.annotations[id]);
+
+        const position = selection.to;
+        positionRef.current = tokens?.[position]?.ref.current;
       } else {
         fromAnn = [annotationLib.annotations[selection.fromId]];
         toAnn = [annotationLib.annotations[selection.toId]];
-      }
 
+        const position = Math.min.apply(fromAnn[0].positions);
+        positionRef.current = tokens?.[position]?.ref.current;
+      }
       let edgeOptions = getOptions(fromAnn, toAnn, variable);
 
       if (edgeOptions.length === 0) return;
@@ -61,7 +66,6 @@ const useRelationSelector = (
         setEdge(null);
         setEdgeOptions(edgeOptions);
       }
-      setPositionRef(tokens?.[selection.to]?.ref);
       setOpen(true);
     },
     [tokens, variable, annotationLib, setEdgeOptions]

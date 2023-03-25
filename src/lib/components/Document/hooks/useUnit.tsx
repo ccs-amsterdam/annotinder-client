@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Doc, Annotation, Token, Unit, AnnotationLibrary } from "../../../types";
 import useWatchChange from "../../../hooks/useWatchChange";
 

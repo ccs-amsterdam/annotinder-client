@@ -7,7 +7,6 @@ import {
   CodeSelectorValue,
   SetState,
   Span,
-  SpanAnnotations,
   Token,
   VariableMap,
 } from "../../../types";

@@ -7,6 +7,9 @@ export default css`
     color: rgba(0, 0, 0, 0.87) !important;
   }
 
+  .field {
+  }
+
   .paragraph {
     vertical-align: middle;
   }
@@ -14,12 +17,11 @@ export default css`
   span.token {
     /* vertical-align: bottom; */
     color: var(--text-light);
-
     .pre,
     .text,
     .post {
       position: relative;
-      padding: 0.35rem 0rem;
+      padding: 0.35rem 0rem 0.1rem;
 
       .relation {
         position: absolute;
@@ -29,6 +31,11 @@ export default css`
         height: 0.5em;
         background: none;
       }
+    }
+  }
+
+  span.token.hasRelation {
+    .relation {
     }
   }
 
@@ -50,17 +57,21 @@ export default css`
     color: var(--text);
   }
 
-  span.token.selected > span {
-    background-color: var(--text-light) !important;
-    color: var(--text-inversed);
-    border-color: var(--text);
+  span.token:focus {
+    outline: none;
   }
 
-  span.token.selected.start > span.pre {
-    background-color: var(--primary-light) !important;
+  span.token:focus > span.text,
+  span.token.selected > span.text {
+    background-color: var(--text-light) !important;
+    color: var(--text-inversed);
   }
-  span.token.selected.end > span.post {
-    background-color: var(--primary-light) !important;
+
+  span.token.selected:not(.end) > span.post {
+    background-color: var(--text-light) !important;
+  }
+  span.token.selected:not(.start) > span.pre {
+    background-color: var(--text-light) !important;
   }
 
   span.token.tapped > span {
