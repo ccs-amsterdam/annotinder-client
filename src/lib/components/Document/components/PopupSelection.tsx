@@ -22,7 +22,7 @@ const PopupSelection = ({ header, options, onSelect }: Props) => {
     <StyledDiv>
       <h4>{header}</h4>
       <div className="searchbar"></div>
-      <ButtonSelection id="buttons" active={true} options={options} onSelect={onSelect} />
+      <ButtonSelection id="buttons" options={options} onSelect={onSelect} />
     </StyledDiv>
   );
 };

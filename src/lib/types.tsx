@@ -78,6 +78,7 @@ export interface AnnotationLibrary {
   annotations: AnnotationDictionary;
   byToken: TokenAnnotations;
   codeHistory: CodeHistory;
+  unitId: string;
 }
 export type AnnotationDictionary = Record<AnnotationID, Annotation>;
 export type TokenAnnotations = Record<number, AnnotationID[]>;
@@ -484,7 +485,7 @@ export interface JobServer {
   codebook: CodeBook;
   progress: Progress;
   return_link?: string;
-  job_id?: number;
+  job_id?: string;
   setJobServer?: SetState<JobServer>;
   backend?: Backend;
   demodata?: DemoData;
@@ -492,7 +493,7 @@ export interface JobServer {
   init: () => void;
   getUnit: (i: number) => Promise<RawUnit>;
   postAnnotations: (
-    unitId: number,
+    unitId: string,
     annotation: Annotation[],
     status: Status
   ) => Promise<ConditionReport>;
@@ -523,7 +524,7 @@ export type UnitType = "pre" | "train" | "test" | "unit" | "post";
 
 /** A unit after it has been prepared by the jobServer. This is for internal use */
 export interface Unit {
-  unitId: number | string; // this is the backend id, not the external id
+  unitId: string; // this is the backend id, not the external id
   unit: UnitContent;
   jobServer?: any;
   status: UnitStatus;
@@ -531,11 +532,11 @@ export interface Unit {
 }
 
 export interface UnitContent {
-  text_fields?: TextField[];
+  textFields?: TextField[];
   tokens?: Token[];
-  image_fields?: ImageField[];
-  markdown_fields?: MarkdownField[];
-  meta_fields?: MetaField[];
+  imageFields?: ImageField[];
+  markdownFields?: MarkdownField[];
+  metaFields?: MetaField[];
   annotations?: Annotation[];
   importedAnnotations?: Annotation[];
   codebook?: CodeBook;
@@ -562,14 +563,15 @@ export interface UnitVariables {
 export interface RawUnit {
   index: number;
   status: UnitStatus;
-  id: number | string; // this is the backend id, not the external id
+  id: string; // this is the backend id, not the external id
   external_id?: string;
   unit: RawUnitContent;
   type: UnitType;
   conditionals?: Conditional[];
   damage?: number;
   report?: ConditionReport;
-  annotation?: Annotation[]; // backend calls the annotations array annotation. Should probably change this
+  annotations?: Annotation[];
+  annotation?: Annotation[]; // deprecated in favor of plural 'annotations'
 }
 
 export interface RawUnitContent {
@@ -578,7 +580,8 @@ export interface RawUnitContent {
   image_fields?: ImageField[];
   markdown_fields?: MarkdownField[];
   meta_fields?: MetaField[];
-  importedAnnotations?: Annotation[];
+  importedAnnotations?: Annotation[]; // deprecated
+  annotations: Annotation[];
   codebook?: RawCodeBook;
   variables?: UnitVariables;
   grid?: FieldGridInput;
@@ -745,10 +748,10 @@ export interface RawTokenColumn {
 export interface Doc {
   /** A processed version of a Unit, for use in the Document component */
   tokens?: Token[];
-  text_fields?: TextField[];
-  meta_fields?: MetaField[];
-  image_fields?: ImageField[];
-  markdown_fields?: MarkdownField[];
+  textFields?: TextField[];
+  metaFields?: MetaField[];
+  imageFields?: ImageField[];
+  markdownFields?: MarkdownField[];
   grid?: FieldGrid;
 }
 
@@ -838,7 +841,7 @@ export interface User {
 ///// MANAGE JOBS
 
 export interface Job {
-  id: number;
+  id: string;
   title: string;
   created: string;
   creator: string;

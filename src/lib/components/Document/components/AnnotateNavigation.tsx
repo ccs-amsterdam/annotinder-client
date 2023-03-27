@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import useAnnotationEvents from "../hooks/useAnnotationEvents";
 import { List } from "semantic-ui-react";
 import { getColorGradient } from "../../../functions/tokenDesign";
@@ -31,6 +31,7 @@ interface AnnotateNavigationProps {
   triggerSelector: TriggerSelector;
   eventsBlocked: boolean;
   showAll: boolean;
+  currentUnitReady: boolean;
 }
 
 /**
@@ -49,9 +50,9 @@ const AnnotateNavigation = ({
   triggerSelector,
   showAll,
   eventsBlocked,
+  currentUnitReady,
 }: AnnotateNavigationProps) => {
   const hasSelection = useRef(false);
-  const [forceRerender, setForceRerender] = useState(0);
   const tokenSelection = useAnnotationEvents(
     tokens,
     annotationLib,
@@ -70,33 +71,24 @@ const AnnotateNavigation = ({
   );
 
   useEffect(() => {
-    setTimeout(() => {
-      if (tokens && tokens.length > 0 && !tokens[0].ref?.current) {
-        // this side effect directly changes the token style in the DOM,
-        // but sometimes the token refs are not yet set. If so, we retry after a short timeout
-        setTimeout(() => setForceRerender(forceRerender + 1), 10);
-        return;
-      }
-
-      highlightAnnotations(
-        tokens,
-        validDestinations || validRelations,
-        annotationLib,
-        showValues,
-        showAll,
-        variableType
-      );
-    }, 0);
+    if (!currentUnitReady) return;
+    highlightAnnotations(
+      tokens,
+      validDestinations || validRelations,
+      annotationLib,
+      showValues,
+      showAll,
+      variableType
+    );
   }, [
     tokens,
-    forceRerender,
-    setForceRerender,
     validRelations,
     validDestinations,
     annotationLib,
     showValues,
     showAll,
     variableType,
+    currentUnitReady,
   ]);
 
   useEffect(() => {
@@ -134,6 +126,7 @@ const highlightAnnotations = (
   // and apply styling to annotated tokens
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
+
     if (!token.ref?.current) continue;
     if (variableType === "relation") {
       const canSelect = !validTokens || validTokens[token.index];
@@ -173,9 +166,9 @@ const allowedAnnotations = (
 
     if (!showAll) {
       if (!showValues?.[a.variable]) continue;
-      const codeMap = showValues[a.variable].codeMap;
-      const code = a.value;
-      if (!codeMap[a.value] && code !== "EMPTY") continue;
+      //const codeMap = showValues[a.variable].codeMap;
+      //const code = a.value;
+      //if (!codeMap[a.value] && code !== "EMPTY") continue;
     }
 
     annotations.push(a);

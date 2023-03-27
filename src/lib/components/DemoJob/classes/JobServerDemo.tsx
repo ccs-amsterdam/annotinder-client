@@ -23,7 +23,7 @@ class JobServerDemo implements JobServer {
     this.demodata = {
       units: units.map((u, i) => {
         return {
-          id: i,
+          id: String(i),
           external_id: String(u.id),
           unit: u.unit,
           type: u.type,
@@ -54,7 +54,7 @@ class JobServerDemo implements JobServer {
   }
 
   async postAnnotations(
-    unit_id: number,
+    unit_id: string,
     annotation: Annotation[],
     status: Status
   ): Promise<ConditionReport> {

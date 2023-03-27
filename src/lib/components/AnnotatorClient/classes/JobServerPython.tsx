@@ -13,7 +13,7 @@ import Backend from "../../Login/Backend";
 
 class JobServerPython implements JobServer {
   backend: Backend;
-  job_id: number;
+  job_id: string;
   setJobServer: SetState<JobServerPython>;
   progress: Progress;
   codebook: CodeBook;
@@ -21,7 +21,7 @@ class JobServerPython implements JobServer {
 
   constructor(
     backend: Backend,
-    job_id: number,
+    job_id: string,
     setJobServer: SetState<JobServerPython>,
     return_link: string = undefined
   ) {
@@ -41,7 +41,7 @@ class JobServerPython implements JobServer {
     return await this.backend.getUnit(this.job_id, i);
   }
 
-  async postAnnotations(unitId: number, annotation: Annotation[], status: Status) {
+  async postAnnotations(unitId: string, annotation: Annotation[], status: Status) {
     try {
       const conditionReport: ConditionReport = await this.backend.postAnnotation(
         this.job_id,

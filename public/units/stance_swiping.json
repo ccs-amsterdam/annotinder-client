@@ -3,7 +3,7 @@
     "id": "1",
     "type": "unit",
     "unit": {
-      "importedAnnotations": [
+      "annotations": [
         {
           "field": "text",
           "variable": "actor",

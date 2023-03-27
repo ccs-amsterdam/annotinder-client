@@ -263,8 +263,9 @@ const ShowSpanAnnotation = ({
   let codeMap = variableMap?.[annotation.variable]?.codeMap;
   if (!codeMap) return null;
 
-  if (!codeMap?.[annotation.value] || !codeMap[annotation.value].active) return null;
-  const color = standardizeColor(getColor(annotation.value, codeMap));
+  //if (!codeMap?.[annotation.value] || !codeMap[annotation.value].active) return null;
+  //const color = standardizeColor(getColor(annotation.value, codeMap));
+  const color = standardizeColor(annotation.color);
   const label = annotation.value;
 
   return (

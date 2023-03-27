@@ -1,3 +1,4 @@
+import { getColor } from "../../../functions/tokenDesign";
 import {
   Annotation,
   Span,
@@ -12,7 +13,9 @@ import {
   AnnotationLibrary,
   VariableValueMap,
   TokenAnnotations,
+  VariableMap,
 } from "../../../types";
+import randomColor from "randomcolor";
 
 export default class AnnotationManager {
   setAnnotationLib: SetState<AnnotationLibrary>;
@@ -23,27 +26,33 @@ export default class AnnotationManager {
 
   addAnnotation(annotation: Annotation) {
     this.setAnnotationLib((annotationLib) => {
-      annotation.id = createId();
+      annotation.id = createId(annotationLib.annotations);
       annotation.positions = getTokenPositions(annotationLib.annotations, annotation);
-      annotationLib.annotations[annotation.id] = annotation;
-      annotationLib.codeHistory = updateCodeHistory(annotationLib.codeHistory, annotation);
 
-      addToTokenDictionary(annotationLib.byToken, annotation);
-      return { ...annotationLib };
+      let annotations = { ...annotationLib.annotations };
+      annotations[annotation.id] = annotation;
+      annotations = rmEmptySpan(annotations, annotation);
+
+      return {
+        ...annotationLib,
+        annotations,
+        codeHistory: updateCodeHistory(annotationLib.codeHistory, annotation),
+        byToken: newTokenDictionary(annotations),
+      };
     });
   }
 
   rmAnnotation(id: AnnotationID, keep_empty: boolean = false) {
     this.setAnnotationLib((annotationLib) => {
-      if (!annotationLib?.annotations?.[id]) return annotationLib;
-      if (keep_empty) {
-        annotationLib.annotations[id].value = "EMPTY";
-      } else {
-        delete annotationLib.annotations[id];
-      }
-      annotationLib.annotations = rmBrokenRelations(annotationLib.annotations);
-      annotationLib.byToken = newTokenDictionary(annotationLib.annotations);
-      return { ...annotationLib };
+      let annotations = { ...annotationLib.annotations };
+
+      if (!annotations?.[id]) return annotationLib;
+      if (keep_empty) annotations = addEmptySpan(annotations, id);
+      delete annotations[id];
+
+      annotations = rmBrokenRelations(annotations);
+
+      return { ...annotationLib, annotations, byToken: newTokenDictionary(annotations) };
     });
   }
 
@@ -75,24 +84,37 @@ export default class AnnotationManager {
   }
 }
 
-export function createAnnotationLibrary(unit: Unit): AnnotationLibrary {
-  let annotationCopy = unit?.unit?.annotations || [];
-  annotationCopy = annotationCopy.map((a) => ({ ...a }));
-  const annotationArray = addTokenIndices(annotationCopy, unit.unit.tokens);
-  const annotations: AnnotationDictionary = {};
+export function createAnnotationLibrary(
+  unit: Unit,
+  annotations: Annotation[],
+  variableMap: VariableMap
+): AnnotationLibrary {
+  let annotationArray = annotations || [];
+  annotationArray = annotationArray.map((a) => ({ ...a }));
+
+  annotationArray = repairAnnotations(annotationArray, variableMap);
+  annotationArray = addTokenIndices(annotationArray, unit.unit.tokens);
+  const annotationDict: AnnotationDictionary = {};
+
   for (let a of annotationArray) {
-    if (a.id == null) a.id = createId();
-    annotations[a.id] = a;
+    if (a.id == null) continue;
+    annotationDict[a.id] = a;
+  }
+  for (let a of annotationArray) {
+    if (a.id != null) continue;
+    a.id = createId(annotationDict);
+    annotationDict[a.id] = a;
   }
 
-  for (let a of Object.values(annotations) || []) {
-    a.positions = getTokenPositions(annotations, a);
+  for (let a of Object.values(annotationDict) || []) {
+    a.positions = getTokenPositions(annotationDict, a);
   }
 
   return {
-    annotations,
-    byToken: newTokenDictionary(annotations),
-    codeHistory: initializeCodeHistory(annotationCopy),
+    annotations: annotationDict,
+    byToken: newTokenDictionary(annotationDict),
+    codeHistory: initializeCodeHistory(annotationArray),
+    unitId: unit.unitId,
   };
 }
 
@@ -148,6 +170,7 @@ export const addTokenIndices = (annotations: Annotation[], tokens: Token[]) => {
         getIndexFromOffset(tokens, a.field, a.offset),
         getIndexFromOffset(tokens, a.field, a.offset + a.length - 1),
       ];
+      if (!a.text) a.text = getSpanText(a.span, tokens);
     }
     annMap[a.id] = a;
   }
@@ -187,6 +210,7 @@ const getSpanText = (span: Span, tokens: Token[]) => {
     .slice(span[0], span[1] + 1)
     .map((t: Token, i: number) => {
       let string = t.text;
+
       if (i > 0) string = t.pre + string;
       if (i < span[1] - span[0]) string = string + t.post;
       return string;
@@ -215,6 +239,80 @@ function getTokenPositions(
   return positions;
 }
 
-const createId = () => {
-  return Date.now().toString();
-};
+function repairAnnotations(annotations: Annotation[], variableMap?: VariableMap) {
+  for (let a of Object.values(annotations)) {
+    if (!a.type) {
+      if (a.offset != null) {
+        a.type = "span";
+      } else if (a.fromId != null) {
+        a.type = "relation";
+      } else {
+        a.type = "field";
+      }
+    }
+
+    if (variableMap) {
+      const codeMap = variableMap[a.variable].codeMap;
+      if (codeMap[a.value]) {
+        a.color = getColor(a.value, codeMap);
+      }
+    }
+
+    if (!a.color) {
+      if (!a.color) a.color = randomColor({ seed: a.value, luminosity: "light" });
+    }
+  }
+
+  return annotations;
+}
+
+function addEmptySpan(annotations: AnnotationDictionary, id: AnnotationID) {
+  // check if this is the last annotation at this span. If not, don't add empty span
+  const annotation = annotations[id];
+  if (!annotation) return annotations;
+
+  for (let a of Object.values(annotations)) {
+    if (a.id === annotation.id || a.type !== "span") continue;
+    if (
+      a.field === annotation.field &&
+      a.variable === annotation.variable &&
+      a.span[0] === annotation.span[0] &&
+      a.span[1] === annotation.span[1]
+    )
+      return annotations;
+  }
+
+  const emptyAnnotation = {
+    ...annotations[id],
+    id: createId(annotations),
+    value: "EMPTY",
+    color: "grey",
+  };
+  annotations[emptyAnnotation.id] = emptyAnnotation;
+  return annotations;
+}
+
+function rmEmptySpan(annotations: AnnotationDictionary, annotation: Annotation) {
+  // check if this has the same position as an empty span. If so, remove the empty span
+  for (let a of Object.values(annotations)) {
+    if (a.value !== "EMPTY") continue;
+    if (
+      a.field === annotation.field &&
+      a.variable === annotation.variable &&
+      a.span[0] === annotation.span[0] &&
+      a.span[1] === annotation.span[1]
+    ) {
+      delete annotations[a.id];
+    }
+  }
+
+  return annotations;
+}
+
+function createId(annotations: AnnotationDictionary) {
+  // use millisec since 2023 as id, but increment if id already used
+  // (which can happen if 2 ids are created on same millisec)
+  let i = Date.now() - new Date("2023-01-01").getTime();
+  while (annotations[String(i)]) i++;
+  return String(i);
+}

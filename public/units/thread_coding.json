@@ -1,71 +1,5 @@
 [
   {
-    "id": "conversation",
-    "type": "unit",
-    "unit": {
-      "text_fields": [
-        {
-          "name": "message",
-          "value": "The first message in a thread. This could for instance be a Tweet",
-          "style": { "fontSize": "1.5em", "margin": "1rem 30% 1rem 1rem" }
-        },
-        {
-          "name": "comment",
-          "value": [
-            {
-              "value": "A comment",
-              "style": { "textAlign": "right", "margin": "1rem 1rem 1rem 30%" }
-            },
-            {
-              "value": "A reply from the original author",
-              "style": { "margin": "1rem 30% 1rem 1rem" }
-            },
-            {
-              "value": "A reply to the reply",
-              "style": { "textAlign": "right", "margin": "1rem 1rem 1rem 30%" }
-            }
-          ],
-          "style": { "fontSize": "1.3em" }
-        }
-      ],
-      "codebook": {
-        "type": "questions",
-        "questions": [
-          {
-            "name": "message",
-            "fields": "message",
-            "type": "select code",
-            "question": "Is this message relevant?",
-            "codes": [
-              { "code": "No", "color": "crimson", "makes_irrelevant": "REMAINING" },
-              { "code": "Yes", "color": "lightgreen" }
-            ]
-          },
-          {
-            "name": "comment1_1",
-            "perField": "comment",
-            "type": "select code",
-            "question": "First question about this comment",
-            "codes": [
-              { "code": "Some answer", "color": "lightblue" },
-              { "code": "Some other answer", "color": "lightgreen" }
-            ]
-          },
-          {
-            "name": "comment1_2",
-            "perField": "comment",
-            "type": "select code",
-            "question": "Second question about this comment",
-            "codes": [
-              { "code": "Some answer", "color": "yellow" },
-              { "code": "Some other answer", "color": "orange" }
-            ]
-          }
-        ]
-      }
-    }
-  },
-  {
     "id": "focus",
     "type": "unit",
     "unit": {
@@ -73,26 +7,35 @@
         "columns": [1, 3],
         "areas": [
           ["message", "message"],
-          [".", "comment"]
+          [".", "comment.1"],
+          [".", "comment.2"],
+          [".", "comment.3"]
         ]
       },
       "text_fields": [
         {
           "name": "message",
-          "value": ["The first message in a thread. This could for instance be a Tweet"],
+          "value": "The first message in a thread. This could for instance be a Tweet",
           "style": { "fontSize": "1.5em" }
         },
         {
-          "name": "comment",
-          "value": [
-            "Some comment to the original message.",
-            "Some other comment.",
-            "Yet another comment."
-          ],
+          "name": "comment.1",
+          "value": "Some comment to the original message.",
+          "style": { "fontSize": "1.3em" }
+        },
+        {
+          "name": "comment.2",
+          "value": "Some other comment.",
+          "style": { "fontSize": "1.3em" }
+        },
+        {
+          "name": "comment.3",
+          "value": "Yet another comment.",
           "style": { "fontSize": "1.3em" }
         }
       ],
-      "importedAnnotations": [
+
+      "annotations": [
         {
           "field": "comment.1",
           "variable": "some variable",
@@ -136,7 +79,7 @@
             "perAnnotation": "some variable",
             "focusAnnotations": true,
             "type": "select code",
-            "question": "First question about this comment",
+            "question": "First question about this annotation",
             "codes": [
               { "code": "Some answer", "color": "lightblue" },
               { "code": "Some other answer", "color": "lightgreen" }
@@ -145,6 +88,79 @@
           {
             "name": "comment1_2",
             "perAnnotation": "some variable",
+            "type": "select code",
+            "question": "Second question about this annotation",
+            "codes": [
+              { "code": "Some answer", "color": "yellow" },
+              { "code": "Some other answer", "color": "orange" }
+            ]
+          },
+          {
+            "name": "comment1_3",
+            "showAnnotations": ["some variable"],
+            "type": "select code",
+            "question": "A question about all the annotations",
+            "codes": [
+              { "code": "Some answer", "color": "yellow" },
+              { "code": "Some other answer", "color": "orange" }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "conversation",
+    "type": "unit",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "message",
+          "value": "The first message in a thread. This could for instance be a Tweet",
+          "style": { "fontSize": "1.2em", "margin": "1rem 30% 1rem 1rem" }
+        },
+        {
+          "name": "comment.1",
+          "value": "A comment",
+          "style": { "textAlign": "right", "margin": "1rem 1rem 1rem 30%" }
+        },
+        {
+          "name": "comment.2",
+          "value": "A reply from the original author",
+          "style": { "margin": "1rem 30% 1rem 1rem" }
+        },
+        {
+          "name": "comment.3",
+          "value": "A reply to the reply",
+          "style": { "textAlign": "right", "margin": "1rem 1rem 1rem 30%" }
+        }
+      ],
+      "codebook": {
+        "type": "questions",
+        "questions": [
+          {
+            "name": "message",
+            "fields": "message",
+            "type": "select code",
+            "question": "Is this message relevant?",
+            "codes": [
+              { "code": "No", "color": "crimson", "makes_irrelevant": "REMAINING" },
+              { "code": "Yes", "color": "lightgreen" }
+            ]
+          },
+          {
+            "name": "comment1_1",
+            "perField": "comment",
+            "type": "select code",
+            "question": "First question about this comment",
+            "codes": [
+              { "code": "Some answer", "color": "lightblue" },
+              { "code": "Some other answer", "color": "lightgreen" }
+            ]
+          },
+          {
+            "name": "comment1_2",
+            "perField": "comment",
             "type": "select code",
             "question": "Second question about this comment",
             "codes": [
@@ -156,6 +172,7 @@
       }
     }
   },
+
   {
     "id": "focus",
     "type": "unit",

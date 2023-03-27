@@ -49,7 +49,7 @@ const login = async (setJobServer: SetState<JobServer>) => {
   try {
     const backend = new Backend("http://localhost:" + PORT, null);
     await backend.init();
-    const js = new JobServerR(backend, 0, setJobServer);
+    const js = new JobServerR(backend, "0", setJobServer);
     await js.init();
     setJobServer(js);
   } catch (e) {}

@@ -82,11 +82,11 @@ const SelectCode = React.memo(
             setSelected(moveUp(buttons, selected));
           }
 
-          buttons?.[selected]?.ref?.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-          //keepInView(scrollRef?.current, buttons?.[selected]?.ref?.current);
+          // buttons?.[selected]?.ref?.current?.scrollIntoView({
+          //   behavior: "smooth",
+          //   block: "center",
+          // });
+          keepInView(scrollRef?.current, buttons?.[selected]?.ref?.current);
           return;
         }
 
@@ -152,7 +152,7 @@ const SelectCode = React.memo(
             current={isCurrent}
             key={option.code}
             value={option.code}
-            onDark
+            darkBackground
             //onMouseOver={() => setSelected(i)}
             onClick={() => {
               if (speedbump) return;

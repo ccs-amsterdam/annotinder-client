@@ -63,7 +63,6 @@ const SelectAnnotationPage = ({
       <Popup.Header style={{ textAlign: "center" }}>Select annotation</Popup.Header>
       <ButtonSelection
         id={"currentCodePageButtons"}
-        active={true}
         options={options}
         onSelect={onButtonSelection}
       />
@@ -96,7 +95,7 @@ const getAnnotationOptions = (
       const annotation = annotationLib.annotations[id];
       const codeMap = variableMap?.[annotation.variable]?.codeMap;
       if (!variableMap[annotation.variable]) continue;
-      if (!codeMap?.[annotation.value] && annotation.value !== "EMPTY") continue;
+      //if (!codeMap?.[annotation.value] && annotation.value !== "EMPTY") continue;
 
       const span = annotation.span;
       const key = annotation.variable + ":" + span[0] + "-" + span[1];

@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { Popup } from "semantic-ui-react";
-import { getColor, getColorGradient } from "../../../functions/tokenDesign";
+import { getColorGradient } from "../../../functions/tokenDesign";
 import { AnnotationLibrary, CodeSelectorOption, SetState, Span, VariableMap } from "../../../types";
 import ButtonSelection from "./ButtonSelection";
+import standardizeColor from "../../../functions/standardizeColor";
 
 interface SelectVariablePageProps {
   variable: string;
@@ -32,7 +33,7 @@ export default function SelectVariablePage({
         for (let id of annotationIds) {
           const a = annotationLib.annotations[id];
           if (a.variable !== v) continue;
-          colors[a.value] = getColor(a.value, variableMap?.[v]?.codeMap);
+          colors[a.value] = standardizeColor(a.color);
         }
       }
       variableColors[v] = getColorGradient(Object.values(colors));
@@ -58,7 +59,6 @@ export default function SelectVariablePage({
       <Popup.Header style={{ textAlign: "center" }}>Select variable</Popup.Header>
       <ButtonSelection
         id={"currentCodePageButtons"}
-        active={true}
         options={options}
         onSelect={(value, ctrlKey) => {
           if (value.cancel) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React, { useMemo, useCallback } from "react";
 import { getColor } from "../../../functions/tokenDesign";
 import ButtonSelection from "./ButtonSelection";
 import {
@@ -12,8 +12,7 @@ import {
   AnnotationLibrary,
 } from "../../../types";
 import AnnotationManager from "../functions/AnnotationManager";
-
-const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
+import standardizeColor from "../../../functions/standardizeColor";
 
 interface NewCodepageProps {
   tokens: Token[];
@@ -36,16 +35,13 @@ const NewCodePage = ({
   span,
   setOpen,
 }: NewCodepageProps) => {
-  const textInputRef = useRef(null);
-  const [focusOnButtons, setFocusOnButtons] = useState(true);
-  const settings = variableMap[variable];
-
   const onSelect = useCallback(
     (value: CodeSelectorValue, ctrlKey = false) => {
       if (value.cancel) {
         setOpen(false);
       } else if (value.delete) {
-        annotationManager.rmAnnotation(value.id);
+        const keepEmpty = editMode;
+        annotationManager.rmAnnotation(value.id, keepEmpty);
       } else {
         annotationManager.createSpanAnnotation(value.code, span[0], span[1], tokens);
       }
@@ -53,30 +49,13 @@ const NewCodePage = ({
         setOpen(false);
       }
     },
-    [annotationManager, setOpen, tokens, span, variableMap, variable]
+    [annotationManager, setOpen, tokens, span, variableMap, variable, editMode]
   );
-
-  useEffect(() => {
-    function onKeydown(event: KeyboardEvent) {
-      if (settings && !settings.searchBox && settings.buttonMode === "all") return null;
-      const focusOnTextInput = textInputRef?.current?.children[0] === document.activeElement;
-      if (!focusOnTextInput) setFocusOnButtons(true);
-      if (event.keyCode === 27) setOpen(false);
-      if (arrowKeys.includes(event.key)) return null;
-      if (event.keyCode <= 46 || event.keyCode >= 106) return null;
-      if (textInputRef.current) textInputRef.current.click();
-      setFocusOnButtons(false);
-    }
-
-    window.addEventListener("keydown", onKeydown);
-    return () => {
-      window.removeEventListener("keydown", onKeydown);
-    };
-  }, [textInputRef, setOpen, settings]);
 
   const options = useMemo(() => {
     const options: CodeSelectorOption[] = [];
     const codeMap = variableMap?.[variable]?.codeMap;
+
     if (!codeMap) return options;
 
     let existing: Annotation[] = [];
@@ -88,7 +67,8 @@ const NewCodePage = ({
         doneId[id] = true;
         const a = { ...annotationLib.annotations[id] };
         if (a.variable !== variable) continue;
-        if (!codeMap[a.value]) continue;
+        if (a.value === "EMPTY") continue;
+        //if (!codeMap[a.value]) continue;
         existing.push(a);
       }
     }
@@ -121,12 +101,12 @@ const NewCodePage = ({
 
     if (existing && existing.length > 0) {
       for (let o of existing) {
-        if (!codeMap[o.value]) continue;
+        //if (!codeMap[o.value]) continue;
 
         options.push({
           tag: o.value,
           label: '"' + getTextSnippet(tokens, o.span) + '"',
-          color: getColor(o.value, codeMap),
+          color: standardizeColor(o.color),
           value: { id: o.id, delete: true },
           textColor: "var(--red)",
         });
@@ -143,12 +123,7 @@ const NewCodePage = ({
       {/* TODO: Used to be Header, but typescript doesn't seem to get along with semantic react */}
       <h5 style={{ textAlign: "center" }}>"{getTextSnippet(tokens, span)}"</h5>
       {/* {asDropdownSelection(dropdownOptions)} */}
-      <ButtonSelection
-        id={"newCodePageButtons"}
-        active={focusOnButtons}
-        options={options}
-        onSelect={onSelect}
-      />{" "}
+      <ButtonSelection id={"newCodePageButtons"} options={options} onSelect={onSelect} />{" "}
     </>
   );
 };

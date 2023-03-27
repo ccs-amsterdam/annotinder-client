@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import AnnotationList from "./AnnotationList";
 import Document from "../../Document/Document";
 import AnnotateTaskManual from "./AnnotateTaskManual";
@@ -7,7 +7,6 @@ import {
   Annotation,
   FullScreenNode,
   Unit,
-  VariableValueMap,
   VariableMap,
   CodeBook,
   SessionData,
@@ -100,23 +99,7 @@ const AnnotateTask = ({
   const [variableMap, setVariableMap] = useState<VariableMap>(null);
   const [selectors, setSelectors] = useState<Record<string, TriggerSelector>>({});
 
-  const restrictedCodes = useMemo(() => {
-    const restrictedCodes: VariableValueMap = {};
-    for (let v of codebook.variables) {
-      if (v.onlyImported) restrictedCodes[v.name] = {};
-    }
-    for (let a of unit.unit.importedAnnotations || []) {
-      if (!restrictedCodes[a.variable]) continue;
-      restrictedCodes[a.variable][a.value] = true;
-    }
-    return restrictedCodes;
-  }, [unit, codebook]);
-
   if (!unit || codebook?.variables === null) return null;
-
-  let ann = unit.unit.annotations;
-  if (unit.unit.importedAnnotations && (!ann || ann.length === 0) && unit.status !== "DONE")
-    ann = unit.unit.importedAnnotations;
 
   return (
     <AnnotateGrid>
@@ -124,10 +107,9 @@ const AnnotateTask = ({
         <div className="document">
           <Document
             unit={unit}
-            annotations={ann}
+            annotations={unit.unit.annotations}
             settings={codebook?.settings}
             variables={codebook?.variables}
-            restrictedCodes={restrictedCodes}
             onChangeAnnotations={onChangeAnnotations}
             returnVariableMap={setVariableMap}
             returnSelectors={setSelectors}
@@ -158,27 +140,22 @@ const AnnotateTask = ({
   );
 };
 
-const useAnnotations = (unit: Unit): [Annotation[], (value: Annotation[]) => void] => {
+const useAnnotations = (
+  unit: Unit
+): [Annotation[], (unitId: string, value: Annotation[]) => void] => {
   // simple hook for onChangeAnnotations that posts to server and returns state
   const [annotations, setAnnotations] = useState<Annotation[]>([]);
-  const safeWrite = useRef(null);
-  //const hasChanged = useRef(false);
 
   useEffect(() => {
     if (!unit) {
       setAnnotations([]);
       return;
     }
-    safeWrite.current = unit.unitId;
-    //hasChanged.current = false;
-    setAnnotations(unit.unit.annotations || []);
-    // if (!unit.annotations || unit.annotations.length === 0)
-    //   unit.jobServer.postAnnotations(unit.unitId, [], "IN_PROGRESS");
   }, [unit, setAnnotations]);
 
   const onChangeAnnotations = React.useCallback(
-    (newAnnotations: Annotation[]) => {
-      if (unit.unitId !== safeWrite.current) return;
+    (unitId: string, newAnnotations: Annotation[]) => {
+      if (unit.unitId !== unitId) return;
       setAnnotations(newAnnotations);
       const cleanAnnotations = getCleanAnnotations(newAnnotations);
       if (!annotationsHaveChanged(unit.unit.annotations || [], cleanAnnotations)) return;
@@ -192,15 +169,7 @@ const useAnnotations = (unit: Unit): [Annotation[], (value: Annotation[]) => voi
 };
 
 const annotationsHaveChanged = (old: Annotation[], current: Annotation[]) => {
-  if (old.length !== current.length) return true;
-  const compareOn = ["variable", "value", "field", "offset", "length"];
-  for (let i = 0; i < old.length; i++) {
-    for (let field of compareOn) {
-      if (old[i]?.[field as keyof Annotation] !== current[i]?.[field as keyof Annotation])
-        return true;
-    }
-  }
-  return false;
+  return JSON.stringify(old) !== JSON.stringify(current);
 };
 
 const getCleanAnnotations = (annotations: Annotation[]) => {

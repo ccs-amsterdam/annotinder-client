@@ -14,7 +14,7 @@ export default function unfoldQuestions(codebook: CodeBook, unit: Unit): Questio
 
   let needsUnfold = false;
   for (let question of codebook.questions) {
-    if (question.perAnnotation && unit.unit.importedAnnotations) needsUnfold = true;
+    if (question.perAnnotation && unit.unit.annotations) needsUnfold = true;
     if (question.perField) needsUnfold = true;
   }
   if (!needsUnfold) return codebook.questions;
@@ -28,7 +28,7 @@ export default function unfoldQuestions(codebook: CodeBook, unit: Unit): Questio
 
     // perAnnotation
     const duplicate: Record<string, boolean> = {};
-    for (let a of unit.unit.importedAnnotations || []) {
+    for (let a of unit.unit.annotations || []) {
       if (!question.perAnnotation.includes(a.variable)) continue;
 
       const aSerial: string =
@@ -46,9 +46,9 @@ export default function unfoldQuestions(codebook: CodeBook, unit: Unit): Questio
       if (!Array.isArray(question.perField)) question.perField = [question.perField];
 
       const fields = new Set([]);
-      for (let f of unit.unit.text_fields || []) fields.add(f.name);
-      for (let f of unit.unit.markdown_fields || []) fields.add(f.name);
-      for (let f of unit.unit.image_fields || []) fields.add(f.name);
+      for (let f of unit.unit.textFields || []) fields.add(f.name);
+      for (let f of unit.unit.markdownFields || []) fields.add(f.name);
+      for (let f of unit.unit.imageFields || []) fields.add(f.name);
 
       for (let field of Array.from(fields)) {
         // perField can match on both the exact field and field ignoring any \.[0-9]+ extension.

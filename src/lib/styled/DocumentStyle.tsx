@@ -86,7 +86,7 @@ export default css`
   span.token.annotated > span {
     /* line-height: 1.5em; */
     transition: background 0.3s ease;
-    //border: 1px solid var(--background-fixed);
+    border: 1px solid var(--background-inversed-fixed);
     border-left: none;
     border-right: none;
     /* cursor: pointer;; */
@@ -115,7 +115,7 @@ export default css`
   }
 
   span.token.annotated.anyLeft > span.text {
-    //border-left: solid;
+    border-left: solid;
     border-left-width: 0px;
     border-bottom-left-radius: 0px;
   }
@@ -126,7 +126,7 @@ export default css`
   }
   span.token.annotated.allLeft > span.text {
     padding-left: 3px;
-    //border-left: 1px solid var(--background-fixed);
+    border-left: 1px solid var(--background-inversed-fixed);
     border-left-width: 1px;
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
@@ -141,7 +141,7 @@ export default css`
   }
   span.token.annotated.allRight > span.text {
     padding-right: 3px;
-    //  border-right: 1px solid var(--background-fixed);
+    border-right: 1px solid var(--background-inversed-fixed);
     border-right-width: 1px;
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;

@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { standardizeCodes } from "../../../functions/codebook";
 import {
   VariableValueMap,
   Variable,
@@ -12,9 +11,8 @@ import {
 
 export default function useVariableMap(
   variables: Variable[],
-  selectedVariable: string,
-  restrictedCodes: VariableValueMap
-): [VariableMap, VariableMap, VariableType, boolean] {
+  selectedVariable: string
+): [VariableMap, VariableMap, VariableMap, VariableType, boolean] {
   const fullVariableMap: VariableMap = useMemo(() => {
     // creates fullVariableMap
     if (!variables || variables.length === 0) return null;
@@ -49,32 +47,10 @@ export default function useVariableMap(
         vmap = { [selectedVariable]: fullVariableMap[selectedVariable] };
       }
 
-      // also add restricted codes if they are missing.
-      // this way even if restricted codes are not in the codebook,
-      // they can still be used
-      for (let variable of Object.keys(restrictedCodes)) {
-        if (!vmap[variable]) continue;
-        for (let value of Object.keys(restrictedCodes[variable])) {
-          if (value === "EMPTY") continue;
-          if (!vmap[variable].codeMap[value])
-            vmap[variable].codeMap[value] = standardizeCodes(variable, [value], true)[0];
-        }
-      }
-
       // !! be carefull when changing to not break copying (otherwise fullVariableMap gets affected)
       vmap = { ...vmap };
       for (let variable of Object.keys(vmap)) {
         vmap[variable] = { ...vmap[variable] };
-        if (restrictedCodes[variable]) {
-          vmap[variable].codeMap = Object.keys(vmap[variable].codeMap).reduce(
-            (imported: any, code) => {
-              if (restrictedCodes?.[variable]?.[code])
-                imported[code] = { ...vmap[variable].codeMap[code] };
-              return imported;
-            },
-            {}
-          );
-        }
       }
 
       // we use a separate variableMap called showValues that tells Document what annotations
@@ -91,7 +67,7 @@ export default function useVariableMap(
       }
 
       return [vmap, showValues, variableType];
-    }, [restrictedCodes, fullVariableMap, selectedVariable]);
+    }, [fullVariableMap, selectedVariable]);
 
   const editMode: boolean = useMemo(() => {
     return (
@@ -100,8 +76,8 @@ export default function useVariableMap(
     );
   }, [variableMap, selectedVariable]);
 
-  if (!selectedVariable) return [null, null, variableType, editMode];
-  return [variableMap, showValues, variableType, editMode];
+  if (!selectedVariable) return [fullVariableMap, null, null, variableType, editMode];
+  return [fullVariableMap, variableMap, showValues, variableType, editMode];
 }
 
 const getRelationShowValues = (

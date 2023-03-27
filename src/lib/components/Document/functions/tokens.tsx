@@ -7,14 +7,14 @@ import { TextField, Token, RawToken, RawTokenColumn } from "../../../types";
 
 /**
  * Tokenize a document, but allowing for multiple text fields to be concatenated as different fields.
- * @param {*} text_fields  An array of objects, where each object has the structure {name, value}. 'name' becomes the name of the field, 'value' is the text
+ * @param {*} textFields  An array of objects, where each object has the structure {name, value}. 'name' becomes the name of the field, 'value' is the text
  *                         each item can also have an 'offset' key with an integer value, in case the value is a subset starting at the [offset] character (this is needed to get the correct positions in the original document)
- *                         each item can also have a 'unit_start' and 'unit_end' key, each with an integer value to indicate where in this text_field the codingUnit starts/ends.
+ *                         each item can also have a 'unit_start' and 'unit_end' key, each with an integer value to indicate where in this textField the codingUnit starts/ends.
  *                         If both unit_start and unit_end is omitted, the whole text is considered codingUnit.
  *                         As an alternative to unit_start and unit_end, can also have context_before and context_after to specify context, which should both be strings
  * @returns
  */
-export const parseTokens = (text_fields: TextField[]): Token[] => {
+export const parseTokens = (textFields: TextField[]): Token[] => {
   const tokens: Token[] = [];
   let token = null;
   let paragraph = 0; // offset can be used if position in original article is known
@@ -23,32 +23,32 @@ export const parseTokens = (text_fields: TextField[]): Token[] => {
   let text = null;
 
   let has_unit_start = false;
-  for (let text_field of text_fields)
-    if (text_field.unit_start != null || text_field.context_before != null) has_unit_start = true;
+  for (let textField of textFields)
+    if (textField.unit_start != null || textField.context_before != null) has_unit_start = true;
   let unit_started = !has_unit_start; // if unit start not specified, start from beginning
   let unit_ended = false;
 
-  for (let text_field of text_fields) {
-    let field = text_field.name || "text";
-    let offset = text_field.offset || 0;
+  for (let textField of textFields) {
+    let field = textField.name || "text";
+    let offset = textField.offset || 0;
 
-    text = text_field.value;
+    text = textField.value;
     // should be impossible for value to be an array due to unfoldFields, but typescript doesn't catch that
     if (Array.isArray(text)) text = text.join("");
 
-    let text_parts = [text];
+    let textParts = [text];
     let text_length = text.length;
-    if (text_field.context_before != null) {
-      text_parts = [text_field.context_before, text];
-      text_length = text_length + text_field.context_before.length;
-      text_field.unit_start = text_field.context_before.length - 1;
+    if (textField.context_before != null) {
+      textParts = [textField.context_before, text];
+      text_length = text_length + textField.context_before.length;
+      textField.unit_start = textField.context_before.length - 1;
     }
-    if (text_field.context_after != null) {
-      text_field.unit_end = text_length - 1;
-      text_parts.push(text_field.context_after);
+    if (textField.context_after != null) {
+      textField.unit_end = text_length - 1;
+      textParts.push(textField.context_after);
     }
 
-    for (let text of text_parts) {
+    for (let text of textParts) {
       const tokenized = nlp.tokenize(text) as any; // circumvent some typescript issues
       t = tokenized.json({ offset: true });
 
@@ -56,9 +56,9 @@ export const parseTokens = (text_fields: TextField[]): Token[] => {
         for (let term = 0; term < t[sent].terms.length; term++) {
           token = t[sent].terms[term];
 
-          if (text_field.unit_start != null && token.offset.start + offset >= text_field.unit_start)
+          if (textField.unit_start != null && token.offset.start + offset >= textField.unit_start)
             unit_started = true;
-          if (text_field.unit_end != null && token.offset.start + offset > text_field.unit_end)
+          if (textField.unit_end != null && token.offset.start + offset > textField.unit_end)
             unit_ended = true;
 
           const tokenobj: Token = {
@@ -82,7 +82,7 @@ export const parseTokens = (text_fields: TextField[]): Token[] => {
     }
     paragraph++;
 
-    if (text_field.unit_end != null) unit_ended = true;
+    if (textField.unit_end != null) unit_ended = true;
   }
   return tokens;
 };

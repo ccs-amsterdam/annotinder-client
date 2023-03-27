@@ -53,7 +53,7 @@ interface LoginDetails {
   name: string;
   email: string;
   is_admin: boolean;
-  restricted_job: number;
+  restricted_job: string;
   restricted_job_label: string;
 }
 
@@ -65,7 +65,7 @@ class Backend {
   user_id: number;
   name: string;
   email: string;
-  restricted_job: number;
+  restricted_job: string;
   restricted_job_label: string;
 
   constructor(host: string, token: string) {
@@ -101,7 +101,7 @@ class Backend {
     const res = await this.api.get(path);
     return res.data.token;
   }
-  async getJobToken(job_id: number): Promise<string> {
+  async getJobToken(job_id: string): Promise<string> {
     const res = await this.api.get(`codingjob/${job_id}/token`);
     return res.data.token;
   }
@@ -120,29 +120,29 @@ class Backend {
     const res = await this.api.get("users", options);
     return res.data;
   }
-  async getCodebook(job_id: number) {
+  async getCodebook(job_id: string) {
     const res = await this.api.get(`codingjob/${job_id}/codebook`);
     return res.data;
   }
-  async getProgress(job_id: number) {
+  async getProgress(job_id: string) {
     const res = await this.api.get(`codingjob/${job_id}/progress`);
     return res.data;
   }
-  async getUnit(job_id: number, i: number) {
+  async getUnit(job_id: string, i: number) {
     let path = `codingjob/${job_id}/unit`;
     const options = i != null ? { params: { index: i } } : {};
     const res = await this.api.get(path, options);
     return res.data;
   }
-  async getCodingjob(job_id: number): Promise<Job> {
+  async getCodingjob(job_id: string): Promise<Job> {
     const res = await this.api.get(`codingjob/${job_id}`);
     return res.data;
   }
-  async getCodingjobDetails(job_id: number): Promise<Job> {
+  async getCodingjobDetails(job_id: string): Promise<Job> {
     const res = await this.api.get(`codingjob/${job_id}/details`);
     return res.data;
   }
-  async getCodingjobAnnotations(job_id: number): Promise<JobAnnotation[]> {
+  async getCodingjobAnnotations(job_id: string): Promise<JobAnnotation[]> {
     const res = await this.api.get(`codingjob/${job_id}/annotations`);
     return res.data;
   }
@@ -155,7 +155,7 @@ class Backend {
     const res = await this.api.get(path);
     return res.data.jobs;
   }
-  async getDebriefing(job_id: number): Promise<Debriefing> {
+  async getDebriefing(job_id: string): Promise<Debriefing> {
     const path = `codingjob/${job_id}/debriefing`;
     const res = await this.api.get(path);
     return res.data;
@@ -172,8 +172,8 @@ class Backend {
     });
   }
   async postAnnotation(
-    job_id: number,
-    unit_id: number,
+    job_id: string,
+    unit_id: string,
     annotation: Annotation[],
     status: Status
   ): Promise<ConditionReport> {
@@ -181,10 +181,10 @@ class Backend {
     const res = await this.api.post(`codingjob/${job_id}/unit/${unit_id}/annotation`, data);
     return res.data;
   }
-  async setJobSettings(job_id: number, settingsObj: JobSettings): Promise<void> {
+  async setJobSettings(job_id: string, settingsObj: JobSettings): Promise<void> {
     return await this.api.post(`codingjob/${job_id}/settings`, settingsObj);
   }
-  async setJobUsers(job_id: number, users: User[], only_add: boolean) {
+  async setJobUsers(job_id: string, users: User[], only_add: boolean) {
     const body = { users, only_add };
     return await this.api.post(`codingjob/${job_id}/users`, body);
   }

@@ -16,8 +16,8 @@ interface JobsTableProps {
   setJob: SetState<Job>;
   jobs: Job[];
   setJobs: SetState<Job[]>;
-  jobId: number;
-  setJobId: SetState<number>;
+  jobId: string;
+  setJobId: SetState<string>;
 }
 
 export default function JobsTable({
@@ -65,7 +65,7 @@ export default function JobsTable({
 }
 
 const setJobSettings = async (
-  id: number,
+  id: string,
   backend: Backend,
   settingsObj: JobSettings,
   setJobs: SetState<Job[]>,
@@ -73,7 +73,7 @@ const setJobSettings = async (
 ) => {
   backend.setJobSettings(id, settingsObj);
   setJobs((jobs) => {
-    const i = jobs.findIndex((j) => j.id === Number(id));
+    const i = jobs.findIndex((j) => j.id === id);
     if (i >= 0) jobs[i] = { ...jobs[i], ...settingsObj };
     return [...jobs];
   });

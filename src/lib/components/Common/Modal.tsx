@@ -94,9 +94,10 @@ interface ModalProps {
   children: React.ReactNode;
   open: boolean;
   setOpen: (open: boolean) => void;
+  closeOnSelectKey?: boolean;
 }
 
-const Modal = ({ children, open, setOpen }: ModalProps) => {
+const Modal = ({ children, open, setOpen, closeOnSelectKey }: ModalProps) => {
   const container = useRef<HTMLDivElement>(null);
   const modal = useRef<HTMLDivElement>(null);
   const closeIcon = useRef<HTMLDivElement>(null);
@@ -117,6 +118,9 @@ const Modal = ({ children, open, setOpen }: ModalProps) => {
 
     function onKeyDown(e: any) {
       if (e.key === "Escape") setOpen(false);
+      if ((e.key === " " || e.key === "Enter") && closeOnSelectKey) setOpen(false);
+      e.stopPropagation();
+      e.preventDefault();
     }
 
     containerEl.addEventListener("click", onClick);
@@ -125,7 +129,7 @@ const Modal = ({ children, open, setOpen }: ModalProps) => {
       containerEl.removeEventListener("click", onClick);
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [container, modal, open, closeIcon, setOpen]);
+  }, [container, modal, open, closeOnSelectKey, closeIcon, setOpen]);
 
   return (
     <StyledDiv open={open} ref={container}>

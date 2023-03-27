@@ -3,32 +3,32 @@ import { MarkdownField, RenderedMarkdown } from "../../../types";
 import Markdown from "../../Common/Markdown";
 
 export default function renderMarkdown(
-  markdown_fields: MarkdownField[],
+  markdownFields: MarkdownField[],
   fieldRefs: any
 ): RenderedMarkdown {
   const rm: RenderedMarkdown = {};
 
-  for (let markdown_field of markdown_fields) {
-    fieldRefs[markdown_field.name] = createRef();
+  for (let markdownField of markdownFields) {
+    fieldRefs[markdownField.name] = createRef();
 
     // It should not be possible that value is an array due to unfoldFields,
     // but typescript doesn't catch that
-    let value = markdown_field.value;
+    let value = markdownField.value;
     if (Array.isArray(value)) value = value.join("");
 
-    rm[markdown_field.name] = (
+    rm[markdownField.name] = (
       <div
-        ref={fieldRefs[markdown_field.name]}
-        key={"markdown-" + markdown_field.name}
+        ref={fieldRefs[markdownField.name]}
+        key={"markdown-" + markdownField.name}
         className="field"
         style={{
-          gridArea: markdown_field.grid_area,
+          gridArea: markdownField.grid_area,
           padding: "15px",
           margin: "0px 10px 0px 10px",
           //width: "100%",
           fontSize: "1em",
           //alignSelf: "center",
-          ...(markdown_field.style || {}),
+          ...(markdownField.style || {}),
         }}
       >
         <Markdown style={{ textAlign: "justify", hyphens: "auto" }}>{value}</Markdown>

@@ -1,5 +1,7 @@
 import { importTokens, parseTokens } from "../components/Document/functions/tokens";
 import {
+  RawUnit,
+  Annotation,
   UnitContent,
   RawUnitContent,
   TextField,
@@ -16,13 +18,15 @@ import { importCodebook } from "./codebook";
  * @param unit
  * @returns
  */
-export default function processUnitContent(ruc: RawUnitContent): UnitContent {
+export default function processUnitContent(rawUnit: RawUnit): UnitContent {
+  const ruc: RawUnitContent = rawUnit.unit;
+  const annotations: Annotation[] = rawUnit.annotation || rawUnit.annotations; // singular annotation is deprecated
+
   const content: UnitContent = {
-    text_fields: ruc.text_fields || [],
-    image_fields: ruc.image_fields || [],
-    markdown_fields: ruc.markdown_fields || [],
-    meta_fields: ruc.meta_fields || [],
-    importedAnnotations: ruc.importedAnnotations,
+    textFields: ruc.text_fields || [],
+    imageFields: ruc.image_fields || [],
+    markdownFields: ruc.markdown_fields || [],
+    metaFields: ruc.meta_fields || [],
     codebook: importCodebook(ruc.codebook),
     variables: ruc.variables,
   };
@@ -41,7 +45,18 @@ export default function processUnitContent(ruc: RawUnitContent): UnitContent {
     }
   }
 
-  content.tokens = ruc.tokens ? importTokens(ruc.tokens) : parseTokens([...content.text_fields]);
+  content.tokens = ruc.tokens ? importTokens(ruc.tokens) : parseTokens([...content.textFields]);
+
+  // A unit can have pre-defined annotations in rawUnit.unit.annotations
+  // If so, we need to set these annotations on the first time the user starts coding this unit.
+  // We do this by checking if the unit has any annotations in the jobserver, or if the unit is already DONE.
+  const hasAnnotations = annotations && annotations.length > 0;
+
+  content.annotations =
+    hasAnnotations || rawUnit.status === "DONE"
+      ? annotations
+      : ruc.annotations || ruc.importedAnnotations; // importedAnnotations is the deprecated term
+
   return content;
 }
 
@@ -82,16 +97,16 @@ function prepareGrid(grid: FieldGridInput, content: UnitContent): FieldGrid {
   }
 
   // rm all fields that are not in the template
-  content.text_fields = content.text_fields.filter((f: TextField) => used_columns.has(f.name));
-  content.image_fields = content.image_fields.filter((f: ImageField) => used_columns.has(f.name));
-  content.markdown_fields = content.markdown_fields.filter((f: MarkdownField) =>
+  content.textFields = content.textFields.filter((f: TextField) => used_columns.has(f.name));
+  content.imageFields = content.imageFields.filter((f: ImageField) => used_columns.has(f.name));
+  content.markdownFields = content.markdownFields.filter((f: MarkdownField) =>
     used_columns.has(f.name)
   );
 
   // add area names
-  for (let f of content.text_fields) f.grid_area = areaNameMap[f.name];
-  for (let f of content.image_fields) f.grid_area = areaNameMap[f.name];
-  for (let f of content.markdown_fields) f.grid_area = areaNameMap[f.name];
+  for (let f of content.textFields) f.grid_area = areaNameMap[f.name];
+  for (let f of content.imageFields) f.grid_area = areaNameMap[f.name];
+  for (let f of content.markdownFields) f.grid_area = areaNameMap[f.name];
 
   if (template.length > 0) outputGrid.areas = template.join(" ");
 

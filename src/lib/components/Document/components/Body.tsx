@@ -50,10 +50,10 @@ const BodyContainer = styled.div`
 
 interface BodyProps {
   tokens: Token[];
-  text_fields: TextField[];
-  meta_fields: MetaField[];
-  image_fields: ImageField[];
-  markdown_fields: MarkdownField[];
+  textFields: TextField[];
+  metaFields: MetaField[];
+  imageFields: ImageField[];
+  markdownFields: MarkdownField[];
   grid?: FieldGrid;
   onReady: () => any;
   bodyStyle: CSSProperties;
@@ -65,10 +65,10 @@ interface BodyProps {
 
 const Body = ({
   tokens,
-  text_fields,
-  meta_fields,
-  image_fields,
-  markdown_fields,
+  textFields,
+  metaFields,
+  imageFields,
+  markdownFields,
   grid,
   onReady,
   bodyStyle = {},
@@ -97,17 +97,22 @@ const Body = ({
 
   useEffect(() => {
     if (!tokens) return;
-    const text = renderText(tokens, text_fields, containerRef, fieldRefs);
-    const images = renderImages(image_fields, setImagesLoaded, containerRef);
-    const markdown = renderMarkdown(markdown_fields, fieldRefs);
+    const text = renderText(tokens, textFields, containerRef, fieldRefs);
+    const images = renderImages(imageFields, setImagesLoaded, containerRef);
+    const markdown = renderMarkdown(markdownFields, fieldRefs);
 
     const content: (ReactElement | ReactElement[])[] = [];
-    if (text) for (const f of text_fields) content.push(text[f.name]);
-    if (images) for (const f of image_fields) content.push(images[f.name]);
-    if (markdown) for (const f of markdown_fields) content.push(markdown[f.name]);
+    if (text) for (const f of textFields) content.push(text[f.name]);
+    if (images) for (const f of imageFields) content.push(images[f.name]);
+    if (markdown) for (const f of markdownFields) content.push(markdown[f.name]);
     setContent(content);
-    setTimeout(() => onReady(), 50);
-  }, [tokens, text_fields, image_fields, markdown_fields, onReady, setImagesLoaded, fieldRefs]);
+
+    const timer = setInterval(() => {
+      if (tokens.length > 0 && !tokens[0]?.ref?.current) return;
+      onReady();
+      clearInterval(timer);
+    }, 50);
+  }, [tokens, textFields, imageFields, markdownFields, onReady, setImagesLoaded, fieldRefs]);
 
   if (tokens === null) return null;
 
@@ -122,7 +127,7 @@ const Body = ({
             ...bodyStyle,
           }}
         >
-          <Meta meta_fields={meta_fields} />
+          <Meta metaFields={metaFields} />
           <div
             key="fields"
             style={{

@@ -7,15 +7,7 @@ import useUnit from "./hooks/useUnit";
 import SelectVariable from "./components/SelectVariable";
 
 import useVariableMap from "./components/useVariableMap";
-import {
-  Variable,
-  VariableMap,
-  Unit,
-  Annotation,
-  SetState,
-  VariableValueMap,
-  TriggerSelector,
-} from "../../types";
+import { Variable, VariableMap, Unit, Annotation, SetState, TriggerSelector } from "../../types";
 import { useCallback } from "react";
 import styled from "styled-components";
 
@@ -38,10 +30,6 @@ interface DocumentProps {
   annotations: Annotation[];
   /** An array of variables */
   variables?: Variable[];
-  /** A VariableValueMap with codes per variable. If given, only these codes
-   *  can be used
-   */
-  restrictedCodes?: VariableValueMap;
   /** An object with settings. Supports "editAll" (and probably more to come) */
   settings?: {
     [key: string]: any;
@@ -54,7 +42,7 @@ interface DocumentProps {
   showAll?: boolean;
   /** for getting acces to annotations from the parent component
    *  If not given, Document is automatically in read only mode (i.e. cannot make annotations) */
-  onChangeAnnotations?: (value: Annotation[]) => void;
+  onChangeAnnotations?: (unitId: string, value: Annotation[]) => void;
   /** returnVariableMap */
   returnVariableMap?: SetState<VariableMap>;
   /**
@@ -83,7 +71,6 @@ const Document = ({
   unit,
   annotations,
   variables,
-  restrictedCodes,
   settings,
   showAll,
   onChangeAnnotations,
@@ -96,17 +83,20 @@ const Document = ({
   bodyStyle,
 }: DocumentProps) => {
   const [variable, setVariable] = useState(null);
+  const [fullVariableMap, variableMap, showValues, variableType, editMode] = useVariableMap(
+    variables,
+    variable
+  );
 
-  const [doc, annotationLib, annotationManager] = useUnit(unit, annotations, onChangeAnnotations);
+  const [doc, annotationLib, annotationManager] = useUnit(
+    unit,
+    annotations,
+    fullVariableMap,
+    onChangeAnnotations
+  );
 
   // keep track of current tokens object, to prevent rendering annotations on the wrong text
   const [currentUnit, setCurrentUnit] = useState(doc);
-
-  const [variableMap, showValues, variableType, editMode] = useVariableMap(
-    variables,
-    variable,
-    restrictedCodes
-  );
 
   const [spanSelectorPopup, spanSelector, spanSelectorOpen] = useSpanSelector(
     doc,
@@ -122,6 +112,7 @@ const Document = ({
     annotationManager,
     variableMap?.[variable]
   );
+
 
   useEffect(() => {
     returnSelectors && returnSelectors({ span: spanSelector, relation: relationSelector });
@@ -142,7 +133,7 @@ const Document = ({
   const annotationMode = variableType === "relation" ? "relationMode" : "spanMode";
   const currentUnitReady = currentUnit === doc;
 
-  if (!doc.tokens && !doc.image_fields) return null;
+  if (!doc.tokens && !doc.imageFields) return null;
 
   return (
     <DocumentContainer className={`${annotationMode} ${(editMode && "editMode") || ""}`}>
@@ -154,10 +145,10 @@ const Document = ({
       />
       <Body
         tokens={doc.tokens}
-        text_fields={doc.text_fields}
-        meta_fields={doc.meta_fields}
-        image_fields={doc.image_fields}
-        markdown_fields={doc.markdown_fields}
+        textFields={doc.textFields}
+        metaFields={doc.metaFields}
+        imageFields={doc.imageFields}
+        markdownFields={doc.markdownFields}
         grid={doc.grid}
         onReady={onBodyReady}
         bodyStyle={bodyStyle}
@@ -178,6 +169,7 @@ const Document = ({
         triggerSelector={triggerSelector}
         eventsBlocked={selectorOpen || blockEvents}
         showAll={showAll}
+        currentUnitReady={currentUnitReady}
       />
 
       {selectorPopup || null}

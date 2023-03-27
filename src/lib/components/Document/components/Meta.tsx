@@ -2,12 +2,12 @@ import { MetaField } from "../../../types";
 import { StyledTable } from "../../../styled/StyledSemantic";
 
 interface MetaProps {
-  meta_fields: MetaField[];
+  metaFields: MetaField[];
 }
 
-const Meta = ({ meta_fields }: MetaProps) => {
+const Meta = ({ metaFields }: MetaProps) => {
   const rows = () => {
-    return meta_fields.map((row) => {
+    return metaFields.map((row) => {
       let label = row.label ?? row.name ?? "";
       label = String(label);
 
@@ -35,7 +35,7 @@ const Meta = ({ meta_fields }: MetaProps) => {
     });
   };
 
-  if (meta_fields.length === 0) return null;
+  if (metaFields.length === 0) return null;
 
   return (
     <div

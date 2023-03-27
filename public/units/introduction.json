@@ -533,14 +533,30 @@
           },
           {
             "codes": [
-              "Some person",
-              "Another person",
-              "There are many people",
-              "So buttons might be a bad idea",
-              "Use searchable dropdown instead"
+              "Domestic mactro-economic Issues",
+              "Civil Rights, Minority Issues, and Civil Liberties",
+              "Health",
+              "Agriculture",
+              "Labor and Employment",
+              "Education",
+              "Environment",
+              "Energy",
+              "Immigration and Refugee Issues",
+              "Transportation",
+              "Law, Crime and Family Issues",
+              "Social Welfare",
+              "Community, Development and Housing Issues",
+              "Banking, Finance, and Domestic Commerce",
+              "Defense",
+              "Space, Science, Technology, and Communications",
+              "Foreign Trade",
+              "International Affairs and Foreign Aid",
+              "Government Operations",
+              "Public Lands, Water Management, and Territorial Issues",
+              "Cultural Policy Issues"
             ],
             "name": "another variable",
-            "instruction": "This variable uses a dropdown menu with buttons for recent codes",
+            "instruction": "If there are many codes to pick from, you can type in the selection popup to search",
             "searchBox": true,
             "buttonMode": "recent"
           }
@@ -567,7 +583,7 @@
           "value": "Instead of open annotations, you can also pre-annotate spans and only let coders edit them. You could for instance first use a dictionary and then let coders validate or correct the annotations. Or add empty placeholder and let coders fill in the blanks.\n\nThis way, span annotations tasks can be made more mobile friendly"
         }
       ],
-      "importedAnnotations": [
+      "annotations": [
         {
           "type": "span",
           "field": "text",

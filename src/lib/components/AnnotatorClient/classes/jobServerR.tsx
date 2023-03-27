@@ -13,7 +13,7 @@ import Backend from "../../Login/Backend";
 
 class JobServerR implements JobServer {
   backend: Backend;
-  job_id: number;
+  job_id: string;
   setJobServer: SetState<JobServerR>;
   progress: Progress;
   codebook: CodeBook;
@@ -22,7 +22,7 @@ class JobServerR implements JobServer {
 
   constructor(
     backend: Backend,
-    job_id: number,
+    job_id: string,
     setJobServer: SetState<JobServerR>,
     return_link: string = undefined
   ) {
@@ -43,7 +43,7 @@ class JobServerR implements JobServer {
     return this.unit;
   }
 
-  async postAnnotations(unitId: number, annotation: Annotation[], status: Status) {
+  async postAnnotations(unitId: string, annotation: Annotation[], status: Status) {
     try {
       await this.backend.postAnnotation(this.job_id, unitId, annotation, status);
       const report = checkConditions({ ...this.unit, annotation });

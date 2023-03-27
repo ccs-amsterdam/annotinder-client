@@ -30,10 +30,10 @@ export const getDoc = (unit: Unit): Doc => {
 
   const doc: Doc = {
     tokens: d.tokens,
-    text_fields: d.text_fields || [],
-    meta_fields: d.meta_fields || [],
-    image_fields: d.image_fields || [],
-    markdown_fields: d.markdown_fields || [],
+    textFields: d.textFields || [],
+    metaFields: d.metaFields || [],
+    imageFields: d.imageFields || [],
+    markdownFields: d.markdownFields || [],
     grid: d?.grid,
   };
 
@@ -87,14 +87,14 @@ function prepareGrid(d: any) {
   }
 
   // rm all fields that are not in the template
-  d.text_fields = d.text_fields.filter((f: TextField) => used_columns.has(f.name));
-  d.image_fields = d.image_fields.filter((f: ImageField) => used_columns.has(f.name));
-  d.markdown_fields = d.markdown_fields.filter((f: MarkdownField) => used_columns.has(f.name));
+  d.textFields = d.textFields.filter((f: TextField) => used_columns.has(f.name));
+  d.imageFields = d.imageFields.filter((f: ImageField) => used_columns.has(f.name));
+  d.markdownFields = d.markdownFields.filter((f: MarkdownField) => used_columns.has(f.name));
 
   // add area names
-  for (let f of d.text_fields) f.grid_area = areaNameMap[f.name];
-  for (let f of d.image_fields) f.grid_area = areaNameMap[f.name];
-  for (let f of d.markdown_fields) f.grid_area = areaNameMap[f.name];
+  for (let f of d.textFields) f.grid_area = areaNameMap[f.name];
+  for (let f of d.imageFields) f.grid_area = areaNameMap[f.name];
+  for (let f of d.markdownFields) f.grid_area = areaNameMap[f.name];
 
   d.grid.areas = template.join(" ");
 

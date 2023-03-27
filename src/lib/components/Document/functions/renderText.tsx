@@ -3,11 +3,11 @@ import { TextField, Token, RenderedText, FieldRefs } from "../../../types";
 
 export default function renderText(
   tokens: Token[],
-  text_fields: TextField[],
+  textFields: TextField[],
   containerRef: any,
   fieldRefs: FieldRefs
 ): RenderedText {
-  const text: RenderedText = text_fields.reduce((obj: any, tf: TextField) => {
+  const text: RenderedText = textFields.reduce((obj: any, tf: TextField) => {
     obj[tf.name] = [];
     return obj;
   }, {});
@@ -25,7 +25,7 @@ export default function renderText(
   let paragraph_nr = tokens[0].paragraph;
 
   const getTextField = (field_name: string) =>
-    text_fields.find((tf: TextField) => tf.name === field_name);
+    textFields.find((tf: TextField) => tf.name === field_name);
   let textField = getTextField(field_name);
 
   for (let i = 0; i < tokens.length; i++) {

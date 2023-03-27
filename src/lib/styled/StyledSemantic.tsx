@@ -17,7 +17,7 @@ const CodeButton = styled.button<{
   selected?: boolean;
   current?: boolean;
   afterBackground?: string;
-  onDark?: boolean;
+  darkBackground?: boolean;
   compact?: boolean;
 }>`
   font-size: ${(p) => p.size || 1.5}rem;
@@ -40,7 +40,7 @@ const CodeButton = styled.button<{
   text-decoration: ${(p) => (p.current ? "underline" : "")};
   color: ${(p) => (p.selected || p.current ? "white" : "#222")};
   border-color: ${(p) => {
-    if (p.onDark) {
+    if (p.darkBackground) {
       if (p.selected || p.current) return "var(--background-fixed)";
       return "var(--background-inversed-fixed)";
     }

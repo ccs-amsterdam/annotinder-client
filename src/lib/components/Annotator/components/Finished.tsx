@@ -71,7 +71,7 @@ const Finished = ({ jobServer }: FinishedProps) => {
 };
 
 interface JobLinkProps {
-  jobId: number;
+  jobId: string;
   backend: Backend;
   style?: CSSProperties;
 }

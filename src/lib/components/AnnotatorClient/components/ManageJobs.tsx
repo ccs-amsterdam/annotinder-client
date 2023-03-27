@@ -40,7 +40,7 @@ interface ManageJobsProps {
 
 export default function ManageJobs({ backend }: ManageJobsProps) {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [jobId, setJobId] = useState<number>(null);
+  const [jobId, setJobId] = useState<string>(null);
   const [job, setJob] = useState<Job>(null);
 
   return (
@@ -64,7 +64,7 @@ export default function ManageJobs({ backend }: ManageJobsProps) {
 }
 
 const setJobSettings = async (
-  id: number,
+  id: string,
   backend: Backend,
   settingsObj: { archived?: boolean; restricted?: boolean },
   setJobs: SetState<Job[]>,
@@ -72,7 +72,7 @@ const setJobSettings = async (
 ) => {
   backend.setJobSettings(id, settingsObj);
   setJobs((jobs: Job[]) => {
-    const i = jobs.findIndex((j: Job) => j.id === Number(id));
+    const i = jobs.findIndex((j: Job) => j.id === id);
     if (i >= 0) jobs[i] = { ...jobs[i], ...settingsObj };
     return [...jobs];
   });
@@ -92,7 +92,7 @@ interface JobDetailsProps {
   backend: Backend;
   job: Job;
   setJob: SetState<Job>;
-  jobId: number;
+  jobId: string;
   setJobs: SetState<Job[]>;
 }
 
@@ -428,7 +428,7 @@ const LabeledProgress = ({ label, value, total, bold = false }: LabeledProgressP
 };
 
 interface JobTokenButtonProps {
-  jobId: number;
+  jobId: string;
   backend: Backend;
   style?: CSSProperties;
 }

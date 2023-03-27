@@ -14,7 +14,7 @@ const Portal = styled.div<{ smallScreen?: boolean }>`
   z-index: 100000;
   background: var(--background);
   color: var(--text);
-  padding: 10px;
+  padding: 10px 10px 0px 10px;
   margin-top: 14px;
   border-radius: 5px;
   border: 2px solid var(--primary);

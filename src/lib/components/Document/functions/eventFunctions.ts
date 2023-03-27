@@ -239,7 +239,6 @@ export function onContextMenu(event: MouseEvent, tokens: Token[]) {
     event.stopPropagation();
     event.preventDefault();
   }
-  //console.log(token);
 }
 
 export const movePosition = (

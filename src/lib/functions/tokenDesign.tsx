@@ -12,7 +12,7 @@ export const getColor = (annotationCode: string | number, codeMap?: CodeMap) => 
     return codeMap[annotationCode].color;
   } else {
     if (annotationCode === "EMPTY") return "grey";
-    return "#ffffff50";
+    return null;
   }
 };
 

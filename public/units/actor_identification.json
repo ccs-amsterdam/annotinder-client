@@ -18,7 +18,7 @@
           "value": "Mary had a little lamb, its fleece was white as snow. Everywhere that she went, the lamb was sure to go.\n\nIn other words, they went everywhere together"
         }
       ],
-      "importedAnnotations": [
+      "annotations": [
         {
           "type": "span",
           "field": "title",
@@ -86,6 +86,34 @@
       ],
 
       "variables": []
+    },
+    "codebook": {
+      "type": "annotate",
+      "settings": {
+        "instruction": "# Computer assisted actor identification\n\nIn the following texts, we want to identify all references to the mentioned actors.  To make this task easier and mobile phone friendly, we pre-annotated the actors that we are interested in, and marked potential references to these actors (e.g., pronouns).\n\nThe coder then only has to tab on the highlighted words to add or remove actor labels",
+        "auto_instruction": true
+      },
+      "variables": [
+        {
+          "codes": [
+            {
+              "code": "Lamb",
+              "color": "blue"
+            },
+            {
+              "code": "Hannibal Lecter",
+              "color": "crimson"
+            }
+          ],
+          "name": "actor",
+          "instruction": "Add and correct all references to the actors highlighted in this text.",
+          "searchBox": false,
+          "buttonMode": "all",
+          "multiple": false,
+          "editMode": true,
+          "keepEmpty": true
+        }
+      ]
     }
   },
   {
@@ -105,7 +133,7 @@
         }
       ],
 
-      "importedAnnotations": [
+      "annotations": [
         {
           "type": "span",
           "variable": "actor",
@@ -253,6 +281,32 @@
         }
       ],
       "variables": []
+    },
+    "codebook": {
+      "type": "annotate",
+      "settings": {
+        "instruction": "# Computer assisted actor identification\n\nIn the following texts, we want to identify all references to the mentioned actors.  To make this task easier and mobile phone friendly, we pre-annotated the actors that we are interested in, and marked potential references to these actors (e.g., pronouns).\n\nThe coder then only has to tab on the highlighted words to add or remove actor labels",
+        "auto_instruction": true
+      },
+      "variables": [
+        {
+          "codes": [
+            {
+              "code": "Barack Obama"
+            },
+            {
+              "code": "George Bush"
+            },
+            { "code": "America / Americans" }
+          ],
+          "name": "actor",
+          "instruction": "Add and correct all references to the actors highlighted in this text.",
+          "searchBox": false,
+          "buttonMode": "all",
+          "multiple": false,
+          "editMode": true
+        }
+      ]
     }
   }
 ]

@@ -32,8 +32,8 @@ const useJobServer = (backend: Backend): [JobServer, boolean] => {
   const [initializing, setInitializing] = useState(true);
 
   let jobId = backend?.restricted_job;
-  const jobIdParam = searchParams.get("job_id");
-  if (jobId == null && jobIdParam) jobId = Number(jobIdParam);
+  const jobIdParam = searchParams.get("job_id") as string;
+  if (jobId == null && jobIdParam) jobId = jobIdParam;
 
   useEffect(() => {
     if (!backend) {
@@ -47,7 +47,7 @@ const useJobServer = (backend: Backend): [JobServer, boolean] => {
     }
     setJobServer(null);
     const returnLink = backend?.restricted_job ? null : "/";
-    const js = new JobServerPython(backend, jobId as number, setJobServer, returnLink);
+    const js = new JobServerPython(backend, jobId, setJobServer, returnLink);
     js.init()
       .then(() => {
         setJobServer(js);

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo, useDeferredValue } from "react";
+import React, { useState, useEffect, useMemo, useDeferredValue, useRef } from "react";
 import { CodeButton } from "../../../styled/StyledSemantic";
 import { moveDown, moveUp } from "../../../functions/refNavigation";
-import { CodeSelectorOption, CodeSelectorValue } from "../../../types";
+import { CodeSelectorOption, CodeSelectorValue, SetState } from "../../../types";
 import { FaWindowClose } from "react-icons/fa";
 import styled from "styled-components";
 import { RiDeleteBin2Line } from "react-icons/ri";
@@ -9,7 +9,7 @@ import standardizeColor from "../../../functions/standardizeColor";
 
 const arrowKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"];
 
-const StyledDiv = styled.div`
+const StyledDiv = styled.div<{ showSearch?: boolean }>`
   .closeIcon {
     cursor: pointer;
     height: 3.5rem;
@@ -30,47 +30,67 @@ const StyledDiv = styled.div`
     }
   }
 
-  .DeleteIcon {
-    position: absolute;
-    right: 3;
-    top: 0;
-    font-size: 2rem;
-    display: flex;
-    align-items: center;
-    height: 100%;
-  }
-
   .SelectButtonsContainer {
     position: relative;
+
     .SelectButtons {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      margin-bottom: 10px;
       max-height: 15rem;
+      padding: 0.5rem;
       overflow-y: auto;
     }
     .SearchInput {
+      ${(p) => {
+        if (p.showSearch)
+          return `
+          padding: 0.1rem 0.5rem;
+          max-height: 3rem; 
+          `;
+        return `
+          border: none;
+          padding: 0rem;
+          max-height: 0rem;
+        `;
+      }}
+      transition: max-height 0.2s ease-in-out;
       position: absolute;
-      bottom: 0rem;
-      left: 0rem;
+      bottom: 0.5rem;
+      left: 50%;
+      font-size: 1.5rem;
+      transform: translateX(-50%);
+      border-radius: 5px;
+
+      &:focus {
+        display: "block";
+      }
+    }
+  }
+
+  .DeleteButtonsContainer {
+    padding: 0.5rem 0rem 0.5rem 0rem;
+
+    .DeleteIcon {
+      display: flex;
+      align-items: center;
     }
   }
 `;
 
 interface ButtonSelectionProps {
   id: string;
-  active: boolean;
   options: CodeSelectorOption[];
   onSelect: (value: CodeSelectorValue, ctrlKey: boolean) => void;
 }
 
-const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps) => {
+const ButtonSelection = ({ id, options, onSelect }: ButtonSelectionProps) => {
   const [selected, setSelected] = useState(0);
   const [search, setSearch] = useState("");
   const deferredSearch = useDeferredValue(search);
-  const [showN, setShowN] = useState(5);
-  const useSearch = false;
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchRef = useRef("");
+  searchRef.current = search;
 
   const allOptions: CodeSelectorOption[] = useMemo(() => {
     // add cancel button and (most importantly) add refs used for navigation
@@ -93,17 +113,21 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
   }, [options]);
 
   const filteredOptions = useMemo(() => {
+    setSelected(0);
+    if (!deferredSearch) return allOptions;
     const query = deferredSearch.toLowerCase();
-    return allOptions.filter((o) => o.queryText.includes(query) || o.value.delete);
+    return allOptions.filter(
+      (o) => o.queryText.includes(query) && !o.value.delete && !o.value.cancel
+    );
   }, [allOptions, deferredSearch]);
 
   const onKeydown = React.useCallback(
     (event: KeyboardEvent) => {
-      const nbuttons = allOptions.length;
+      const nbuttons = filteredOptions.length;
       // if key is a number that indexes an option, select it
       if (Number.isFinite(event.key) && Number(event.key) <= nbuttons) {
         event.preventDefault();
-        let value = allOptions[Number(event.key)].value;
+        let value = filteredOptions[Number(event.key)].value;
         onSelect(value, event.ctrlKey || event.altKey);
       }
 
@@ -112,7 +136,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
         event.preventDefault();
         function setSelectedAndScroll(i: number) {
           setSelected(i);
-          let el = allOptions[i].ref.current;
+          let el = filteredOptions[i].ref.current;
           if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
         }
 
@@ -121,7 +145,7 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
         }
 
         if (event.key === "ArrowDown") {
-          setSelectedAndScroll(moveDown(allOptions, selected));
+          setSelectedAndScroll(moveDown(filteredOptions, selected));
         }
 
         if (event.key === "ArrowLeft") {
@@ -129,66 +153,33 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
         }
 
         if (event.key === "ArrowUp") {
-          setSelectedAndScroll(moveUp(allOptions, selected));
+          setSelectedAndScroll(moveUp(filteredOptions, selected));
         }
 
         return;
       }
 
       // space or enter
-      if (event.keyCode === 32 || event.keyCode === 13) {
+      if (event.key === "Enter" || (event.key === " " && searchRef.current === "")) {
         event.preventDefault();
         event.stopPropagation();
 
-        let value = allOptions[selected].value;
+        let value = filteredOptions[selected].value;
         onSelect(value, event.ctrlKey || event.altKey);
+        return;
       }
+
+      searchInputRef.current.focus();
     },
-    [selected, allOptions, onSelect]
+    [selected, searchRef, searchInputRef, filteredOptions, onSelect]
   );
 
   useEffect(() => {
-    if (active) {
-      window.addEventListener("keydown", onKeydown);
-    } else {
-      window.removeEventListener("keydown", onKeydown);
-    }
+    window.addEventListener("keydown", onKeydown);
     return () => {
       window.removeEventListener("keydown", onKeydown);
     };
-  }, [active, onKeydown]);
-
-  const button = (option: CodeSelectorOption, i: number, rm: boolean) => {
-    return (
-      <CodeButton
-        ref={option.ref as React.RefObject<HTMLButtonElement>}
-        key={option.label + "_" + i}
-        selected={i === selected}
-        background={option.color}
-        //className="buttonBackground"
-        compact
-        style={{
-          paddingRight: rm ? "3rem" : "",
-        }}
-        onMouseOver={() => setSelected(i)}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          onSelect(option.value, e.ctrlKey || e.altKey);
-        }}
-      >
-        <span className="ButtonContent">
-          {option.tag ? <span className="Tag">{option.tag}: </span> : null}
-          {option.label}
-        </span>
-        {rm && (
-          <div className="deleteIcon">
-            <RiDeleteBin2Line />
-          </div>
-        )}
-      </CodeButton>
-    );
-  };
+  }, [onKeydown]);
 
   const [cancelButton, selectButtons, deleteButtons] = useMemo(() => {
     let i = 0;
@@ -211,49 +202,88 @@ const ButtonSelection = ({ id, active, options, onSelect }: ButtonSelectionProps
             />
           </div>
         );
-      else if (option.value.delete) deleteButtons.push(button(option, i, true));
-      else selectButtons.push(button(option, i, false));
-
+      else if (option.value.delete)
+        deleteButtons.push(button(option, i, true, onSelect, selected, setSelected));
+      else {
+        selectButtons.push(button(option, i, false, onSelect, selected, setSelected));
+      }
       i++;
     }
 
     return [cancelButton, selectButtons, deleteButtons];
-  }, [filteredOptions, selected]);
+  }, [filteredOptions, selected, onSelect]);
 
   return (
-    <StyledDiv key={id}>
+    <StyledDiv key={id} showSearch={search !== ""}>
       <div className="Buttons" key={id + "_buttons"} style={{ textAlign: "center" }}>
         <div className="SelectButtonsContainer">
           <div className="SelectButtons" key={id + "_1"}>
             {cancelButton}
             {selectButtons}
-            {useSearch && <div style={{ height: "3rem", width: "100%" }}></div>}
+            {search && <div style={{ height: "3rem", width: "100%" }}></div>}
           </div>
-          {useSearch && (
-            <input
-              className="SearchInput"
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="search"
-            />
-          )}
-        </div>
 
-        {deleteButtons.length > 0 ? (
-          <>
-            <div style={{ height: "5px", borderTop: "1px solid var(--primary-text)" }} />
-            <i>delete annotations</i>
-          </>
-        ) : null}
-        <div
-          key={id + "_2"}
-          style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
-        >
-          {deleteButtons}
+          <input
+            ref={searchInputRef}
+            className="SearchInput"
+            type="text"
+            value={search}
+            placeholder="search"
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="DeleteButtonsContainer">
+          {deleteButtons.length > 0 ? (
+            <>
+              <div style={{ height: "10px", borderTop: "1px solid var(--primary-text)" }} />
+              <div className="deleteIcon">
+                <RiDeleteBin2Line size="2rem" />
+              </div>
+            </>
+          ) : null}
+          <div
+            key={id + "_2"}
+            style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
+          >
+            {deleteButtons}
+          </div>
         </div>
       </div>
     </StyledDiv>
+  );
+};
+
+const button = (
+  option: CodeSelectorOption,
+  i: number,
+  rm: boolean,
+  onSelect: (value: CodeSelectorValue, ctrlKey: boolean) => void,
+  selected: number,
+  setSelected: SetState<number>
+) => {
+  return (
+    <CodeButton
+      ref={option.ref as React.RefObject<HTMLButtonElement>}
+      key={option.label + "_" + i}
+      selected={i === selected}
+      background={option.color}
+      //className="buttonBackground"
+      compact
+      style={{
+        paddingRight: rm ? "3rem" : "",
+      }}
+      onMouseOver={() => setSelected(i)}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onSelect(option.value, e.ctrlKey || e.altKey);
+      }}
+    >
+      <span className="ButtonContent">
+        {option.tag ? <span className="Tag">{option.tag}: </span> : null}
+        {option.label}
+      </span>
+    </CodeButton>
   );
 };
 
