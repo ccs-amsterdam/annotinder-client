@@ -58,14 +58,24 @@ const CoderJobsTable = ({ backend }: { backend: Backend }) => {
     let data = jobs.map((v) => {
       v.modified = v.modified && new Date(v.modified);
       v.created = v.created && new Date(v.created);
-      v.progress = v.n_total ? (v.n_coded || 0) / v.n_total : NaN;
+      v.progress = v.n_total ? Math.round((100 * (v.n_coded || 0)) / v.n_total) : null;
+      v.progressLabel = v.progress != null ? `${v.progress}%` : "not started";
       v.status = v.progress === 1 ? "Done" : "In progress";
       return v;
     });
+    data = data.filter((v) => {
+      for (let filter of query.filter) {
+        if (filter.type === "search") {
+          if (!v[filter.variable]?.toLowerCase().includes(filter.search.toLowerCase()))
+            return false;
+        }
+      }
+      return true;
+    });
 
     sortData(data, query);
+    const meta = { offset: query.offset, total: data.length };
     data = data.slice(query.offset, query.offset + query.n);
-    const meta = { offset: query.offset, total: jobs.length };
     return { data, meta };
   }
 
@@ -87,24 +97,31 @@ const gridItemTemplate: GridItemTemplate[] = [
   {
     label: "Last activity",
     value: "modified",
-    style: { fontStyle: "italic" },
+    style: { fontStyle: "italic", width: "50%" },
+  },
+  {
+    label: "% Completed",
+    value: "progressLabel",
+    style: { fontStyle: "italic", width: "50%", textAlign: "right" },
   },
 ];
 
 const sortOptions: SortQueryOption[] = [
   { variable: "modified", label: "Last activity", default: "desc" },
+  { variable: "progress", label: "% Completed" },
 ];
 
-const filterOptions: FilterQueryOption[] = [{ variable: "title", label: "Title", type: "search" }];
+const filterOptions: FilterQueryOption[] = [
+  { variable: "title", label: "Coding Job Title", type: "search" },
+];
 
 const sortData = (data: DataPoint[], query: DataQuery) => {
   if (!query.sort || query.sort.length === 0) return;
 
   function compare(a: any, b: any) {
     if (!a && !b) return 0;
-    const isDate = ((a || b) as Date).getMonth !== undefined;
-    if (!a) return isDate ? -1 : 1;
-    if (!b) return isDate ? 1 : -1;
+    if (!a) return -1;
+    if (!b) return 1;
     if (typeof a === "string") return a.localeCompare(b);
     return a - b;
   }

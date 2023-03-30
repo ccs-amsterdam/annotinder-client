@@ -41,6 +41,7 @@ export interface FilterQuery {
   from?: string | number | Date;
   to?: string | number | Date;
   select?: (string | number | Date)[];
+  search?: string;
 }
 
 export interface FilterQueryOption {

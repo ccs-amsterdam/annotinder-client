@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const GridListDiv = styled.div<{ transition?: "up" | "down" }>`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
   width: 100%;
   margin: auto;
   padding: 2rem;
@@ -11,6 +11,9 @@ export const GridListDiv = styled.div<{ transition?: "up" | "down" }>`
   max-height: 600px;
 
   @keyframes changePageDown {
+    0% {
+      pointer-events: none;
+    }
     49% {
       opacity: 0;
       transform: translateY(-50%);
@@ -20,12 +23,16 @@ export const GridListDiv = styled.div<{ transition?: "up" | "down" }>`
       transform: translateY(50%);
     }
     100% {
+      pointer-events: auto;
       opacity: 1;
       transform: translateY(0%);
     }
   }
 
   @keyframes changePageUp {
+    0% {
+      pointer-events: none;
+    }
     49% {
       opacity: 0;
       transform: translateY(50%);
@@ -35,6 +42,7 @@ export const GridListDiv = styled.div<{ transition?: "up" | "down" }>`
       transform: translateY(-50%);
     }
     100% {
+      pointer-events: auto;
       opacity: 1;
       transform: translateY(0%);
     }
@@ -43,13 +51,19 @@ export const GridListDiv = styled.div<{ transition?: "up" | "down" }>`
   .QueryFields {
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-end;
     //flex-direction: column;
     gap: 0.5rem;
+
+    .Results {
+      font-size: 1.5rem;
+      margin-left: auto;
+    }
   }
 
   .GridItems {
     display: grid;
-    grid-gap: 1.5rem;
+    grid-gap: 1rem;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 
     .GridItem {
@@ -87,7 +101,7 @@ export const GridListDiv = styled.div<{ transition?: "up" | "down" }>`
 
         &.Disabled {
           pointer-events: none;
-          opacity: 0;
+          opacity: 0.3;
         }
       }
       &.PageChange {
@@ -97,14 +111,14 @@ export const GridListDiv = styled.div<{ transition?: "up" | "down" }>`
 
         &.Disabled {
           pointer-events: none;
-          opacity: 0;
+          opacity: 0.3;
         }
       }
     }
   }
 `;
 
-export const QueryDiv = styled.div<{ open?: boolean }>`
+export const QueryDiv = styled.div<{ open?: boolean; active?: boolean }>`
   min-height: 3rem;
   gap: 1rem;
   display: flex;
@@ -138,15 +152,16 @@ export const QueryDiv = styled.div<{ open?: boolean }>`
     height: var(--height);
     pointer-events: all;
     border: 1px solid var(--primary);
-    background: var(--background);
     border-radius: 5px;
     border-bottom-right-radius: var(--borderradius);
     border-bottom-left-radius: var(--borderradius);
     border-bottom: var(--border);
-    color: var(--primary-text);
     font-size: 1.5rem;
     z-index: var(--z-index);
     cursor: pointer;
+
+    background: ${(p) => (p.active ? "var(--secondary)" : "var(--background)")};
+    color: ${(p) => (p.active ? "var(--primary-dark)" : "var(--primary-text)")};
 
     :disabled {
       pointer-events: none;
@@ -154,7 +169,7 @@ export const QueryDiv = styled.div<{ open?: boolean }>`
     }
   }
   .Dropdown {
-    min-width: 20rem;
+    //min-width: 30rem;
     pointer-events: all;
     display: var(--dropdown-display);
     width: auto;
@@ -166,8 +181,9 @@ export const QueryDiv = styled.div<{ open?: boolean }>`
     border: 1px solid var(--primary);
     border-radius: 5px;
     border-top-left-radius: var(--borderradius);
-    background: var(--background);
-    color: var(--primary-text);
+
+    background: ${(p) => (p.active ? "var(--secondary)" : "var(--background)")};
+    color: ${(p) => (p.active ? "var(--primary-dark)" : "var(--primary-text)")};
 
     & > div {
       padding: 1rem;
@@ -184,13 +200,46 @@ export const QueryDiv = styled.div<{ open?: boolean }>`
       font-size: 3rem;
       padding: 0.5rem;
       cursor: pointer;
+
+      &.NotSelected {
+        opacity: 0.5;
+      }
+    }
+    .CloseIcon {
+      margin-left: auto;
+
+      &.Disabled {
+        pointer-events: none;
+        opacity: 0.5;
+      }
+    }
+    span {
+      padding-top: 0.3rem;
+      white-space: nowrap;
     }
   }
 
-  .QuerySelection .QueryField {
-    gap: 0;
-    //pointer-events: none;
-    margin-right: 0.5rem;
-    //border-bottom: 1px solid var(--primary);
+  .QuerySelection {
+    display: flex;
+    gap: 0.5rem;
+    .QueryField {
+      gap: 0;
+
+      //pointer-events: none;
+      //border-bottom: 1px solid var(--primary);
+    }
+  }
+
+  .SearchFilterField {
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    input {
+      line-height: 2rem;
+      border: 1px solid var(--primary);
+      border-radius: 5px;
+      padding: 0.5rem 1rem;
+      font-size: 1.5rem;
+    }
   }
 `;

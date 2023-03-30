@@ -11,9 +11,6 @@ const dark = {
   "text-light": "darkgrey",
   "text-inversed": "black",
 
-  primary: "#673AB7",
-  "primary-dark": "#3B2667",
-  "primary-light": "#c0b1dd",
   "primary-text": "#e4d8fa",
 };
 const light = {
@@ -24,9 +21,6 @@ const light = {
   "text-light": "grey",
   "text-inversed": "white",
 
-  primary: "#673AB7",
-  "primary-dark": "#3B2667",
-  "primary-light": "#c0b1dd",
   "primary-text": "#3B2667",
 };
 

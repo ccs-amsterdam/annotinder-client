@@ -31,7 +31,7 @@ const GridList = ({
   sortOptions,
   filterOptions,
   onClick,
-  pageSize = 7,
+  pageSize = 10,
 }: GridListProps) => {
   const [data, setData] = useState<GridListData>();
   const [transition, setTransition] = useState<"up" | "down">();
@@ -104,7 +104,7 @@ const GridList = ({
         x = x / h;
         y = y / h;
         ref.current.style.boxShadow = `${x * 4}px ${y * 4}px 0.8rem var(--${
-          selected >= 0 ? "secondary-dark" : "primary"
+          selected >= 0 ? "secondary-dark" : "primary-dark"
         })`;
       }
     }
@@ -121,12 +121,13 @@ const GridList = ({
     <CenteredDiv>
       <GridListDiv transition={transition}>
         <div className="QueryFields">
-          {sortOptions && (
-            <SortQueryMenu query={query} setQuery={setQuery} sortOptions={sortOptions} />
-          )}
           {filterOptions && (
             <FilterQueryMenu query={query} setQuery={setQuery} filterOptions={filterOptions} />
           )}
+          {sortOptions && (
+            <SortQueryMenu query={query} setQuery={setQuery} sortOptions={sortOptions} />
+          )}
+          <div className="Results">{query.offset + " / " + data?.meta?.total || "-"}</div>
         </div>
         <div className="GridItems">
           {
@@ -134,7 +135,7 @@ const GridList = ({
               key="labels up"
               ref={upRef}
               className={`GridItem Labels ${canGoUp && "PageChange"}`}
-              onClick={() => changePage("up")}
+              onClick={() => canGoUp && changePage("up")}
             >
               {canGoUp ? (
                 <CenteredDiv>
@@ -158,7 +159,8 @@ const GridList = ({
                 onClick={() => datapoint && onClick && onClick(datapoint)}
               >
                 {template.map((item: GridItemTemplate, j) => {
-                  if (!datapoint) return <Value key={`missing_${i}_${j}`}></Value>;
+                  if (!datapoint)
+                    return <Value style={item.style} key={`missing_${i}_${j}`}></Value>;
                   return (
                     <ItemValue
                       key={datapoint.id + "+" + item.value}
@@ -177,9 +179,7 @@ const GridList = ({
             className={`GridItem Labels PageChange ${!canGoDown && "Disabled"}`}
             onClick={() => changePage("down")}
           >
-            <CenteredDiv>
-              <FaChevronDown size="5rem" />
-            </CenteredDiv>
+            <CenteredDiv>{canGoDown && <FaChevronDown size="5rem" />}</CenteredDiv>
           </div>
         </div>
       </GridListDiv>
@@ -190,6 +190,7 @@ const GridList = ({
 const Value = styled.div`
   width: 100%;
   min-height: 2.1rem;
+  padding-right: 0.1rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

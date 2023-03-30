@@ -1,7 +1,6 @@
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { SetState } from "../../../types";
 import { TbArrowsSort } from "react-icons/tb";
-import { MdCancel } from "react-icons/md";
 import { SortQuery, DataQuery, SortQueryOption } from "./GridListTypes";
 import { QueryDiv } from "./GridListStyled";
 import { useEffect, useState, useRef } from "react";
@@ -38,13 +37,9 @@ const SortQueryMenu = ({ query, setQuery, sortOptions }: SortQueryProps) => {
     return () => document.removeEventListener("click", closeOnPageClick);
   }, [dropdownRef]);
 
-  const allSelected = query.sort?.length === sortOptions.length;
-  if (allSelected && open) setOpen(false);
-
   return (
-    <QueryDiv open={open}>
+    <QueryDiv open={open} active={query.sort && query.sort.length > 0}>
       <button
-        disabled={allSelected}
         onClick={(e) => {
           e.stopPropagation();
           setOpen(!open);
@@ -56,7 +51,7 @@ const SortQueryMenu = ({ query, setQuery, sortOptions }: SortQueryProps) => {
         <div>
           {sortOptions?.map((option) => {
             const currentOrder = query.sort?.find((s) => s.variable === option.variable)?.order;
-            if (currentOrder) return null;
+            //if (currentOrder) return null;
             return (
               <SortField
                 key={option.variable}
@@ -64,7 +59,6 @@ const SortQueryMenu = ({ query, setQuery, sortOptions }: SortQueryProps) => {
                 variable={option.variable}
                 label={option.label}
                 currentOrder={currentOrder}
-                canDelete={true}
               />
             );
           })}
@@ -79,7 +73,6 @@ const SortQueryMenu = ({ query, setQuery, sortOptions }: SortQueryProps) => {
               variable={sort.variable}
               label={sort.label}
               currentOrder={sort.order}
-              canDelete={true}
             />
           );
         })}
@@ -92,57 +85,42 @@ const SortField = (props: {
   setQuery: SetState<DataQuery>;
   variable: string;
   label: string;
-  currentOrder?: string;
-  canDelete?: boolean;
+  currentOrder?: "asc" | "desc";
 }) => {
-  const { variable, label, setQuery, currentOrder, canDelete } = props;
+  const { variable, label, setQuery, currentOrder } = props;
 
-  function onSort(order: "asc" | "desc", onlyDelete?: boolean) {
-    let newOrder = order;
-    if (order === currentOrder) {
-      if (order === "asc") newOrder = "desc";
-      if (order === "desc") newOrder = "asc";
-    }
+  function onSort(order: "asc" | "desc") {
+    const deleteSort = order === currentOrder;
 
     setQuery((query) => {
       const newSort: SortQuery[] = (query.sort || []).filter((sort) => sort.variable !== variable);
-      if (!onlyDelete) newSort.push({ variable, order: newOrder, label });
+      if (!deleteSort) newSort.push({ variable, order: order, label });
       return { ...query, sort: newSort };
     });
   }
 
-  const showUp = !currentOrder || currentOrder === "asc";
-  const showDown = !currentOrder || currentOrder === "desc";
+  const showUp = currentOrder === "asc";
+  const showDown = currentOrder === "desc";
 
   return (
     <div className="QueryField">
-      {showUp && (
-        <FaChevronUp
-          color="var(--primary)"
-          onClick={(e) => {
-            e.stopPropagation();
-            onSort("asc");
-          }}
-        />
-      )}
-      {showDown && (
-        <FaChevronDown
-          color="var(--primary)"
-          onClick={(e) => {
-            e.stopPropagation();
-            onSort("desc");
-          }}
-        />
-      )}
+      <FaChevronUp
+        className={!showUp && "NotSelected"}
+        onClick={(e) => {
+          e.stopPropagation();
+          onSort("asc");
+        }}
+      />
+
+      <FaChevronDown
+        className={!showDown && "NotSelected"}
+        onClick={(e) => {
+          e.stopPropagation();
+          onSort("desc");
+        }}
+      />
+
       <span>{label}</span>
-      {canDelete && currentOrder && (
-        <MdCancel
-          onClick={(e) => {
-            e.stopPropagation();
-            onSort("asc", true);
-          }}
-        />
-      )}
     </div>
   );
 };

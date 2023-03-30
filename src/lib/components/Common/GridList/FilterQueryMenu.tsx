@@ -2,7 +2,9 @@ import { SetState } from "../../../types";
 import { TbFilter } from "react-icons/tb";
 import { FilterQuery, DataQuery, FilterQueryOption } from "./GridListTypes";
 import { QueryDiv } from "./GridListStyled";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useDeferredValue } from "react";
+import { MdOutlineFilter } from "react-icons/md";
+import { RiCloseFill } from "react-icons/ri";
 
 interface FilterQueryProps {
   query: DataQuery;
@@ -43,13 +45,9 @@ const FilterQueryMenu = ({ query, setQuery, filterOptions }: FilterQueryProps) =
     return () => document.removeEventListener("click", closeOnPageClick);
   }, [dropdownRef]);
 
-  const allSelected = query.filter?.length === filterOptions.length;
-  if (allSelected && open) setOpen(false);
-
   return (
-    <QueryDiv open={open}>
+    <QueryDiv open={open} active={query.filter && query.filter.length > 0}>
       <button
-        disabled={allSelected}
         onClick={(e) => {
           e.stopPropagation();
           setOpen(!open);
@@ -60,33 +58,19 @@ const FilterQueryMenu = ({ query, setQuery, filterOptions }: FilterQueryProps) =
       <div className="Dropdown" ref={dropdownRef}>
         <div>
           {filterOptions?.map((option) => {
-            const selected = query.filter?.find((s) => s.variable === option.variable);
-            if (selected) return null;
             return (
-              <FilterField
-                type={option.type}
-                key={option.variable}
-                setQuery={setQuery}
-                variable={option.variable}
-                label={option.label}
-              />
+              <div className="QueryField">
+                <FilterField
+                  type={option.type}
+                  key={option.variable}
+                  setQuery={setQuery}
+                  variable={option.variable}
+                  label={option.label}
+                />
+              </div>
             );
           })}
         </div>
-      </div>
-      <div className="QuerySelection">
-        {(query.filter || []).map((filter) => {
-          return null;
-          // return (
-          //   <FilterField
-          //     key={filter.variable}
-          //     setQuery={setQuery}
-          //     variable={filter.variable}
-          //     label={filter.label}
-          //     currentOrder={filter.order}
-          //   />
-          // );
-        })}
       </div>
     </QueryDiv>
   );
@@ -112,15 +96,36 @@ const FilterField = (props: {
     });
   }
 
-  if (type === "search") return <SearchFilterField onFilter={onFilter} />;
+  if (type === "search") return <SearchFilterField label={label} onFilter={onFilter} />;
 
   return null;
 };
 
-const SearchFilterField = (props: { onFilter: (values: any) => void }) => {
-  const [value, setValue] = useState("");
+const SearchFilterField = (props: {
+  label: string;
+  onFilter: (values: any, onlyDelete: boolean) => void;
+}) => {
+  const [search, setSearch] = useState("");
 
-  return <input type="text" value={value} onChange={(e) => setValue(e.target.value)} />;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      props.onFilter({ search }, !search);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  return (
+    <div className="SearchFilterField">
+      <label>{props.label}</label>
+      <input
+        className="SearchField"
+        placeholder={`<search terms>`}
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+    </div>
+  );
 };
 
 export default FilterQueryMenu;
