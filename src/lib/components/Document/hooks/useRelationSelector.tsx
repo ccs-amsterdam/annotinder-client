@@ -53,7 +53,7 @@ const useRelationSelector = (
         fromAnn = [annotationLib.annotations[selection.fromId]];
         toAnn = [annotationLib.annotations[selection.toId]];
 
-        const position = Math.min.apply(fromAnn[0].positions);
+        const position = Math.min.apply(this, [...fromAnn[0].positions]);
         positionRef.current = tokens?.[position]?.ref.current;
       }
       let edgeOptions = getOptions(fromAnn, toAnn, variable);

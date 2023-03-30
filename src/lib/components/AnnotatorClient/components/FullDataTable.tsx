@@ -30,12 +30,12 @@ interface FullDataTableProps {
  */
 export default function FullDataTable({
   fullData,
-  setFullData = undefined,
-  columns = undefined,
-  onClick = undefined,
-  buttons = undefined,
-  backend = undefined,
-  isActive = undefined,
+  setFullData,
+  columns,
+  onClick,
+  buttons,
+  backend,
+  isActive,
 }: FullDataTableProps) {
   const [data, setData] = useState<RowObj[]>([]);
   const [pages, setPages] = useState(1);
