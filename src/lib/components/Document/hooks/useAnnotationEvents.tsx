@@ -25,6 +25,7 @@ export default function useAnnotationEvents(
   annotationLib: AnnotationLibrary,
   triggerSelectionPopup: any,
   editMode: boolean,
+  sameFieldOnly: boolean,
   eventsBlocked: boolean
 ) {
   const [tokenSelection, setTokenSelection] = useState<TokenSelection>(null);
@@ -103,6 +104,7 @@ export default function useAnnotationEvents(
       mover,
       holdSpace,
       editMode,
+      sameFieldOnly,
       setCurrentToken,
       setTokenSelection
     );
@@ -133,6 +135,7 @@ export default function useAnnotationEvents(
     editMode,
     annotationLib,
     setTokenSelection,
+    sameFieldOnly,
   ]);
 
   useEffect(() => {
@@ -146,6 +149,7 @@ export default function useAnnotationEvents(
         tokens,
         editMode,
         tokenSelectionRef.current,
+        sameFieldOnly,
         setCurrentToken,
         setTokenSelection,
         triggerSelectionPopup,
@@ -159,6 +163,7 @@ export default function useAnnotationEvents(
         event,
         tokens,
         editMode,
+        sameFieldOnly,
         setCurrentToken,
         setTokenSelection,
         istouch,
@@ -175,6 +180,7 @@ export default function useAnnotationEvents(
         event,
         tokens,
         tokenSelectionRef.current,
+        sameFieldOnly,
         setCurrentToken,
         setTokenSelection,
         triggerSelectionPopup,
@@ -248,6 +254,7 @@ export default function useAnnotationEvents(
     istouch,
     tapped,
     eventsBlocked,
+    sameFieldOnly,
   ]);
 
   return tokenSelection;

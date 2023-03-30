@@ -58,6 +58,7 @@ const AnnotateNavigation = ({
     annotationLib,
     triggerSelector,
     editMode,
+    variableType === "span",
     eventsBlocked || disableAnnotations
   );
 

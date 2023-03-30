@@ -1,0 +1,25 @@
+[
+  {
+    "id": "Obama2009",
+    "type": "unit",
+
+    "unit": {
+      "text_fields": [
+        {
+          "name": "title",
+          "value": "Een verbod op TikTok is niet de juiste oplossing",
+          "style": {
+            "font-size": "1.2em",
+            "font-weight": "bold"
+          }
+        },
+        {
+          "name": "text",
+          "value": "In de afgelopen maanden is er veel discussie geweest over de populariteit van de app TikTok en de mogelijke gevaren die het platform met zich meebrengt. Sommige regeringen en politieke partijen roepen op tot een verbod van de app in Europa. Hoewel ik begrijp dat er bezorgdheid bestaat over de privacyschendingen en de verspreiding van onjuiste informatie, geloof ik dat een verbod van TikTok niet de juiste oplossing is.\n\nTen eerste, TikTok is een populaire en veelgebruikte app die veel mensen plezier geeft. Het is een platform waar mensen zichzelf kunnen uiten en creatief kunnen zijn met video's. Het verbieden van de app zou veel mensen ontzeggen om deel te nemen aan een gemeenschap die ze waarderen.\n\nTen tweede, verbieden is niet de manier om problemen op te lossen. Als er bezorgdheid bestaat over de privacyschendingen van TikTok, zouden we moeten proberen om deze problemen op te lossen in plaats van het platform te verbieden. Dit kan bijvoorbeeld door het opleggen van strengere regels voor het verzamelen van gebruikersgegevens of het opleggen van boetes aan bedrijven die zich niet aan deze regels houden.\n\nTen derde, een verbod van TikTok zou slechts een symptoom behandelen in plaats van de oorzaak. Het probleem is niet het bestaan van TikTok, maar de manier waarop mensen het gebruiken. We moeten ons concentreren op het onderwijzen van mensen hoe ze zichzelf kunnen beschermen tegen privacyschendingen en hoe ze onjuiste informatie kunnen herkennen.\n\nIn plaats van een verbod van TikTok in Europa, moeten we ons concentreren op het opleggen van regels voor het verzamelen van gebruikersgegevens, het opleggen van boetes aan bedrijven die zich niet aan deze regels houden, en het onderwijzen van mensen hoe ze zichzelf kunnen beschermen tegen privacyschendingen en hoe ze onjuiste informatie kunnen herkennen. Op deze manier kunnen we ervoor zorgen dat mensen kunnen blijven genieten van het platform, terwijl we tegelijkertijd de risico's minimaliseren."
+        }
+      ],
+
+      "variables": []
+    }
+  }
+]

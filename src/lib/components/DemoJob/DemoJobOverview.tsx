@@ -62,7 +62,7 @@ interface DemoFile {
 const demo_files: DemoFile[] = [
   {
     label: "Annotate arguments by relating subjects to predicates",
-    units: "sotu",
+    units: "lancar",
     codebook: "relations",
   },
   {

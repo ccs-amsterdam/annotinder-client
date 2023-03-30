@@ -58,13 +58,14 @@ export function onKeyDown(
 export function storeMouseTokenSelection(
   currentNode: any,
   tokens: Token[],
+  sameFieldOnly: boolean,
   setCurrentToken: (i: number) => void,
   setTokenSelection: SetState<TokenSelection>
 ) {
   // select tokens that the mouse/touch is currently pointing at
   setCurrentToken(currentNode.index);
   setTokenSelection((state: TokenSelection) =>
-    updateSelection(state, tokens, currentNode.index, true)
+    updateSelection(state, tokens, currentNode.index, true, sameFieldOnly)
   );
   return currentNode.index;
 }
@@ -81,6 +82,7 @@ export function onTouchUp(
   tokens: Token[],
   editMode: boolean,
   tokenSelection: TokenSelection,
+  sameFieldOnly: boolean,
   setCurrentToken: (i: number) => void,
   setTokenSelection: SetState<TokenSelection>,
   triggerSelector: TriggerSelector,
@@ -115,10 +117,13 @@ export function onTouchUp(
     const currentNode: number = storeMouseTokenSelection(
       token,
       tokens,
+      sameFieldOnly,
       setCurrentToken,
       setTokenSelection
     );
-    setTokenSelection((state: TokenSelection) => updateSelection(state, tokens, currentNode, true));
+    setTokenSelection((state: TokenSelection) =>
+      updateSelection(state, tokens, currentNode, true, sameFieldOnly)
+    );
 
     if (token?.annotated && currentNode === tokenSelection[0]) {
       annotationFromSelection(tokens, [currentNode, currentNode], triggerSelector);
@@ -148,6 +153,7 @@ export function onMouseMove(
   event: MouseEvent,
   tokens: Token[],
   editMode: boolean,
+  sameFieldOnly: boolean,
   setCurrentToken: (i: number) => void,
   setTokenSelection: SetState<TokenSelection>,
   istouch: any,
@@ -163,13 +169,19 @@ export function onMouseMove(
     const button = event.which || event.button;
     if (button !== 1 && button !== 0) return null;
     window.getSelection().empty();
-    storeMouseTokenSelection(getToken(tokens, event), tokens, setCurrentToken, setTokenSelection);
+    storeMouseTokenSelection(
+      getToken(tokens, event),
+      tokens,
+      sameFieldOnly,
+      setCurrentToken,
+      setTokenSelection
+    );
   } else {
     let currentNode = getToken(tokens, event);
     if (currentNode.index !== null) {
       setCurrentToken(currentNode.index);
       setTokenSelection((state: TokenSelection) =>
-        updateSelection(state, tokens, currentNode.index, false)
+        updateSelection(state, tokens, currentNode.index, false, sameFieldOnly)
       );
     } else if (!currentNode.index === null) setCurrentToken(currentNode.index);
   }
@@ -194,6 +206,7 @@ export function onMouseUp(
   event: MouseEvent,
   tokens: Token[],
   tokenSelection: TokenSelection,
+  sameFieldOnly: boolean,
   setCurrentToken: (i: number) => void,
   setTokenSelection: SetState<TokenSelection>,
   triggerSelector: TriggerSelector,
@@ -214,6 +227,7 @@ export function onMouseUp(
   const currentNode = storeMouseTokenSelection(
     getToken(tokens, event),
     tokens,
+    sameFieldOnly,
     setCurrentToken,
     setTokenSelection
   );
@@ -247,12 +261,13 @@ export const movePosition = (
   mover: Mover,
   space: boolean,
   editMode: boolean,
+  sameFieldOnly: boolean,
   setCurrentToken: (i: number) => void,
   setTokenSelection: SetState<TokenSelection>
 ) => {
   let newPosition: number;
   if (!editMode) {
-    newPosition = moveToken(tokens, key, space, mover);
+    newPosition = moveToken(tokens, key, space, mover, sameFieldOnly);
   } else {
     newPosition = moveAnnotation(tokens, key, mover);
   }
@@ -260,7 +275,7 @@ export const movePosition = (
   if (mover.position !== newPosition) {
     setCurrentToken(newPosition);
     setTokenSelection((state: TokenSelection) =>
-      updateSelection(state, tokens, newPosition, !editMode && space)
+      updateSelection(state, tokens, newPosition, !editMode && space, sameFieldOnly)
     );
 
     const tokenRef = tokens[newPosition].ref.current;
@@ -283,7 +298,13 @@ const annotationFromSelection = (
   });
 };
 
-const moveToken = (tokens: Token[], key: Arrowkeys, space: boolean, mover: Mover) => {
+const moveToken = (
+  tokens: Token[],
+  key: Arrowkeys,
+  space: boolean,
+  mover: Mover,
+  sameFieldOnly: boolean
+) => {
   let newPosition = mover.position;
 
   if (key === "ArrowRight") newPosition++;
@@ -310,7 +331,7 @@ const moveToken = (tokens: Token[], key: Arrowkeys, space: boolean, mover: Mover
 
   if (space) {
     // limit selection to current field
-    if (tokens[mover.position].field !== tokens[newPosition].field) {
+    if (sameFieldOnly && tokens[mover.position].field !== tokens[newPosition].field) {
       if (newPosition > mover.position) {
         for (let i = newPosition; i >= mover.position; i--)
           if (tokens[i].field === tokens[mover.position].field) {
@@ -405,7 +426,8 @@ const updateSelection = (
   selection: TokenSelection,
   tokens: Token[],
   index: number,
-  add: boolean
+  add: boolean,
+  sameFieldOnly: boolean
 ) => {
   if (index === null) return selection;
   let newSelection: TokenSelection = [...selection];
@@ -413,7 +435,7 @@ const updateSelection = (
   if (!add || newSelection.length === 0) return returnSelectionIfChanged(selection, [index, null]);
   if (index === null) return returnSelectionIfChanged(selection, [newSelection[0], null]);
 
-  if (tokens[newSelection[0]].field === tokens[index].field) {
+  if (!sameFieldOnly || tokens[newSelection[0]].field === tokens[index].field) {
     newSelection = [newSelection[0], index];
   } else {
     if (index > newSelection[0]) {
