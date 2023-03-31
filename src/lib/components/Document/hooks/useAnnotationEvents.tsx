@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import { scrollToMiddle } from "../../../functions/scroll";
 
 import {
   onKeyDown,
@@ -12,7 +11,7 @@ import {
   //onContextMenu,
   movePosition,
 } from "../functions/eventFunctions";
-import { Token, TokenSelection, Arrowkeys, Span, AnnotationLibrary } from "../../../types";
+import { Token, TokenSelection, Arrowkeys, AnnotationLibrary } from "../../../types";
 
 /**
  * This is a hugely elaborate component for managing navigation (key, mouse and touch events)
@@ -67,24 +66,6 @@ export default function useAnnotationEvents(
     setCurrentToken(null);
     setTokenSelection([]);
   }, [tokens, setCurrentToken]);
-
-  // Add 'methods' to tokens for performing navigation and annotation events
-  useEffect(() => {
-    if (!tokens) return;
-    for (let token of tokens)
-      token.select = (span: Span = undefined) => {
-        if (!span) span = [token.index, token.index];
-
-        if (token?.containerRef?.current && token?.ref?.current) {
-          token.containerRef.current.style.scrollBehavior = "smooth";
-          scrollToMiddle(token.containerRef.current, token.ref.current, 1 / 2);
-          //keepInView(token.containerRef.current, token.ref.current);
-        }
-        setCurrentToken(token.index);
-        setTokenSelection(span);
-        triggerSelectionPopup({ index: token.index, from: span[0], to: span[1] });
-      };
-  }, [tokens, triggerSelectionPopup, setCurrentToken, setTokenSelection]);
 
   useEffect(() => {
     // for when manual edit mode releases

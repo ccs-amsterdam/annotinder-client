@@ -1,6 +1,5 @@
 import React, { CSSProperties, useEffect, useRef, useState, useMemo, ReactElement } from "react";
 import { Ref } from "semantic-ui-react";
-import { scrollToMiddle } from "../../../functions/scroll";
 import Meta from "./Meta";
 import renderText from "../functions/renderText";
 import renderImages from "../functions/renderImages";
@@ -25,15 +24,15 @@ const DocumentContent = styled.div<{
   highLines: boolean;
 }>`
   display: ${(p) => (p.grid?.areas ? "grid" : null)};
-  grid-template-rows: ${(p) => p.grid?.rows};
-  grid-template-columns: ${(p) => p.grid?.columns};
-  grid-template-areas: ${(p) => p.grid?.areas};
   margin: ${(p) => (p.centered ? "auto" : "")};
   padding-top: 0px;
   padding-bottom: 0px;
   width: 100%;
   z-index: 1;
 
+  grid-template-areas: ${(p) => p.grid?.areas};
+  grid-template-columns: ${(p) => p.grid?.columns};
+  ${(p) => (p.grid?.rows ? `grid-template-rows: ${p.grid.rows};` : `grid-auto-rows: min-content;`)}
   p {
     line-height: ${(p) => (p.highLines ? "2.5em" : "1.5em")};
   }
@@ -46,6 +45,7 @@ const BodyContainer = styled.div`
   flex-direction: column;
   align-items: center;
   overflow: auto;
+  scroll-behavior: smooth;
 `;
 
 interface BodyProps {
@@ -82,18 +82,18 @@ const Body = ({
   const containerRef = useRef(null);
   const [imagesLoaded, setImagesLoaded] = useState(true);
 
-  useEffect(() => {
-    // immitates componentdidupdate to scroll to the textUnit after rendering tokens
-    const firstTextUnitToken = tokens.find((token) => token.codingUnit);
-    const hasContext = tokens.some((token) => !token.codingUnit);
-    if (!hasContext) {
-      containerRef.current.scrollTop = 0;
-      return;
-    }
-    if (firstTextUnitToken?.ref?.current && containerRef.current) {
-      scrollToMiddle(containerRef.current, firstTextUnitToken.ref.current, 1 / 3);
-    }
-  }, [tokens]);
+  // useEffect(() => {
+  //   // immitates componentdidupdate to scroll to the textUnit after rendering tokens
+  //   const firstTextUnitToken = tokens.find((token) => token.codingUnit);
+  //   const hasContext = tokens.some((token) => !token.codingUnit);
+  //   if (!hasContext) {
+  //     containerRef.current.scrollTop = 0;
+  //     return;
+  //   }
+  //   if (firstTextUnitToken?.ref?.current && containerRef.current) {
+  //     scrollToMiddle(containerRef.current, firstTextUnitToken.ref.current, 1 / 3);
+  //   }
+  // }, [tokens]);
 
   useEffect(() => {
     if (!tokens) return;

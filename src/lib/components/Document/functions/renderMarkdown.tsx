@@ -23,7 +23,7 @@ export default function renderMarkdown(
         className="field"
         style={{
           gridArea: markdownField.grid_area,
-          padding: "15px",
+          padding: "10px",
           margin: "0px 10px 0px 10px",
           //width: "100%",
           fontSize: "1em",

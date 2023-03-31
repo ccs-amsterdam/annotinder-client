@@ -48,7 +48,6 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef, min
   useEffect(() => {
     if (!open || !portalref.current) return;
     setTimeout(() => fitPortalOnScreen(portalref.current, positionRef.current, minY), 10);
-    positionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     positionRef.current?.focus();
 
     // replace this with the implementation in MiddleCat, which uses

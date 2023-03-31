@@ -1,6 +1,6 @@
 [
   {
-    "id": "Obama2009",
+    "id": "1",
     "type": "unit",
 
     "unit": {
@@ -9,8 +9,8 @@
           "name": "title",
           "value": "Een verbod op TikTok is niet de juiste oplossing",
           "style": {
-            "font-size": "1.2em",
-            "font-weight": "bold"
+            "fontSize": "1.2em",
+            "fontWeight": "bold"
           }
         },
         {
@@ -20,6 +20,1982 @@
       ],
 
       "variables": []
+    }
+  },
+  {
+    "id": "data/art_pro.txt",
+    "type": "code",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "text.1",
+          "value": "Modern Art: what do you think of it?",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "1.4em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.2",
+          "value": "CIA Weapon.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.3",
+          "value": "Yes, but a \"weapon\" of freedom against oppression and censorship!  This article is very POSITIVE on Modern Art, praising the touring exhibition as \"showcasing the fruits of American cultural freedom\".",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.4",
+          "value": "One of the great things about Modern Art is the freedom of expression without the tyranny of tradition or expectation.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.5",
+          "value": "I know a lot of people don't like my views on art, but I appreciate art that is exactly what the artist envisioned. I don't appreciate \"well, I splattered paint and it is art\" or \"I twisted a bunch of metal tubes randomly and call it 'mother with empty arms.'\" Abstract art is fine if that is EXACTLY what they envisioned.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.6",
+          "value": "So the viewer is irrelevant? It's just the artist and what they envision: you either get/decode what the artist envisions or you don't?  Seems pretty limited.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.7",
+          "value": "Not, the viewer is not irrelevant, and I would hope the intent of the artist was to invoke some kind of emotional response. But just not via \"accident\". Again, if their intent was do it exactly as it came out, then fine, but I very often doubt that is the case.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "5.6em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.8",
+          "value": "Examples?",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.9",
+          "value": "I'm with you on this. I agree that the viewer's interpretation can lead to interesting convserations and thoughts, and that is for example one of the things that people enjoy about Jackson Pollock.  But. If it doesn't require specific skills to make -- if any random person could make the same thing and the same discussions could arise -- then the artist is irrelevant. Why is THIS art and THIS is garbage, when they look exactly the same?  If it's just based on the reputation of the artist, then it's not art, it's a popularity contest.  Edit: Please don't just downvote me, tell me where I am wrong and give me specific examples so I can learn.  I saw a news program once where they took pictures painted by five year olds and had an exhibition where they invited art critics and didn't tell them who did the paintings. That is informing my above opinion. But if it's wrong, there have to be counterexamples you can point me to, and I will examine them gratefully.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.10",
+          "value": "Why is THIS art and THIS is garbage, when they look exactly the same?  Well, that I can mostly answer. I spent a few years peripherally associated with the art world. A lot of art, like fashion, is MEANT to be a joke. It's kind of a \"game\" that people in the know play amongst themselves. That and money laundering or at least investment. If people agree that so-and-so's art is worth $6 million, they can be assured they can park $6 million of their cash in it. And, sometime later, they can sell it for more and realize a profit, but almost certainly no risk of loss like there is in the stock market. Basically, NFTs, without the risk. But for the money laundering, if I owe you $2 million from some illegal activity, you can buy a painting for $2 million this year, and sell it to me for $4 million next year. And, I just gave you the $2 million I owe plus have an asset worth millions as well. Regardless of what the art was \"worth\".",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "5.6em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.11",
+          "value": "I see this \"random person\" criticism a lot and it is BS. Random people don't make truly thought-provoking art. -",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "5.6em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.12",
+          "value": "Can you please give me an example? If I'm wrong, please educate me. 1 level 5 Two examples, if you'll read them:      Mel Chin's \"Spirit\". It just looks like a barrel on a rope. But if you read what the barrel represents and what the rope is made of, it becomes very meaningful. And if you experienced it in person, it is powerful!      Tom Friedman's \"Erased Playboy Centerfold\". So... Think of two quarters. They look identical. One quarter just came out of someone's pocket. The other quarter went into space with Neil Armstrong. At the moment of viewing, the quarters are the same, but does the history of the of object matter? Is there a difference?  Tom Freidman likes to use this tension in some of his works. ONE example is the \"Erased Playboy Centerfold\". Freidman meticulously erased the ink from a Playboy centerfold, then hung the \"blank\" page. Do you look at that blank page differently? Do you stare at it longer? Do you think about it more? Any random person, or a 5-yr.-old, could hang a blank sheet of glossy paper, but are these two blank sheets the same? It took Freidman a lot of time, care, and maybe skill to erase that page so precisely. Does that make any difference?  If you were asked, do you want a dollar bill or a quarter, you don't have to think. If you were asked do you want a dollar bill or the Neil Armstrong space quarter, now you have to think about it. THAT THOUGHT is one of the myriad of values of modern art.  Some modern art is just terrible, or at least I don't get it, but the above are just two examples of the infinite quest of Modern Art.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.13",
+          "value": "Tom Friedman's \"Erased Playboy Centerfold\"  Thanks for taking the time to reply!  Although both of these look to have been deliberate on the part of the artist, especially Spirit which would have required great skill to pull off. And both were deliberately trying to portray a specific thought on the part of the artist. For both of these, I can understand the value.  Yes, a five year old could hang blank paper, but he wouldn't have done it with the purposefulness that Friedman did.  I was more asking about things created by random methods, and why one person's random splattering of paint was 'better' than another's... that is what I am struggling to understand.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.14",
+          "value": "You make a good point. I often question the value of Pollock and the like. However, with Pollock, seeing amateur attempts at the same type of art makes me appreciate Pollock's work. It seems easy, but in reality takes more art and skill. IMO. (I've enjoyed this discussion).",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.15",
+          "value": "I find it to be less than thrilling",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.16",
+          "value": "I like a lot of it",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.17",
+          "value": "I think a lot of people see it as bland and boring, but I believe that in 100, 500, 2000 years, its going to be seen as completely different than it is now.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.18",
+          "value": "Its to inclusive yet not inclusive what so ever",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.19",
+          "value": "Oh my word. I hate it. I'm a photo realism artist so modern art makes me want to puke, and abstract art in my mind is equal to lack of talent.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.20",
+          "value": "Isn't photo realism a type of modern art? Why replace a camera with an artist if the resulting art doesn't mean more than what it physically represents?",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.21",
+          "value": "It takes more skill to perfectly imitate real life.      The best photo realism make a world that feels real, but looks better and more perfect than real life or captures a part or view of real life that can't be seen through a camera lense. ( i.e.- native american artist Ben Lucero who paints natives as they would have lived before European invasion)",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "5.6em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.22",
+          "value": "It makes sure everyone gets in art school so we don’t have to do that thing again.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.23",
+          "value": "tax loophole for the rich. they have someone paint something, have an appraiser value it at $200,000 and write it off in their taxes  not all of it, but a lot",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.24",
+          "value": "Please explain? (Or post a source)  How does owning somethong \"valuable\" become a tax write off?",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.25",
+          "value": "i never saved whatever place i saw it. maybe im mistaken but it would surprise me if something of the sort wasnt happening",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "5.6em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.26",
+          "value": "I've heard this before and it just doesn't make any sense. Maybe you could find the source again? 1 level 5 i probably could but i dont care enough to go looking for it. sorry. if you find something on it lemme know",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.27",
+          "value": "bullshit, bullshit, derivative",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.28",
+          "value": "Once you learn to look into it instead of at it you will learn to appreciate it. Talking specifically about paintings.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.29",
+          "value": "100% agree! Though I'll say this is true beyond paintings.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.30",
+          "value": "Most modern art is just a kind of Rorschach test. Ask critics independently and they will tell vastly different stories about the artwork.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.31",
+          "value": "Sometimes. But often it expresses somethong that no other medium can.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.32",
+          "value": "It looks like it was drawn by a 2 year old",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.33",
+          "value": "Easy. Thats all.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.34",
+          "value": "Counter question, what do you mean when you say modern art? Because there's a lot of it in a lot of different styles",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.35",
+          "value": "· edited 6 days ago  Man, that's a great question!  By \"Modern Art\", I mean art that uses unconventional means of expression: \"installation art\", or art that uses traditional media but the work is not meant to be immediately or visually aestheticly pleasing or narrative. That is, if its a painting for example, the meaning or appreciation is not it's initial visual appearance or the story it tells, but is something else.  As for \"skill\" in Modern Art, the artist's skill can be in the tought process that led to the creation, rather than the apparent skill in producing the art itself. (Unskilled creators should never use \"Modern Art\" as a free pass for a lack of skill and ability).",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.36",
+          "value": "Hmm, well from that interpretation. I'm quite a fan of the \"Who's afraid of Red, Yellow and Blue\" series, they're not masterpieces or anything, but there is a really interesting story behind them that I feel adds to them as a whole.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "5.6em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.37",
+          "value": "MEH!",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.38",
+          "value": "I have great respect for photo realist painting and I think that is a great point about a creating realistic world beyond what a camera could capture. I guess there is no need to define if photorealism is modern art or not.  My final point is that though some Modern Art is an abuse of \"art\", some expresses something that no other medium can. Take Ai Weiwei – \"Straight\", which looks like a pile of waste that anyone could do, but is infact, quite meaningful.  Now to look up those Native American paintings you mentioned, which sound fascinating...",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        }
+      ],
+      "grid": {
+        "areas": [
+          ["text.1"],
+          ["text.2"],
+          ["text.3"],
+          ["text.4"],
+          ["text.5"],
+          ["text.6"],
+          ["text.7"],
+          ["text.8"],
+          ["text.9"],
+          ["text.10"],
+          ["text.11"],
+          ["text.12"],
+          ["text.13"],
+          ["text.14"],
+          ["text.15"],
+          ["text.16"],
+          ["text.17"],
+          ["text.18"],
+          ["text.19"],
+          ["text.20"],
+          ["text.21"],
+          ["text.22"],
+          ["text.23"],
+          ["text.24"],
+          ["text.25"],
+          ["text.26"],
+          ["text.27"],
+          ["text.28"],
+          ["text.29"],
+          ["text.30"],
+          ["text.31"],
+          ["text.32"],
+          ["text.33"],
+          ["text.34"],
+          ["text.35"],
+          ["text.36"],
+          ["text.37"],
+          ["text.38"]
+        ]
+      }
+    }
+  },
+  {
+    "id": "data/climate_pro.txt",
+    "type": "code",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "text.1",
+          "value": "I'm just gonna say it  The change in the climate",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.2",
+          "value": "Beat me to it!",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.3",
+          "value": "The science",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.4",
+          "value": "Everyone is using electric cars, they are afraid to use cars",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.5",
+          "value": "It's not thought /s -",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.6",
+          "value": "We used to easily have a white Christmas and new year. Now it mostly snows in late January/February and not as much at all",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.7",
+          "value": "My ice cream melted",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.8",
+          "value": "My Town used to have a lot of snow in winter, now not anymore :(",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.9",
+          "value": "Never doubted it in the first place.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.10",
+          "value": "My house getting submerged under water.  Edit: I live near a beach and it's level is ever increasing",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.11",
+          "value": "I am old. I have always lived where I live now.  It is crystal clear that the climate has changed since I was young.  This is not proof that climate change is man-made - but it is proof enough for me that climate change is happening and the least we can do is to expect it to continue and to prepare for it.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.12",
+          "value": "I’m not an idiot that tries to disprove science",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.13",
+          "value": "My eyes",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.14",
+          "value": "Where are all the insects and butterflies? I used to have a windshield of bugs when I did the five hour drive to my mom's place in Canada. Now, I barely have to wash my windshield. Oh, I forgot, the forests are also all burned to shit and the floods are fucking batshit crazy.  Any deniers out there come have a drive with me. I'll show you some shit gonna scare ya' big time.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.15",
+          "value": "It's partially because insect populations *have* collapsed in many places, but ALSO windshields are designed differently now than they were 20 years ago and the slipstream is much more likely to take the bug over your car than splat it on the windshield.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.16",
+          "value": "Forgive me, I was including the grills of my vehicles. There is a massive change in insect population but thanks for replying, I know exactly what you're saying. Also, there is billions of dollars in damage to the highways and train tracks going up the same route from Vancouver to Calgary from climate change. This winter was one of the biggest financial disasters in the history of BC, Canada.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "5.6em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.17",
+          "value": "My basement flooded",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.18",
+          "value": "As a kid we had several snow days every winter. Now we are lucky to get one day. Also the summers were warm but not hot. Now we are getting hot summers every year. We passed 40 celsius 2 years ago and that has never ever happened before. Also you can see the smog above the city on hot days. Smog was something that was talked about when you spoke about Hong Kong or something. Not here.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.19",
+          "value": "Climate change is real, the debate is about the cause and effect of climate change. Humanity has never seen anything like this in all of our history. It is unknown if we will adapt, or go extinct. None of us alive today will live long enough to know.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.20",
+          "value": "Science. Al Gore. I mean how is this still a debate?",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.21",
+          "value": "scientists said it was real",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.22",
+          "value": "Republicans have been manipulating millions into not believing climate change….  Republicans have been manipulating their base into not taking Covid seriously (https://abcnews.go.com/amp/Health/red-blue-america-glaring-divide-covid-19-death/story?id=83649085. https://www.pewresearch.org/politics/2022/03/03/the-changing-political-geography-of-covid-19-over-the-last-two-years/  https://www.pbs.org/newshour/amp/show/how-misinformation-and-the-partisan-divide-drove-a-surge-in-u-s-covid-deaths) resulting in the death of many Americans.  Republicans have been manipulating their base with this lie that the election “was rigged” - destabilizing democracy  The question is when are Americans going to wake up and realize the republican party is full of shit?",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.23",
+          "value": "Despite living in a tropical country, it wasn't that hot before. Now it feels like I'm being BBQ'd alive.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.24",
+          "value": "When the scientists said it was.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.25",
+          "value": "Black ooze literally seeping from NYC buildings last summer.. it was so hot the sealant was melting",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.26",
+          "value": "scientific consensus",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.27",
+          "value": "The overwhelming amount of evidence, as well as its breadth. We can witness animal migrations changing, ocean currents changing, probability of storms and fires and droughts changing right in front of our eyes. Trees and plants are dying at the bottom of mountains where they've always been and migrating to higher altitudes with the temperature range they've evolved to. There's a record of Japanese cherry trees blossoming which goes back hundreds of years and has a clear trend towards earlier blossoming in more recent years.  To me this is much more compelling than my own experiences which also follow the rest of the evidence. I'm in my 30s and have lived in the same area my whole life. It clearly seems like winters are warmer and spring/autumn are shorter than they used to be.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.28",
+          "value": "Jury's still out, I'm br*tish and it's still cold as ever /j",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.29",
+          "value": "Seriously ? Y’all still believe this shyt ? 🤷🏼‍♀️🤦🏼‍♀️ -",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.30",
+          "value": "Thousands of people more qualified than me across the globe saying its real.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.31",
+          "value": "Ever since I was a teenager I knew climate change was real, but I live in a state known for winter, but in my region, winter barely happens any more. We used to get constantly cold winters with a couple heavy snowfalls a season, but we barely got any snow this past winter. You have to go north to find the type of snow we used to get. The weather in general has gotten more unstable, and summers are much hotter than they used to be when I was a kid.  Also, robins used to leave the area in fall. Nowadays they stay around all year.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.32",
+          "value": "very hot summers in my country and very warm winters",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.33",
+          "value": "Well, I read it in a textbook and we discussed some of the things happening because of it  Then I talked to a crazy person with a lot of money and a YouTube channel who said “man, you just believe what you’re told? Textbooks are like super biased man! They don’t tell you about the other side of the argument”  So I looked a little deeper into it and it turns out basically every single piece of scientific research on the matter confirms the climate has changed in a specific way because of increases in carbon emissions due to industrial output  And the crazy guy said “aw, man, the scientists are like the most biased, man! You can’t trust them! Just hear the other side out!”  So I listened to more crazy people, mostly creationists or politicians or PR guys who took money from big corporations to say climate change isn’t real and cigarettes don’t cause cancer.  It was around then that I think it really hit home for me",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.34",
+          "value": "Living in California",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.35",
+          "value": "“ it will be remembered as the greatest mass delusion in the history of the world-that Co2. The life of plants, was considered for a time to be a deadly poison.” -Richard Linden, Professor Emeritus, Earth Science M.I.T.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.36",
+          "value": "What's good for plants isn't always good for humans. The Great Oxygenation Event caused the organisms that created that oxygen to go extinct. We're not the first species to modify the climate in such a way that we have problems surviving.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.37",
+          "value": "Looking at the variation in CO2 levels from Antarctic core samples that indicate the past 20,000+ years. They wavered within a limited range based on global environmental events (e.g. ice ages) but suddenly took off to a level way above that range in the past 50 years. It's never gone that high (or that fast) before. And it's still growing.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.38",
+          "value": "Heatwaves in the UK of all places, Seriously In like February it was so hot",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.39",
+          "value": "I was born in 1985. There was never a time pollution-driven climate change was in doubt in my mind. My literal Saturday morning superhero cartoons were addressing the hole we burnt in the damn atmosphere.  When An Inconvenient Truth came out and people were treating it like this bombshell revelation, I was incredulous. It was like no one had been paying attention for the entire past decade to every form of remotely science-adjacent media mentioning that our planetary toxicity was going to kill us all. Did people think we had magically made everything better just because visibility in LA improved to 3 blocks instead of 1?",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.40",
+          "value": "When I was a child, 30 years ago, we had snowy but pleasant winters and mild summers with high temperatures in the 80's through most of summer, maybe touching 90's in August. Now, in the same place, we have muddy, rainy winters with random ice storms, and next week's high temperature is going to be 97. August is still weeks away. Well, that cinched it for me.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.41",
+          "value": "Scientific consensus",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        }
+      ],
+      "grid": {
+        "areas": [
+          ["text.1"],
+          ["text.2"],
+          ["text.3"],
+          ["text.4"],
+          ["text.5"],
+          ["text.6"],
+          ["text.7"],
+          ["text.8"],
+          ["text.9"],
+          ["text.10"],
+          ["text.11"],
+          ["text.12"],
+          ["text.13"],
+          ["text.14"],
+          ["text.15"],
+          ["text.16"],
+          ["text.17"],
+          ["text.18"],
+          ["text.19"],
+          ["text.20"],
+          ["text.21"],
+          ["text.22"],
+          ["text.23"],
+          ["text.24"],
+          ["text.25"],
+          ["text.26"],
+          ["text.27"],
+          ["text.28"],
+          ["text.29"],
+          ["text.30"],
+          ["text.31"],
+          ["text.32"],
+          ["text.33"],
+          ["text.34"],
+          ["text.35"],
+          ["text.36"],
+          ["text.37"],
+          ["text.38"],
+          ["text.39"],
+          ["text.40"],
+          ["text.41"]
+        ]
+      }
+    }
+  },
+  {
+    "id": "data/tax_pro.txt",
+    "type": "code",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "text.1",
+          "value": "What is your stance on taxing the rich?",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "1.4em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.2",
+          "value": "Tax them",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.3",
+          "value": "Remove all income tax from everyone  Tax only products  Scale the tax based on necessity  You need bread  You don't need a boat  Buy stupidly priced products  Pay stupidly high taxes",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.4",
+          "value": "The only problem with that is that it promotes cashless bartering to evade taxes.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.5",
+          "value": "I don't see the problem with that at all  In fact  Added bonus",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "5.6em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.6",
+          "value": "They provide thousands and millions of jobs. They’ve worked hard as hell for where their business is at now. -",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.7",
+          "value": "Billionaires cannot exist if their employees were being payed the full value of their labor. They are just leaches.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.8",
+          "value": "The full value of their labor is how much someone is willing to pay them for that labor the same way the full value of anything is how much someone is willing to pay for it. Value only exists in the context of a willing buyer and a willing seller.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "5.6em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.9",
+          "value": "\"nObOdY wAnTs To WoRk AnYmOrE!\"",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.10",
+          "value": "What? I'm just saying labor follows the laws of supply and demand like any other raw material. I specifically noted that the value of something (including labor) is dependent upon both seller and buyer reaching a mutually beneficial voluntary agreement.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.11",
+          "value": "I was mocking how your logic leads to that statement, when faced with a national labor shortage.  But in truth, labor does not strictly follow the laws of supply and demand. People take jobs that pay below their worth because they still need to eat and pay rent to survive. It's not mutually beneficial if the company pays only a fraction of the value of the labor. It's not voluntary if the employee's only choices are poverty or homelessness/starvation.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.12",
+          "value": "But that's exactly following supply and demand. If people are taking less pay than they think they deserve that means there is a surplus of labor relative to demand for labor. I know at my company they are raising salaries for everyone to encourage retention and allow for higher salaries for incoming employees because labor markets are tightening up, again demonstrating how supply and demand apply to labor.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.13",
+          "value": "The full value of one's labor is the total value generated from that individuals labor. If you make $3000 in sales a day for your company, the value of your labor is $3000. But typically your company will only pay you a few hundred dollars for that day of work. Because the company itself is a leech and can only exist by paying you less than you generate. -",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.14",
+          "value": "Anything bought or sold has multiple different values. Go to a flea market and you'll see this instantly. If I'm selling an old chair for $50 and someone offers me $40 I might take it. Meanwhile someone else might have been willing to pay $75 for it because that's what it's worth to them. And if they then take that chair to a different flea market and resell it for $100, good for them they found yet another value someone was willing to pay for it.  Labor is the same, the fact that the labor you sell generates more money for your employer than you personally cost then doesn't mean you aren't getting the full value of your labor. You are getting the value you agreed your labor is worth by signing your work contract.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.15",
+          "value": "That doesn't disprove my point that if you were payed the full value of your labor, as in all the money you bring into the company, the company would go out of buisness.  They can only exist by leeching the value of their employees labor.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.16",
+          "value": "Your entire method of determining the value of labor is flawed at it's core.  Let's go through an example, an employee works in a factory making widgets. The material components cost $1 and the finish product sells to a consumer for $5. By your method the work of the people on the production line is worth $4. But let's say widget 2.0 comes out rendering widget obsolete. Suddenly the millions of widgets produced on the line are worth maybe $0.50, so in that case each worker cost the company $0.50 per widget. So do they owe the company now $4.50 per widget to pay back what they were erroneously paid in the first place?  Or more to the point, how exactly do you balance the contributions of all the secondary people who either directly or indirectly add value? Truck drivers, managers who build out schedules and troubleshoot production issues, accountants, marketing people, IT? The truth is that without all of those people including the CEO and shareholders, the company cannot exist. And in the current setup people are generally compensated proportionally to how important they are to the company as a whole. Is a CEO worth 10,000 minimum wage employees? In a company with 100,000 employees yeah he probably is in terms of revenue generation.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.17",
+          "value": "You aren't disproving my point. Companies can only exist by not paying employees the full value of their labor. The only way a company earns a profit is by paying employees less than the value they produce, otherwise there would not be any profits for the company. The entire concept of employment relies on paying people less than they produce.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.18",
+          "value": "I mean if your point is that companies sell products for more than it costs to produce them to generate a profit then sure. But to imply there's anything wrong or immoral or even just unfair about that doesn't make any sense. Or to go so far as to consider it theft or exploitation of the workers is just absurd.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.19",
+          "value": "That makes no damn sense. The people with jobs are the ones working hard. That's what a job is.  For the rich, every employee is just an opportunity to exploit the value of their labor. If their employees were compensated proportionately to the success of the business, there would be no billionaires, but you'd have loyal employees for life.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.20",
+          "value": "Sounds fine, except taxing the rest of us is what actually happens",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.21",
+          "value": "Tax them into oblivion. And then tax them some more. -",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.22",
+          "value": "Trump paid $750 in income tax in 2017, we have no reason to believe other rich people are being taxed more if they don't have to be. Take out the tax loopholes, most other high-GDP countries don't have them.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.23",
+          "value": "But that doesn't tell us how many other taxes he was subjected to, like property tax, or so on.  I'm not saying he paid enough, just we don't have a whole picture of what the rich are paying",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.24",
+          "value": "You are also forgetting about carrying forward losses.  Taxes are complicated because of exceptions. Most people don't understand how they are taxed let alone the complex taxes of somebody like Trump. Him paying $750 in tax tells me he lost a shit ton of money. It's not the only way he could have only had to pay that much but it's the most likely.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "5.6em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.25",
+          "value": "[deleted] · 10 mo. ago",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.26",
+          "value": "I wasn't mentioning it cuz I get the feeling a lot of people on Reddit don't really care about losses and such. Their opinion is he's worth millions he should be taxed higher.  Ironically, they feel this way while also saying he's lying about how much he's worth and he's not worth nearly what he claims. Weird.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.27",
+          "value": "I assumed thats what \"tax the rich\" meant",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.28",
+          "value": "They've been robbing us blind for years. Tax them relentlessly.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.29",
+          "value": "Have we considered a flat tax say 5-7% ?",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.30",
+          "value": "No. You earn more, you pay more.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.31",
+          "value": "Comment deleted by user · 10 mo. ago",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.32",
+          "value": "Flat taxes unfairly shift the tax burden onto the poor.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "5.6em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.33",
+          "value": "Comment deleted by user · 10 mo. ago",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.34",
+          "value": "It ought to be structurally impossible to become a billionaire.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.35",
+          "value": "Corporations are not people, tax shareholders based on the amount and value of their shares, hold them responsible for the illegal acts performed by the corperations they hold stock in. Burn the whole system down.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.36",
+          "value": "[deleted] · 10 mo. ago  We do tax them. But they hire accountants to exploit loopholes in the",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.37",
+          "value": "Byzantine cesspool that is government regulated theft tax law. We need to close those loopholes, then think about raising rates.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.38",
+          "value": "Tax the rich, feed the poor, till there are no rich no more.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.39",
+          "value": "The rich are already taxed, I guess you mean more taxes. The problem with most proposals are that they are skewed to taxing rich employees not addressing inheritance and corporate /partnership loopholes.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.40",
+          "value": "They shouldn't get a free ride because they're rich. If anything the opposite. -",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.41",
+          "value": "If we split the federal budget evenly each man, woman, and child in the US would pay roughly $18,000 per year. From my perspective anyone not paying at least that much is a leech on our society.  On average the top 50% of earners pay $20,000 in income taxes alone (not the only kind of tax the federal government receives) while the bottom 50% pay less than $700. The truth is that the rich already pay taxes, revenue isn't the reason the government doesn't do the things people want them to do. People say Jeff Bezos could end world hunger but forget that the US government alone spends over 30 times Jeff's net worth every single year. Stop letting them off the hook, the money is there already, and frankly whenever people talk about how much the rich are \"dodging\" in taxes they always forget about the $6,000,000,000,000 we spend every year and the $28,760,149,000,000 in debt we've accumulated. For context people bring up the whole million seconds vs billion seconds, but stop before a trillion because that would be 31,709 years ago which is roughly the time primitive man began domesticating dogs.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.42",
+          "value": "I'm sorry, are you saying that every person in the US who doesn't pay 18,000 in taxes per year is a leach? I hope I misinterpreted that because if so you are saying that every American who earns a median middle class income is a parasite. I dont pay even close to that much in taxes and I make decent money.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.43",
+          "value": "You read that right. If you aren't paying $18,000 or more you are contributing to our debt and weakening the country financially.  Now do I really think every person could pay that much in taxes? No, which is why we should attack our overspending problem.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "5.6em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.44",
+          "value": "You sure have a very rude way of describing your fellow Americans. I completely disagree with you. 0 level 5 Sorry you're a leech hell bent on selfishly spending other people's money for your personal gain or to assuage your moral guilt? If you want to be part of the solution either pay more in taxes (which you can do voluntarily) or fight for lower spending.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.45",
+          "value": "Lmao now you've got me thinking that you are a troll, or just a cunt. Or maybe both. In any case, I'm not going to argue with an asshole who calls anyone that makes less than 90k a year a leech.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.46",
+          "value": "Why not just take the easy route and fight for decreases in spending? Work to create a world where more people can adequately contribute to their country?",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.47",
+          "value": "Billionaires don't make their money in a vacuum. Our economy is shared and collaborative. Their value comes from labor and their revenue is only possible because of the economy we established.  They are not one equal among 350 billion, they're the fucking leeches.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "4.2em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.48",
+          "value": "How do you figure? They pay more in taxes, create jobs, innovate technology, and generally move the country and the world forward. Thank God for Bezos and Amazon, imagine how much worse the pandemic would have been if the standard was still 4-8 weeks shipping on everything.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "5.6em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.49",
+          "value": "Every job is an opportunity to extract more value in labor than you pay them in salary. The fact that Bezos is a billionaire means he is not doing any of his employees a favor, he is stealing from them instead. 0 level 5 Stealing what? He hired them for a wage they agreed to work because it was mutually beneficial. They agreed to work because their time and labor was worth less to them than the wage they were offered and he hired them because to him their labor is worth slightly more.  However, if you understand Amazon's business model you would know that the vast majority of Amazon employees at most break even and likely cause Amazon to lose money. The retail side of Amazon at best breaks even and usually loses money. It's AWS that actually makes a profit.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.50",
+          "value": "They agreed to work because their time and labor was worth less to them than the wage they were offered  This is just not true. They agreed to work because they'll die if they don't. They have health needs, children to feed, and a home to provide.  You are making a huge assumption that their salary accurately and justly reflects the value of their labor. I strongly disagree with that. The value of the business as a whole is derived from labor. The existence of billionaires means it is not a fair exchange, but exploitation.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.51",
+          "value": "This is just not true. They agreed to work because they'll die if they don't. They have health needs, children to feed, and a home to provide.  Yes all of that was part of the choice they made to take the job. You have to work to survive. Society allows us to work in different, more efficient ways than hunting and gathering.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.52",
+          "value": "The key bargaining chip in any employment negotiation is your ability to walk away. If you can't walk away because your survival depends on it, then it is not mutually beneficial. It is not just and fair, instead it's more like indentured servitude.  Text the shit out of these billionaires until everyone's basic needs are met. Food, clean water, shelter, and hygiene. Then, and only then, can a fair salary negotiation take place",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.53",
+          "value": "But you do have the ability to walk away. There is literally nowhere that has only one employer except maybe military bases and even then there are businesses that pop up near the bases.  What you are describing where everyone's basic needs are met requires slavery and or theft. People are not owed anything simply for existing other than negative rights like protection from murder.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "7em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.54",
+          "value": "0 Okay so for the record you believe that billionaires and earn all of their money, and should only pay exactly the same taxes as every other person in the country, and also that no one deserves shelter, clean water, and food, and that providing those things is slavery. I just want to make sure I understand who the fuck I'm done talking to. 1 Continue this thread",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.55",
+          "value": "Only tax the robots",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.56",
+          "value": "One cannot tax the truly rich. They make passive income and there is no mechanism for taxing passive income. -",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.57",
+          "value": "Do it. Fuck em.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.58",
+          "value": "I don’t feel they need taxed any more or any less than any other working American.  I feel products should be taxed and only once. None this yearly tax on your car to pay for the plate. Every American should pay the exact same tax , year in and year out. Don’t pay your taxes, go right to jail until you can.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.59",
+          "value": "Great, but the people who write the tax codes are the rich and powerful, including liberals.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.60",
+          "value": "they're people too and therefore should pay the same %",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "text.61",
+          "value": "If people making $30,000 a year have to pay taxes, people making $30 million a year should also have to pay taxes. I don’t understand middle and low income people who see no problem with the rich not paying taxes, it’s bizarre.",
+          "style": {
+            "borderBottom": "1px solid #7777",
+            "marginTop": "0.5em",
+            "marginLeft": "2.8em"
+          },
+          "type": "text",
+          "offset": 0
+        }
+      ],
+      "grid": {
+        "areas": [
+          ["text.1"],
+          ["text.2"],
+          ["text.3"],
+          ["text.4"],
+          ["text.5"],
+          ["text.6"],
+          ["text.7"],
+          ["text.8"],
+          ["text.9"],
+          ["text.10"],
+          ["text.11"],
+          ["text.12"],
+          ["text.13"],
+          ["text.14"],
+          ["text.15"],
+          ["text.16"],
+          ["text.17"],
+          ["text.18"],
+          ["text.19"],
+          ["text.20"],
+          ["text.21"],
+          ["text.22"],
+          ["text.23"],
+          ["text.24"],
+          ["text.25"],
+          ["text.26"],
+          ["text.27"],
+          ["text.28"],
+          ["text.29"],
+          ["text.30"],
+          ["text.31"],
+          ["text.32"],
+          ["text.33"],
+          ["text.34"],
+          ["text.35"],
+          ["text.36"],
+          ["text.37"],
+          ["text.38"],
+          ["text.39"],
+          ["text.40"],
+          ["text.41"],
+          ["text.42"],
+          ["text.43"],
+          ["text.44"],
+          ["text.45"],
+          ["text.46"],
+          ["text.47"],
+          ["text.48"],
+          ["text.49"],
+          ["text.50"],
+          ["text.51"],
+          ["text.52"],
+          ["text.53"],
+          ["text.54"],
+          ["text.55"],
+          ["text.56"],
+          ["text.57"],
+          ["text.58"],
+          ["text.59"],
+          ["text.60"],
+          ["text.61"]
+        ]
+      }
+    }
+  },
+  {
+    "id": "fgoo1z8",
+    "type": "code",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "parent",
+          "value": "Is \"as\" a coordinating conjunction as a synonym of \"for\"?",
+          "style": { "borderBottom": "1px solid #7777" },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "body",
+          "value": "It's not a synonym **as** there are many uses **for** each word that have different meanings, even when used as a conjunction.",
+          "type": "text",
+          "offset": 0
+        }
+      ],
+      "markdown_fields": [
+        { "name": "question", "value": "## Question:", "type": "markdown" },
+        { "name": "answer", "value": "## Answer:", "type": "markdown" }
+      ],
+      "grid": { "areas": [["question"], ["parent"], ["answer"], ["body"]] }
+    }
+  },
+  {
+    "id": "fgonsf6",
+    "type": "code",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "parent",
+          "value": "No, there's absolutely no reason to use capitals for that, any more than you'd use them for, say, 'large publishing houses'.\r\n(But you might want to change 'phenomena' to the singular, phenomenon, and fix the typos in Elvis Presley's name!)",
+          "style": { "borderBottom": "1px solid #7777" },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "body",
+          "value": "Oops! It may or may not have been a half assed, barely on time (11:58pm) essay :,-) I don’t think I’ll confront her about the deduction because of that. The entire course is about independent record labels, so I’m wondering why no one else has ever thought to correct her on this. \r\n\r\nThanks!",
+          "type": "text",
+          "offset": 0
+        }
+      ],
+      "markdown_fields": [
+        { "name": "question", "value": "## Question:", "type": "markdown" },
+        { "name": "answer", "value": "## Answer:", "type": "markdown" }
+      ],
+      "grid": { "areas": [["question"], ["parent"], ["answer"], ["body"]] }
+    }
+  },
+  {
+    "id": "fgom8jz",
+    "type": "code",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "parent",
+          "value": "I see that the only dictionary to include this states that it is [an erroneous form](https://en.m.wiktionary.org/wiki/magnum_opi), so in that case, it's not appropriate to call it an acceptable form.",
+          "style": { "borderBottom": "1px solid #7777" },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "body",
+          "value": "Sorry I thought we were talking about eight limbed molluscs still. \r\n\r\nIt appears that you may be correct and at best ‘magnum opi’ is generally describes as nonstandard. \r\n\r\nI’ll start using it daily to see if I can get used enough to be accepted but in the meantime I suppose it will have to remain as Tom Selleck’s Irish cousin.",
+          "type": "text",
+          "offset": 0
+        }
+      ],
+      "markdown_fields": [
+        { "name": "question", "value": "## Question:", "type": "markdown" },
+        { "name": "answer", "value": "## Answer:", "type": "markdown" }
+      ],
+      "grid": { "areas": [["question"], ["parent"], ["answer"], ["body"]] }
+    }
+  },
+  {
+    "id": "fgogztx",
+    "type": "code",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "parent",
+          "value": "If it works in the context of what you're writing, I would suggest that you rearrange the sentence so that it says \"I think that neither of us care.\"",
+          "style": { "borderBottom": "1px solid #7777" },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "body",
+          "value": "Or, if you are intent on referencing both you and him individually, then you could write it like this: \"I think neither him, nor I, care at all.\" Something like that could work.",
+          "type": "text",
+          "offset": 0
+        }
+      ],
+      "markdown_fields": [
+        { "name": "question", "value": "## Question:", "type": "markdown" },
+        { "name": "answer", "value": "## Answer:", "type": "markdown" }
+      ],
+      "grid": { "areas": [["question"], ["parent"], ["answer"], ["body"]] }
+    }
+  },
+  {
+    "id": "fgogvkj",
+    "type": "code",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "parent",
+          "value": "Is the sentence \"I think neither me nor him cares\"?",
+          "style": { "borderBottom": "1px solid #7777" },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "body",
+          "value": "If it works in the context of what you're writing, I would suggest that you rearrange the sentence so that it says \"I think that neither of us care.\"",
+          "type": "text",
+          "offset": 0
+        }
+      ],
+      "markdown_fields": [
+        { "name": "question", "value": "## Question:", "type": "markdown" },
+        { "name": "answer", "value": "## Answer:", "type": "markdown" }
+      ],
+      "grid": { "areas": [["question"], ["parent"], ["answer"], ["body"]] }
+    }
+  },
+  {
+    "id": "fgog4le",
+    "type": "code",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "parent",
+          "value": "Would you capitalize the phrase, “independent record labels”? I lost points on an assignment for this, but I don’t think I’m in the wrong.",
+          "style": { "borderBottom": "1px solid #7777" },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "body",
+          "value": "No, there's absolutely no reason to use capitals for that, any more than you'd use them for, say, 'large publishing houses'.\r\n(But you might want to change 'phenomena' to the singular, phenomenon, and fix the typos in Elvis Presley's name!)",
+          "type": "text",
+          "offset": 0
+        }
+      ],
+      "markdown_fields": [
+        { "name": "question", "value": "## Question:", "type": "markdown" },
+        { "name": "answer", "value": "## Answer:", "type": "markdown" }
+      ],
+      "grid": { "areas": [["question"], ["parent"], ["answer"], ["body"]] }
+    }
+  },
+  {
+    "id": "fgoazt6",
+    "type": "code",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "parent",
+          "value": "Past Continuous not Past Simple\r\n1. He was working, meaning he could still possibly be working as teacher even after you had found him. (Action started in the past and can continue to the present)\r\n\r\nExample:\r\nShe was studying literature for 2 hours when he called her.\r\n\r\n2. He had been working, meaning he stopped working as a teacher up until the time you had found him. (Action started and completed in the past)\r\n\r\nExample: \r\n\r\nShe had been studying literature for 2 hours when he called her.",
+          "style": { "borderBottom": "1px solid #7777" },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "body",
+          "value": "Thank you, now I get it. Buy may I ask one more question? There's a rule that says that if the events are mentioned in a chronological order we use the past simple. For example \"His grandfather was a musician and his father was also a composer\". Is it crucially wrong to says \"His grandfather had been a musician and his father was also a composer\"? So we can only use the past perfect in this sentence if we change the order like this \"His father was a composer and his father's father(grandfather) had also been a musician?\r\n\r\nThank you in advance!",
+          "type": "text",
+          "offset": 0
+        }
+      ],
+      "markdown_fields": [
+        { "name": "question", "value": "## Question:", "type": "markdown" },
+        { "name": "answer", "value": "## Answer:", "type": "markdown" }
+      ],
+      "grid": { "areas": [["question"], ["parent"], ["answer"], ["body"]] }
+    }
+  },
+  {
+    "id": "fgo3tzp",
+    "type": "code",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "parent",
+          "value": "Opposite of Loneliness",
+          "style": { "borderBottom": "1px solid #7777" },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "body",
+          "value": "Love/Loved\r\n\r\nEmbrace/Embraced\r\n\r\nAffectionate/Affection \r\n\r\nAppreciate/Appreciative/Appreciation \r\n\r\nConsider/Considerate/Consideration\r\n\r\nAdmire/Admirable/Admiration\r\n\r\nWelcome/Welcomed/Welcoming",
+          "type": "text",
+          "offset": 0
+        }
+      ],
+      "markdown_fields": [
+        { "name": "question", "value": "## Question:", "type": "markdown" },
+        { "name": "answer", "value": "## Answer:", "type": "markdown" }
+      ],
+      "grid": { "areas": [["question"], ["parent"], ["answer"], ["body"]] }
+    }
+  },
+  {
+    "id": "fgo2vz2",
+    "type": "code",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "parent",
+          "value": "Using the word “post” correctly",
+          "style": { "borderBottom": "1px solid #7777" },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "body",
+          "value": "you are correct in post meaning after, so like post class, im going home. \r\n\r\nI dont think the usage works in the sentence you are asking about though cause what does it mean to be post 70 degree weather?",
+          "type": "text",
+          "offset": 0
+        }
+      ],
+      "markdown_fields": [
+        { "name": "question", "value": "## Question:", "type": "markdown" },
+        { "name": "answer", "value": "## Answer:", "type": "markdown" }
+      ],
+      "grid": { "areas": [["question"], ["parent"], ["answer"], ["body"]] }
+    }
+  },
+  {
+    "id": "fgo1bdy",
+    "type": "code",
+    "unit": {
+      "text_fields": [
+        {
+          "name": "parent",
+          "value": "Is the sentence \"I think neither me nor him cares\"?",
+          "style": { "borderBottom": "1px solid #7777" },
+          "type": "text",
+          "offset": 0
+        },
+        {
+          "name": "body",
+          "value": "I believe it's:\r\n\r\n\"I think neither I nor he cares\", because of you were to rearrange the phrase, you could get two sentences-\r\n\r\n\"I don't care\" and \"he doesn't care\", so your pronouns need to be modified to reflect grammatical consistency.",
+          "type": "text",
+          "offset": 0
+        }
+      ],
+      "markdown_fields": [
+        { "name": "question", "value": "## Question:", "type": "markdown" },
+        { "name": "answer", "value": "## Answer:", "type": "markdown" }
+      ],
+      "grid": { "areas": [["question"], ["parent"], ["answer"], ["body"]] }
     }
   }
 ]

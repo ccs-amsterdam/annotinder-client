@@ -701,7 +701,6 @@ export interface Token {
   containerRef?: any; // once rendered, a Token will carry refs for it's own element and it's container element
   ref?: any;
   arrayIndex?: number; // once rendered, the index of the rendered tokens. Can differ from 'index' if current unit is a subset of a document (so index does not start at 0)
-  select?: (span: Span) => void; // a function that can be called on a token to select it
 }
 
 // token as it can occur in a unit. This includes alternative conventions in NLP parsers

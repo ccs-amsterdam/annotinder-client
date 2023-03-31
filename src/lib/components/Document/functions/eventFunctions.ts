@@ -278,8 +278,9 @@ export const movePosition = (
       updateSelection(state, tokens, newPosition, !editMode && space, sameFieldOnly)
     );
 
-    const tokenRef = tokens[newPosition].ref.current;
-    tokenRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+    // this should now be handled by setting the focus on the current token
+    //const tokenRef = tokens[newPosition].ref.current;
+    //tokenRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
   }
   return newPosition;
 };
