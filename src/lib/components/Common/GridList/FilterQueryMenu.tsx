@@ -2,9 +2,7 @@ import { SetState } from "../../../types";
 import { TbFilter } from "react-icons/tb";
 import { FilterQuery, DataQuery, FilterQueryOption } from "./GridListTypes";
 import { QueryDiv } from "./GridListStyled";
-import { useEffect, useState, useRef, useDeferredValue } from "react";
-import { MdOutlineFilter } from "react-icons/md";
-import { RiCloseFill } from "react-icons/ri";
+import { useEffect, useState, useRef } from "react";
 
 interface FilterQueryProps {
   query: DataQuery;
@@ -106,17 +104,18 @@ const SearchFilterField = (props: {
   onFilter: (values: any, onlyDelete: boolean) => void;
 }) => {
   const [search, setSearch] = useState("");
+  const { label, onFilter } = props;
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      props.onFilter({ search }, !search);
+      onFilter({ search }, !search);
     }, 500);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, onFilter]);
 
   return (
     <div className="SearchFilterField">
-      <label>{props.label}</label>
+      <label>{label}</label>
       <input
         className="SearchField"
         placeholder={`<search terms>`}
