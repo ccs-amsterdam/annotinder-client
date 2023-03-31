@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { SessionData } from "../../../types";
-import Markdown from "../../Common/Markdown";
+import Markdown from "../../Common/components/Markdown";
 import styled from "styled-components";
 import { FaQuestionCircle } from "react-icons/fa";
-import Modal from "../../Common/Modal";
+import Modal from "../../Common/components/Modal";
 
 const QuestionMarkButton = styled.div`
   height: 2.5rem;

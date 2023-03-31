@@ -1,6 +1,6 @@
 import { createRef } from "react";
 import { MarkdownField, RenderedMarkdown } from "../../../types";
-import Markdown from "../../Common/Markdown";
+import Markdown from "../../Common/components/Markdown";
 
 export default function renderMarkdown(
   markdownFields: MarkdownField[],

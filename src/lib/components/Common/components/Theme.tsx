@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { RiFontSize2 } from "react-icons/ri";
-import useLocalStorage from "../../hooks/useLocalStorage";
+import useLocalStorage from "../../../hooks/useLocalStorage";
 
 const dark = {
   background: "#222",

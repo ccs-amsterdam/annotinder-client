@@ -24,6 +24,12 @@ export interface DataPointWithRef {
   datapoint: DataPoint;
 }
 
+export interface SelectedDataPoint {
+  ref: RefObject<HTMLDivElement>;
+  datapoint: DataPoint;
+  detailElement?: ReactElement;
+}
+
 export interface DataMeta {
   offset: number;
   total: number;
@@ -59,6 +65,7 @@ export interface DataQuery {
   offset: number;
   sort?: SortQuery[];
   filter?: FilterQuery[];
+  direction?: "up" | "down";
 }
 
 export interface GridItemTemplate {

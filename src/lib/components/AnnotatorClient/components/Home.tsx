@@ -1,14 +1,14 @@
 import { ReactElement, useRef, useState } from "react";
 import { FaHome, FaUser } from "react-icons/fa";
 import { SetState } from "../../../types";
-import { DarkModeButton } from "../../Common/Theme";
+import { DarkModeButton } from "../../Common/components/Theme";
 import Backend from "../../Login/Backend";
 import CoderView from "./CoderView";
 import ManageJobs from "./ManageJobs";
 import ManageUsers from "./ManageUsers";
 import styled from "styled-components";
 import MenuButtonGroup from "../../Annotator/components/MenuButtonGroup";
-import Popup from "../../Common/Popup";
+import Popup from "../../Common/components/Popup";
 
 interface HomeProps {
   backend: Backend;

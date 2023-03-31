@@ -110,7 +110,6 @@ const Modal = ({ children, open, setOpen, closeOnSelectKey }: ModalProps) => {
 
     function onClick(e: any) {
       if (closeIconEl && closeIconEl.contains(e.target)) setOpen(false);
-      //e.stopPropagation();
       if (modalEl && !modalEl.contains(e.target)) {
         setOpen(false);
       }

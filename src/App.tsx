@@ -6,8 +6,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AnnotatorPythonClient from "./lib/components/AnnotatorClient/AnnotatorPythonClient";
 import AnnotatorRClient from "./lib/components/AnnotatorClient/AnnotatorRClient";
 import DemoJobOverview from "./lib/components/DemoJob/DemoJobOverview";
-import ResponsiveContainer from "./lib/components/Common/ResponsiveContainer";
-import { useTheme } from "./lib/components/Common/Theme";
+import ResponsiveContainer from "./lib/components/Common/components/ResponsiveContainer";
+import { useTheme } from "./lib/components/Common/components/Theme";
 
 const queryClient = new QueryClient();
 

@@ -1,16 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import Backend from "../../Login/Backend";
 import { Job } from "../../../types";
 import styled from "styled-components";
-import GridList from "../../Common/GridList/GridList";
+import GridList from "../../Common/components/GridList/GridList";
 import {
   DataPoint,
   DataQuery,
   FilterQueryOption,
   GridItemTemplate,
   SortQueryOption,
-} from "../../Common/GridList/GridListTypes";
+} from "../../Common/components/GridList/GridListTypes";
+import { sortData } from "../../Common/components/GridList/GridListFunctions";
 
 const StyledDiv = styled.div`
   h2 {
@@ -51,88 +52,72 @@ const CoderJobsTable = ({ backend }: { backend: Backend }) => {
     setSearchParams({ host: backend.host, job_id: rowObj.id });
   };
 
-  //const started = jobs ? jobs.filter((j) => j.modified != null) : [];
-  //const newjobs = jobs ? jobs.filter((j) => j.modified == null) : [];
-
-  function loadData(query: DataQuery) {
-    let data = jobs.map((v) => {
-      v.modified = v.modified && new Date(v.modified);
-      v.created = v.created && new Date(v.created);
-      v.progress = v.n_total ? Math.round((100 * (v.n_coded || 0)) / v.n_total) : null;
-      v.progressLabel = v.progress != null ? `${v.progress}%` : "not started";
-      v.status = v.progress === 1 ? "Done" : "In progress";
-      return v;
-    });
-    data = data.filter((v) => {
-      for (let filter of query.filter) {
-        if (filter.type === "search") {
-          if (!v[filter.variable]?.toLowerCase().includes(filter.search.toLowerCase()))
-            return false;
+  const loadData = useCallback(
+    async (query: DataQuery) => {
+      let data = jobs.map((v) => {
+        v = { ...v };
+        v.title = v.id + ": " + v.title;
+        v.modified = v.modified && new Date(v.modified);
+        v.created = v.created && new Date(v.created);
+        v.progress = v.n_total ? Math.round((100 * (v.n_coded || 0)) / v.n_total) : null;
+        v.progressLabel = v.progress != null ? `${v.progress}%` : "not started";
+        v.status = v.progress === 1 ? "Done" : "In progress";
+        return v;
+      });
+      data = data.filter((v) => {
+        for (let filter of query.filter) {
+          if (filter.type === "search") {
+            if (!v[filter.variable]?.toLowerCase().includes(filter.search.toLowerCase()))
+              return false;
+          }
         }
-      }
-      return true;
-    });
+        return true;
+      });
 
-    sortData(data, query);
-    const meta = { offset: query.offset, total: data.length };
-    data = data.slice(query.offset, query.offset + query.n);
-    return { data, meta };
-  }
+      sortData(data, query);
+      const meta = { offset: query.offset, total: data.length };
+      data = data.slice(query.offset, query.offset + query.n);
+      return { data, meta };
+    },
+    [jobs]
+  );
+
+  const gridListSettings = useMemo(() => {
+    const template: GridItemTemplate[] = [
+      { label: "Coding Job", value: "title", style: { fontWeight: "bold", fontSize: "1.6rem" } },
+      {
+        label: "Last activity",
+        value: "modified",
+        style: { fontStyle: "italic", width: "50%" },
+      },
+      {
+        label: "% Completed",
+        value: "progressLabel",
+        style: { fontStyle: "italic", width: "50%", textAlign: "right" },
+      },
+    ];
+
+    const sortOptions: SortQueryOption[] = [
+      { variable: "modified", label: "Last activity", default: "desc" },
+      { variable: "progress", label: "% Completed" },
+    ];
+
+    const filterOptions: FilterQueryOption[] = [
+      { variable: "title", label: "Coding Job Title", type: "search" },
+    ];
+
+    return { template, sortOptions, filterOptions };
+  }, []);
 
   return (
     <>
       <GridList
         loadData={loadData}
         onClick={onClick}
-        template={gridItemTemplate}
-        sortOptions={sortOptions}
-        filterOptions={filterOptions}
+        template={gridListSettings.template}
+        sortOptions={gridListSettings.sortOptions}
+        filterOptions={gridListSettings.filterOptions}
       />
     </>
   );
-};
-
-const gridItemTemplate: GridItemTemplate[] = [
-  { label: "Coding Job", value: "title", style: { fontWeight: "bold", fontSize: "1.6rem" } },
-  {
-    label: "Last activity",
-    value: "modified",
-    style: { fontStyle: "italic", width: "50%" },
-  },
-  {
-    label: "% Completed",
-    value: "progressLabel",
-    style: { fontStyle: "italic", width: "50%", textAlign: "right" },
-  },
-];
-
-const sortOptions: SortQueryOption[] = [
-  { variable: "modified", label: "Last activity", default: "desc" },
-  { variable: "progress", label: "% Completed" },
-];
-
-const filterOptions: FilterQueryOption[] = [
-  { variable: "title", label: "Coding Job Title", type: "search" },
-];
-
-const sortData = (data: DataPoint[], query: DataQuery) => {
-  if (!query.sort || query.sort.length === 0) return;
-
-  function compare(a: any, b: any) {
-    if (!a && !b) return 0;
-    if (!a) return -1;
-    if (!b) return 1;
-    if (typeof a === "string") return a.localeCompare(b);
-    return a - b;
-  }
-
-  data.sort((aData: DataPoint, bData: DataPoint) => {
-    for (let sort of query.sort) {
-      const a: any = aData[sort.variable];
-      const b: any = bData[sort.variable];
-      let diff = compare(a, b);
-      if (diff !== 0) return sort.order === "asc" ? diff : -diff;
-    }
-    return 0;
-  });
 };

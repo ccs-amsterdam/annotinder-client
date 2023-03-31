@@ -4,7 +4,7 @@ import { List } from "semantic-ui-react";
 import { getColorGradient } from "../../../functions/tokenDesign";
 import standardizeColor from "../../../functions/standardizeColor";
 import { getValidTokenRelations, getValidTokenDestinations } from "../functions/relations";
-import Popup from "../../Common/Popup";
+import Popup from "../../Common/components/Popup";
 
 import {
   Variable,

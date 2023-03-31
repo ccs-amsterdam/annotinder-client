@@ -6,10 +6,10 @@ import IndexController from "./IndexController";
 import Finished from "./Finished";
 import { CodeBook, FullScreenNode, JobServer, SetState } from "../../../types";
 import { Button } from "../../../styled/StyledSemantic";
-import { DarkModeButton, FontSizeButton } from "../../Common/Theme";
+import { DarkModeButton, FontSizeButton } from "../../Common/components/Theme";
 import MenuButtonGroup from "./MenuButtonGroup";
 import styled from "styled-components";
-import Modal from "../../Common/Modal";
+import Modal from "../../Common/components/Modal";
 import { FaWindowClose } from "react-icons/fa";
 
 interface JobControllerProps {

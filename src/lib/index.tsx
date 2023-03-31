@@ -3,7 +3,7 @@ import JobServerPython from "./components/AnnotatorClient/classes/JobServerPytho
 import JobServerDemo from "./components/DemoJob/classes/JobServerDemo";
 import AnnotatorPythonClient from "./components/AnnotatorClient/AnnotatorPythonClient";
 import AnnotatorRClient from "./components/AnnotatorClient/AnnotatorRClient";
-import ResponsiveContainer from "./components/Common/ResponsiveContainer";
+import ResponsiveContainer from "./components/Common/components/ResponsiveContainer";
 
 import GlobalStyle from "./styled/GlobalStyle";
 import { standardizeCodes, getCodeTreeArray, codeBookEdgesToMap } from "./functions/codebook";

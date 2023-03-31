@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { CenteredDiv } from "../../../styled/Styled";
+import { CenteredDiv } from "../../../../styled/Styled";
 import SortQueryMenu from "./SortQueryMenu";
 import FilterQueryMenu from "./FilterQueryMenu";
 import {
@@ -12,16 +12,23 @@ import {
   FilterQueryOption,
   GridListData,
   GridItemTemplate,
+  DataMeta,
+  SelectedDataPoint,
 } from "./GridListTypes";
 import { GridListDiv } from "./GridListStyled";
+import { ReactElement } from "react-markdown/lib/react-markdown";
 
 interface GridListProps {
-  loadData?: (query: DataQuery) => GridListData;
+  /** loadData is a callback function that generates the data given a query.
+   * Note that this function should not change!! so use useCallback if created inside the component
+   */
+  loadData?: (query: DataQuery) => Promise<GridListData>;
   template: GridItemTemplate[];
   sortOptions?: SortQueryOption[];
   filterOptions?: FilterQueryOption[];
   searchOptions?: string[];
   onClick?: (data: DataPoint) => void;
+  setDetail?: (data: DataPoint) => Promise<ReactElement>;
   pageSize?: number;
 }
 
@@ -31,95 +38,75 @@ const GridList = ({
   sortOptions,
   filterOptions,
   onClick,
+  setDetail,
   pageSize = 10,
 }: GridListProps) => {
-  const [data, setData] = useState<GridListData>();
-  const [transition, setTransition] = useState<"up" | "down">();
+  const [data, setData] = useState<DataPointWithRef[]>();
+  const [meta, setMeta] = useState<DataMeta>();
   const upRef = useRef<HTMLDivElement>(null);
   const downRef = useRef<HTMLDivElement>(null);
-  const [query, setQuery] = useState<DataQuery>({ n: pageSize, offset: 0 });
-
-  const pageData = useMemo(() => {
-    const pageData: DataPointWithRef[] = [];
-    for (let i = 0; i < pageSize; i++) {
-      pageData.push({ datapoint: data?.data?.[i], ref: React.createRef<HTMLDivElement>() });
-    }
-    return pageData;
-  }, [data, pageSize]);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const detailRef = useRef<HTMLDivElement>(null);
+  const [selected, setSelected] = useState<SelectedDataPoint>();
+  const [query, setQuery] = useState<DataQuery>({ n: pageSize, offset: 0, sort: [], filter: [] });
 
   function changePage(direction: "up" | "down") {
     if (!data) {
       setQuery({ n: pageSize, offset: 0 });
       return;
     }
-    if (direction === "down" && data.data.length < pageSize) return;
-    setTransition(direction);
+    if (direction === "down" && data.length < pageSize) return;
+    //setTransition(direction);
     setQuery((query) => {
-      let offset = data?.meta?.offset || 0;
-      const total = data?.meta?.total || 0;
+      let offset = meta?.offset || 0;
+      const total = meta?.total || 0;
       if (direction === "down") Math.min((offset += pageSize), total);
       if (direction === "up") Math.max((offset -= pageSize), 0);
       offset = Math.max(0, offset);
-      return { ...query, offset };
+      return { ...query, offset, direction };
     });
   }
 
   useEffect(() => {
-    setData(loadData(query));
-  }, [query, loadData]);
+    function onClick(e: MouseEvent) {
+      if (detailRef.current?.contains(e.target as Node)) return;
+      e.stopPropagation();
+      e.preventDefault();
+      setSelected(undefined);
+    }
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, [detailRef]);
 
   useEffect(() => {
-    let selected = -1;
-    function castShadow(e?: MouseEvent) {
-      if (e) {
-        let clickOutside = true;
-        for (let i = 0; i < pageData.length; i++) {
-          if (pageData?.[i]?.ref?.current?.contains(e.target as Node)) {
-            selected = i;
-            clickOutside = false;
-          }
+    const gridEl = gridRef.current;
+    if (!gridEl) return;
+    gridEl.classList.remove("upOut", "downOut", "upIn", "downIn");
+    gridEl.classList.add(`${query.direction || ""}Out`);
+    loadData(query)
+      .then(({ data, meta }) => {
+        const dataWithRef: DataPointWithRef[] = [];
+        for (let i = 0; i < pageSize; i++) {
+          dataWithRef.push({ datapoint: data?.[i], ref: React.createRef<HTMLDivElement>() });
         }
-        if (clickOutside) selected = -1;
-      }
-      const light = selected >= 0 ? pageData[selected].ref.current : upRef.current;
-      if (!light) return;
-      const lightFrom = light.getBoundingClientRect();
+        setData(dataWithRef);
+        setMeta(meta);
+      })
+      .finally(() => {
+        gridEl.classList.remove("upOut", "downOut", "upIn", "downIn");
+        gridEl.classList.add(`${query.direction || ""}In`);
+      });
+  }, [query, gridRef, pageSize, loadData]);
 
-      for (let i = 0; i < pageData.length; i++) {
-        const ref = pageData[i].ref;
-        if (i === selected) {
-          ref.current.style.background = "var(--secondary)";
-          ref.current.style.color = "var(--primary-dark)";
-          ref.current.style.boxShadow = "";
-          continue;
-        }
-        ref.current.style.background = "";
-        ref.current.style.color = "";
-        if (!ref.current) return;
-        const lightTo = ref.current.getBoundingClientRect();
+  const canGoUp = meta && meta.offset > 0;
+  const canGoDown = meta && query.offset + pageSize < meta.total;
 
-        let x = lightTo.left + lightTo.width * 0.5 - (lightFrom.left + lightFrom.width * 0.5);
-        let y = lightTo.top + lightTo.height * 0.5 - (lightFrom.top + lightFrom.height * 0.5);
-        let h = Math.sqrt(x * x + y * y);
-        x = x / h;
-        y = y / h;
-        ref.current.style.boxShadow = `${x * 4}px ${y * 4}px 0.8rem var(--${
-          selected >= 0 ? "secondary-dark" : "primary-dark"
-        })`;
-      }
-    }
-    castShadow();
-
-    document.addEventListener("mousedown", castShadow);
-    return () => document.removeEventListener("mousedown", castShadow);
-  }, [pageData, upRef]);
-
-  const canGoUp = data && data.meta.offset > 0;
-  const canGoDown = data && query.offset + pageSize < data.meta.total;
+  const page = query.offset / pageSize + 1;
+  const pages = Math.ceil(meta?.total / pageSize) || 1;
 
   return (
     <CenteredDiv>
-      <GridListDiv transition={transition}>
+      <GridListDiv ref={gridRef}>
         <div className="QueryFields">
           {filterOptions && (
             <FilterQueryMenu query={query} setQuery={setQuery} filterOptions={filterOptions} />
@@ -127,7 +114,7 @@ const GridList = ({
           {sortOptions && (
             <SortQueryMenu query={query} setQuery={setQuery} sortOptions={sortOptions} />
           )}
-          <div className="Results">{query.offset + " / " + data?.meta?.total || "-"}</div>
+          <div className="Results">{page + " / " + pages}</div>
         </div>
         <div className="GridItems">
           {
@@ -143,20 +130,35 @@ const GridList = ({
                 </CenteredDiv>
               ) : (
                 template.map((item: GridItemTemplate, i) => (
-                  <Value key={item.label + "_" + i} {...item}>
+                  <Value key={item.label + "_" + i} style={item.style}>
                     {item.label}
                   </Value>
                 ))
               )}
             </div>
           }
-          {pageData.map(({ datapoint, ref }, i) => {
+          {data?.map(({ datapoint, ref }, i) => {
             return (
               <div
                 key={datapoint?.id ?? `missing_${i}`}
                 ref={ref}
-                className={`GridItem Values ${!datapoint && "Disabled"}`}
-                onClick={() => datapoint && onClick && onClick(datapoint)}
+                className={`GridItem Values ${!datapoint && "Disabled"} ${
+                  selected && selected.datapoint.id === datapoint?.id && "Selected"
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!datapoint) return;
+                  if (setDetail) {
+                    setDetail(datapoint)
+                      .then((detailElement) => {
+                        setSelected({ datapoint, ref, detailElement });
+                      })
+                      .catch(console.error);
+                  } else {
+                    setSelected({ datapoint, ref });
+                  }
+                  onClick && onClick(datapoint);
+                }}
               >
                 {template.map((item: GridItemTemplate, j) => {
                   if (!datapoint)
@@ -180,6 +182,11 @@ const GridList = ({
             onClick={() => changePage("down")}
           >
             <CenteredDiv>{canGoDown && <FaChevronDown size="5rem" />}</CenteredDiv>
+          </div>
+        </div>
+        <div className={`DetailContainer ${selected?.detailElement ? "Open" : ""}`}>
+          <div ref={detailRef} className={`Detail `}>
+            {selected?.detailElement}
           </div>
         </div>
       </GridListDiv>
@@ -210,10 +217,13 @@ const ItemValue = (props: { datapoint: DataPoint; item: GridItemTemplate }) => {
     }
     return null;
   }
+
+  const value = getValue();
+
   return (
-    <Value style={item.style}>
+    <Value style={item.style} title={typeof value === "string" ? String(value) : undefined}>
       {item?.prefix}
-      {getValue()}
+      {value}
       {item?.suffix}
     </Value>
   );

@@ -1,8 +1,8 @@
-import { SetState } from "../../../types";
+import { SetState } from "../../../../types";
 import { TbFilter } from "react-icons/tb";
 import { FilterQuery, DataQuery, FilterQueryOption } from "./GridListTypes";
 import { QueryDiv } from "./GridListStyled";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 interface FilterQueryProps {
   query: DataQuery;
@@ -57,7 +57,7 @@ const FilterQueryMenu = ({ query, setQuery, filterOptions }: FilterQueryProps) =
         <div>
           {filterOptions?.map((option) => {
             return (
-              <div className="QueryField">
+              <div key={option.variable + option.type} className="QueryField">
                 <FilterField
                   type={option.type}
                   key={option.variable}
@@ -84,15 +84,18 @@ const FilterField = (props: {
 }) => {
   const { type, variable, label, setQuery } = props;
 
-  function onFilter(values: any, onlyDelete: boolean = false) {
-    setQuery((query) => {
-      const newFilter: FilterQuery[] = (query.filter || []).filter(
-        (filter) => filter.variable !== variable && filter.type !== type
-      );
-      if (!onlyDelete) newFilter.push({ type, variable, label, ...values });
-      return { ...query, filter: newFilter };
-    });
-  }
+  const onFilter = useCallback(
+    (values: any, onlyDelete: boolean = false) => {
+      setQuery((query) => {
+        const newFilter: FilterQuery[] = (query.filter || []).filter(
+          (filter) => filter.variable !== variable && filter.type !== type
+        );
+        if (!onlyDelete) newFilter.push({ type, variable, label, ...values });
+        return { ...query, filter: newFilter };
+      });
+    },
+    [label, setQuery, type, variable]
+  );
 
   if (type === "search") return <SearchFilterField label={label} onFilter={onFilter} />;
 

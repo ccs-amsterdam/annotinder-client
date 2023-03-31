@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
-export const GridListDiv = styled.div<{ transition?: "up" | "down" }>`
+export const GridListDiv = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
   gap: 0.5rem;
   width: 100%;
   margin: auto;
@@ -10,42 +11,58 @@ export const GridListDiv = styled.div<{ transition?: "up" | "down" }>`
   max-width: 900px;
   max-height: 600px;
 
-  @keyframes changePageDown {
+  @keyframes UpOut {
     0% {
-      pointer-events: none;
+      opacity: 1;
+      transform: translateY(0%);
     }
-    49% {
+    100% {
+      opacity: 0;
+      transform: translateY(50%);
+    }
+  }
+  @keyframes UpIn {
+    0% {
       opacity: 0;
       transform: translateY(-50%);
     }
-    51% {
+    100% {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+  }
+  @keyframes DownOut {
+    0% {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-50%);
+    }
+  }
+  @keyframes DownIn {
+    0% {
       opacity: 0;
       transform: translateY(50%);
     }
     100% {
-      pointer-events: auto;
       opacity: 1;
       transform: translateY(0%);
     }
   }
 
-  @keyframes changePageUp {
-    0% {
-      pointer-events: none;
-    }
-    49% {
-      opacity: 0;
-      transform: translateY(50%);
-    }
-    51% {
-      opacity: 0;
-      transform: translateY(-50%);
-    }
-    100% {
-      pointer-events: auto;
-      opacity: 1;
-      transform: translateY(0%);
-    }
+  &.upIn .Values {
+    animation: UpIn 0.2s;
+  }
+  &.downIn .Values {
+    animation: DownIn 0.2s;
+  }
+  &.upOut .Values {
+    animation: UpOut 0.2s forwards;
+  }
+  &.downOut .Values {
+    animation: DownOut 0.2s forwards;
   }
 
   .QueryFields {
@@ -57,6 +74,7 @@ export const GridListDiv = styled.div<{ transition?: "up" | "down" }>`
 
     .Results {
       font-size: 1.5rem;
+      margin-right: 0.2rem;
       margin-left: auto;
     }
   }
@@ -67,9 +85,11 @@ export const GridListDiv = styled.div<{ transition?: "up" | "down" }>`
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 
     .GridItem {
+      text-align: left;
       padding: 1rem;
-      border: 3px solid var(--primary-dark);
+      border: 2px solid var(--primary-text);
       border-radius: 5px;
+      box-shadow: 2px 2px 1px var(--primary);
       display: flex;
       flex-wrap: wrap;
 
@@ -78,25 +98,29 @@ export const GridListDiv = styled.div<{ transition?: "up" | "down" }>`
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+      svg {
+        font-size: 2rem;
+      }
 
       &.Labels {
         background: var(--primary);
         color: white;
       }
       &.Values {
-        animation: ${(p) =>
-            p.transition ? (p.transition === "up" ? "changePageUp" : "changePageDown") : "none"}
-          0.3s;
-        transition: all 0.4s;
+        transition: all 0.2s;
         color: var(--primary-text);
         background: var(--background-transparent);
         backdrop-filter: blur(5px);
         //box-shadow: 3px 3px 3px var(--primary);
         //margin: 0.2rem;
         cursor: pointer;
-        &:hover {
+        &:hover,
+        &.Selected {
           background: var(--secondary);
           color: var(--primary-dark);
+        }
+        &.Selected {
+          transform: scale(1.05);
         }
 
         &.Disabled {
@@ -113,6 +137,44 @@ export const GridListDiv = styled.div<{ transition?: "up" | "down" }>`
           pointer-events: none;
           opacity: 0.3;
         }
+      }
+    }
+  }
+
+  .DetailContainer {
+    pointer-events: none;
+    transition: all 0.2s;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    padding: 2rem 4rem;
+    z-index: 9000;
+
+    .Detail {
+      padding: 1rem;
+      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+      transition-delay: 0.1s;
+      opacity: 0;
+      max-width: 100%;
+      width: auto;
+      margin: auto;
+      transform: scale(1%);
+      border: 2px solid var(--primary-text);
+      background: var(--background-transparent);
+      border-radius: 5px;
+    }
+
+    &.Open {
+      pointer-events: all;
+      background: var(--background-transparent);
+      backdrop-filter: blur(3px);
+
+      .Detail {
+        transform: none;
+        opacity: 1;
       }
     }
   }
@@ -187,6 +249,13 @@ export const QueryDiv = styled.div<{ open?: boolean; active?: boolean }>`
 
     & > div {
       padding: 1rem;
+    }
+
+    .Divider {
+      height: 0;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--primary);
     }
   }
 

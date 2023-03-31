@@ -1,5 +1,5 @@
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { SetState } from "../../../types";
+import { SetState } from "../../../../types";
 import { TbArrowsSort } from "react-icons/tb";
 import { SortQuery, DataQuery, SortQueryOption } from "./GridListTypes";
 import { QueryDiv } from "./GridListStyled";
@@ -49,9 +49,21 @@ const SortQueryMenu = ({ query, setQuery, sortOptions }: SortQueryProps) => {
       </button>
       <div className="Dropdown" ref={dropdownRef}>
         <div>
+          {query.sort?.map((sort) => {
+            return (
+              <SortField
+                key={sort.variable}
+                setQuery={setQuery}
+                variable={sort.variable}
+                label={sort.label}
+                currentOrder={sort.order}
+              />
+            );
+          })}
+          {query.sort?.length > 0 && <div className="Divider" />}
           {sortOptions?.map((option) => {
             const currentOrder = query.sort?.find((s) => s.variable === option.variable)?.order;
-            //if (currentOrder) return null;
+            if (currentOrder) return null;
             return (
               <SortField
                 key={option.variable}
@@ -63,19 +75,6 @@ const SortQueryMenu = ({ query, setQuery, sortOptions }: SortQueryProps) => {
             );
           })}
         </div>
-      </div>
-      <div className="QuerySelection">
-        {(query.sort || []).map((sort) => {
-          return (
-            <SortField
-              key={sort.variable}
-              setQuery={setQuery}
-              variable={sort.variable}
-              label={sort.label}
-              currentOrder={sort.order}
-            />
-          );
-        })}
       </div>
     </QueryDiv>
   );
@@ -93,8 +92,17 @@ const SortField = (props: {
     const deleteSort = order === currentOrder;
 
     setQuery((query) => {
-      const newSort: SortQuery[] = (query.sort || []).filter((sort) => sort.variable !== variable);
-      if (!deleteSort) newSort.push({ variable, order: order, label });
+      const newSort: SortQuery[] = [];
+      let currentExists = false;
+      for (let sort of query.sort || []) {
+        if (sort.variable === variable) {
+          currentExists = true;
+          if (!deleteSort) newSort.push({ variable, order, label });
+        } else {
+          newSort.push(sort);
+        }
+      }
+      if (!currentExists) newSort.push({ variable, order, label });
       return { ...query, sort: newSort };
     });
   }

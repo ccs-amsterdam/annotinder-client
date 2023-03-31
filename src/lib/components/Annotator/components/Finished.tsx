@@ -7,7 +7,7 @@ import { Debriefing, JobServer } from "../../../types";
 import { useQuery } from "@tanstack/react-query";
 import { CenteredDiv } from "../../../styled/Styled";
 import { StyledButton } from "../../../styled/StyledSemantic";
-import Markdown from "../../Common/Markdown";
+import Markdown from "../../Common/components/Markdown";
 
 interface FinishedProps {
   jobServer: JobServer;

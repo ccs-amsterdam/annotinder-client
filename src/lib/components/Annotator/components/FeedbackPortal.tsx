@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { TransitionablePortal } from "semantic-ui-react";
 import { FullScreenNode, SetState, ConditionReport, Action } from "../../../types";
-import Markdown from "../../Common/Markdown";
+import Markdown from "../../Common/components/Markdown";
 import styled from "styled-components";
 import { FaCheck, FaWindowClose } from "react-icons/fa";
 

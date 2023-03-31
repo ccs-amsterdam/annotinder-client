@@ -8,7 +8,7 @@ import FullDataTable from "../AnnotatorClient/components/FullDataTable";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../functions/copyToClipboard";
 import { SetState } from "../../types";
-import { DarkModeButton } from "../Common/Theme";
+import { DarkModeButton } from "../Common/components/Theme";
 
 const DemoJobOverview = () => {
   const [job, setJob] = useState(null);
