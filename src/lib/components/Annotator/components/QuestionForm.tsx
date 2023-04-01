@@ -1,5 +1,5 @@
-import React, { useState, useRef, ReactElement, useCallback } from "react";
-import { Icon } from "semantic-ui-react";
+import React, { useState, useRef, ReactElement, useCallback, CSSProperties } from "react";
+import { FaCheckSquare } from "react-icons/fa";
 import styled from "styled-components";
 import useWatchChange from "../../../hooks/useWatchChange";
 import {
@@ -60,13 +60,12 @@ const HeaderDiv = styled.div`
   font-size: inherit;
 `;
 
-const iconStyle = {
-  fontSize: "20px",
+const iconStyle: CSSProperties = {
+  fontSize: "25px",
   position: "absolute",
   right: "0px",
   paddingTop: "3px",
-  marginRight: "0",
-  color: "#2bb92b81",
+  marginRight: "2px",
 };
 
 interface QuestionFormProps {
@@ -196,7 +195,7 @@ const QuestionForm = ({
           </HeaderDiv>
         </div>
         <div style={{ position: "relative", width: "30px" }}>
-          {done ? <Icon size="big" name="check" style={iconStyle} /> : null}
+          {done ? <FaCheckSquare fill="var(--secondary)" style={iconStyle} /> : null}
         </div>
       </MenuDiv>
 

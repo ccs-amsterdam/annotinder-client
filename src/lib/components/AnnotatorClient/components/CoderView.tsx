@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import Backend from "../../Login/Backend";
 import { Job } from "../../../types";
@@ -14,6 +14,7 @@ import {
 import { sortData } from "../../Common/components/GridList/GridListFunctions";
 
 const StyledDiv = styled.div`
+  position: relative;
   h2 {
     text-align: center;
   }
@@ -82,42 +83,38 @@ const CoderJobsTable = ({ backend }: { backend: Backend }) => {
     [jobs]
   );
 
-  const gridListSettings = useMemo(() => {
-    const template: GridItemTemplate[] = [
-      { label: "Coding Job", value: "title", style: { fontWeight: "bold", fontSize: "1.6rem" } },
-      {
-        label: "Last activity",
-        value: "modified",
-        style: { fontStyle: "italic", width: "50%" },
-      },
-      {
-        label: "% Completed",
-        value: "progressLabel",
-        style: { fontStyle: "italic", width: "50%", textAlign: "right" },
-      },
-    ];
-
-    const sortOptions: SortQueryOption[] = [
-      { variable: "modified", label: "Last activity", default: "desc" },
-      { variable: "progress", label: "% Completed" },
-    ];
-
-    const filterOptions: FilterQueryOption[] = [
-      { variable: "title", label: "Coding Job Title", type: "search" },
-    ];
-
-    return { template, sortOptions, filterOptions };
-  }, []);
-
   return (
     <>
       <GridList
         loadData={loadData}
         onClick={onClick}
-        template={gridListSettings.template}
-        sortOptions={gridListSettings.sortOptions}
-        filterOptions={gridListSettings.filterOptions}
+        template={template}
+        sortOptions={sortOptions}
+        filterOptions={filterOptions}
       />
     </>
   );
 };
+
+const template: GridItemTemplate[] = [
+  { label: "Coding Job", value: "title", style: { fontWeight: "bold", fontSize: "1.6rem" } },
+  {
+    label: "Last activity",
+    value: "modified",
+    style: { fontStyle: "italic", width: "50%" },
+  },
+  {
+    label: "% Completed",
+    value: "progressLabel",
+    style: { fontStyle: "italic", width: "50%", textAlign: "right" },
+  },
+];
+
+const sortOptions: SortQueryOption[] = [
+  { variable: "modified", label: "Last activity", default: "desc" },
+  { variable: "progress", label: "% Completed" },
+];
+
+const filterOptions: FilterQueryOption[] = [
+  { variable: "title", label: "Coding Job Title", type: "search" },
+];

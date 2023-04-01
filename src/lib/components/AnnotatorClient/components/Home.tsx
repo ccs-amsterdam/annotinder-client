@@ -9,6 +9,7 @@ import ManageUsers from "./ManageUsers";
 import styled from "styled-components";
 import MenuButtonGroup from "../../Annotator/components/MenuButtonGroup";
 import Popup from "../../Common/components/Popup";
+import DemoJobOverview from "../../DemoJob/DemoJobOverview";
 
 interface HomeProps {
   backend: Backend;
@@ -72,6 +73,8 @@ export default function Home({ backend, authForm }: HomeProps) {
         return <ManageJobs backend={backend} />;
       case "manageUsers":
         return <ManageUsers backend={backend} />;
+      case "demo":
+        return <DemoJobOverview />;
       default:
         return null;
     }
@@ -97,9 +100,10 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { label: "Coder view", value: "coderView", onlyAdmin: true },
+  { label: "Coder view", value: "coderView", onlyAdmin: false },
   { label: "Manage jobs", value: "manageJobs", onlyAdmin: true },
   { label: "Manage users", value: "manageUsers", onlyAdmin: true },
+  { label: "Demo jobs", value: "demo", onlyAdmin: false },
 ];
 
 interface MenuBarProps {

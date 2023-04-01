@@ -1,6 +1,6 @@
 import { SetState } from "../../../../types";
 import { TbFilter } from "react-icons/tb";
-import { FilterQuery, DataQuery, FilterQueryOption } from "./GridListTypes";
+import { FilterQuery, DataQuery, FilterQueryOption, SelectOption } from "./GridListTypes";
 import { QueryDiv } from "./GridListStyled";
 import { useEffect, useState, useRef, useCallback } from "react";
 
@@ -26,6 +26,7 @@ const FilterQueryMenu = ({ query, setQuery, filterOptions }: FilterQueryProps) =
           defaultTo: to,
           defaultSelect: select,
         } = option;
+
         newFilter.push({ type, variable, label, from, to, select });
       }
     }
@@ -58,13 +59,7 @@ const FilterQueryMenu = ({ query, setQuery, filterOptions }: FilterQueryProps) =
           {filterOptions?.map((option) => {
             return (
               <div key={option.variable + option.type} className="QueryField">
-                <FilterField
-                  type={option.type}
-                  key={option.variable}
-                  setQuery={setQuery}
-                  variable={option.variable}
-                  label={option.label}
-                />
+                <FilterField key={option.variable} option={option} setQuery={setQuery} />
               </div>
             );
           })}
@@ -74,15 +69,9 @@ const FilterQueryMenu = ({ query, setQuery, filterOptions }: FilterQueryProps) =
   );
 };
 
-const FilterField = (props: {
-  setQuery: SetState<DataQuery>;
-  type: string;
-  variable: string;
-  label: string;
-  currentOrder?: string;
-  canDelete?: boolean;
-}) => {
-  const { type, variable, label, setQuery } = props;
+const FilterField = (props: { option: FilterQueryOption; setQuery: SetState<DataQuery> }) => {
+  const { option, setQuery } = props;
+  const { type, variable, label, selectOptions } = option;
 
   const onFilter = useCallback(
     (values: any, onlyDelete: boolean = false) => {
@@ -98,7 +87,15 @@ const FilterField = (props: {
   );
 
   if (type === "search") return <SearchFilterField label={label} onFilter={onFilter} />;
-
+  if (type === "select")
+    return (
+      <SelectFilterField
+        label={label}
+        options={selectOptions}
+        defaultSelect={option.defaultSelect}
+        onFilter={onFilter}
+      />
+    );
   return null;
 };
 
@@ -117,15 +114,52 @@ const SearchFilterField = (props: {
   }, [search, onFilter]);
 
   return (
-    <div className="SearchFilterField">
+    <div className="FilterField">
       <label>{label}</label>
       <input
         className="SearchField"
-        placeholder={`<search terms>`}
+        placeholder={``}
         type="text"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
+    </div>
+  );
+};
+
+const SelectFilterField = (props: {
+  label: string;
+  options: SelectOption[];
+  defaultSelect: (string | number | boolean | Date)[];
+  onFilter: (values: any, onlyDelete: boolean) => void;
+}) => {
+  const { label, options, defaultSelect, onFilter } = props;
+  const [select, setSelect] = useState<(string | number | boolean | Date)[]>(defaultSelect || []);
+
+  function selectOption(value: string | number | boolean | Date, selected: boolean) {
+    const newSelect = selected ? select.filter((v) => v !== value) : [...select, value];
+    setSelect(newSelect);
+    onFilter({ select: newSelect }, !newSelect.length);
+  }
+
+  return (
+    <div className="FilterField">
+      <label>{label}</label>
+      <div className={`SelectField ${!select?.length ? "Disabled" : ""}`}>
+        {options.map((option, i) => {
+          const { value, label } = option;
+          const selected = select.includes(value);
+          return (
+            <div
+              key={String(value) + i}
+              className={`SelectOption ${selected ? "Selected" : ""}`}
+              onClick={() => selectOption(value, selected)}
+            >
+              {label}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

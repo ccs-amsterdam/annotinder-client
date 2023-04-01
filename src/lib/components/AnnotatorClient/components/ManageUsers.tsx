@@ -1,9 +1,34 @@
-import { useState } from "react";
-import { Grid, Icon, List, Modal, TextArea, Dimmer, Loader, Checkbox } from "semantic-ui-react";
+import { useEffect, useState } from "react";
 import { StyledButton } from "../../../styled/StyledSemantic";
 import Backend from "../../Login/Backend";
 import UsersTable from "./UsersTable";
 import { SetState, User } from "../../../types";
+import styled from "styled-components";
+import { CenteredDiv } from "../../../styled/Styled";
+import Modal from "../../Common/components/Modal";
+import { Loader } from "../../../styled/Styled";
+
+const StyledDiv = styled.div`
+  display: grid;
+  grid-template-areas: "UsersTable CreateUsers";
+  grid-template-columns: minmax(auto, 900px) 300px;
+
+  .CreateUsers {
+    align-self: center;
+    grid-area: CreateUsers;
+    padding: 2rem;
+  }
+  .UsersTable {
+    grid-area: UsersTable;
+  }
+
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "CreateUsers"
+      "UsersTable";
+  }
+`;
 
 interface AddUser {
   name: string;
@@ -32,32 +57,31 @@ export default function ManageUsers({ backend }: ManageUsersProps) {
   };
 
   return (
-    <Grid stackable textAlign="center" style={{ height: "100%" }}>
-      <CreateUserModal
-        backend={backend}
-        addUsers={addUsers}
-        setAddUsers={setAddUsers}
-        setUsers={setUsers}
-      />
-      <Grid.Column width="8">
-        <h3>Users</h3>
-        <UsersTable backend={backend} users={users} setUsers={setUsers} />
-      </Grid.Column>
-      <Grid.Column width="4">
-        <h3>Create new users</h3>
-
-        <TextArea
-          placeholder="List usernames, separated by newline, space, comma or semicolon"
-          value={text}
-          rows="10"
-          style={{ width: "100%" }}
-          onChange={(e, d) => setText(String(d.value))}
-        ></TextArea>
-        <StyledButton fluid primary onClick={() => onCreate()}>
-          Create users
-        </StyledButton>
-      </Grid.Column>
-    </Grid>
+    <CenteredDiv>
+      <StyledDiv>
+        <CreateUserModal
+          backend={backend}
+          addUsers={addUsers}
+          setAddUsers={setAddUsers}
+          setUsers={setUsers}
+        />
+        <div className="UsersTable">
+          <UsersTable backend={backend} users={users} setUsers={setUsers} />
+        </div>
+        <div className="CreateUsers">
+          <textarea
+            placeholder="List usernames, separated by newline, space, comma or semicolon"
+            value={text}
+            rows={3}
+            style={{ resize: "none", width: "100%" }}
+            onChange={(e) => setText(String(e.target.value))}
+          />
+          <StyledButton fluid primary onClick={() => onCreate()}>
+            Create users
+          </StyledButton>
+        </div>
+      </StyledDiv>
+    </CenteredDiv>
   );
 }
 
@@ -71,6 +95,10 @@ interface CreateUserModalProps {
 const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }: CreateUserModalProps) => {
   const [status, setStatus] = useState("idle");
   const [asAdmin, setAsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (addUsers && addUsers.length > 0) setStatus("idle");
+  }, [addUsers]);
 
   const onSubmit = async () => {
     const users = addUsers.reduce((submitUsers, user) => {
@@ -100,16 +128,10 @@ const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }: CreateUse
       let cannotAdd = "";
       if (user.exists) cannotAdd = "User already exists: ";
       return (
-        <List.Item key={user.name}>
-          <List.Icon
-            name={cannotAdd ? "exclamation" : "check"}
-            style={{ color: cannotAdd ? "var(--red)" : "var(--green)" }}
-          />
-          <List.Content>
-            <span style={{ color: "red" }}>{cannotAdd}</span>
-            {user.name}
-          </List.Content>
-        </List.Item>
+        <li key={user.name}>
+          <span style={{ color: "red" }}>{cannotAdd}</span>
+          {user.name}
+        </li>
       );
     });
     return ul;
@@ -117,50 +139,40 @@ const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }: CreateUse
 
   return (
     <Modal
-      closeIcon
       open={addUsers.length > 0}
-      onClose={() => {
+      setOpen={(open) => {
         setAddUsers([]);
       }}
-      onOpen={() => setStatus("idle")}
     >
-      <h3>
-        <Icon name="users" /> Create users
-      </h3>
-      <Modal.Content>
-        <p>Do you want to add the following users?</p>
-        <List>{listUsers()}</List>
-        <Checkbox
-          toggle
-          label="Add users as admin"
-          checked={asAdmin}
-          onClick={() => setAsAdmin(!asAdmin)}
-        />
-      </Modal.Content>
-      <Modal.Actions>
+      <h3>Create users</h3>
+      <div>
+        <p>Do you want to create the following users?</p>
+        <ul>{listUsers()}</ul>
+        <label style={{ marginRight: "1rem" }}>Give admin rights:</label>
+        <input type="checkbox" checked={asAdmin} onClick={() => setAsAdmin(!asAdmin)} />
+      </div>
+      <div>
         {status === "error" ? (
-          <div>Could not add users (for a reason not yet covered in the error handling...)</div>
+          <div>Could not create users (for a reason not yet covered in the error handling...)</div>
         ) : null}
         {status === "pending" ? (
-          <Dimmer active inverted>
-            <Loader content="Creating Users" />
-          </Dimmer>
+          <Loader active={true} />
         ) : (
-          <>
+          <div style={{ display: "flex", gap: "1rem", marginTop: "2rem" }}>
             <StyledButton
-              color="red"
+              fluid
               onClick={() => {
                 setAddUsers([]);
               }}
             >
-              <Icon name="remove" /> No
+              Cancel
             </StyledButton>
-            <StyledButton color="green" onClick={onSubmit}>
-              <Icon name="checkmark" /> Yes
+            <StyledButton fluid primary onClick={onSubmit}>
+              Create
             </StyledButton>
-          </>
+          </div>
         )}
-      </Modal.Actions>
+      </div>
     </Modal>
   );
 };

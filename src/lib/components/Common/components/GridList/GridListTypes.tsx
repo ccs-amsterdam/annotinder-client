@@ -43,21 +43,26 @@ export interface GridListData {
 export interface FilterQuery {
   variable: string;
   label: string;
-  type: "search" | "date_range" | "number_range" | "select" | "select_multiple";
+  type: "search" | "select";
   from?: string | number | Date;
   to?: string | number | Date;
-  select?: (string | number | Date)[];
+  select?: (string | number | boolean | Date)[];
   search?: string;
 }
 
 export interface FilterQueryOption {
   variable: string;
   label: string;
-  type: "search" | "date_range" | "number_range" | "select" | "select_multiple";
-  selectOptions?: string[];
-  defaultSelect?: string[];
+  type: "search" | "select";
+  selectOptions?: SelectOption[];
+  defaultSelect?: (string | boolean | number | Date)[];
   defaultFrom?: number | Date;
   defaultTo?: number | Date;
+}
+
+export interface SelectOption {
+  label: string | ReactElement;
+  value: string | boolean | number;
 }
 
 export interface DataQuery {

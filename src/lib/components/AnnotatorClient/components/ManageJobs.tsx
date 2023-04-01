@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import Backend from "../../Login/Backend";
 import { Job, SetState } from "../../../types";
 import JobDetails from "./JobDetails";
@@ -32,6 +32,7 @@ export default function ManageJobs({ backend }: ManageJobsProps) {
         v.created = v.created && new Date(v.created);
         return v;
       });
+
       data = data.filter((v) => {
         for (let filter of query.filter) {
           if (filter.type === "search") {
@@ -39,7 +40,11 @@ export default function ManageJobs({ backend }: ManageJobsProps) {
             if (typeof str !== "string") continue;
             if (!str.toLowerCase().includes(filter.search.toLowerCase())) return false;
           }
+          if (filter.type === "select" && filter.select && filter.select.length > 0) {
+            if (!filter.select.includes(v[filter.variable])) return false;
+          }
         }
+
         return true;
       });
 
@@ -58,48 +63,51 @@ export default function ManageJobs({ backend }: ManageJobsProps) {
     [backend, setJobs]
   );
 
-  const gridListSettings = useMemo(() => {
-    const template: GridItemTemplate[] = [
-      { label: "Coding Job", value: "title", style: { fontWeight: "bold", fontSize: "1.6rem" } },
-      {
-        label: "Created by",
-        value: "creator",
-        style: { textAlign: "left" },
-      },
-      {
-        label: "Created",
-        value: "created",
-        style: { fontStyle: "italic", width: "50%", textAlign: "left" },
-      },
-      {
-        label: "archived",
-        value: (dp: DataPoint) => (dp.archived ? <FaEyeSlash /> : <FaEye />),
-        style: { fontStyle: "italic", width: "50%", textAlign: "right" },
-      },
-    ];
-
-    const sortOptions: SortQueryOption[] = [
-      { variable: "created", label: "Created", default: "desc" },
-    ];
-
-    const filterOptions: FilterQueryOption[] = [
-      { variable: "title", label: "Coding Job Title", type: "search" },
-      { variable: "creator", label: "Creator", type: "search" },
-    ];
-
-    return { template, sortOptions, filterOptions };
-  }, []);
-
   return (
     <GridList
       loadData={loadData}
       setDetail={setDetail}
-      template={gridListSettings.template}
-      sortOptions={gridListSettings.sortOptions}
-      filterOptions={gridListSettings.filterOptions}
+      template={template}
+      sortOptions={sortOptions}
+      filterOptions={filterOptions}
     />
   );
 }
+
+const template: GridItemTemplate[] = [
+  { label: "Coding Job", value: "title", style: { fontWeight: "bold", fontSize: "1.6rem" } },
+  {
+    label: "Created by",
+    value: "creator",
+    style: { textAlign: "left" },
+  },
+  {
+    label: "Created",
+    value: "created",
+    style: { fontStyle: "italic", width: "50%", textAlign: "left" },
+  },
+  {
+    label: "archived",
+    value: (dp: DataPoint) => (dp.archived ? <FaEyeSlash /> : <FaEye />),
+    style: { fontStyle: "italic", width: "50%", textAlign: "right" },
+  },
+];
+
+const sortOptions: SortQueryOption[] = [{ variable: "created", label: "Created", default: "desc" }];
+
+const filterOptions: FilterQueryOption[] = [
+  { variable: "title", label: "Coding Job Title", type: "search" },
+  { variable: "creator", label: "Creator", type: "search" },
+  {
+    variable: "archived",
+    label: "Archived",
+    type: "select",
+    selectOptions: [
+      { label: <FaEyeSlash />, value: true },
+      { label: <FaEye />, value: false },
+    ],
+  },
+];
 
 const getAllJobs = (backend: Backend, setJobs: SetState<Job[]>) => {
   backend

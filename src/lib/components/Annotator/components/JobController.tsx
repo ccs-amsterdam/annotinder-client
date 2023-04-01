@@ -1,6 +1,4 @@
 import React, { ReactElement, useState } from "react";
-import { Icon } from "semantic-ui-react";
-
 import { useNavigate } from "react-router-dom";
 import IndexController from "./IndexController";
 import Finished from "./Finished";
@@ -199,7 +197,7 @@ const HeartContainer = ({
       }}
     >
       <span>{Math.ceil(healthPct)}%</span>
-      <Icon
+      {/* <Icon
         size="large"
         name="heart"
         style={{
@@ -207,7 +205,7 @@ const HeartContainer = ({
           color: "transparent",
           background: `linear-gradient(to top, red ${healthPct}%, #000000aa ${healthPct}% 100%, #000000aa 100%)`,
         }}
-      />
+      /> */}
     </div>
   );
 };

@@ -7,6 +7,8 @@ import UserLogin from "./UserLogin";
 import HostLogin from "./HostLogin";
 import styled from "styled-components";
 import { Icon } from "semantic-ui-react";
+import Modal from "../Common/components/Modal";
+import DemoJobOverview from "../DemoJob/DemoJobOverview";
 
 // make separate useSession hook that returns the current session and tries auto login
 
@@ -44,6 +46,7 @@ const Login = ({ login, sessionList }: LoginProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const paramHost = (searchParams.get("host") || "").replace("%colon%", ":");
   const [host, setHost] = useState(paramHost);
+  const [demoModal, setDemoModal] = useState(false);
 
   const [email, setEmail] = useState("");
   const has_jobtoken = !!searchParams.get("jobtoken");
@@ -89,6 +92,15 @@ const Login = ({ login, sessionList }: LoginProps) => {
       <FormBox>
         <div>{render()}</div>
       </FormBox>
+      <span
+        style={{ marginTop: "1rem", cursor: "pointer", color: "var(--primary-text)" }}
+        onClick={() => setDemoModal(true)}
+      >
+        View Demo
+      </span>
+      <Modal open={demoModal} setOpen={setDemoModal}>
+        <DemoJobOverview />
+      </Modal>
     </LoginContainer>
   );
 };

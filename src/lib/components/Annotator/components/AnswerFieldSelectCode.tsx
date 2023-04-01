@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, RefObject } from "react";
-import { Ref } from "semantic-ui-react";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
 import { keepInView } from "../../../functions/scroll";
 import { AnswerOption, OnSelectParams } from "../../../types";
@@ -48,7 +47,7 @@ const SelectCode = React.memo(
     // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
     const [selected, setSelected] = useState<number>(null);
     const container = useRef<HTMLDivElement>();
-    const finishbutton = useRef<HTMLElement>();
+    const finishbutton = useRef<HTMLButtonElement>();
     const speedbump = useSpeedBump(values);
 
     const onKeydown = React.useCallback(
@@ -198,25 +197,24 @@ const SelectCode = React.memo(
         </div>
         {multiple ? (
           <div style={{ width: "60px", height: "100%" }}>
-            <Ref key={"finishbutton"} innerRef={finishbutton}>
-              <StyledButton
-                primary
-                fluid
-                style={{
-                  height: "100%",
-                  border: `5px solid ${
-                    selected === options.length
-                      ? "var(--background-fixed)"
-                      : "var(--background-inversed-fixed)"
-                  }`,
-                }}
-                onClick={() => {
-                  if (speedbump) return;
+            <StyledButton
+              primary
+              fluid
+              ref={finishbutton}
+              style={{
+                height: "100%",
+                border: `5px solid ${
+                  selected === options.length
+                    ? "var(--background-fixed)"
+                    : "var(--background-inversed-fixed)"
+                }`,
+              }}
+              onClick={() => {
+                if (speedbump) return;
 
-                  onSelect({ value: values, itemIndex: 0, finish: true });
-                }}
-              />
-            </Ref>
+                onSelect({ value: values, itemIndex: 0, finish: true });
+              }}
+            />
           </div>
         ) : null}
       </div>

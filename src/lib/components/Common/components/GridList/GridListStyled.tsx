@@ -93,11 +93,6 @@ export const GridListDiv = styled.div`
       display: flex;
       flex-wrap: wrap;
 
-      div {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
       svg {
         font-size: 2rem;
       }
@@ -138,6 +133,10 @@ export const GridListDiv = styled.div`
           opacity: 0.3;
         }
       }
+    }
+
+    &.SinglePage .Disabled {
+      opacity: 0 !important;
     }
   }
 
@@ -299,16 +298,41 @@ export const QueryDiv = styled.div<{ open?: boolean; active?: boolean }>`
     }
   }
 
-  .SearchFilterField {
+  .FilterField {
     padding: 0.5rem 1rem 0.5rem 1rem;
     display: flex;
     flex-direction: column;
-    input {
+
+    .SearchField {
       line-height: 2rem;
       border: 1px solid var(--primary);
       border-radius: 5px;
       padding: 0.5rem 1rem;
       font-size: 1.5rem;
+    }
+
+    .SelectField {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+
+      &.Disabled {
+        opacity: 0.5;
+      }
+
+      .SelectOption {
+        display: flex;
+        border: 1px solid var(--primary);
+        border-radius: 5px;
+        background: #fff;
+        color: var(--primary-dark);
+
+        &.Selected {
+          background: var(--primary);
+          color: white;
+        }
+      }
     }
   }
 `;

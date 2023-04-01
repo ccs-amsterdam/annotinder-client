@@ -6,8 +6,6 @@ import {
   MutableRefObject,
   CSSProperties,
 } from "react";
-import { SemanticWIDTHS } from "semantic-ui-react";
-import AnnotationManager from "./components/Document/functions/AnnotationManager";
 import Backend from "./components/Login/Backend";
 // common interfaces
 
@@ -803,22 +801,6 @@ export interface TableData {
 /** An object where keys are column names and values their value for this particular row */
 export interface RowObj {
   [key: string]: any;
-}
-
-export interface Column {
-  /** The name of the column to show */
-  name: string;
-  /** The column label. If empty, uses name */
-  label?: string;
-  /** The width of the column, in Semantic UIs 16-part format */
-  width?: SemanticWIDTHS;
-  /** A function that takes the rowObj as input and returns what to show in the table */
-  f?: (row: RowObj) => number | string | ReactElement;
-  /** If TRUE, add title to span so full value shows on hover */
-  title?: boolean;
-  date?: boolean;
-  hide?: boolean;
-  ref?: RefObject<HTMLElement>;
 }
 
 export interface ButtonComponentProps {

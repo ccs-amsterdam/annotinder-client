@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Annotator from "../Annotator/Annotator";
-import { Loader } from "semantic-ui-react";
 import JobServerPython from "./classes/JobServerPython";
 import Home from "./components/Home";
 
@@ -9,6 +8,7 @@ import Backend from "../Login/Backend";
 import { JobServer } from "../../types";
 
 import useLogin from "../Login/useLogin";
+import { Loader } from "../../styled/Styled";
 
 const AnnotatorPythonClient = () => {
   const [backend, authForm] = useLogin();

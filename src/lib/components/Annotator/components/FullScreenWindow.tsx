@@ -1,9 +1,6 @@
 import { useState, ReactElement } from "react";
 import { FullScreen, FullScreenHandle, useFullScreenHandle } from "react-full-screen";
 import { FullScreenNode } from "../../../types";
-import { StyledButton, StyledModal } from "../../../styled/StyledSemantic";
-import useSessionStorage from "../../../hooks/useSessionStorage";
-import { Icon } from "semantic-ui-react";
 import { FaCompress, FaExpand } from "react-icons/fa";
 
 interface FullSceenWindowProps {
@@ -23,7 +20,7 @@ export const FullScreenWindow = ({ children, askFullScreen }: FullSceenWindowPro
           // FullScreenFix children should be called as a function to pass on the fullScreenNode argument
           return (
             <>
-              <AskFullScreenModal handle={fsHandle} askFullScreenSetting={askFullScreen} />
+              {/* <AskFullScreenModal handle={fsHandle} askFullScreenSetting={askFullScreen} /> */}
               {children(fullScreenNode, fullScreenButton)}
             </>
           );
@@ -50,54 +47,54 @@ const DOMNodeProvider = ({ children }: DOMNodeProviderProps) => {
   );
 };
 
-interface AskFullScreenModalProps {
-  handle: FullScreenHandle;
-  askFullScreenSetting: boolean;
-}
+// interface AskFullScreenModalProps {
+//   handle: FullScreenHandle;
+//   askFullScreenSetting: boolean;
+// }
 
-const AskFullScreenModal = ({ handle, askFullScreenSetting }: AskFullScreenModalProps) => {
-  // Ask once per session
-  let [askFullScreen, setAskFullScreen] = useSessionStorage("askFullScreen", true);
+// const AskFullScreenModal = ({ handle, askFullScreenSetting }: AskFullScreenModalProps) => {
+//   // Ask once per session
+//   let [askFullScreen, setAskFullScreen] = useSessionStorage("askFullScreen", true);
 
-  // only ask for small (mobile) screen and if askFullScreenSetting allows it.
-  if (!askFullScreenSetting || window.innerWidth > 500) askFullScreen = false;
+//   // only ask for small (mobile) screen and if askFullScreenSetting allows it.
+//   if (!askFullScreenSetting || window.innerWidth > 500) askFullScreen = false;
 
-  return (
-    <StyledModal open={askFullScreen}>
-      <StyledModal.Header>Fullscreen mode</StyledModal.Header>
-      <StyledModal.Content>
-        <p>
-          We recommend working in fullscreen on mobile devices. You can always change this with the
-          button in the top-right corner. For some devices fullscreen might not work.
-        </p>
-        <div style={{ display: "flex", height: "30%" }}>
-          <StyledButton
-            primary
-            onClick={() => {
-              if (!handle.active) handle.enter();
-              setAskFullScreen(false);
-            }}
-            style={{ width: "50%" }}
-          >
-            <Icon name="expand" />
-            Fullscreen
-          </StyledButton>
-          <StyledButton
-            primary
-            onClick={() => {
-              if (handle.active) handle.exit();
-              setAskFullScreen(false);
-            }}
-            style={{ width: "50%" }}
-          >
-            <Icon name="compress" />
-            Normal
-          </StyledButton>
-        </div>
-      </StyledModal.Content>
-    </StyledModal>
-  );
-};
+//   return (
+//     <StyledModal open={askFullScreen}>
+//       <StyledModal.Header>Fullscreen mode</StyledModal.Header>
+//       <StyledModal.Content>
+//         <p>
+//           We recommend working in fullscreen on mobile devices. You can always change this with the
+//           button in the top-right corner. For some devices fullscreen might not work.
+//         </p>
+//         <div style={{ display: "flex", height: "30%" }}>
+//           <StyledButton
+//             primary
+//             onClick={() => {
+//               if (!handle.active) handle.enter();
+//               setAskFullScreen(false);
+//             }}
+//             style={{ width: "50%" }}
+//           >
+//             <FaExpand />
+//             Fullscreen
+//           </StyledButton>
+//           <StyledButton
+//             primary
+//             onClick={() => {
+//               if (handle.active) handle.exit();
+//               setAskFullScreen(false);
+//             }}
+//             style={{ width: "50%" }}
+//           >
+//             <FaCompress />
+//             Normal
+//           </StyledButton>
+//         </div>
+//       </StyledModal.Content>
+//     </StyledModal>
+//   );
+// };
 
 interface FullScreenButtonProps {
   handle: FullScreenHandle;

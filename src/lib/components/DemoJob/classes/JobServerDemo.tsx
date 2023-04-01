@@ -39,7 +39,7 @@ class JobServerDemo implements JobServer {
       seek_backwards: true,
       seek_forwards: false,
     };
-    this.return_link = "/demo";
+    this.return_link = "/";
   }
 
   async init() {}

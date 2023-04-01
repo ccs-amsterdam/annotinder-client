@@ -1,18 +1,19 @@
-import { useState, useEffect, CSSProperties } from "react";
-import { Icon, Portal } from "semantic-ui-react";
-import { Button, StyledButton } from "../../../styled/StyledSemantic";
-import FullDataTable from "./FullDataTable";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { StyledButton } from "../../../styled/StyledSemantic";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
-import { Column, RowObj, SetState } from "../../../types";
+import { RowObj, SetState } from "../../../types";
 import Backend from "../../Login/Backend";
-import styled from "styled-components";
 
-const columns: Column[] = [
-  { name: "id", width: 2 },
-  { name: "role", width: 2, f: (row) => (row.is_admin ? "admin" : "coder") },
-  { name: "name", width: 11, title: true },
-];
+import GridList from "../../Common/components/GridList/GridList";
+import {
+  DataPoint,
+  DataQuery,
+  GridItemTemplate,
+  FilterQueryOption,
+  SortQueryOption,
+} from "../../Common/components/GridList/GridListTypes";
+import { sortData } from "../../Common/components/GridList/GridListFunctions";
 
 interface UsersTableProps {
   backend: Backend;
@@ -28,52 +29,99 @@ export default function UsersTable({ backend, users, setUsers }: UsersTableProps
       .catch((e) => setUsers([]));
   }, [backend, setUsers]);
 
-  // changing to API handling pagination
-  // const getData = useCallback(
-  //   async (page: number, pagesize: number, query?: string) => {
-  //     const data = await backend.getUsers2(page, pagesize);
-  //     return {
-  //       rows: data.users,
-  //       page,
-  //       pages: Math.floor(data.total / pagesize),
-  //     };
-  //   },
-  //   [backend]
-  // );
+  const loadData = useCallback(
+    async (query: DataQuery) => {
+      let data: DataPoint[] = users.map((v: any) => {
+        v = { ...v };
+        v.role = v.is_admin ? "admin" : "coder";
+        return v;
+      });
+
+      data = data.filter((v) => {
+        for (let filter of query.filter) {
+          if (filter.type === "search") {
+            const str: string = v[filter.variable] as string;
+            if (typeof str !== "string") continue;
+            if (!str.toLowerCase().includes(filter.search.toLowerCase())) return false;
+          }
+          if (filter.type === "select") {
+            if (!filter.select.includes(v[filter.variable])) return false;
+          }
+        }
+
+        return true;
+      });
+
+      sortData(data, query);
+      const meta = { offset: query.offset, total: data.length };
+      data = data.slice(query.offset, query.offset + query.n);
+      return { data, meta };
+    },
+    [users]
+  );
+
+  const setDetail = useCallback(
+    async (data: DataPoint) => {
+      return <LoginLink datapoint={data} backend={backend} />;
+    },
+    [backend]
+  );
+
+  const gridListSettings = useMemo(() => {
+    const template: GridItemTemplate[] = [
+      { label: "User", value: "name", style: { fontWeight: "bold", fontSize: "1.6rem" } },
+
+      {
+        label: "Role",
+        value: "role",
+        style: { fontStyle: "italic" },
+      },
+    ];
+
+    const sortOptions: SortQueryOption[] = [
+      { variable: "created", label: "Created", default: "desc" },
+    ];
+
+    const filterOptions: FilterQueryOption[] = [
+      { variable: "user", label: "User", type: "search" },
+      { variable: "email", label: "Email", type: "search" },
+      {
+        variable: "role",
+        label: "Role",
+        type: "select",
+        selectOptions: [
+          { label: "admin", value: "coder" },
+          { label: "coder", value: "coder" },
+        ],
+      },
+    ];
+
+    return { template, sortOptions, filterOptions };
+  }, []);
 
   return (
-    <FullDataTable fullData={users} columns={columns} buttons={LoginLinkButton} backend={backend} />
+    <GridList
+      loadData={loadData}
+      setDetail={setDetail}
+      template={gridListSettings.template}
+      sortOptions={gridListSettings.sortOptions}
+      filterOptions={gridListSettings.filterOptions}
+    />
   );
 }
 
-const PortalContent = styled.div`
-  padding: 1em;
-  background: var(--background);
-  bottom: 25%;
-  left: 25%;
-  position: fixed;
-  min-width: 50%;
-  z-index: 1000;
-  background: #dfeffb;
-  border: 1px solid var(--background-inversed);
-  text-align: center;
-`;
-
 interface LoginLinkButtonProps {
-  row: RowObj;
+  datapoint: DataPoint;
   backend: Backend;
-  style: CSSProperties;
 }
 
-const LoginLinkButton = ({ row, backend, style }: LoginLinkButtonProps) => {
+const LoginLink = ({ datapoint, backend }: LoginLinkButtonProps) => {
   const [link, setLink] = useState(null);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     // to just load this if it's being requested
-    if (!open) return;
     backend
-      .getToken(row.id)
+      .getToken(datapoint.id)
       .then((token) => {
         const qrhost = backend.host.replace(":", "%colon%");
         setLink({
@@ -88,37 +136,24 @@ const LoginLinkButton = ({ row, backend, style }: LoginLinkButtonProps) => {
       .catch((e) => {
         console.error(e);
       });
-  }, [open, backend, row]);
+  }, [backend, datapoint]);
 
   return (
-    <Portal
-      on="click"
-      onOpen={() => setOpen(true)}
-      onClose={() => {
-        setOpen(false);
-      }}
-      hoverable
-      mouseLeaveDelay={9999999}
-      trigger={
-        <Button>
-          <Icon name="linkify" />
-        </Button>
-      }
-    >
-      <PortalContent>
-        <h2>Login link for {row.name}</h2>
-        <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
-        <br />
-        <br />
-        <a href={link?.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "2em" }}>
-          Login link
-        </a>
-        <br />
-        <br />
-        <StyledButton secondary onClick={() => copyToClipboard(link?.url)}>
-          Copy link
-        </StyledButton>
-      </PortalContent>
-    </Portal>
+    <div style={{ textAlign: "center" }}>
+      <h2>
+        <>Login link for {datapoint.name}</>
+      </h2>
+      <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
+      <br />
+      <br />
+      <a href={link?.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "2em" }}>
+        Login link
+      </a>
+      <br />
+      <br />
+      <StyledButton secondary onClick={() => copyToClipboard(link?.url)}>
+        Copy link
+      </StyledButton>
+    </div>
   );
 };

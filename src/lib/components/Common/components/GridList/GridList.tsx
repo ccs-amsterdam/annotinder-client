@@ -17,10 +17,13 @@ import {
 } from "./GridListTypes";
 import { GridListDiv } from "./GridListStyled";
 import { ReactElement } from "react-markdown/lib/react-markdown";
+import { queryFullData } from "./GridListFunctions";
 
 interface GridListProps {
-  /** loadData is a callback function that generates the data given a query.
-   * Note that this function should not change!! so use useCallback if created inside the component
+  fullData?: DataPoint[];
+  /** Instead of providing fullData, you can also provide a function to generate page data given a DataQuery.
+   * This makes sense if the data is coming from an API.
+   * Note that this function should not change!! so use useCallback if created inside the component.
    */
   loadData?: (query: DataQuery) => Promise<GridListData>;
   template: GridItemTemplate[];
@@ -33,6 +36,7 @@ interface GridListProps {
 }
 
 const GridList = ({
+  fullData,
   loadData,
   template,
   sortOptions,
@@ -41,14 +45,19 @@ const GridList = ({
   setDetail,
   pageSize = 10,
 }: GridListProps) => {
-  const [data, setData] = useState<DataPointWithRef[]>();
+  let [data, setData] = useState<DataPointWithRef[]>();
   const [meta, setMeta] = useState<DataMeta>();
-  const upRef = useRef<HTMLDivElement>(null);
-  const downRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const detailRef = useRef<HTMLDivElement>(null);
   const [selected, setSelected] = useState<SelectedDataPoint>();
-  const [query, setQuery] = useState<DataQuery>({ n: pageSize, offset: 0, sort: [], filter: [] });
+  const [query, setQuery] = useState<DataQuery>({
+    n: pageSize,
+    offset: 0,
+    sort: [],
+    filter: [],
+  });
+
+  const singlePage = meta && meta.total <= pageSize;
 
   function changePage(direction: "up" | "down") {
     if (!data) {
@@ -83,26 +92,39 @@ const GridList = ({
     if (!gridEl) return;
     gridEl.classList.remove("upOut", "downOut", "upIn", "downIn");
     gridEl.classList.add(`${query.direction || ""}Out`);
-    loadData(query)
+
+    const loadDataFunction = fullData
+      ? async (query: DataQuery) => queryFullData(fullData, query)
+      : loadData;
+
+    const now = Date.now();
+    loadDataFunction(query)
       .then(({ data, meta }) => {
         const dataWithRef: DataPointWithRef[] = [];
         for (let i = 0; i < pageSize; i++) {
           dataWithRef.push({ datapoint: data?.[i], ref: React.createRef<HTMLDivElement>() });
         }
-        setData(dataWithRef);
-        setMeta(meta);
+        const delay = Math.max(0, 100 - (Date.now() - now));
+        setTimeout(() => {
+          setData(dataWithRef);
+          setMeta(meta);
+          gridEl.classList.remove("upOut", "downOut", "upIn", "downIn");
+          gridEl.classList.add(`${query.direction || ""}In`);
+        }, delay);
       })
-      .finally(() => {
+      .catch(() => {
         gridEl.classList.remove("upOut", "downOut", "upIn", "downIn");
         gridEl.classList.add(`${query.direction || ""}In`);
       });
-  }, [query, gridRef, pageSize, loadData]);
+  }, [fullData, query, gridRef, pageSize, loadData]);
 
   const canGoUp = meta && meta.offset > 0;
   const canGoDown = meta && query.offset + pageSize < meta.total;
 
   const page = query.offset / pageSize + 1;
   const pages = Math.ceil(meta?.total / pageSize) || 1;
+
+  if (!data) data = new Array(pageSize).fill({ datapoint: undefined, ref: React.createRef() });
 
   return (
     <CenteredDiv>
@@ -114,13 +136,12 @@ const GridList = ({
           {sortOptions && (
             <SortQueryMenu query={query} setQuery={setQuery} sortOptions={sortOptions} />
           )}
-          <div className="Results">{page + " / " + pages}</div>
+          {!singlePage && <div className="Results">{page + " / " + pages}</div>}
         </div>
-        <div className="GridItems">
+        <div className={`GridItems ${singlePage ? "SinglePage" : ""}`}>
           {
             <div
               key="labels up"
-              ref={upRef}
               className={`GridItem Labels ${canGoUp && "PageChange"}`}
               onClick={() => canGoUp && changePage("up")}
             >
@@ -137,13 +158,13 @@ const GridList = ({
               )}
             </div>
           }
-          {data?.map(({ datapoint, ref }, i) => {
+          {data.map(({ datapoint, ref }, i) => {
             return (
               <div
                 key={datapoint?.id ?? `missing_${i}`}
                 ref={ref}
-                className={`GridItem Values ${!datapoint && "Disabled"} ${
-                  selected && selected.datapoint.id === datapoint?.id && "Selected"
+                className={`Up GridItem Values  ${!datapoint ? "Disabled" : ""} ${
+                  selected && selected.datapoint.id === datapoint?.id ? "Selected" : ""
                 }`}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -177,7 +198,6 @@ const GridList = ({
 
           <div
             key="labels down"
-            ref={downRef}
             className={`GridItem Labels PageChange ${!canGoDown && "Disabled"}`}
             onClick={() => changePage("down")}
           >
@@ -194,13 +214,18 @@ const GridList = ({
   );
 };
 
-const Value = styled.div`
+const Value = styled.div<{ wrap?: boolean }>`
   width: 100%;
   min-height: 2.1rem;
   padding-right: 0.1rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  ${(p) => {
+    if (!p.wrap)
+      return `
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    `;
+  }}
 `;
 
 const ItemValue = (props: { datapoint: DataPoint; item: GridItemTemplate }) => {
@@ -234,7 +259,7 @@ const dateValue = (value: Date) => {
   if (minutes_ago < 1) return "just now";
   if (minutes_ago < 60) return `${minutes_ago} minutes ago`;
   if (minutes_ago < 60 * 24) return `${Math.floor(minutes_ago / 60)} hours ago`;
-  if (minutes_ago < 60 * 24 * 30) return `${Math.floor(minutes_ago / (60 * 24))} days ago`;
+  if (minutes_ago < 60 * 24 * 7) return `${Math.floor(minutes_ago / (60 * 24))} days ago`;
   return value.toISOString().split("T")[0];
 };
 

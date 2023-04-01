@@ -1,5 +1,27 @@
 import { DataPoint, DataQuery } from "./GridListTypes";
 
+export function queryFullData(fullData: DataPoint[], query: DataQuery) {
+  let data = fullData.filter((v) => {
+    for (let filter of query.filter) {
+      if (filter.type === "search") {
+        const str: string = v[filter.variable] as string;
+        if (typeof str !== "string") continue;
+        if (!str.toLowerCase().includes(filter.search.toLowerCase())) return false;
+      }
+      if (filter.type === "select") {
+        if (!filter.select.includes(v[filter.variable])) return false;
+      }
+    }
+
+    return true;
+  });
+
+  sortData(data, query);
+  const meta = { offset: query.offset, total: data.length };
+  data = data.slice(query.offset, query.offset + query.n);
+  return { data, meta };
+}
+
 export function sortData(data: DataPoint[], query: DataQuery) {
   if (!query.sort || query.sort.length === 0) return;
 
