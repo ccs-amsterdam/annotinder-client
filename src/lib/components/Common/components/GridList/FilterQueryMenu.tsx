@@ -59,7 +59,7 @@ const FilterQueryMenu = ({ query, setQuery, filterOptions }: FilterQueryProps) =
           {filterOptions?.map((option) => {
             return (
               <div key={option.variable + option.type} className="QueryField">
-                <FilterField key={option.variable} option={option} setQuery={setQuery} />
+                <FilterField option={option} setQuery={setQuery} />
               </div>
             );
           })}
@@ -116,13 +116,7 @@ const SearchFilterField = (props: {
   return (
     <div className="FilterField">
       <label>{label}</label>
-      <input
-        className="SearchField"
-        placeholder={``}
-        type="text"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      <input className="SearchField" value={search} onChange={(e) => setSearch(e.target.value)} />
     </div>
   );
 };

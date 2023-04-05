@@ -1,11 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import JobServerDemo from "./classes/JobServerDemo";
-import Annotator from "../Annotator/Annotator";
+import React, { useCallback } from "react";
 import { Button, ButtonGroup } from "../../styled/StyledSemantic";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../functions/copyToClipboard";
-import { SetState } from "../../types";
 import styled from "styled-components";
 import GridList from "../Common/components/GridList/GridList";
 import { DataPoint, GridItemTemplate } from "../Common/components/GridList/GridListTypes";
@@ -13,47 +9,40 @@ import { DataPoint, GridItemTemplate } from "../Common/components/GridList/GridL
 const StyledDiv = styled.div`
   display: flex;
   flex-direction: column;
+  width: 450px;
+  max-width: 100%;
+  margin: auto;
 
   .Header {
     margin: auto;
-    max-width: 700px;
     text-align: center;
   }
 `;
 
 const DemoJobOverview = () => {
-  const [job, setJob] = useState(null);
-  const [searchParams] = useSearchParams();
+  const setDetail = useCallback(async (datapoint: DataPoint) => {
+    return (
+      <div className="Action">
+        <h3 style={{ textAlign: "center" }}>Start demo</h3>
+        <DemoJobLink units={datapoint.units as string} codebook={datapoint.codebook as string} />
+      </div>
+    );
+  }, []);
 
-  useEffect(() => {
-    let codebook = searchParams.get("codebook");
-    let units = searchParams.get("units");
-    if (!codebook || !units) {
-      return setJob(null);
-    }
-    getJobServer(units, codebook, setJob);
-  }, [searchParams]);
-
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      const msg = "If you leave now, any changes made in the current unit will not be saved."; // most browsers actually show default message
-      e.returnValue = msg;
-      return msg;
-    };
-
-    if (job != null) {
-      window.addEventListener("beforeunload", handleBeforeUnload);
-    } else {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    }
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [job]);
-
-  if (job === null) return <DemoSelector />;
-  return <Annotator jobServer={job} askFullScreen />;
+  return (
+    <StyledDiv>
+      <div className="Header">
+        <h2>Demo jobs</h2>
+        <p>
+          This is a list of demo jobs to get a gist of the annotator features. Your annotations will
+          not be stored, and will be lost when closing or refreshing the application.
+        </p>
+      </div>
+      <div className="Body">
+        <GridList fullData={demo_files} template={template} setDetail={setDetail} />
+      </div>
+    </StyledDiv>
+  );
 };
 
 const demo_files: DataPoint[] = [
@@ -96,32 +85,6 @@ const demo_files: DataPoint[] = [
   },
 ];
 
-const DemoSelector = () => {
-  const setDetail = useCallback(async (datapoint: DataPoint) => {
-    return (
-      <div className="Action">
-        <h3 style={{ textAlign: "center" }}>Start demo</h3>
-        <DemoJobLink units={datapoint.units as string} codebook={datapoint.codebook as string} />
-      </div>
-    );
-  }, []);
-
-  return (
-    <StyledDiv>
-      <div className="Header">
-        <h2>Demo jobs</h2>
-        <p>
-          This is a list of demo jobs to get a gist of the annotator features. Your annotations will
-          not be stored, and will be lost when closing or refreshing the application.
-        </p>
-      </div>
-      <div className="Body">
-        <GridList fullData={demo_files} template={template} setDetail={setDetail} />
-      </div>
-    </StyledDiv>
-  );
-};
-
 const template: GridItemTemplate[] = [
   {
     label: "Demo",
@@ -130,40 +93,6 @@ const template: GridItemTemplate[] = [
   },
 ];
 
-const headers = {
-  "Content-Type": "application/json",
-  Accept: "application/json",
-};
-
-const getJobServer = async (
-  units_file: string,
-  codebook_file: string,
-  setJob: SetState<JobServerDemo>
-) => {
-  try {
-    const units_res = await fetch(getFileName(units_file, "units"), { headers });
-    let units = await units_res.json();
-    if (typeof units !== "object") units = JSON.parse(units);
-
-    const codebook_res = await fetch(getFileName(codebook_file, "codebook"), { headers });
-    let codebook = await codebook_res.json();
-    if (typeof codebook !== "object") codebook = JSON.parse(codebook);
-
-    setJob(new JobServerDemo(codebook, units));
-  } catch (e) {
-    setJob(null);
-    console.error(e);
-  }
-};
-
-const getFileName = (filename: string, what: string) => {
-  if (filename.toLowerCase().includes(".json")) {
-    // if .json in name, assume its a full path
-    return filename;
-  }
-  return `${what}/${filename}.json`;
-};
-
 interface DemoJobLinkProps {
   units: string;
   codebook: string;
@@ -171,9 +100,7 @@ interface DemoJobLinkProps {
 
 const DemoJobLink = ({ units, codebook }: DemoJobLinkProps) => {
   if (!units || !codebook) return null;
-  const url = `${
-    window.location.origin + window.location.pathname
-  }demo?units=${units}&codebook=${codebook}`;
+  const url = `${window.location.origin}/demo?units=${units}&codebook=${codebook}`;
 
   const onClick = () => {
     window.location.href = url;

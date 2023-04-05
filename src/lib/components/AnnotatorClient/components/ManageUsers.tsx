@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { CenteredDiv } from "../../../styled/Styled";
 import Modal from "../../Common/components/Modal";
 import { Loader } from "../../../styled/Styled";
+import Toggle from "../../Common/components/Toggle";
 
 const StyledDiv = styled.div`
   display: grid;
@@ -148,8 +149,10 @@ const CreateUserModal = ({ backend, addUsers, setAddUsers, setUsers }: CreateUse
       <div>
         <p>Do you want to create the following users?</p>
         <ul>{listUsers()}</ul>
-        <label style={{ marginRight: "1rem" }}>Give admin rights:</label>
-        <input type="checkbox" checked={asAdmin} onClick={() => setAsAdmin(!asAdmin)} />
+        <div style={{ display: "flex" }}>
+          <label style={{ marginRight: "1rem" }}>Give admin rights:</label>
+          <Toggle checked={asAdmin} setChecked={setAsAdmin} />
+        </div>
       </div>
       <div>
         {status === "error" ? (

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { CenteredDiv } from "../../../../styled/Styled";
+import { CenteredDiv, Loader } from "../../../../styled/Styled";
 import SortQueryMenu from "./SortQueryMenu";
 import FilterQueryMenu from "./FilterQueryMenu";
 import {
@@ -124,11 +124,16 @@ const GridList = ({
   const page = query.offset / pageSize + 1;
   const pages = Math.ceil(meta?.total / pageSize) || 1;
 
-  if (!data) data = new Array(pageSize).fill({ datapoint: undefined, ref: React.createRef() });
+  let empty = false;
+  if (!data) {
+    empty = true;
+    data = new Array(pageSize).fill({ datapoint: undefined, ref: React.createRef() });
+  }
 
   return (
     <CenteredDiv>
-      <GridListDiv ref={gridRef}>
+      <Loader active={empty} transitionTime={0.5} />
+      <GridListDiv ref={gridRef} className={empty ? "Empty" : ""}>
         <div className="QueryFields">
           {filterOptions && (
             <FilterQueryMenu query={query} setQuery={setQuery} filterOptions={filterOptions} />

@@ -102,10 +102,8 @@ const filterOptions: FilterQueryOption[] = [
     variable: "archived",
     label: "Archived",
     type: "select",
-    selectOptions: [
-      { label: <FaEyeSlash />, value: true },
-      { label: <FaEye />, value: false },
-    ],
+    defaultSelect: [false],
+    selectOptions: [{ label: "hide archived", value: false }],
   },
 ];
 

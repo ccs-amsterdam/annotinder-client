@@ -76,17 +76,19 @@ const useSpanSelector = (
   let popup = (
     <AnnotationPortal open={open} setOpen={setOpen} positionRef={tokens?.[index]?.ref} minY={30}>
       <>
-        <SelectPage
-          editMode={editMode}
-          tokens={tokens}
-          variable={variable}
-          setVariable={setVariable}
-          variableMap={variableMap}
-          annotationLib={annotationLib}
-          span={span}
-          setSpan={setSpan}
-          setOpen={setOpen}
-        />
+        {open && (
+          <SelectPage
+            editMode={editMode}
+            tokens={tokens}
+            variable={variable}
+            setVariable={setVariable}
+            variableMap={variableMap}
+            annotationLib={annotationLib}
+            span={span}
+            setSpan={setSpan}
+            setOpen={setOpen}
+          />
+        )}
         <NewCodePage // if current is known, select what the new code should be (or delete, or ignore)
           tokens={tokens}
           variable={variable}

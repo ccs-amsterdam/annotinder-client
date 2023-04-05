@@ -21,7 +21,8 @@ export const HostLogin = ({
   canRegister,
   hostInfoQuery,
 }: HostLoginProps) => {
-  const [hostInput, setHostInput] = useState(host);
+  const fixedHost = "https://lancar.up.railway.app";
+  const [hostInput, setHostInput] = useState(fixedHost || host);
   const [emailInput, setEmailInput] = useState(email);
   const [invalidEmail, setInvalidEmail] = useState(false);
 
@@ -56,7 +57,10 @@ export const HostLogin = ({
   return (
     <Form
       loading={hostInfoQuery.isFetching}
-      onSubmit={submit}
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       style={{ width: "250px", maxWidth: "100%", fontSize: "1.3rem" }}
     >
       <h3 style={{ color: "var(--primary)", marginBottom: "0" }}>Sign-in</h3>
@@ -66,7 +70,8 @@ export const HostLogin = ({
         placeholder="Host"
         name="host"
         error={hostInfoQuery.isError ? "Could not connect to server" : null}
-        value={hostInput}
+        readOnly={!!fixedHost}
+        value={fixedHost || hostInput}
         onChange={(e, d) => {
           setHostInput(d.value);
         }}
@@ -90,7 +95,7 @@ export const HostLogin = ({
         }}
       />
 
-      <StyledButton primary disabled={hostInput.length === 0} fluid>
+      <StyledButton onClick={submit} primary disabled={hostInput.length === 0} fluid>
         Connect to server
       </StyledButton>
     </Form>

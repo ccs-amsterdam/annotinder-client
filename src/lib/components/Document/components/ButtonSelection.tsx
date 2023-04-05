@@ -13,6 +13,7 @@ const StyledDiv = styled.div<{ showSearch?: boolean }>`
   .closeIcon {
     cursor: pointer;
     height: 3.5rem;
+    width: 3.5rem;
     margin: 0rem 0.4rem;
     border: 2px solid transparent;
 

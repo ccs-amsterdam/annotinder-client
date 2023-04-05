@@ -497,7 +497,7 @@
         },
         {
           "name": "text",
-          "value": "There is also a mode for annotating words or a span of words. This is more of an expert coder task, and can be done most efficiently with mouse or keyboard. With a mouse you just click and hold to select. With keyboard you use the arrows to navigate and hold spacebar to select.\n\nYou can also do this on mobile though. Tap the same word twice to begin a selection, and then tap another word to finish a selection"
+          "value": "There is also a mode for annotating words or a span of words. This is more of an expert coder task. With a mouse you just click and hold to select. With keyboard you use the arrows to navigate and hold spacebar to select. On touch devices do a quick tap on a word to begin a selection, and then tap another word to finish it"
         }
       ],
 

@@ -162,9 +162,9 @@ class Backend {
   }
 
   // POST
-  postPassword(user?: string, password?: string) {
-    const body = { password };
-    return this.api.post(`users/${user || "me"}`, body);
+  postPassword(email?: string, password?: string) {
+    const body = { email, password };
+    return this.api.post(`users/me/password`, body);
   }
   postUsers(users: User[]) {
     return this.api.post("users", {

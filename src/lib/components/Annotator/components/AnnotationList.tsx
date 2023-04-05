@@ -209,7 +209,7 @@ const listAnnotations = (
       const text = annotation.text || "";
       rows.push(
         <ShowSpanAnnotation
-          key={"span" + rows.length}
+          key={"span" + annotation.id}
           variableMap={variableMap}
           annotation={annotation}
           onClick={() => {
@@ -228,7 +228,7 @@ const listAnnotations = (
 
       rows.push(
         <ShowRelation
-          key={"relation" + rows.length}
+          key={"relation" + annotation.id}
           variableMap={variableMap}
           annotation={annotation}
           annMap={annMap}
@@ -331,7 +331,7 @@ function recursiveRelationText(
   }
   if (annotation.type === "relation") {
     elements.push(
-      <div className={`relation ${depth === 0 && "header"}`} style={{ marginLeft }}>
+      <div key={key} className={`relation ${depth === 0 && "header"}`} style={{ marginLeft }}>
         <div className="label">
           {depth > 0 && <div className="dot" style={{ background: annotation.color }} />}
           <div>{annotation.value}</div>

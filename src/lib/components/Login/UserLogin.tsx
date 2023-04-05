@@ -92,7 +92,11 @@ const PasswordLogin = ({ host, email, login }: PasswordLoginProps) => {
   };
 
   return (
-    <Form onSubmit={() => tryPasswordLogin()}>
+    <Form
+      onSubmit={(e) => {
+        e.preventDefault();
+      }}
+    >
       <Form.Input
         placeholder="password"
         name="password"
@@ -106,9 +110,15 @@ const PasswordLogin = ({ host, email, login }: PasswordLoginProps) => {
           setLoginError("");
           setPassword(d.value);
         }}
-        style={{ width: "260px" }}
+        style={{ width: "260px", fontSize: "1.5rem" }}
       />
-      <StyledButton primary key="password" disabled={password.length === 0} fluid>
+      <StyledButton
+        onClick={tryPasswordLogin}
+        primary
+        key="password"
+        disabled={password.length === 0}
+        fluid
+      >
         Sign in
       </StyledButton>
     </Form>

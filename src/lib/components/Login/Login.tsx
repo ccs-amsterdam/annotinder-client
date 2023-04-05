@@ -75,33 +75,35 @@ const Login = ({ login, sessionList }: LoginProps) => {
   };
 
   return (
-    <LoginContainer>
-      <Title>AnnoTinder</Title>
-      {hostInfoQuery.data ? (
-        <HostLogout
-          host={host}
-          email={email}
-          setHost={setHost}
-          setEmail={setEmail}
-          searchParams={searchParams}
-          setSearchParams={setSearchParams}
-        />
-      ) : (
-        sessionList
-      )}
-      <FormBox>
-        <div>{render()}</div>
-      </FormBox>
-      <span
-        style={{ marginTop: "1rem", cursor: "pointer", color: "var(--primary-text)" }}
-        onClick={() => setDemoModal(true)}
-      >
-        View Demo
-      </span>
+    <>
+      <LoginContainer>
+        <Title>AnnoTinder</Title>
+        {hostInfoQuery.data ? (
+          <HostLogout
+            host={host}
+            email={email}
+            setHost={setHost}
+            setEmail={setEmail}
+            searchParams={searchParams}
+            setSearchParams={setSearchParams}
+          />
+        ) : (
+          sessionList
+        )}
+        <FormBox>
+          <div>{render()}</div>
+        </FormBox>
+        <span
+          style={{ marginTop: "1rem", cursor: "pointer", color: "var(--primary-text)" }}
+          onClick={() => setDemoModal(true)}
+        >
+          View Demo
+        </span>
+      </LoginContainer>
       <Modal open={demoModal} setOpen={setDemoModal}>
         <DemoJobOverview />
       </Modal>
-    </LoginContainer>
+    </>
   );
 };
 

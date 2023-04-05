@@ -18,6 +18,8 @@ const StyledDiv = styled.div`
 `;
 
 const PopupSelection = ({ header, options, onSelect }: Props) => {
+  if (!options?.length) return null;
+
   return (
     <StyledDiv>
       <h4>{header}</h4>

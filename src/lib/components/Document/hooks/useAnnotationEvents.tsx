@@ -50,13 +50,19 @@ export default function useAnnotationEvents(
 
   // keeps track of mouse events
   const selectionStarted = useRef(false);
-  const tapped = useRef(null);
+
   const touch = useRef(null);
   const istouch = useRef(
     "ontouchstart" in window ||
       navigator.maxTouchPoints > 0 ||
       (navigator as any).msMaxTouchPoints > 0
   ); // hack to notice if device uses touch
+
+  // reset selection if events get unblocked
+  useEffect(() => {
+    if (!eventsBlocked) setTokenSelection([]);
+    (document.activeElement as HTMLElement).blur();
+  }, [eventsBlocked]);
 
   // reset selections when data changes
   useEffect(() => {
@@ -129,13 +135,13 @@ export default function useAnnotationEvents(
         event,
         tokens,
         editMode,
+        currentTokenRef.current,
         tokenSelectionRef.current,
         sameFieldOnly,
         setCurrentToken,
         setTokenSelection,
         triggerSelectionPopup,
-        touch,
-        tapped
+        touch
       );
     }
 
@@ -195,7 +201,6 @@ export default function useAnnotationEvents(
       setHoldArrow(null);
       setMover(false);
       touch.current = null;
-      tapped.current = null;
       selectionStarted.current = false;
       return;
     }
@@ -233,7 +238,6 @@ export default function useAnnotationEvents(
     selectionStarted,
     touch,
     istouch,
-    tapped,
     eventsBlocked,
     sameFieldOnly,
   ]);

@@ -82,6 +82,12 @@ export default class AnnotationManager {
     };
     this.addAnnotation(annotation);
   }
+
+  rerenderAnnotations() {
+    this.setAnnotationLib((annotationLib) => {
+      return { ...annotationLib };
+    });
+  }
 }
 
 export function createAnnotationLibrary(

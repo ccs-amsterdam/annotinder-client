@@ -2,9 +2,13 @@ import React, { useEffect, ReactElement, useRef } from "react";
 import styled from "styled-components";
 import { SetState } from "../../../types";
 
-const Portal = styled.div<{ smallScreen?: boolean }>`
-  left: 0;
-  top: 0;
+const Portal = styled.div<{ smallScreen?: boolean; open?: boolean }>`
+  opacity: ${(p) => (p.open ? "1" : "0")};
+  pointer-events: ${(p) => (p.open ? "auto" : "none")};
+  transition: ${(p) => (p.open ? "opacity 200ms" : "opacity 0ms")};
+
+  left: -10000px;
+  top: -10000px;
   overflow: auto;
   font-size: 1.2rem;
   max-height: 70%;
@@ -18,8 +22,6 @@ const Portal = styled.div<{ smallScreen?: boolean }>`
   margin-top: 14px;
   border-radius: 5px;
   border: 2px solid var(--primary);
-  opacity: 0;
-  transition: opacity 250ms, width 250ms, padding 100ms, left 50ms;
 `;
 
 interface Props {
@@ -35,23 +37,24 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef, min
 
   useEffect(() => {
     if (!positionRef?.current) return;
+
     // close popup on document click
     const closePortal = (e: any) => {
-      if (portalref.current && !portalref.current.contains(e.target)) setOpen(false);
+      if (portalref.current && !portalref.current.contains(e.target)) {
+        setOpen(false);
+      }
     };
     document.addEventListener("mouseup", closePortal);
     return () => {
       document.removeEventListener("mouseup", closePortal);
     };
-  }, [positionRef, setOpen]);
+  }, [open, positionRef, setOpen]);
 
   useEffect(() => {
     if (!open || !portalref.current) return;
     setTimeout(() => fitPortalOnScreen(portalref.current, positionRef.current, minY), 10);
     positionRef.current?.focus();
 
-    // replace this with the implementation in MiddleCat, which uses
-    // scrollheight/width to calculate size without requiring loop
     let portalWidth = portalref.current.clientWidth;
     let portalHeight = portalref.current.clientHeight;
     let portalY = portalref.current.offsetTop;
@@ -68,9 +71,8 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef, min
 
   const smallscreen = window.innerWidth < 500;
 
-  if (!open) return null;
   return (
-    <Portal ref={portalref} smallScreen={smallscreen}>
+    <Portal open={open} ref={portalref} className="AnnotationPortal" smallScreen={smallscreen}>
       {children}
     </Portal>
   );
@@ -102,7 +104,6 @@ const fitPortalOnScreen = (portalEl: HTMLElement, positionEl: HTMLElement, minY 
     if (offscreen > 0) left -= offscreen;
   }
 
-  portalEl.style.opacity = "1";
   portalEl.style.left = `${left}px`;
   portalEl.style.top = `${up}px`;
 };

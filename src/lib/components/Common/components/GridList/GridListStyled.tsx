@@ -11,6 +11,13 @@ export const GridListDiv = styled.div`
   max-width: 900px;
   max-height: 600px;
 
+  opacity: 1;
+  transition: opacity 0.5s;
+
+  &.Empty {
+    opacity: 0;
+  }
+
   @keyframes UpOut {
     0% {
       opacity: 1;
@@ -157,7 +164,7 @@ export const GridListDiv = styled.div`
       transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
       transition-delay: 0.1s;
       opacity: 0;
-      max-width: 100%;
+      //max-width: 100%;
       width: auto;
       margin: auto;
       transform: scale(1%);
@@ -327,6 +334,8 @@ export const QueryDiv = styled.div<{ open?: boolean; active?: boolean }>`
         border-radius: 5px;
         background: #fff;
         color: var(--primary-dark);
+        padding: 0.3rem;
+        cursor: pointer;
 
         &.Selected {
           background: var(--primary);

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { StyledButton } from "../../../styled/StyledSemantic";
+import { Button, StyledButton } from "../../../styled/StyledSemantic";
 import QRCodeCanvas from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
 import { RowObj, SetState } from "../../../types";
@@ -31,6 +31,7 @@ export default function UsersTable({ backend, users, setUsers }: UsersTableProps
 
   const loadData = useCallback(
     async (query: DataQuery) => {
+      console.log(query);
       let data: DataPoint[] = users.map((v: any) => {
         v = { ...v };
         v.role = v.is_admin ? "admin" : "coder";
@@ -90,7 +91,7 @@ export default function UsersTable({ backend, users, setUsers }: UsersTableProps
         label: "Role",
         type: "select",
         selectOptions: [
-          { label: "admin", value: "coder" },
+          { label: "admin", value: "admin" },
           { label: "coder", value: "coder" },
         ],
       },
@@ -117,6 +118,17 @@ interface LoginLinkButtonProps {
 
 const LoginLink = ({ datapoint, backend }: LoginLinkButtonProps) => {
   const [link, setLink] = useState(null);
+  const [passwd, setPasswd] = useState("");
+  const [changed, setChanged] = useState("");
+
+  async function changePassword() {
+    const res = await backend.postPassword(String(datapoint.email), passwd);
+    if (res.status === 204) {
+      setChanged("success");
+    } else {
+      setChanged("error");
+    }
+  }
 
   useEffect(() => {
     // to just load this if it's being requested
@@ -143,7 +155,7 @@ const LoginLink = ({ datapoint, backend }: LoginLinkButtonProps) => {
       <h2>
         <>Login link for {datapoint.name}</>
       </h2>
-      <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={256} />
+      <QRCodeCanvas value={encodeURI(link?.qrUrl)} size={128} />
       <br />
       <br />
       <a href={link?.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "2em" }}>
@@ -154,6 +166,24 @@ const LoginLink = ({ datapoint, backend }: LoginLinkButtonProps) => {
       <StyledButton secondary onClick={() => copyToClipboard(link?.url)}>
         Copy link
       </StyledButton>
+      <br />
+      <br />
+
+      <h3>Change password</h3>
+      <input
+        style={{ margin: "1rem", borderRadius: "5px" }}
+        value={passwd}
+        type="password"
+        autoComplete="new-password"
+        onChange={(e) => setPasswd(e.target.value)}
+      />
+      {!changed && (
+        <Button disabled={!passwd} onClick={changePassword}>
+          Change password
+        </Button>
+      )}
+      {changed === "success" && <p style={{ color: "green" }}>Password changed</p>}
+      {changed === "error" && <p style={{ color: "red" }}>Error changing password</p>}
     </div>
   );
 };

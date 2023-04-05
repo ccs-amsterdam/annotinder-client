@@ -16,15 +16,17 @@ export const getValidTokenRelations = (
   for (let i of Object.keys(annotationLib.byToken)) {
     for (let id of annotationLib.byToken[i]) {
       const a = annotationLib.annotations[id];
-      const relationIds =
-        variable?.validFrom?.[a.variable]?.["*"] ||
-        variable?.validFrom?.[a.variable]?.[a.value] ||
-        null;
+
+      const wildcard = variable?.validFrom?.[a.variable]?.["*"];
+      const relationIds = wildcard || variable?.validFrom?.[a.variable]?.[a.value] || null;
+
       if (!relationIds) continue;
       if (!valid[i]) valid[i] = {};
 
       const fromKey = a.variable + "|" + a.value;
       if (!valid[i][fromKey]) valid[i][fromKey] = {};
+
+      if (!!wildcard) valid[i][fromKey]["*"] = true;
 
       for (let relationId of Object.keys(relationIds)) {
         const to = variable.relations?.[relationId]?.to;
@@ -62,7 +64,7 @@ export const getValidTokenDestinations = (
       for (let destinationId of destinationAnnotationIds) {
         const da = annotationLib.annotations[destinationId];
         const toKey = da.variable + "|" + da.value;
-        if (!validIds[fromKey][toKey]) continue; // skip if there are no destinations for this variable/value
+        if (!validIds[fromKey][toKey] && !validIds[fromKey]["*"]) continue; // skip if there are no destinations for this variable/value
         if (da.variable === sa.variable && da.value === sa.value && da.offset === sa.offset)
           continue;
         valid[i] = true;

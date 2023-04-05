@@ -62,7 +62,7 @@ const AnnotateTaskManual = ({ fullScreenNode }: AnnotateTaskManualProps) => {
                   <i>Left-click.</i> Hold to select multiple
                 </StyledTable.Cell>
                 <StyledTable.Cell>
-                  <i>tab</i> twice to begin, then once to close
+                  <i>tap</i> the start word, then tap the end word
                 </StyledTable.Cell>
               </StyledTable.Row>
 

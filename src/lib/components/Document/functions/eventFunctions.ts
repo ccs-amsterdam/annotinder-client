@@ -81,13 +81,13 @@ export function onTouchUp(
   event: TouchEvent,
   tokens: Token[],
   editMode: boolean,
+  currentToken: number,
   tokenSelection: TokenSelection,
   sameFieldOnly: boolean,
   setCurrentToken: (i: number) => void,
   setTokenSelection: SetState<TokenSelection>,
   triggerSelector: TriggerSelector,
-  touch: any,
-  tapped: any
+  touch: any
 ) {
   if (!touch.current?.time) return;
   const now = new Date();
@@ -96,8 +96,6 @@ export function onTouchUp(
   const token = touch.current.token;
 
   if (token?.index === null) {
-    rmTapped(tokens, tapped.current);
-    tapped.current = null;
     setTokenSelection((state: TokenSelection) => (state.length === 0 ? state : []));
     return;
   }
@@ -111,8 +109,8 @@ export function onTouchUp(
     return;
   }
 
-  // first check if there is a tokenselection (after double tab). If so, this completes the selection
-  if (tokenSelection.length > 0 && tokenSelection[0] === tapped.current) {
+  // first check if there is a tokenselection. If so, this completes the selection
+  if (tokenSelection.length > 0 && tokenSelection[0] === currentToken) {
     // if a single token, and an annotation already exists, open create/edit mode
     const currentNode: number = storeMouseTokenSelection(
       token,
@@ -130,23 +128,13 @@ export function onTouchUp(
     } else {
       annotationFromSelection(tokens, [tokenSelection[0], currentNode], triggerSelector);
     }
-    rmTapped(tokens, tapped.current);
-    tapped.current = null;
+
     setCurrentToken(null);
     return;
   }
 
-  // otherwise, handle the double tab (on the same token) for starting the selection
-  if (tapped.current !== token.index) {
-    rmTapped(tokens, tapped.current);
-    addTapped(tokens, token.index);
-    tapped.current = token.index;
-    setCurrentToken(token.index);
-    setTokenSelection((state: TokenSelection) => (state.length === 0 ? state : []));
-  } else {
-    rmTapped(tokens, tapped.current);
-    setTokenSelection([token.index, token.index]);
-  }
+  setTokenSelection([token.index, token.index]);
+  setCurrentToken(token.index);
 }
 
 export function onMouseMove(
@@ -399,16 +387,6 @@ const moveSentence = (tokens: Token[], mover: Mover, direction = "up") => {
   if (direction === "down") {
     return moveDown(tokens, mover.position, mover.startposition);
   }
-};
-
-const addTapped = (tokens: Token[], i: number) => {
-  const ref = tokens?.[i]?.ref;
-  if (ref?.current) ref.current.classList.add("tapped");
-};
-
-const rmTapped = (tokens: Token[], i: number) => {
-  const ref = tokens?.[i]?.ref;
-  if (ref?.current) ref.current.classList.remove("tapped");
 };
 
 const returnSelectionIfChanged = (selection: TokenSelection, newSelection: TokenSelection) => {

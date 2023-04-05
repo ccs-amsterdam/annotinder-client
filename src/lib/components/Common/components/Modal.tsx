@@ -38,7 +38,6 @@ const StyledDiv = styled.div<{ open: boolean }>`
     border: 3px solid var(--primary);
     box-shadow: 0 0 10px var(--primary-dark);
     border-radius: 5px;
-    position: relative;
     z-index: 10000;
     background: var(--background);
     color: var(--text);
@@ -118,8 +117,6 @@ const Modal = ({ children, open, setOpen, closeOnSelectKey }: ModalProps) => {
     function onKeyDown(e: any) {
       if (e.key === "Escape") setOpen(false);
       if ((e.key === " " || e.key === "Enter") && closeOnSelectKey) setOpen(false);
-      e.stopPropagation();
-      e.preventDefault();
     }
 
     containerEl.addEventListener("click", onClick);

@@ -9,9 +9,17 @@ export const CenteredDiv = styled.div`
   position: relative;
 `;
 
-export const Loader = styled.div<{ active?: boolean; radius?: number; content?: string }>`
+export const Loader = styled.div<{
+  active?: boolean;
+  radius?: number;
+  content?: string;
+  transitionTime?: number;
+}>`
   --r: ${(p) => (p.radius != null ? p.radius + "px" : "40px")};
-  display: ${(p) => (p.active ? "block" : "none")};
+  pointer-events: none;
+  opacity: ${(p) => (p.active ? 1 : 0)};
+  transition: all ${(p) => p.transitionTime || 0}s;
+
   position: absolute;
   top: 0;
   left: 0;

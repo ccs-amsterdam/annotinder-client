@@ -66,6 +66,7 @@ const AnnotateNavigation = ({
     () => getValidTokenRelations(annotationLib, variable),
     [annotationLib, variable]
   );
+
   const validDestinations: ValidTokenDestinations = useMemo(
     () => getValidTokenDestinations(annotationLib, validRelations, tokenSelection),
     [annotationLib, validRelations, tokenSelection]

@@ -116,7 +116,7 @@ const getRelationShowValues = (
     for (let variable of Object.keys(valuemap)) {
       showValues[variable] = { ...fullVariableMap[variable], codeMap: {} };
       for (let value of Object.keys(valuemap[variable])) {
-        showValues[variable].codeMap[value] = fullVariableMap[variable].codeMap[value];
+        showValues[variable].codeMap[value] = fullVariableMap[variable]?.codeMap[value];
       }
     }
   }
@@ -134,6 +134,8 @@ function getValidRelationCodes(relations, codeMap) {
   const validTo: ValidRelation = {};
 
   function addValidRelation(valid: ValidRelation, relationId, variable, values, codes) {
+    console.log(variable, values);
+
     if (!variable) {
       if (!valid["*"]) valid["*"] = { "*": {} };
       valid["*"]["*"][relationId] = codes;
@@ -150,9 +152,7 @@ function getValidRelationCodes(relations, codeMap) {
       }
     } else {
       if (!valid[variable]["*"]) valid[variable]["*"] = {};
-      for (let code of Object.keys(codeMap)) {
-        valid[variable]["*"][code][relationId] = codes;
-      }
+      valid[variable]["*"][relationId] = codes;
     }
   }
 
@@ -161,6 +161,7 @@ function getValidRelationCodes(relations, codeMap) {
     if (!relation.codes) relation.codes = Object.keys(codeMap);
     const codes: Code[] = [];
     for (let code of relation.codes) if (codeMap[code]) codes.push(codeMap[code]);
+    console.log(relation);
     addValidRelation(validFrom, i, relation?.from?.variable, relation?.from?.values, codes);
     addValidRelation(validTo, i, relation?.to?.variable, relation?.to?.values, codes);
   }

@@ -159,6 +159,11 @@ const renderParagraph = (
 };
 
 const renderToken = (token: Token, codingUnit: boolean, keyChain: number) => {
+  function unFocusAble(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
   return (
     <span
       key={"token" + token.index + "_" + keyChain}
@@ -166,6 +171,7 @@ const renderToken = (token: Token, codingUnit: boolean, keyChain: number) => {
       ref={token.ref}
       className={codingUnit ? "token codingUnit" : "token"}
       data-tokenindex={token.arrayIndex}
+      onClick={unFocusAble}
     >
       <span key={"pre" + token.index} className="pre">
         {token.pre}
