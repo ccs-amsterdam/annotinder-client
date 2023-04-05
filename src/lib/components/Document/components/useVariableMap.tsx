@@ -134,8 +134,6 @@ function getValidRelationCodes(relations, codeMap) {
   const validTo: ValidRelation = {};
 
   function addValidRelation(valid: ValidRelation, relationId, variable, values, codes) {
-    console.log(variable, values);
-
     if (!variable) {
       if (!valid["*"]) valid["*"] = { "*": {} };
       valid["*"]["*"][relationId] = codes;
@@ -161,7 +159,6 @@ function getValidRelationCodes(relations, codeMap) {
     if (!relation.codes) relation.codes = Object.keys(codeMap);
     const codes: Code[] = [];
     for (let code of relation.codes) if (codeMap[code]) codes.push(codeMap[code]);
-    console.log(relation);
     addValidRelation(validFrom, i, relation?.from?.variable, relation?.from?.values, codes);
     addValidRelation(validTo, i, relation?.to?.variable, relation?.to?.values, codes);
   }

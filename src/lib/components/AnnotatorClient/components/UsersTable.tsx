@@ -31,7 +31,6 @@ export default function UsersTable({ backend, users, setUsers }: UsersTableProps
 
   const loadData = useCallback(
     async (query: DataQuery) => {
-      console.log(query);
       let data: DataPoint[] = users.map((v: any) => {
         v = { ...v };
         v.role = v.is_admin ? "admin" : "coder";
