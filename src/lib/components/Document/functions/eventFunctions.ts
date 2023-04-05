@@ -119,15 +119,22 @@ export function onTouchUp(
       setCurrentToken,
       setTokenSelection
     );
-    setTokenSelection((state: TokenSelection) =>
-      updateSelection(state, tokens, currentNode, true, sameFieldOnly)
+
+    const newTokenSelection = updateSelection(
+      tokenSelection,
+      tokens,
+      currentNode,
+      true,
+      sameFieldOnly
     );
 
-    if (token?.annotated && currentNode === tokenSelection[0]) {
-      annotationFromSelection(tokens, [currentNode, currentNode], triggerSelector);
-    } else {
-      annotationFromSelection(tokens, [tokenSelection[0], currentNode], triggerSelector);
+    if (newTokenSelection[0] !== currentNode && newTokenSelection[1] !== currentNode) {
+      setTokenSelection([currentNode, null]);
+      return;
     }
+
+    setTokenSelection(newTokenSelection);
+    annotationFromSelection(tokens, newTokenSelection, triggerSelector);
 
     setCurrentToken(null);
     return;
