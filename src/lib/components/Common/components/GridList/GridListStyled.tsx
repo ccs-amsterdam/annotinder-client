@@ -157,7 +157,7 @@ export const GridListDiv = styled.div`
     bottom: 0;
     display: flex;
     padding: 2rem 4rem;
-    z-index: 9000;
+    z-index: 1000;
 
     .Detail {
       padding: 1rem;

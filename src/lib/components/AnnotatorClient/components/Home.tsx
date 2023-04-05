@@ -50,12 +50,16 @@ const Menu = styled.ul`
 `;
 
 const PopupContent = styled.div`
+  display: flex;
+  flex-direction: column;
+
   padding: 1rem;
   font-size: 1.5rem;
   svg {
     margin-right: 1rem;
   }
   .authform {
+    margin: auto;
     display: flex;
     justify-content: center;
   }

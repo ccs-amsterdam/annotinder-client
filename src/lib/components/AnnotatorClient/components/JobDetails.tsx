@@ -409,6 +409,7 @@ const JobTokenButton = ({ jobId, backend, style = {} }: JobTokenButtonProps) => 
           flexDirection: "column",
           background: "white",
           border: "1px solid var(--primary-dark)",
+          color: "var(--text-fixed)",
         }}
       >
         <h2>Create job coder</h2>
