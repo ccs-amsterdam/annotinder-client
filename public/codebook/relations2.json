@@ -1,0 +1,199 @@
+{
+  "type": "annotate",
+  "settings": { "no_table": false },
+  "variables": [
+    {
+      "type": "span",
+      "codes": [
+        {
+          "code": "Subject",
+          "color": "blue"
+        },
+        {
+          "code": "Predicate",
+          "color": "purple"
+        }
+      ],
+
+      "name": "Labels",
+      "instruction": "Annotate arguments by labeling subjects and predictes, and then drawing relations between them.",
+      "searchBox": false,
+      "buttonMode": "all",
+      "multiple": false,
+      "editMode": false
+    },
+    {
+      "type": "relation",
+      "codes": [
+        {
+          "code": "Statement of Fact",
+          "color": "green"
+        },
+        {
+          "code": "Statement of Value",
+          "color": "orange"
+        },
+        {
+          "code": "Statement of Policy",
+          "color": "magenta"
+        },
+        {
+          "code": "Argument from cause"
+        },
+        {
+          "code": "Argument from effect"
+        },
+        {
+          "code": "Argument from sign"
+        },
+        {
+          "code": "Argument from criterion"
+        },
+        {
+          "code": "Argument from definition"
+        },
+        {
+          "code": "Argument from standard"
+        },
+        {
+          "code": "Pragmatic argument"
+        },
+        {
+          "code": "Argument from evaluation"
+        },
+        {
+          "code": "Argument from similarity"
+        },
+        {
+          "code": "Argument from analogy"
+        },
+        {
+          "code": "Argument from equality"
+        },
+        {
+          "code": "Argument from opposites"
+        },
+        {
+          "code": "Argument from identity"
+        },
+        {
+          "code": "Argument from authority"
+        },
+        {
+          "code": "Argument ad populum (from many)"
+        },
+        {
+          "code": "Argument ad baculum (stick argument)"
+        },
+        {
+          "code": "Argument from character"
+        },
+        {
+          "code": "Personal attack (ad hominem)"
+        }
+      ],
+      "relations": [
+        {
+          "codes": ["Statement of Fact", "Statement of Value", "Statement of Policy"],
+          "from": {
+            "variable": "Labels",
+            "values": ["Predicate"]
+          },
+          "to": {
+            "variable": "Labels",
+            "values": ["Subject"]
+          }
+        },
+        {
+          "codes": ["Argument from cause", "Argument from effect", "sign", "similarity"],
+          "from": {
+            "variable": "Relations",
+            "values": ["Statement of Fact"]
+          },
+          "to": {
+            "variable": "Relations",
+            "values": ["Statement of Fact"]
+          }
+        },
+        {
+          "codes": ["Argument from criterion", "Argument from definition"],
+          "from": {
+            "variable": "Relations",
+            "values": ["Statement of Value"]
+          },
+          "to": {
+            "variable": "Relations",
+            "values": ["Statement of Fact"]
+          }
+        },
+        {
+          "codes": ["Argument from standard", "Argument from analogy"],
+          "from": {
+            "variable": "Relations",
+            "values": ["Statement of Value"]
+          },
+          "to": {
+            "variable": "Relations",
+            "values": ["Statement of Value"]
+          }
+        },
+        {
+          "codes": ["Pragmatic argument"],
+          "from": {
+            "variable": "Relations",
+            "values": ["Statement of Policy"]
+          },
+          "to": {
+            "variable": "Relations",
+            "values": ["Statement of Fact"]
+          }
+        },
+        {
+          "codes": ["Argument from evaluation", "Argument from equality"],
+          "from": {
+            "variable": "Relations",
+            "values": ["Statement of Policy"]
+          },
+          "to": {
+            "variable": "Relations",
+            "values": ["Statement of Value"]
+          }
+        },
+        {
+          "codes": ["Argument from opposites", "Argument from identity"],
+          "from": {
+            "variable": "Relations",
+            "values": ["Statement of Fact", "Statement of Value", "Statement of Policy"]
+          },
+          "to": {
+            "variable": "Relations",
+            "values": ["Statement of Fact", "Statement of Value", "Statement of Policy"]
+          }
+        },
+        {
+          "codes": [
+            "Argument from authority",
+            "Argument ad populum (from many)",
+            "Argument ad baculum (stick argument)",
+            "Argument from character",
+            "Personal attack (ad hominem)"
+          ],
+          "from": {
+            "variable": "Relations",
+            "values": ["Statement of Fact", "Statement of Value", "Statement of Policy"]
+          },
+          "to": {
+            "variable": "Relations",
+            "values": ["Statement of Fact"]
+          }
+        }
+      ],
+      "name": "Relations",
+      "instruction": "Annotate arguments by labeling subjects and predictes, and then drawing relations between them.",
+      "searchBox": false,
+      "buttonMode": "all",
+      "multiple": false,
+      "editMode": false
+    }
+  ]
+}

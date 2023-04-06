@@ -70,6 +70,8 @@ const useJob = () => {
     {
       refetchOnMount: false,
       refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: false,
     }
   );
 

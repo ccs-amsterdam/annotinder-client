@@ -61,24 +61,30 @@ const demo_files: DataPoint[] = [
   },
   {
     id: "4",
+    label: "Argument annotation 2",
+    units: "lancar",
+    codebook: "relations2",
+  },
+  {
+    id: "5",
     label: "Assisted label",
     units: "actor_identification",
     codebook: "actor_identification",
   },
   {
-    id: "5",
+    id: "6",
     label: "Issue annotinder",
     units: "issue_swiping",
     codebook: "issue_swiping",
   },
   {
-    id: "6",
+    id: "7",
     label: "Stance annotinder",
     units: "stance_swiping",
     codebook: "stance_swiping",
   },
   {
-    id: "7",
+    id: "8",
     label: "Styled units: threads",
     units: "thread_coding",
     codebook: "dummy",
