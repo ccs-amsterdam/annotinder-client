@@ -21,7 +21,8 @@ export const HostLogin = ({
   canRegister,
   hostInfoQuery,
 }: HostLoginProps) => {
-  const fixedHost = "https://lancar.up.railway.app";
+  let fixedHost = "";
+  //fixedHost = "https://lancar.up.railway.app";
   const [hostInput, setHostInput] = useState(fixedHost || host);
   const [emailInput, setEmailInput] = useState(email);
   const [invalidEmail, setInvalidEmail] = useState(false);

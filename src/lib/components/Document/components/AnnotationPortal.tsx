@@ -2,13 +2,9 @@ import React, { useEffect, ReactElement, useRef } from "react";
 import styled from "styled-components";
 import { SetState } from "../../../types";
 
-const Portal = styled.div<{ smallScreen?: boolean; open?: boolean }>`
-  opacity: ${(p) => (p.open ? "1" : "0")};
-  pointer-events: ${(p) => (p.open ? "auto" : "none")};
-  transition: ${(p) => (p.open ? "opacity 200ms" : "opacity 0ms")};
-
-  left: -10000px;
-  top: -10000px;
+const Portal = styled.div<{ smallScreen?: boolean }>`
+  left: 0px;
+  top: 0px;
   overflow: auto;
   font-size: 1.2rem;
   max-height: 70%;
@@ -22,6 +18,16 @@ const Portal = styled.div<{ smallScreen?: boolean; open?: boolean }>`
   margin-top: 14px;
   border-radius: 5px;
   border: 2px solid var(--primary);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0ms linear 0ms;
+
+  &.Open {
+    opacity: 1;
+    pointer-events: auto;
+    transition: all 90ms, opacity 100ms linear 100ms;
+  }
 `;
 
 interface Props {
@@ -52,7 +58,7 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef, min
 
   useEffect(() => {
     if (!open || !portalref.current) return;
-    setTimeout(() => fitPortalOnScreen(portalref.current, positionRef.current, minY), 10);
+    setTimeout(() => fitPortalOnScreen(portalref.current, positionRef.current, minY), 0);
     positionRef.current?.focus();
 
     let portalWidth = portalref.current.clientWidth;
@@ -72,7 +78,7 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef, min
   const smallscreen = window.innerWidth < 500;
 
   return (
-    <Portal open={open} ref={portalref} className="AnnotationPortal" smallScreen={smallscreen}>
+    <Portal className={open ? "Open" : ""} ref={portalref} smallScreen={smallscreen}>
       {children}
     </Portal>
   );
