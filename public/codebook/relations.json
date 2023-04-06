@@ -61,11 +61,11 @@
           "codes": ["Statement of Fact", "Statement of Value", "Statement of Policy"],
           "from": {
             "variable": "Labels",
-            "values": ["Subject"]
+            "values": ["Predicate"]
           },
           "to": {
             "variable": "Labels",
-            "values": ["Predicate"]
+            "values": ["Subject"]
           }
         },
         {

@@ -55,7 +55,7 @@ const demo_files: DataPoint[] = [
   },
   {
     id: "3",
-    label: "Label & Relation",
+    label: "Argument annotation",
     units: "lancar",
     codebook: "relations",
   },
