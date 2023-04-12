@@ -6,7 +6,6 @@ interface SelectVariableProps {
   variables: Variable[];
   variable: string;
   setVariable: SetState<string>;
-  editAll: boolean;
 }
 
 const StyledDiv = styled.div<{ description: boolean }>`
@@ -36,10 +35,10 @@ const StyledDiv = styled.div<{ description: boolean }>`
     flex-direction: column;
     font-size: 1.4rem;
     text-align: center;
-    padding: 0rem 1rem 0.5rem 1rem;
+    padding: 0.5rem 1rem 0.5rem 1rem;
 
     .Text {
-      max-height: ${(p) => (p.description ? "5rem" : "0rem")};
+      max-height: ${(p) => (p.description ? "10rem" : "0rem")};
       overflow: auto;
 
       transition: max-height 0.4s;
@@ -87,16 +86,15 @@ const StyledDiv = styled.div<{ description: boolean }>`
   }
 `;
 
-const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVariableProps) => {
+const SelectVariable = ({ variables, variable, setVariable }: SelectVariableProps) => {
   //const [showDescription, setShowDescription] = React.useState(true);
   const variableNames: string[] = useMemo(() => {
     let variableNames: string[] = [];
     if (variables != null && variables?.length > 0) {
       variableNames = variables.map((v) => v.name);
-      if (editAll) variableNames.push("EDIT ALL");
     }
     return variableNames;
-  }, [variables, editAll]);
+  }, [variables]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -158,7 +156,6 @@ const SelectVariable = ({ variables, variable, setVariable, editAll }: SelectVar
     const variableObj = variables.find((v) => v.name === variable);
     helpText = variableObj?.instruction;
   }
-  if (variable === "EDIT ALL") helpText = "Show and edit all variables";
 
   return (
     <StyledDiv description={true}>

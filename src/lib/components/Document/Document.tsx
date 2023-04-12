@@ -33,7 +33,6 @@ interface DocumentProps {
   /** An object with settings. Supports "editAll" (and probably more to come) */
   settings?: {
     [key: string]: any;
-    editAll?: boolean;
   };
   /** If true, always show all annotations. This makes sense if the annotations property
    * is already the selection you need. But when coding multiple variables, it can be
@@ -82,10 +81,10 @@ const Document = ({
   centered,
   bodyStyle,
 }: DocumentProps) => {
-  const [variable, setVariable] = useState(null);
-  const [fullVariableMap, variableMap, showValues, variableType, editMode] = useVariableMap(
+  const [selectedVariable, setSelectedVariable] = useState(null);
+  const [variable, fullVariableMap, variableMap, showValues, variableType] = useVariableMap(
     variables,
-    variable
+    selectedVariable
   );
 
   const [doc, annotationLib, annotationManager] = useUnit(
@@ -102,15 +101,13 @@ const Document = ({
     doc,
     annotationLib,
     annotationManager,
-    variableMap,
-    editMode,
-    variables
+    variable
   );
   const [relationSelectorPopup, relationSelector, relationSelectorOpen] = useRelationSelector(
     doc,
     annotationLib,
     annotationManager,
-    variableMap?.[variable]
+    variable
   );
 
   useEffect(() => {
@@ -135,13 +132,13 @@ const Document = ({
   if (!doc.tokens && !doc.imageFields) return null;
 
   return (
-    <DocumentContainer className={`${annotationMode} ${(editMode && "editMode") || ""}`}>
+    <DocumentContainer className={`${annotationMode} ${(variable?.editMode && "editMode") || ""}`}>
       <SelectVariable
         variables={variables}
-        variable={variable}
-        setVariable={setVariable}
-        editAll={settings?.editAll}
+        variable={selectedVariable}
+        setVariable={setSelectedVariable}
       />
+
       <Body
         tokens={doc.tokens}
         textFields={doc.textFields}
@@ -160,11 +157,11 @@ const Document = ({
       <AnnotateNavigation
         tokens={doc.tokens}
         annotationLib={annotationLib}
-        variable={variableMap?.[variable]}
+        variable={variable}
         variableType={variableType}
         showValues={showValues}
         disableAnnotations={!onChangeAnnotations || !variableMap}
-        editMode={editMode}
+        editMode={variable?.editMode}
         triggerSelector={triggerSelector}
         eventsBlocked={selectorOpen || blockEvents}
         showAll={showAll}

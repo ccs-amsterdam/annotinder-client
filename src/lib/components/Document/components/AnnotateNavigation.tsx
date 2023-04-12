@@ -53,14 +53,15 @@ const AnnotateNavigation = ({
   currentUnitReady,
 }: AnnotateNavigationProps) => {
   const hasSelection = useRef(false);
-  const tokenSelection = useAnnotationEvents(
+  const { tokenSelection, alternative } = useAnnotationEvents(
     tokens,
     annotationLib,
     triggerSelector,
     editMode,
-    variableType === "span",
+    variableType,
     eventsBlocked || disableAnnotations
   );
+  const showEdge = variableType === "relation" || alternative;
 
   const validRelations: ValidTokenRelations = useMemo(
     () => getValidTokenRelations(annotationLib, variable),
@@ -94,8 +95,8 @@ const AnnotateNavigation = ({
   ]);
 
   useEffect(() => {
-    setSelectionAsCSSClass(tokens, variableType, tokenSelection, hasSelection);
-  }, [tokens, variableType, tokenSelection, editMode, hasSelection]);
+    setSelectionAsCSSClass(tokens, showEdge, tokenSelection, hasSelection);
+  }, [tokens, showEdge, tokenSelection, editMode, hasSelection]);
 
   return (
     <>
@@ -106,7 +107,7 @@ const AnnotateNavigation = ({
         showValues={showValues}
       />
       <DrawArrows
-        variable={variable}
+        active={showEdge}
         tokens={tokens}
         annotationLib={annotationLib}
         triggerSelector={triggerSelector}
@@ -286,7 +287,7 @@ const setTokenColor = (
 
 const setSelectionAsCSSClass = (
   tokens: Token[],
-  variableType: VariableType,
+  asEdge: boolean,
   selection: TokenSelection,
   hasSelection: any
 ) => {
@@ -297,13 +298,13 @@ const setSelectionAsCSSClass = (
     // if the current tokenSelecction would only remove the selection,
     // and there is no current selection, we can skip the whole process
     if (!hasSelection.current) return;
-    if (variableType === "relation") return;
+    if (asEdge) return;
   }
   hasSelection.current = false;
   for (let token of tokens) {
     if (!token.ref?.current) continue;
     token.ref.current.classList.remove("tapped");
-    if (from === null || to === null || variableType === "relation") {
+    if (from === null || to === null || asEdge) {
       token.ref.current.classList.remove("selected");
       continue;
     }

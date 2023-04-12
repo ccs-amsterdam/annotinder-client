@@ -12,7 +12,7 @@ import {
 export default function useVariableMap(
   variables: Variable[],
   selectedVariable: string
-): [VariableMap, VariableMap, VariableMap, VariableType, boolean] {
+): [Variable, VariableMap, VariableMap, VariableMap, VariableType] {
   const fullVariableMap: VariableMap = useMemo(() => {
     // creates fullVariableMap
     if (!variables || variables.length === 0) return null;
@@ -41,7 +41,7 @@ export default function useVariableMap(
       if (fullVariableMap === null) return [null, null, null];
 
       let vmap: VariableMap;
-      if (selectedVariable === null || selectedVariable === "EDIT ALL") {
+      if (selectedVariable === null) {
         vmap = fullVariableMap;
       } else {
         vmap = { [selectedVariable]: fullVariableMap[selectedVariable] };
@@ -69,15 +69,8 @@ export default function useVariableMap(
       return [vmap, showValues, variableType];
     }, [fullVariableMap, selectedVariable]);
 
-  const editMode: boolean = useMemo(() => {
-    return (
-      variableMap?.[selectedVariable]?.editMode || selectedVariable === "EDIT ALL"
-      //|| variableMap?.[selectedVariable].type === "relation"
-    );
-  }, [variableMap, selectedVariable]);
-
-  if (!selectedVariable) return [fullVariableMap, null, null, variableType, editMode];
-  return [fullVariableMap, variableMap, showValues, variableType, editMode];
+  if (!selectedVariable) return [null, fullVariableMap, null, null, variableType];
+  return [variableMap?.[selectedVariable], fullVariableMap, variableMap, showValues, variableType];
 }
 
 const getRelationShowValues = (

@@ -22,7 +22,7 @@ const StyledSvg = styled.svg`
 `;
 
 interface DrawArrowsProps {
-  variable: Variable;
+  active: boolean;
   tokens: Token[];
   annotationLib: AnnotationLibrary;
   triggerSelector: TriggerSelector;
@@ -30,7 +30,7 @@ interface DrawArrowsProps {
 }
 
 const DrawArrows = ({
-  variable,
+  active,
   tokens,
   annotationLib,
   triggerSelector,
@@ -56,7 +56,7 @@ const DrawArrows = ({
     };
   }, [tokens]);
 
-  if (variable?.type !== "relation") return null;
+  if (!active) return null;
 
   return (
     <StyledSvg>

@@ -1,12 +1,6 @@
 import { css } from "styled-components";
 
 export default css`
-  /* Override color of the default text in semantic dropdown */
-  .ui.default.dropdown:not(.button) > .text,
-  .ui.dropdown:not(.button) > .default.text {
-    color: rgba(0, 0, 0, 0.87) !important;
-  }
-
   .field {
   }
 
@@ -81,6 +75,15 @@ export default css`
 
   button.active {
     border: solid !important;
+  }
+
+  .editMode {
+    .token {
+      cursor: not-allowed;
+    }
+    .token.annotated {
+      cursor: pointer;
+    }
   }
 
   span.token.annotated > span {

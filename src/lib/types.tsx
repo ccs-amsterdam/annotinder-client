@@ -753,7 +753,6 @@ export interface Doc {
 }
 
 export interface DocumentSettings {
-  editAll: boolean;
   editMode: boolean;
 }
 

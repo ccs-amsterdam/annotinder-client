@@ -14,14 +14,14 @@ export function onKeyUp(
   setMover: SetState<Mover>,
   triggerSelector: TriggerSelector
 ) {
-  // keep track of which buttons are pressed in the state
-  if (event.keyCode === 32 && holdSpace) {
+  if (event.key === " " && holdSpace) {
     setHoldSpace(false);
     if (tokenSelection.length > 0) {
       annotationFromSelection(tokens, tokenSelection, triggerSelector);
     }
     return;
   }
+
   if (arrowkeys.includes(event.key)) {
     setHoldArrow(null);
     setMover(null);
@@ -35,8 +35,7 @@ export function onKeyDown(
   setHoldArrow: SetState<Arrowkeys>,
   setMover: SetState<Mover>
 ) {
-  // key presses, and key holding (see onKeyUp)
-  if (event.keyCode === 32) {
+  if (event.key === " ") {
     event.preventDefault();
     if (event.repeat) return;
     setHoldSpace(true);
@@ -192,6 +191,7 @@ export function onMouseDown(
   // When left button pressed, start new selection
   const button = event.which || event.button;
   if (button === 1) {
+    event.preventDefault();
     selectionStarted.current = true;
     setTokenSelection((state: TokenSelection) => (state?.[0] ? [state[0], state[0]] : state));
   }

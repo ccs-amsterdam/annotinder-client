@@ -26,10 +26,8 @@ const useRelationSelector = (
 ): [ReactElement, TriggerSelector, boolean] => {
   const [open, setOpen] = useState(false);
   const positionRef = useRef<HTMLSpanElement>(null);
-
   const [edge, setEdge] = useState<RelationOption>(null);
   const [edgeOptions, setEdgeOptions] = useState<CodeSelectorOption[]>();
-
   const tokens = doc.tokens;
 
   const triggerFunction = useCallback(
@@ -68,7 +66,7 @@ const useRelationSelector = (
       }
       setOpen(true);
     },
-    [tokens, variable, annotationLib, setEdgeOptions]
+    [tokens, variable, annotationLib]
   );
 
   if (useWatchChange([tokens, variable])) setOpen(false);

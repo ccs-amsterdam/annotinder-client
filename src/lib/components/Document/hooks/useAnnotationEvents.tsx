@@ -11,7 +11,7 @@ import {
   //onContextMenu,
   movePosition,
 } from "../functions/eventFunctions";
-import { Token, TokenSelection, Arrowkeys, AnnotationLibrary } from "../../../types";
+import { Token, TokenSelection, Arrowkeys, AnnotationLibrary, VariableType } from "../../../types";
 
 /**
  * This is a hugely elaborate component for managing navigation (key, mouse and touch events)
@@ -24,13 +24,23 @@ export default function useAnnotationEvents(
   annotationLib: AnnotationLibrary,
   triggerSelectionPopup: any,
   editMode: boolean,
-  sameFieldOnly: boolean,
+  variableType: VariableType,
   eventsBlocked: boolean
 ) {
   const [tokenSelection, setTokenSelection] = useState<TokenSelection>(null);
   const [mover, setMover] = useState(null);
   const [holdSpace, setHoldSpace] = useState(false);
   const [holdArrow, setHoldArrow] = useState<Arrowkeys>(null);
+  const [alternative, setAlternative] = useState(false);
+  const sameFieldOnly = variableType === "span";
+
+  // onEvent functions do not need to update on rerender, so use ref to pass on values
+  const tokenSelectionRef = useRef(tokenSelection);
+  const holdSpaceRef = useRef(holdSpace);
+  const alternativeRef = useRef(alternative);
+  tokenSelectionRef.current = tokenSelection;
+  holdSpaceRef.current = holdSpace;
+  alternativeRef.current = alternative;
 
   const currentTokenRef = useRef(0);
   const setCurrentToken = useCallback(
@@ -41,12 +51,6 @@ export default function useAnnotationEvents(
     },
     [tokens, currentTokenRef]
   );
-
-  // onEvent functions do not need to update on rerender, so use ref to pass on values
-  const tokenSelectionRef = useRef(tokenSelection);
-  const holdSpaceRef = useRef(holdSpace);
-  tokenSelectionRef.current = tokenSelection;
-  holdSpaceRef.current = holdSpace;
 
   // keeps track of mouse events
   const selectionStarted = useRef(false);
@@ -181,6 +185,7 @@ export default function useAnnotationEvents(
     // }
 
     function onKeyUpEvent(event: KeyboardEvent) {
+      if (event.key === "Control") setAlternative(false);
       onKeyUp(
         event,
         tokens,
@@ -193,6 +198,7 @@ export default function useAnnotationEvents(
       );
     }
     function onKeyDownEvent(event: KeyboardEvent) {
+      if (event.key === "Control") setAlternative(true);
       onKeyDown(event, tokens, currentTokenRef.current, setHoldSpace, setHoldArrow, setMover);
     }
 
@@ -200,6 +206,7 @@ export default function useAnnotationEvents(
       setHoldSpace(false);
       setHoldArrow(null);
       setMover(false);
+      setAlternative(false);
       touch.current = null;
       selectionStarted.current = false;
       return;
@@ -228,12 +235,14 @@ export default function useAnnotationEvents(
     holdSpaceRef,
     tokenSelectionRef,
     currentTokenRef,
+    alternativeRef,
     editMode,
     setTokenSelection,
     setCurrentToken,
     setHoldSpace,
     setHoldArrow,
     setMover,
+    setAlternative,
     triggerSelectionPopup,
     selectionStarted,
     touch,
@@ -242,5 +251,5 @@ export default function useAnnotationEvents(
     sameFieldOnly,
   ]);
 
-  return tokenSelection;
+  return { tokenSelection, alternative };
 }
