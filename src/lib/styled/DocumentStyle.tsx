@@ -28,6 +28,12 @@ export default css`
     }
   }
 
+  /* span.token.annotated.anyLeft::before,
+  span.token.annotated.allLeft::before {
+    content: attr(data-annotations);
+    background-color: inherit;
+  } */
+
   span.token.hasRelation {
     .relation {
     }

@@ -79,7 +79,7 @@ const AnnotationPortal = React.memo(({ children, open, setOpen, positionRef, min
 
   return (
     <Portal className={open ? "Open" : ""} ref={portalref} smallScreen={smallscreen}>
-      {children}
+      {open && children}
     </Portal>
   );
 });
