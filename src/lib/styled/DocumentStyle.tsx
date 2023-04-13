@@ -9,13 +9,14 @@ export default css`
   }
 
   span.token {
+    position: relative;
     /* vertical-align: bottom; */
     color: var(--text-light);
     .pre,
     .text,
     .post {
       position: relative;
-      padding: 0.35rem 0rem 0.1rem;
+      padding: 0.1rem 0rem 0.1rem;
 
       .relation {
         position: absolute;
@@ -31,7 +32,17 @@ export default css`
   /* span.token.annotated.anyLeft::before,
   span.token.annotated.allLeft::before {
     content: attr(data-annotations);
-    background-color: inherit;
+    display: block;
+    position: absolute;
+    top: -1.3rem;
+    left: -0rem;
+    padding: 0.3em;
+    border-radius: 50%;
+    background: var(--primary-text);
+    color: var(--background);
+    z-index: 1000;
+    font-size: 0.8em;
+    line-height: 0.8rem;
   } */
 
   span.token.hasRelation {

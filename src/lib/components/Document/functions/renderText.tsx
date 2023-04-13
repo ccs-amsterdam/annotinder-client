@@ -171,6 +171,7 @@ const renderToken = (token: Token, codingUnit: boolean, keyChain: number) => {
       ref={token.ref}
       className={codingUnit ? "token codingUnit" : "token"}
       data-tokenindex={token.arrayIndex}
+      data-annotations={2}
       onClick={unFocusAble}
     >
       <span key={"pre" + token.index} className="pre">
