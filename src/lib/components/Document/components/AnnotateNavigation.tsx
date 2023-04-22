@@ -144,7 +144,7 @@ const highlightAnnotations = (
     if (tokenAnnotations.length === 0) {
       if (token.ref.current.classList.contains("annotated")) {
         token.ref.current.classList.remove("annotated");
-        setTokenColor(token, null, null, null, null, null, null);
+        setTokenColor(token, null, null, null, null, null, null, null);
       }
       continue;
     }
@@ -199,6 +199,7 @@ const setAnnotationAsCSSClass = (token: Token, annotations: Annotation[]) => {
 
   let nSpanAnnotations = 0;
   let nRelationAnnotations = 0;
+
   for (let annotation of annotations) {
     if (annotation.type === "span") {
       nSpanAnnotations++;
@@ -270,19 +271,23 @@ const setTokenColor = (
   relationPost?: string,
   nRelations?: number
 ) => {
-  const children = token.ref.current.children;
-  children[0].style.background = spanPre;
-  children[1].style.background = spanText;
-  children[2].style.background = spanPost;
+  const [pre, text, post] = token.ref.current.children;
+  pre.style.background = spanPre;
+  text.style.background = spanText;
+  post.style.background = spanPost;
 
-  children[0].children[0].style.background = relationPre;
-  children[1].children[0].style.background = relationText;
-  children[2].children[0].style.background = relationPost;
+  const preRelation = pre.children[0];
+  const textRelation = text.children[0];
+  const postRelation = post.children[0];
+
+  preRelation.style.background = relationPre;
+  textRelation.style.background = relationText;
+  postRelation.style.background = relationPost;
 
   const height = `${Math.min(nRelations * 0.2, 0.5)}em`;
-  children[0].children[0].style.height = height;
-  children[1].children[0].style.height = height;
-  children[2].children[0].style.height = height;
+  preRelation.style.height = height;
+  textRelation.style.height = height;
+  postRelation.style.height = height;
 };
 
 const setSelectionAsCSSClass = (
