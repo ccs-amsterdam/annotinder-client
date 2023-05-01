@@ -89,6 +89,12 @@ const demo_files: DataPoint[] = [
     units: "thread_coding",
     codebook: "dummy",
   },
+  {
+    id: "9",
+    label: "Pilar Demo",
+    units: "lancar",
+    codebook: "pilar",
+  },
 ];
 
 const template: GridItemTemplate[] = [

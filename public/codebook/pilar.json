@@ -1,0 +1,79 @@
+{
+  "type": "annotate",
+  "settings": { "no_table": false },
+  "variables": [
+    {
+      "type": "span",
+      "codes": [
+        { "code": "problem" },
+        { "code": "urgency" },
+        { "code": "inherency" },
+        { "code": "solvency" },
+        { "code": "workability" },
+        { "code": "cost-benefit" }
+      ],
+
+      "name": "Stock issues",
+      "instruction": "Label stock issues",
+      "searchBox": false,
+      "buttonMode": "all",
+      "multiple": false,
+      "editMode": false
+    },
+    {
+      "type": "span",
+      "codes": [
+        { "code": "effect" },
+        { "code": "sign" },
+        { "code": "criterion" },
+        { "code": "pragmatic" },
+        { "code": "similarity" },
+        { "code": "analogy" },
+        { "code": "equality" },
+        { "code": "opposites" },
+        { "code": "authority" },
+        { "code": "ad baculum" },
+        { "code": "beauty" },
+        { "code": "commitment" },
+        { "code": "comparison" },
+        { "code": "disjunctives" },
+        { "code": "evaluation" },
+        { "code": "utility" },
+        { "code": "ad populum" }
+      ],
+
+      "name": "Arguments",
+      "instruction": "Label arguments.",
+      "searchBox": false,
+      "buttonMode": "all",
+      "multiple": false,
+      "editMode": false
+    },
+    {
+      "type": "relation",
+      "codes": [
+        {
+          "code": "Related",
+          "color": "green"
+        }
+      ],
+      "relations": [
+        {
+          "codes": ["Related"],
+          "from": {
+            "variable": "Arguments"
+          },
+          "to": {
+            "variable": "Stock issues"
+          }
+        }
+      ],
+      "name": "Relations",
+      "instruction": "Draw relation from Argument to Stock issue if they are related",
+      "searchBox": false,
+      "buttonMode": "all",
+      "multiple": false,
+      "editMode": false
+    }
+  ]
+}
