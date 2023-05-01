@@ -311,9 +311,10 @@ function recursiveRelationText(
   annMap: AnnotationMap,
   annotation: Annotation,
   depth: number = 0,
-  elements: ReactElement[] = []
+  elements: ReactElement[] = [],
+  keySuffix: string = ""
 ) {
-  const key = annotation.id + "_" + depth;
+  const key = annotation.id + "_" + depth + "_" + keySuffix;
   const marginLeft = `${depth * 1}rem`;
 
   if (annotation.type === "span") {
@@ -338,8 +339,20 @@ function recursiveRelationText(
         </div>
       </div>
     );
-    recursiveRelationText(annMap, annMap[annotation.fromId], depth + 1, elements);
-    recursiveRelationText(annMap, annMap[annotation.toId], depth + 1, elements);
+    recursiveRelationText(
+      annMap,
+      annMap[annotation.fromId],
+      depth + 1,
+      elements,
+      annotation.id + "from" // required for unique key
+    );
+    recursiveRelationText(
+      annMap,
+      annMap[annotation.toId],
+      depth + 1,
+      elements,
+      annotation.id + "to"
+    );
   }
 
   return elements;
