@@ -22,7 +22,7 @@ export const HostLogin = ({
   hostInfoQuery,
 }: HostLoginProps) => {
   let fixedHost = "";
-  fixedHost = "http://localhost:5000";
+  fixedHost = "https://standpunten.up.railway.app";
   const [hostInput, setHostInput] = useState(fixedHost || host);
   const [emailInput, setEmailInput] = useState(email);
   const [invalidEmail, setInvalidEmail] = useState(false);
