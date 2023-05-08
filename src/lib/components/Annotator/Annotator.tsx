@@ -101,6 +101,7 @@ const updateIndexedUnit = async (
 };
 
 const getIndexedUnit = async (jobServer: any, unitIndex: number): Promise<IndexedUnit> => {
+  console.log(jobServer.progress.n_total);
   if (unitIndex >= jobServer.progress.n_total) return { unit: null, index: unitIndex };
 
   const rawUnit: RawUnit = await jobServer.getUnit(unitIndex);

@@ -1,13 +1,54 @@
 import { useState, useEffect, CSSProperties } from "react";
-import { Icon, Loader } from "semantic-ui-react";
+import { Loader } from "semantic-ui-react";
 import { QRCodeCanvas } from "qrcode.react";
 import copyToClipboard from "../../../functions/copyToClipboard";
 import Backend from "../../Login/Backend";
 import { Debriefing, JobServer } from "../../../types";
 import { useQuery } from "@tanstack/react-query";
-import { CenteredDiv } from "../../../styled/Styled";
-import { StyledButton } from "../../../styled/StyledSemantic";
 import Markdown from "../../Common/components/Markdown";
+import styled from "styled-components";
+import { FaFlagCheckered } from "react-icons/fa";
+
+const StyledDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  padding: 2rem;
+  line-height: 1.5em;
+
+  font-size: 1.7rem;
+
+  .Message {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  p {
+    text-align: left;
+    max-width: 30em;
+  }
+
+  svg {
+    color: var(--primary-text);
+    font-size: 8rem;
+    margin-bottom: 2rem;
+  }
+
+  a {
+    color: var(--primary-text);
+    text-decoration: underline;
+    font-size: 1.2em;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+  }
+`;
 
 interface FinishedProps {
   jobServer: JobServer;
@@ -29,44 +70,38 @@ const Finished = ({ jobServer }: FinishedProps) => {
 
   if (debriefing.isFetching)
     return (
-      <CenteredDiv>
+      <StyledDiv>
         <Loader size="huge" active style={{ color: "var(--text)" }} />
-      </CenteredDiv>
+      </StyledDiv>
     );
 
   if (debriefing.data) {
     return (
-      <CenteredDiv>
-        <div>
-          <CenteredDiv>
-            <Icon name="flag checkered" size="huge" style={{ marginBottom: "50px" }} />
-          </CenteredDiv>
-          <div>
-            <Markdown>{debriefing.data.message}</Markdown>
-            <br />
-            {debriefing.data.link ? (
-              <a
-                href={debriefing.data.link.replace("{user_id}", debriefing.data.user_id)}
-                rel="noopener noreferrer"
-              >
-                {" "}
-                <br />
-                <StyledButton primary>{debriefing.data.link_text || "Click here!"}</StyledButton>
-              </a>
-            ) : null}
-            {debriefing.data.qr ? (
-              <JobLink jobId={jobServer.job_id} backend={jobServer.backend} />
-            ) : null}
-          </div>
+      <StyledDiv>
+        <div className="Message">
+          <FaFlagCheckered />
+          <Markdown>{debriefing.data.message}</Markdown>
         </div>
-      </CenteredDiv>
+        <br />
+        {debriefing.data.link ? (
+          <a
+            href={debriefing.data.link.replace("{user_id}", debriefing.data.user_id)}
+            rel="noopener noreferrer"
+          >
+            {debriefing.data.link_text || "Click here!"}
+          </a>
+        ) : null}
+        {debriefing.data.qr ? (
+          <JobLink jobId={jobServer.job_id} backend={jobServer.backend} />
+        ) : null}
+      </StyledDiv>
     );
   }
 
   return (
-    <CenteredDiv>
-      <Icon name="flag checkered" size="huge" style={{ transform: "scale(2)" }} />
-    </CenteredDiv>
+    <StyledDiv>
+      <FaFlagCheckered />
+    </StyledDiv>
   );
 };
 

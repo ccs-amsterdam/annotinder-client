@@ -229,20 +229,23 @@ const Items = ({
     >
       {items.map((itemObj, itemIndex: number) => {
         const itemlabel = itemObj.label || itemObj.name;
-        let margin = "5px";
+        const background = itemIndex % 2 !== 0 ? "#ffffff0b" : "none";
+        const padding = itemIndex === 0 ? "0px 0px 5px 0px" : "5px 0px 5px 0px";
+        console.log(background);
         //if (itemIndex === 0) margin = "auto 10px 10px 10px";
         //if (itemIndex === items.length - 1) margin = "10px 10px auto 10px";
         return (
-          <div key={itemIndex} style={{ paddingTop: "0px", margin }}>
+          <div key={itemIndex} style={{ padding, background, borderRadius: "5px" }}>
             <div>
               <div
                 style={{
                   width: "100%",
                   textAlign: "center",
-                  padding: "0px 5px 5px 5px",
+                  padding: "5px 5px 5px 5px",
+                  fontSize: "1.6rem",
                 }}
               >
-                <b>{itemlabel}</b>
+                {itemlabel}
               </div>
             </div>
             <div
@@ -253,7 +256,7 @@ const Items = ({
                 margin: "auto",
                 maxWidth: "min(400px, 100%)",
                 padding: "0px 5px",
-                paddingBottom: "5px",
+                paddingBottom: "2px",
               }}
             >
               <Item
@@ -267,7 +270,7 @@ const Items = ({
             </div>
             <div
               style={{
-                minHeight: "2.5rem",
+                minHeight: "2rem",
                 textAlign: "center",
                 fontSize: "1.2rem",
                 color: "var(--secondary)",
@@ -300,6 +303,7 @@ const ItemButton = styled.div<{
   color?: string;
 }>`
   flex: 1 1 0px;
+  height: 2.5rem;
   border-radius: 4px;
   background: ${(p) => (p.customColor ? "white" : "var(--primary)")};
   border: 2px solid ${(p) => {

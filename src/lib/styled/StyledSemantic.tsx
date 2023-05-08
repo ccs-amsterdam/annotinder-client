@@ -47,7 +47,7 @@ const CodeButton = styled.button<{
     if (p.selected || p.current) return "var(--background-inversed)";
     return "var(--background)";
   }};
-  background: ${(p) => p.background || "var(--primary)"};
+  background: ${(p) => p.background || "var(--primary-transparent)"};
   flex: ${(p) => (p.compact ? "0.2 1 auto" : "1 1 auto")};
 
   & > i {
@@ -86,6 +86,11 @@ const CodeButton = styled.button<{
       return "#999";
     }}; */
     //border-radius: 3px;
+  }
+
+  :hover {
+    border-color: ${(p) =>
+      p.darkBackground ? "var(--background-fixed)" : "var(--background-inversed)"};
   }
 
   :disabled {
