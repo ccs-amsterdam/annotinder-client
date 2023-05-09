@@ -20,7 +20,7 @@ const AnswerDiv = styled.div`
   width: 100%;
   margin: 0;
   font-size: inherit;
-  color: var(--text-inversed-fixed);
+  color: var(--text);
 
   & .InnerAnswerField {
     width: 100%;

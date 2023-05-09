@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, createRef, RefObject } from "react";
+import React, { useState, useEffect, useRef, RefObject } from "react";
 import { keepInView } from "../../../functions/scroll";
 import { OnSelectParams, AnswerOption, AnswerItem, QuestionItem } from "../../../types";
 import { Button } from "../../../styled/StyledSemantic";
@@ -30,8 +30,8 @@ const StyledDiv = styled.div`
   position: relative;
   flex-direction: column;
   justify-content: space-between;
-  background: var(--background-inversed-fixed);
-  color: var(--text-inversed-fixed);
+  background: var(--background);
+  color: var(--text);
   display: flex;
   flex-direction: column;
 
@@ -141,7 +141,7 @@ const Scale = React.memo(
             display: "flex",
             padding: "5px",
             justifyContent: "space-between",
-            color: "var(--primary-light)",
+            color: "var(--primary-text)",
           }}
         >
           <div className="ScaleLabel ">
@@ -204,19 +204,9 @@ const Items = ({
   continueButtonRef,
   scrollRef,
 }: ItemsProps) => {
-  const rowRefs = useRef([]);
-
   useEffect(() => {
-    rowRefs.current = items.map(() => createRef());
-  }, [items, rowRefs]);
-
-  useEffect(() => {
-    if (selectedItem < 0) {
-      keepInView(scrollRef?.current, continueButtonRef?.current);
-    } else {
-      keepInView(scrollRef?.current, rowRefs?.current?.[selectedItem]?.current);
-    }
-  }, [selectedItem, items, rowRefs, continueButtonRef, scrollRef]);
+    if (selectedItem < 0) keepInView(scrollRef?.current, continueButtonRef?.current);
+  }, [selectedItem, items, continueButtonRef, scrollRef]);
 
   return (
     <div
@@ -225,62 +215,21 @@ const Items = ({
         //overflow: "auto",
         display: "flex",
         flexDirection: "column",
+        position: "relative",
       }}
     >
       {items.map((itemObj, itemIndex: number) => {
-        const itemlabel = itemObj.label || itemObj.name;
-        const background = itemIndex % 2 !== 0 ? "#ffffff0b" : "none";
-        const padding = itemIndex === 0 ? "0px 0px 5px 0px" : "5px 0px 5px 0px";
-        console.log(background);
-        //if (itemIndex === 0) margin = "auto 10px 10px 10px";
-        //if (itemIndex === items.length - 1) margin = "10px 10px auto 10px";
         return (
-          <div key={itemIndex} style={{ padding, background, borderRadius: "5px" }}>
-            <div>
-              <div
-                style={{
-                  width: "100%",
-                  textAlign: "center",
-                  padding: "5px 5px 5px 5px",
-                  fontSize: "1.6rem",
-                }}
-              >
-                {itemlabel}
-              </div>
-            </div>
-            <div
-              ref={rowRefs?.current?.[itemIndex]}
-              style={{
-                display: "flex",
-                gap: "0.5rem",
-                margin: "auto",
-                maxWidth: "min(400px, 100%)",
-                padding: "0px 5px",
-                paddingBottom: "2px",
-              }}
-            >
-              <Item
-                answerItems={answerItems}
-                selectedItem={selectedItem}
-                itemIndex={itemIndex}
-                options={options}
-                selectedButton={selectedButton}
-                onSelect={onSelect}
-              />
-            </div>
-            <div
-              style={{
-                minHeight: "2rem",
-                textAlign: "center",
-                fontSize: "1.2rem",
-                color: "var(--secondary)",
-              }}
-            >
-              <i>
-                {answerItems?.[itemIndex]?.values?.[0] ? answerItems[itemIndex].values?.[0] : "..."}
-              </i>
-            </div>
-          </div>
+          <Item
+            itemObj={itemObj}
+            answerItems={answerItems}
+            selectedItem={selectedItem}
+            itemIndex={itemIndex}
+            options={options}
+            selectedButton={selectedButton}
+            onSelect={onSelect}
+            scrollRef={scrollRef}
+          />
         );
       })}
     </div>
@@ -288,12 +237,14 @@ const Items = ({
 };
 
 interface ItemProps {
+  itemObj: QuestionItem;
   answerItems: AnswerItem[];
   selectedItem: number;
   itemIndex: number;
   options: AnswerOption[];
   selectedButton: number;
   onSelect: (params: OnSelectParams) => void;
+  scrollRef: RefObject<HTMLDivElement>;
 }
 
 const ItemButton = styled.div<{
@@ -302,12 +253,12 @@ const ItemButton = styled.div<{
   customColor?: string;
   color?: string;
 }>`
-  flex: 1 1 0px;
+  flex: 1 1 auto;
   height: 2.5rem;
   border-radius: 4px;
   background: ${(p) => (p.customColor ? "white" : "var(--primary)")};
   border: 2px solid ${(p) => {
-    if (p.selected) return "white";
+    if (p.selected) return "var(--text)";
     if (p.current) return "var(--secondary)";
     return p.customColor ? "grey" : "var(--primary)";
   }};
@@ -316,7 +267,7 @@ const ItemButton = styled.div<{
     width: 100%;
     height: 100%;
     padding: 4px 0 2px 0;
-    background-color: ${(p) => (p.current || p.selected ? "var(--secondary)" : p.color)};
+    background-color: ${(p) => (p.current ? "var(--secondary)" : p.color)};
     font-weight: bold;
     font-size: 0.8em;
     text-shadow: 0px 0px 5px #ffffff77,
@@ -324,53 +275,115 @@ const ItemButton = styled.div<{
     border-color: transparent;
     color: ${(p) => (p.customColor || p.current ? "black" : "white")};
     cursor: pointer;
+    position: relative;
+    z-index: 1000;
+
+    ::after {
+    content: ${(p) => (p.selected ? '""' : `none`)};
+    position: absolute;
+    top: -0.5rem;
+    left: -0.5rem;
+    height: calc(100% + 1rem);
+    width: calc(100% + 1rem);
+    z-index: 9;
+    border: 0.4rem solid var(--text);
+    border-radius: 4px;
   }
+  }
+
+  
 `;
 
 const Item = ({
+  itemObj,
   answerItems,
   selectedItem,
   itemIndex,
   options,
   selectedButton,
   onSelect,
+  scrollRef,
 }: ItemProps) => {
+  const ref = useRef<HTMLDivElement>(null);
   const colorstep = 90 / options.length;
+  const itemlabel = itemObj.label || itemObj.name;
+  const background = itemIndex % 2 !== 0 ? "#ffffff0b" : "none";
+  const padding = itemIndex === 0 ? "0px 0px 5px 0px" : "5px 0px 5px 0px";
+
+  useEffect(() => {
+    if (selectedItem !== itemIndex) return;
+    keepInView(scrollRef?.current, ref?.current);
+  }, [scrollRef, itemIndex, selectedItem]);
+
   return (
-    <>
-      {options.map((option, buttonIndex: number) => {
-        const isCurrent = options[buttonIndex].code === answerItems?.[itemIndex]?.values[0];
-        const isSelected = buttonIndex === selectedButton && itemIndex === selectedItem;
-
-        // if option doesn't have color, we use primary color as background and
-        // use opacity of buttoncolor to show a gradient
-
-        let color = option.color;
-        if (!color) {
-          const opacity = buttonIndex * colorstep;
-          color = `rgb(0,0,0, ${opacity}%)`;
-        }
-
-        return (
-          <ItemButton
-            key={option.code}
-            selected={isSelected}
-            current={isCurrent}
-            customColor={option.color}
-            color={color}
+    <div key={itemIndex} style={{ padding, background, borderRadius: "5px" }}>
+      <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            textAlign: "center",
+            fontSize: "1.6rem",
+            padding: "0.2rem",
+          }}
+        >
+          <div
+            style={{
+              padding: "0.3rem",
+              borderRadius: "5px",
+              color: "var(--text)",
+            }}
           >
-            <button
-              ref={option.ref as React.RefObject<HTMLButtonElement>}
-              onClick={() => {
-                onSelect({ value: options[buttonIndex].code, itemIndex });
-              }}
+            {itemlabel}
+          </div>
+        </div>
+      </div>
+      <div
+        ref={ref}
+        style={{
+          display: "flex",
+
+          gap: "0.5rem",
+          margin: "auto",
+          maxWidth: "min(500px, 100%)",
+          padding: "0px 5px",
+          paddingBottom: "2px",
+        }}
+      >
+        {options.map((option, buttonIndex: number) => {
+          const isCurrent = options[buttonIndex].code === answerItems?.[itemIndex]?.values[0];
+          const isSelected = buttonIndex === selectedButton && itemIndex === selectedItem;
+
+          // if option doesn't have color, we use primary color as background and
+          // use opacity of buttoncolor to show a gradient
+
+          let color = option.color;
+          if (!color) {
+            const opacity = buttonIndex * colorstep;
+            color = `rgb(0,0,0, ${opacity}%)`;
+          }
+
+          return (
+            <ItemButton
+              key={option.code}
+              selected={isSelected}
+              current={isCurrent}
+              customColor={option.color}
+              color={color}
             >
-              {buttonIndex + 1}
-            </button>
-          </ItemButton>
-        );
-      })}
-    </>
+              <button
+                ref={option.ref as React.RefObject<HTMLButtonElement>}
+                onClick={() => {
+                  onSelect({ value: options[buttonIndex].code, itemIndex });
+                }}
+              >
+                {isCurrent ? option.code : buttonIndex + 1}
+              </button>
+            </ItemButton>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 

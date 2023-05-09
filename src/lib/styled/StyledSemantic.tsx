@@ -19,6 +19,7 @@ const CodeButton = styled.button<{
   afterBackground?: string;
   darkBackground?: boolean;
   compact?: boolean;
+  tooltip?: string;
 }>`
   font-size: ${(p) => p.size || 1.5}rem;
   padding: ${(p) => (p.compact ? "0.5rem" : "0.5rem")};
@@ -97,6 +98,19 @@ const CodeButton = styled.button<{
     color: grey;
     cursor: not-allowed;
   }
+
+  ${(p) => {
+    if (p.tooltip) {
+      return `
+      :hover::before {
+        content: "${p.tooltip}";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+      }`;
+    }
+  }}
 `;
 
 const StyledButton = styled.button<{

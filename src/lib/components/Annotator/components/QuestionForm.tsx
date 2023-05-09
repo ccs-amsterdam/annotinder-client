@@ -28,8 +28,8 @@ const QuestionDiv = styled.div`
   position: relative;
   height: 100%;
   width: 100%;
-  background-color: var(--background-inversed-fixed);
-  border-top: 3px double var(--text-inversed-fixed);
+  background-color: var(--background);
+  border-top: 3px double var(--text);
   box-shadow: 0px 5px 5px 1px grey;
   font-size: inherit;
   z-index: 50;
@@ -49,7 +49,7 @@ const BodyDiv = styled.div`
   flex-flow: column;
   width: 100%;
   padding: 0px 10px 10px 10px;
-  color: var(--text-inversed-fixed);
+  color: var(--text);
   font-size: inherit;
 `;
 
@@ -169,7 +169,7 @@ const QuestionForm = ({
             display: "flex",
             flexDirection: "column",
             width: "30px",
-            color: "var(--text-inversed-fixed)",
+            color: "var(--text)",
           }}
         >
           {children}
@@ -184,7 +184,7 @@ const QuestionForm = ({
           <HeaderDiv className="AnswerHeader">
             <h2
               style={{
-                color: "var(--text-inversed-fixed)",
+                color: "var(--text)",
                 fontSize: "1em",
                 textAlign: "center",
                 paddingBottom: "5px",
@@ -257,7 +257,7 @@ const markedString = (text: string) => {
           prev.push(
             <mark
               key={i + current}
-              style={{ color: "var(--primary-light)", backgroundColor: "transparent" }}
+              style={{ color: "var(--primary-text)", backgroundColor: "transparent" }}
             >
               {current}
             </mark>
