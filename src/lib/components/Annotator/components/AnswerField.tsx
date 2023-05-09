@@ -16,7 +16,7 @@ const AnswerDiv = styled.div`
   padding: 0;
 
   width: 100%;
-  margin: 0;
+  margin: auto 0;
   font-size: inherit;
   color: var(--text);
 

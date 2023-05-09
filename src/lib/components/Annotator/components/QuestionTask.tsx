@@ -30,7 +30,8 @@ const Container = styled.div`
 `;
 
 const ContentWindow = styled.div`
-  flex: 1 1 auto;
+  flex-grow: 1;
+  min-height: 30%;
   position: relative;
 
   &::before {
@@ -51,7 +52,7 @@ const ContentWindow = styled.div`
     bottom: 0;
     height: 10px;
     width: 100%;
-    background: linear-gradient(transparent, var(--background) 90%);
+    background: linear-gradient(transparent, var(--background) 70%);
     z-index: 100;
   } */
 `;
@@ -59,7 +60,9 @@ const ContentWindow = styled.div`
 const QuestionMenu = styled.div<{
   fontSize: number;
 }>`
-  max-height: 50%;
+  //max-height: 50%;
+  flex: 0 1 auto;
+  overflow: auto;
   font-size: ${(props) => props.fontSize}em;
 `;
 

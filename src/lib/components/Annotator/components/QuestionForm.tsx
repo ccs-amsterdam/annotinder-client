@@ -1,12 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  ReactElement,
-  useCallback,
-  CSSProperties,
-  useEffect,
-} from "react";
-import { FaCheckSquare } from "react-icons/fa";
+import React, { useState, useRef, ReactElement, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import useWatchChange from "../../../hooks/useWatchChange";
 import {
@@ -36,12 +28,12 @@ const QuestionDiv = styled.div`
   height: 100%;
   width: 100%;
   background-color: var(--background);
+  padding-top: 0.5rem;
   //border-top: 1px double var(--text);
-  box-shadow: 0px -5px 5px -6px grey;
+  box-shadow: 0px -10px 10px -6px var(--background);
+  //border: 1px solid red;
   font-size: inherit;
   z-index: 50;
-  overflow: auto;
-  scroll-margin-block: 50px;
 `;
 
 const MenuDiv = styled.div`
@@ -49,18 +41,42 @@ const MenuDiv = styled.div`
   z-index: 51;
   width: 100%;
   display: flex;
-  justify-content: flex-start;
-  min-height: 30px;
+  //flex-wrap: wrap-reverse;
+  justify-content: space-between;
+  padding-top: 0.5rem;
   position: sticky;
   top: 0;
 
-  .Buttons {
-    position: relative;
-    z-index: 100;
+  .Navigator {
+    flex: 1 1 auto;
+  }
+
+  .QuestionText {
     display: flex;
-    flex-direction: column;
-    width: 30px;
-    color: var(--text);
+    justify-content: center;
+    align-items: center;
+    z-index: 11;
+    flex: 1 1 auto;
+    font-size: inherit;
+    position: relative;
+
+    .Question {
+      display: inline-block;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      background: var(--background);
+      box-shadow: 0px 0px 5px 10px var(--background);
+      color: var(--text);
+      align-items: center;
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: bold;
+      text-align: center;
+    }
+    .Buttons {
+      display: inline-block;
+      z-index: 100;
+      color: var(--primary);
+    }
   }
 `;
 
@@ -71,22 +87,8 @@ const BodyDiv = styled.div`
   padding: 0px 10px 10px 10px;
   color: var(--text);
   font-size: inherit;
+  min-height: 100px;
 `;
-
-const HeaderDiv = styled.div`
-  width: auto;
-  flex: 1 1 auto;
-  padding: 5px 0px;
-  font-size: inherit;
-`;
-
-const iconStyle: CSSProperties = {
-  fontSize: "25px",
-  position: "absolute",
-  right: "0px",
-  paddingTop: "3px",
-  marginRight: "2px",
-};
 
 interface QuestionFormProps {
   /** Buttons can be passed as children, that will be shown on the topleft of the question form */
@@ -182,50 +184,29 @@ const QuestionForm = ({
   if (!questions || !unit || !answers) return null;
   if (!questions?.[questionIndex]) return null;
 
-  const done = unit.status === "DONE";
-
   return (
     <QuestionDiv ref={questionRef}>
       <MenuDiv className="QuestionMenu">
-        <div className="Buttons">{children}</div>
-        <div
-          className="Navigator"
-          style={{ width: "100%", textAlign: "center", display: "flex", flexDirection: "column" }}
-        >
-          <div
-            style={{
-              position: "relative",
-              zIndex: 11,
-              //margin: "auto",
-              background: "var(--background-transparent)",
-              backdropFilter: "blur(5px)",
-              padding: "0rem 0.5rem 0.5rem 0.5rem",
-              borderBottomLeftRadius: "5px",
-              borderBottomRightRadius: "5px",
-            }}
+        {/* <div className="Question">
+          <div className="Buttons">{children}</div>
+          <div className="QuestionText">{questionText}</div>
+        </div> */}
+        <div className="Navigator">
+          <QuestionIndexStep
+            questions={questions}
+            questionIndex={questionIndex}
+            answers={answers}
+            setQuestionIndex={setQuestionIndex}
           >
-            <QuestionIndexStep
-              questions={questions}
-              questionIndex={questionIndex}
-              answers={answers}
-              setQuestionIndex={setQuestionIndex}
-            />
-            <HeaderDiv className="AnswerHeader">
-              <h2
-                style={{
-                  color: "var(--text)",
-                  fontSize: "1.8rem",
-                  textAlign: "center",
-                  paddingBottom: "5px",
-                }}
-              >
-                {questionText}
-              </h2>
-            </HeaderDiv>
-          </div>
-        </div>
-        <div style={{ position: "relative", width: "30px" }}>
-          {done ? <FaCheckSquare fill="var(--secondary)" style={iconStyle} /> : null}
+            <div className="QuestionText">
+              <div className="Question">
+                <span>
+                  {questionText}
+                  <span className="Buttons">{children}</span>
+                </span>
+              </div>
+            </div>
+          </QuestionIndexStep>
         </div>
       </MenuDiv>
 
@@ -279,7 +260,7 @@ const markedString = (text: string) => {
 
   text = text.replace(/(\r\n|\n|\r)/gm, "");
   return (
-    <div>
+    <>
       {text.split(regex).reduce((prev: (string | ReactElement)[], current: string, i: number) => {
         if (i % 2 === 0) {
           prev.push(current);
@@ -295,7 +276,7 @@ const markedString = (text: string) => {
         }
         return prev;
       }, [])}
-    </div>
+    </>
   );
 };
 

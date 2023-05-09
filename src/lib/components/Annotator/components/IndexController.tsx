@@ -54,9 +54,9 @@ const Icon = styled.div<{ disabled?: boolean }>`
   cursor: ${(p) => (p.disabled ? "default" : "pointer")};
   color: ${(p) => (p.disabled ? "grey" : "var(--primary-text)")};
 
-  svg:hover {
+  /* svg:hover {
     fill: ${(p) => (p.disabled ? "grey" : "var(--secondary)")};
-  }
+  } */
 `;
 
 interface IndexControllerProps {

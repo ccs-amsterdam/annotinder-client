@@ -1,32 +1,39 @@
 import { useState, useEffect } from "react";
-import { Question, Answer, AnswerItem, SetState } from "../../../types";
+import { Question, Answer, SetState } from "../../../types";
 
 import styled from "styled-components";
-import { FaStepBackward, FaStepForward } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const QuestionIndexDiv = styled.div`
   min-height: 10px;
   justify-content: right;
+  align-items: center;
   display: flex;
 
   .buttons {
     //min-width: 100px;
+    padding-top: 0.5rem;
+  }
+  b {
+    padding-top: 0.3rem;
   }
 `;
 
 const Icon = styled.div<{ disabled?: boolean; hidden?: boolean }>`
   display: ${(p) => (p.hidden ? "none" : "block")};
-  font-size: 2rem;
-  padding: 0.5rem 0.5rem 0rem 0.5rem;
-  cursor: ${(p) => (p.disabled ? "transparent" : "pointer")};
-  color: ${(p) => (p.disabled ? "var(--background)" : "var(--primary-text)")};
+  font-size: 3rem;
+  transform: scale(1, 1.1);
+  padding: 0rem 0.5rem 0rem 0.5rem;
+  cursor: ${(p) => (p.disabled ? "default" : "pointer")};
+  color: ${(p) => (p.disabled ? "transparent" : "var(--primary-text)")};
 
-  svg:hover {
-    fill: ${(p) => (p.disabled ? "transparent" : "var(--secondary)")};
-  }
+  /* svg:hover {
+    fill: ${(p) => (p.disabled ? "grey" : "var(--secondary)")};
+  } */
 `;
 
 interface QuestionIndexStepProps {
+  children?: React.ReactNode;
   questions: Question[];
   questionIndex: number;
   answers: Answer[];
@@ -34,6 +41,7 @@ interface QuestionIndexStepProps {
 }
 
 export default function QuestionIndexStep({
+  children,
   questions,
   questionIndex,
   answers,
@@ -63,22 +71,9 @@ export default function QuestionIndexStep({
     });
   }, [questionIndex, setCanSelect]);
 
-  const getColor = (i: number) => {
-    if (!answers[i]) return "grey";
-    const done = !answers[i].items.some(
-      (v: AnswerItem) => v.values == null || v.values.length === 0
-    );
-    const irrelevant = answers[i].items[0].values?.[0] === "IRRELEVANT";
-    const selected = questionIndex === i;
-
-    if (irrelevant) return "var(--red)";
-    if (selected) return "var(--primary-text)";
-    if (done) return "var(--secondary)";
-    return "var(--primary-light)";
-  };
-
   const previousIndex = getPreviousIndex(questionIndex, canSelect, answers);
   const nextIndex = getNextIndex(questionIndex, canSelect, questions, answers);
+  //const visibleIndex = getVisibleIndex(answers, questionIndex);
 
   // hide if only 1 question that is not yet done
   const hide = questions.length === 1;
@@ -90,45 +85,16 @@ export default function QuestionIndexStep({
         onClick={() => previousIndex !== null && setQuestionIndex(previousIndex)}
         disabled={previousIndex === null}
       >
-        <FaStepBackward />
+        <FaChevronLeft />
       </Icon>
-      <div className="buttons">
-        {questions.map((q: Question, i: number) => {
-          if (hide) return null;
+      {children}
 
-          // size question buttons so that those near the selected question are largest
-          const dist = Math.pow(1.5, -Math.abs(questionIndex - i));
-          return (
-            <button
-              key={i}
-              style={{
-                borderRadius: "5px",
-                transition: "all 0.2s",
-                opacity: Math.max(dist, 0.2),
-                padding: `5px ${dist * 15}px`,
-                marginRight: `${3 * dist}px`,
-                height: `${10 * dist}px`,
-                border: `1px solid`,
-                borderColor: i === questionIndex ? "var(--background-fixed)" : "transparent",
-                background: getColor(i),
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                if (canSelect?.[i]) {
-                  const irrelevant = answers[i].items[0].values?.[0] === "IRRELEVANT";
-                  if (!irrelevant) setQuestionIndex(i);
-                }
-              }}
-            />
-          );
-        })}
-      </div>
       <Icon
         hidden={hide}
         onClick={() => nextIndex !== null && setQuestionIndex(nextIndex)}
         disabled={nextIndex === null}
       >
-        <FaStepForward />
+        <FaChevronRight />
       </Icon>
     </QuestionIndexDiv>
   );
@@ -155,3 +121,13 @@ function getNextIndex(
   }
   return null;
 }
+
+// function getVisibleIndex(answers: Answer[], questionIndex: number) {
+//   // only show coder the index ignoring the irrelevant questions
+//   let visibleIndex = 0;
+//   for (let i = 0; i < questionIndex; i++) {
+//     if (answers[i].items[0].values?.[0] === "IRRELEVANT") continue;
+//     visibleIndex++;
+//   }
+//   return visibleIndex;
+// }

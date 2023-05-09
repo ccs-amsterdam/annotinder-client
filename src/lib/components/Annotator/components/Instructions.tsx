@@ -5,16 +5,16 @@ import styled from "styled-components";
 import { FaQuestionCircle } from "react-icons/fa";
 import Modal from "../../Common/components/Modal";
 
-const QuestionMarkButton = styled.div`
-  height: 2.5rem;
+const QuestionMarkButton = styled.span`
   vertical-align: middle;
-  margin: 0.3rem;
-  font-size: 2rem;
+  margin: 0.1em;
+  font-size: 1em;
+  padding: 0.6em;
   cursor: pointer;
 
-  svg:hover {
+  /* svg:hover {
     fill: var(--secondary);
-  }
+  } */
 `;
 
 interface InstructionsProps {
@@ -53,8 +53,8 @@ const Instructions = ({ instruction, autoInstruction, sessionData }: Instruction
       <Modal open={open} setOpen={setOpen} closeOnSelectKey>
         <Markdown style={{ textAlign: "justify", hyphens: "auto" }}>{instruction}</Markdown>
       </Modal>
-      <QuestionMarkButton>
-        <FaQuestionCircle onClick={(e) => setOpen(!open)} />
+      <QuestionMarkButton onClick={(e) => setOpen(!open)}>
+        <FaQuestionCircle />
       </QuestionMarkButton>
     </>
   );
