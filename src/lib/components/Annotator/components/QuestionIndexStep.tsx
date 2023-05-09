@@ -6,11 +6,11 @@ import { FaStepBackward, FaStepForward } from "react-icons/fa";
 
 const QuestionIndexDiv = styled.div`
   min-height: 10px;
-  justify-content: center;
+  justify-content: right;
   display: flex;
 
   .buttons {
-    min-width: 100px;
+    //min-width: 100px;
   }
 `;
 
@@ -18,11 +18,11 @@ const Icon = styled.div<{ disabled?: boolean; hidden?: boolean }>`
   display: ${(p) => (p.hidden ? "none" : "block")};
   font-size: 2rem;
   padding: 0.5rem 0.5rem 0rem 0.5rem;
-  cursor: ${(p) => (p.disabled ? "default" : "pointer")};
-  color: ${(p) => (p.disabled ? "grey" : "var(--primary-text)")};
+  cursor: ${(p) => (p.disabled ? "transparent" : "pointer")};
+  color: ${(p) => (p.disabled ? "var(--background)" : "var(--primary-text)")};
 
   svg:hover {
-    fill: ${(p) => (p.disabled ? "grey" : "var(--secondary)")};
+    fill: ${(p) => (p.disabled ? "transparent" : "var(--secondary)")};
   }
 `;
 
@@ -72,9 +72,8 @@ export default function QuestionIndexStep({
     const selected = questionIndex === i;
 
     if (irrelevant) return "var(--red)";
-    if (done && selected) return "var(--primary-dark)";
-    if (selected) return "var(--secondary)";
-    if (done) return "var(--primary-light)";
+    if (selected) return "var(--primary-text)";
+    if (done) return "var(--secondary)";
     return "var(--primary-light)";
   };
 

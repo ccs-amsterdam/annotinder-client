@@ -131,7 +131,6 @@ const AnnotinderStyledButton = ({
       background={option.color}
       disabled={option == null || speedbump}
       selected={option.code === value}
-      darkBackground
       onClick={(e) => {
         onSelect({
           value: option?.code,

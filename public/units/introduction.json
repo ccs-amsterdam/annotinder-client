@@ -121,7 +121,7 @@
           {
             "name": "branching",
             "type": "select code",
-            "question": "Do you want so skip the scale question?",
+            "question": "Do you want to skip the scale question?",
             "codes": [
               { "code": "No", "color": "crimson" },
               {
@@ -136,20 +136,12 @@
             "type": "scale",
 
             "same_size": true,
-            "question": "You didn't skip the annoying scale question? Why?",
+            "question": "This sort of stuff is nice for likert scales!",
             "items": [
-              { "name": "like", "label": "I like scale questions!" },
-              { "name": "tricked", "label": "I feel like you tricked me..." },
-              { "name": "moveon", "label": "I'd like to move on now!" },
-              { "name": "like", "label": "I like scale questions!" },
-              { "name": "tricked", "label": "I feel like you tricked me..." },
-              { "name": "moveon", "label": "I'd like to move on now!" },
-              { "name": "like", "label": "I like scale questions!" },
-              { "name": "tricked", "label": "I feel like you tricked me..." },
-              { "name": "moveon", "label": "I'd like to move on now!" },
-              { "name": "like", "label": "I like scale questions!" },
-              { "name": "tricked", "label": "I feel like you tricked me..." },
-              { "name": "moveon", "label": "I'd like to move on now!" }
+              { "name": "labels", "label": "If you pick a score you see the full label" },
+              { "name": "why", "label": "This keeps it nice and tidy" },
+              { "name": "why", "label": "One more for good measure" },
+              { "name": "like", "label": "Once you hit em al, you can continue" }
             ],
 
             "codes": [
@@ -166,10 +158,7 @@
             "name": "back",
             "type": "select code",
             "question": "You can move back with the buttons just above this question",
-            "codes": [
-              { "code": "Oh wow", "color": "red" },
-              { "code": "Yeah, but why would I?", "color": "yellow" }
-            ]
+            "codes": [{ "code": "Sure, but I'd like to move on", "color": "yellow" }]
           }
         ]
       }

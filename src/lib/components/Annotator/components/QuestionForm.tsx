@@ -36,8 +36,8 @@ const QuestionDiv = styled.div`
   height: 100%;
   width: 100%;
   background-color: var(--background);
-  //border-top: 3px double var(--text);
-  box-shadow: 0px 0px 5px 1px grey;
+  //border-top: 1px double var(--text);
+  box-shadow: 0px -5px 5px -6px grey;
   font-size: inherit;
   z-index: 50;
   overflow: auto;
@@ -49,10 +49,19 @@ const MenuDiv = styled.div`
   z-index: 51;
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 30px;
   position: sticky;
   top: 0;
+
+  .Buttons {
+    position: relative;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    width: 30px;
+    color: var(--text);
+  }
 `;
 
 const BodyDiv = styled.div`
@@ -65,7 +74,7 @@ const BodyDiv = styled.div`
 `;
 
 const HeaderDiv = styled.div`
-  width: auto
+  width: auto;
   flex: 1 1 auto;
   padding: 5px 0px;
   font-size: inherit;
@@ -178,26 +187,16 @@ const QuestionForm = ({
   return (
     <QuestionDiv ref={questionRef}>
       <MenuDiv className="QuestionMenu">
+        <div className="Buttons">{children}</div>
         <div
-          style={{
-            position: "relative",
-            zIndex: 100,
-            display: "flex",
-            flexDirection: "column",
-            width: "30px",
-            color: "var(--text)",
-          }}
-        >
-          {children}
-        </div>
-        <div
+          className="Navigator"
           style={{ width: "100%", textAlign: "center", display: "flex", flexDirection: "column" }}
         >
           <div
             style={{
               position: "relative",
-              zIndex: 1000,
-              margin: "auto",
+              zIndex: 11,
+              //margin: "auto",
               background: "var(--background-transparent)",
               backdropFilter: "blur(5px)",
               padding: "0rem 0.5rem 0.5rem 0.5rem",
@@ -215,7 +214,7 @@ const QuestionForm = ({
               <h2
                 style={{
                   color: "var(--text)",
-                  fontSize: "1em",
+                  fontSize: "1.8rem",
                   textAlign: "center",
                   paddingBottom: "5px",
                 }}

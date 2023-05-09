@@ -148,7 +148,6 @@ const SelectCode = React.memo(
             current={isCurrent}
             key={option.code}
             value={option.code}
-            darkBackground
             //onMouseOver={() => setSelected(i)}
             onClick={() => {
               if (speedbump) return;

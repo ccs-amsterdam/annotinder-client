@@ -76,17 +76,10 @@ const CodeButton = styled.button<{
     height: 100%;
     background: ${(p) => {
       if (!p.selected && !p.current) return "#fff";
-      if (p.selected && p.current) return "#555";
+      if (p.selected && p.current) return "#333";
       return "#999";
     }};
     z-index: -1;
-    /* border: 3px solid
-      ${(p) => {
-      if (!p.selected && !p.current) return "#fff";
-      if (p.selected && p.current) return "#555";
-      return "#999";
-    }}; */
-    //border-radius: 3px;
   }
 
   :hover {
@@ -98,19 +91,6 @@ const CodeButton = styled.button<{
     color: grey;
     cursor: not-allowed;
   }
-
-  ${(p) => {
-    if (p.tooltip) {
-      return `
-      :hover::before {
-        content: "${p.tooltip}";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-      }`;
-    }
-  }}
 `;
 
 const StyledButton = styled.button<{
