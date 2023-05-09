@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, RefObject } from "react";
-import { keepInView } from "../../../functions/scroll";
 import { OnSelectParams, AnswerOption, AnswerItem, QuestionItem } from "../../../types";
 import { Button } from "../../../styled/StyledSemantic";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
@@ -22,7 +21,6 @@ interface ScaleProps {
   blockEvents: boolean;
   /** The index of the question.  */
   questionIndex: number;
-  scrollRef: RefObject<HTMLDivElement>;
 }
 
 const StyledDiv = styled.div`
@@ -45,16 +43,7 @@ const StyledDiv = styled.div`
 `;
 
 const Scale = React.memo(
-  ({
-    items,
-    answerItems,
-    options,
-    onSelect,
-    onFinish,
-    blockEvents,
-    questionIndex,
-    scrollRef,
-  }: ScaleProps) => {
+  ({ items, answerItems, options, onSelect, onFinish, blockEvents, questionIndex }: ScaleProps) => {
     // render buttons for options (an array of objects with keys 'label' and 'color')
     // On selection perform onSelect function with the button label as input
     // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
@@ -93,6 +82,7 @@ const Scale = React.memo(
             }
           }
           if (newitem !== null) {
+            items?.[newitem]?.ref?.current?.scrollIntoView();
             setSelectedItem(newitem);
           }
           return;
@@ -163,7 +153,6 @@ const Scale = React.memo(
           selectedButton={selectedButton}
           onSelect={onSelect}
           continueButtonRef={continueButtonRef}
-          scrollRef={scrollRef}
         />
 
         <Button
@@ -191,7 +180,6 @@ interface ItemsProps {
   selectedButton: number;
   onSelect: (params: OnSelectParams) => void;
   continueButtonRef: RefObject<HTMLDivElement>;
-  scrollRef: RefObject<HTMLDivElement>;
 }
 
 const Items = ({
@@ -202,11 +190,10 @@ const Items = ({
   selectedButton,
   onSelect,
   continueButtonRef,
-  scrollRef,
 }: ItemsProps) => {
   useEffect(() => {
-    if (selectedItem < 0) keepInView(scrollRef?.current, continueButtonRef?.current);
-  }, [selectedItem, items, continueButtonRef, scrollRef]);
+    if (selectedItem < 0) continueButtonRef?.current?.scrollIntoView();
+  }, [selectedItem, items, continueButtonRef]);
 
   return (
     <div
@@ -228,7 +215,6 @@ const Items = ({
             options={options}
             selectedButton={selectedButton}
             onSelect={onSelect}
-            scrollRef={scrollRef}
           />
         );
       })}
@@ -244,7 +230,6 @@ interface ItemProps {
   options: AnswerOption[];
   selectedButton: number;
   onSelect: (params: OnSelectParams) => void;
-  scrollRef: RefObject<HTMLDivElement>;
 }
 
 const ItemButton = styled.div<{
@@ -276,7 +261,7 @@ const ItemButton = styled.div<{
     color: ${(p) => (p.customColor || p.current ? "black" : "white")};
     cursor: pointer;
     position: relative;
-    z-index: 1000;
+    z-index: 10;
 
     ::after {
     content: ${(p) => (p.selected ? '""' : `none`)};
@@ -302,7 +287,6 @@ const Item = ({
   options,
   selectedButton,
   onSelect,
-  scrollRef,
 }: ItemProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const colorstep = 90 / options.length;
@@ -311,9 +295,8 @@ const Item = ({
   const padding = itemIndex === 0 ? "0px 0px 5px 0px" : "5px 0px 5px 0px";
 
   useEffect(() => {
-    if (selectedItem !== itemIndex) return;
-    keepInView(scrollRef?.current, ref?.current);
-  }, [scrollRef, itemIndex, selectedItem]);
+    itemObj.ref = ref;
+  }, [itemObj, ref]);
 
   return (
     <div key={itemIndex} style={{ padding, background, borderRadius: "5px" }}>
@@ -342,7 +325,7 @@ const Item = ({
         ref={ref}
         style={{
           display: "flex",
-
+          scrollMargin: "100px",
           gap: "0.5rem",
           margin: "auto",
           maxWidth: "min(500px, 100%)",

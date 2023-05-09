@@ -140,6 +140,15 @@
             "items": [
               { "name": "like", "label": "I like scale questions!" },
               { "name": "tricked", "label": "I feel like you tricked me..." },
+              { "name": "moveon", "label": "I'd like to move on now!" },
+              { "name": "like", "label": "I like scale questions!" },
+              { "name": "tricked", "label": "I feel like you tricked me..." },
+              { "name": "moveon", "label": "I'd like to move on now!" },
+              { "name": "like", "label": "I like scale questions!" },
+              { "name": "tricked", "label": "I feel like you tricked me..." },
+              { "name": "moveon", "label": "I'd like to move on now!" },
+              { "name": "like", "label": "I like scale questions!" },
+              { "name": "tricked", "label": "I feel like you tricked me..." },
               { "name": "moveon", "label": "I'd like to move on now!" }
             ],
 

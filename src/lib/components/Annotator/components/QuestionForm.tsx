@@ -1,4 +1,11 @@
-import React, { useState, useRef, ReactElement, useCallback, CSSProperties } from "react";
+import React, {
+  useState,
+  useRef,
+  ReactElement,
+  useCallback,
+  CSSProperties,
+  useEffect,
+} from "react";
 import { FaCheckSquare } from "react-icons/fa";
 import styled from "styled-components";
 import useWatchChange from "../../../hooks/useWatchChange";
@@ -29,11 +36,12 @@ const QuestionDiv = styled.div`
   height: 100%;
   width: 100%;
   background-color: var(--background);
-  border-top: 3px double var(--text);
-  box-shadow: 0px 5px 5px 1px grey;
+  //border-top: 3px double var(--text);
+  box-shadow: 0px 0px 5px 1px grey;
   font-size: inherit;
   z-index: 50;
   overflow: auto;
+  scroll-margin-block: 50px;
 `;
 
 const MenuDiv = styled.div`
@@ -41,7 +49,10 @@ const MenuDiv = styled.div`
   z-index: 51;
   width: 100%;
   display: flex;
+  justify-content: center;
   min-height: 30px;
+  position: sticky;
+  top: 0;
 `;
 
 const BodyDiv = styled.div`
@@ -54,7 +65,7 @@ const BodyDiv = styled.div`
 `;
 
 const HeaderDiv = styled.div`
-  width: 100%;
+  width: auto
   flex: 1 1 auto;
   padding: 5px 0px;
   font-size: inherit;
@@ -99,6 +110,7 @@ const QuestionForm = ({
   startTransition,
   blockEvents,
 }: QuestionFormProps) => {
+  const questionRef = useRef<HTMLDivElement>(null);
   const blockAnswer = useRef(false); // to prevent answering double (e.g. with swipe events)
   const [answers, setAnswers] = useState<Answer[]>(null);
   const [questionText, setQuestionText] = useState(<div />);
@@ -115,6 +127,10 @@ const QuestionForm = ({
       blockAnswer.current = false;
     }
   }
+
+  useEffect(() => {
+    if (questionRef.current) questionRef.current.scrollTo(0, 0);
+  });
 
   const onAnswer = useCallback(
     (items: AnswerItem[], onlySave = false, transition?: Transition): void => {
@@ -160,7 +176,7 @@ const QuestionForm = ({
   const done = unit.status === "DONE";
 
   return (
-    <QuestionDiv>
+    <QuestionDiv ref={questionRef}>
       <MenuDiv className="QuestionMenu">
         <div
           style={{
@@ -174,25 +190,40 @@ const QuestionForm = ({
         >
           {children}
         </div>
-        <div style={{ width: "100%", textAlign: "center" }}>
-          <QuestionIndexStep
-            questions={questions}
-            questionIndex={questionIndex}
-            answers={answers}
-            setQuestionIndex={setQuestionIndex}
-          />
-          <HeaderDiv className="AnswerHeader">
-            <h2
-              style={{
-                color: "var(--text)",
-                fontSize: "1em",
-                textAlign: "center",
-                paddingBottom: "5px",
-              }}
-            >
-              {questionText}
-            </h2>
-          </HeaderDiv>
+        <div
+          style={{ width: "100%", textAlign: "center", display: "flex", flexDirection: "column" }}
+        >
+          <div
+            style={{
+              position: "relative",
+              zIndex: 1000,
+              margin: "auto",
+              background: "var(--background-transparent)",
+              backdropFilter: "blur(5px)",
+              padding: "0rem 0.5rem 0.5rem 0.5rem",
+              borderBottomLeftRadius: "5px",
+              borderBottomRightRadius: "5px",
+            }}
+          >
+            <QuestionIndexStep
+              questions={questions}
+              questionIndex={questionIndex}
+              answers={answers}
+              setQuestionIndex={setQuestionIndex}
+            />
+            <HeaderDiv className="AnswerHeader">
+              <h2
+                style={{
+                  color: "var(--text)",
+                  fontSize: "1em",
+                  textAlign: "center",
+                  paddingBottom: "5px",
+                }}
+              >
+                {questionText}
+              </h2>
+            </HeaderDiv>
+          </div>
         </div>
         <div style={{ position: "relative", width: "30px" }}>
           {done ? <FaCheckSquare fill="var(--secondary)" style={iconStyle} /> : null}

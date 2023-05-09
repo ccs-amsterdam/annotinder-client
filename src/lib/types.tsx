@@ -219,7 +219,7 @@ export interface QuestionItem {
   rows?: number;
   optional?: boolean;
   autocomplete?: string;
-  ref?: RefObject<HTMLInputElement | HTMLTextAreaElement>;
+  ref?: RefObject<HTMLElement>;
 }
 
 export type QuestionItemType = "email" | "number" | "textarea" | "text";

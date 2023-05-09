@@ -9,14 +9,12 @@ import { AnswerItem, OnSelectParams, Swipes, Question, Answer, Transition } from
 import styled from "styled-components";
 
 const AnswerDiv = styled.div`
-  transition: all 0.2s;
-  display: flex;
+  transition: all 0.3s;
+  display: grid;
+  grid-template-rows: auto;
   position: relative;
   padding: 0;
-  overflow-y: auto;
-  height: 60px;
-  min-height: 200px;
-  max-height: calc(100% - 4rem);
+
   width: 100%;
   margin: 0;
   font-size: inherit;
@@ -26,10 +24,6 @@ const AnswerDiv = styled.div`
     width: 100%;
     margin-top: auto;
   }
-
-  /* &::before {
-    position: sticky;
-  } */
 `;
 
 interface AnswerFieldProps {
@@ -82,37 +76,24 @@ const AnswerField = ({
   }, [answers, questionIndex, answerItems]);
 
   useEffect(() => {
-    // change the min-height of the answerField based on whether it needs to grow
-    // or shrink. This way, the transition animation works (which is not possible with flex)
-    const resize = () => {
-      if (!answerRef.current) return;
-      const el = answerRef.current;
-
-      if (el.scrollHeight > el.clientHeight) {
-        // if div is scrollable, it needs to grow. growAnswerField
-        // does this taking the height of the content into account
-        growAnswerField(el);
-        return;
-      }
-      el.style["border-top"] = "";
-
-      const innerEl = el.children[0];
+    const el = answerRef.current;
+    function resize() {
+      const innerEl = el?.children?.[0];
       if (!innerEl) return;
-      if (el.clientHeight - innerEl.clientHeight > 15) {
-        // if the innerAnswerField is smaller than the answerField (with some margin), we can
-        // shrink the answerfield
-        answerRef.current.style["min-height"] = innerEl.clientHeight + "px";
-      }
-    };
+      answerRef.current.style["grid-template-rows"] = innerEl.clientHeight + "px";
+    }
 
     // first do a quick update, using a small delay that is enough for most content
-    setTimeout(() => resize(), 50);
+    const timer = setTimeout(() => resize(), 50);
     // then check whether height needs to change with short intervalls. This is fairly inexpensive
     // and ensures that theres no issues when content is slow to load (e.g., images)
     const interval = setInterval(() => {
       resize();
     }, 500);
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
   }, [answerRef, onAnswer]);
 
   const onFinish = () => {
@@ -186,7 +167,6 @@ const AnswerField = ({
         onFinish={onFinish}
         blockEvents={blockEvents} // for disabling key/click events
         questionIndex={questionIndex} // for use in useEffect for resetting values on question change
-        scrollRef={answerRef}
       />
     );
 
@@ -212,7 +192,6 @@ const AnswerField = ({
         onFinish={onFinish}
         blockEvents={blockEvents}
         questionIndex={questionIndex}
-        scrollRef={answerRef}
       />
     );
 
@@ -246,7 +225,6 @@ const AnswerField = ({
         onFinish={onFinish}
         blockEvents={blockEvents}
         questionIndex={questionIndex}
-        scrollRef={answerRef}
       />
     );
 
@@ -255,25 +233,6 @@ const AnswerField = ({
       <div className="InnerAnswerField">{answerfield}</div>
     </AnswerDiv>
   );
-};
-
-const growAnswerField = (el: HTMLDivElement) => {
-  if (!el) return;
-  const container = el.closest(".QuestionContainer");
-  const questionMenu = container.querySelector(".QuestionMenu");
-  const questionMenuHeight = questionMenu.scrollHeight;
-  const content = container.querySelector(".DocumentContent");
-  const minContentHeight = container.clientHeight / 2;
-  const contentHeight = Math.min(content.clientHeight, minContentHeight);
-
-  const maxheight = container.clientHeight - contentHeight - questionMenuHeight - 10;
-
-  const minheight = Math.max(100, el.scrollHeight);
-  const newMinHeight = Math.min(maxheight, minheight);
-
-  if (maxheight < minheight) el.style["border-top"] = "1px solid var(--background-fixed)";
-  el.style["min-height"] = newMinHeight + "px";
-  //answerRef.current.style.opacity = 1;
 };
 
 export default React.memo(AnswerField);

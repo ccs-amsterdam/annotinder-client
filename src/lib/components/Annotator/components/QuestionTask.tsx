@@ -56,6 +56,13 @@ const ContentWindow = styled.div`
   } */
 `;
 
+const QuestionMenu = styled.div<{
+  fontSize: number;
+}>`
+  max-height: 50%;
+  font-size: ${(props) => props.fontSize}em;
+`;
+
 const SwipeableBox = styled.div`
   height: 100%;
   width: 100%;
@@ -83,13 +90,6 @@ const Content = styled.div<{ fontSize: number }>`
   box-shadow: 0px 0px 10px 5px var(--background-inversed-fixed);
   will-change: background, transform;
 `;
-
-const QuestionMenu = styled.div<{
-  fontSize: number;
-}>`
-  font-size: ${(props) => props.fontSize}em;
-`;
-//max-height: 70%;
 
 interface QuestionTaskProps {
   unit: Unit;

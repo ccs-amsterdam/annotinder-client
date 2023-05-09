@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef, RefObject } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
-import { keepInView } from "../../../functions/scroll";
 import { AnswerOption, OnSelectParams } from "../../../types";
 import useSpeedBump from "../../../hooks/useSpeedBump";
 import { CodeButton, StyledButton } from "../../../styled/StyledSemantic";
@@ -26,7 +25,6 @@ interface SelectCodeProps {
   blockEvents: boolean;
   /** The index of the question.  */
   questionIndex: number;
-  scrollRef: RefObject<HTMLDivElement>;
 }
 
 const SelectCode = React.memo(
@@ -40,7 +38,6 @@ const SelectCode = React.memo(
     onFinish,
     blockEvents,
     questionIndex,
-    scrollRef,
   }: SelectCodeProps) => {
     // render buttons for options (an array of objects with keys 'label' and 'color')
     // On selection perform onSelect function with the button label as input
@@ -85,7 +82,7 @@ const SelectCode = React.memo(
           //   behavior: "smooth",
           //   block: "center",
           // });
-          keepInView(scrollRef?.current, buttons?.[selected]?.ref?.current);
+          buttons?.[selected]?.ref?.current?.scrollIntoView();
           return;
         }
 
@@ -110,7 +107,7 @@ const SelectCode = React.memo(
           }
         }
       },
-      [selected, onSelect, multiple, options, onFinish, speedbump, scrollRef]
+      [selected, onSelect, multiple, options, onFinish, speedbump]
     );
 
     useEffect(() => {
