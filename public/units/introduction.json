@@ -1,7 +1,7 @@
 [
   {
     "id": "1",
-    "type": "unit",
+    "type": "survey",
     "unit": {
       "grid": {
         "columns": "2fr",
@@ -45,7 +45,7 @@
 
   {
     "id": "2",
-    "type": "unit",
+    "type": "survey",
     "unit": {
       "text_fields": [
         {
@@ -92,23 +92,15 @@
   },
   {
     "id": "3",
-    "type": "unit",
+    "type": "survey",
     "unit": {
       "text_fields": [
         {
-          "name": "title",
-          "value": "Branching",
-          "style": {
-            "fontWeight": "bold",
-            "fontSize": "1.2em",
-            "textAlign": "center"
-          }
-        },
-        {
           "name": "text",
-          "value": "You can do some simple branching. ",
+          "value": "Survey questions can have branches for optional questions",
           "style": {
-            "textAlign": "center"
+            "textAlign": "center",
+            "fontStyle": "italic"
           }
         }
       ],
@@ -166,7 +158,7 @@
   },
   {
     "id": "4",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "text_fields": [
         {
@@ -203,7 +195,7 @@
   },
   {
     "id": "5",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "grid": {
         "areas": [["title"], ["subtitle"], ["text1", "text2"]]
@@ -259,7 +251,7 @@
   },
   {
     "id": "6",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "image_fields": [
         {
@@ -444,7 +436,7 @@
   },
   {
     "id": "focus",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "grid": {
         "areas": [["text1", "text2"]]
@@ -481,7 +473,7 @@
   },
   {
     "id": "7",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "text_fields": [
         {
@@ -564,7 +556,7 @@
   },
   {
     "id": "8",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "text_fields": [
         {
@@ -643,7 +635,7 @@
 
   {
     "id": "12",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "markdown_fields": [
         {

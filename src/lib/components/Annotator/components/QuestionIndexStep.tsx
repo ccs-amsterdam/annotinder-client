@@ -7,7 +7,7 @@ import { FaStepForward, FaStepBackward } from "react-icons/fa";
 const QuestionIndexDiv = styled.div`
   min-height: 10px;
   justify-content: right;
-  align-items: center;
+  align-items: flex-start;
   display: flex;
 
   .buttons {
@@ -21,9 +21,10 @@ const QuestionIndexDiv = styled.div`
 
 const Icon = styled.div<{ disabled?: boolean; hidden?: boolean }>`
   display: ${(p) => (p.hidden ? "none" : "block")};
-  font-size: 3rem;
+  font-size: 2rem;
+  padding: 1rem;
   transform: scale(1, 1.1);
-  padding: 0rem 0.5rem 0rem 0.5rem;
+  padding: 0.3rem 0.8rem 0rem 0.8rem;
   cursor: ${(p) => (p.disabled ? "default" : "pointer")};
   color: ${(p) => (p.disabled ? "transparent" : "var(--primary-text)")};
 

@@ -23,15 +23,19 @@ import unfoldQuestions from "../../../functions/unfoldQuestions";
 
 const Container = styled.div`
   display: flex;
+
   flex-direction: column;
+
   height: 100%;
+
+  overflow: auto;
   background: var(--background);
   //border-top: 1px solid var(--text);
 `;
 
-const ContentWindow = styled.div`
-  flex-grow: 1;
-  min-height: 30%;
+const ContentWindow = styled.div<{ fullSize?: boolean }>`
+  flex: ${(p) => (p.fullSize ? `1 0 auto` : `1 1 0`)};
+  min-height: ${(p) => (p.fullSize ? "none" : "30%")};
   position: relative;
   z-index: 1;
 
@@ -40,40 +44,41 @@ const ContentWindow = styled.div`
     display: block;
     position: absolute;
     top: 0;
+    left: 0;
     height: 10px;
     width: 100%;
-    background: linear-gradient(var(--background), transparent 70%);
+    background: linear-gradient(var(--background), transparent 100%);
     z-index: 100;
   }
-
   &::after {
     content: "";
     display: block;
     position: absolute;
-    bottom: 0;
+    bottom: 0px;
+    left: 0px;
     height: 10px;
     width: 100%;
-    background: linear-gradient(transparent, var(--background) 70%);
+    background: linear-gradient(transparent, var(--background) 100%);
     z-index: 100;
   }
 `;
 
 const QuestionMenu = styled.div<{
   fontSize: number;
+  fullSize?: boolean;
 }>`
   //max-height: 50%;
-  flex: 0 1 auto;
+  flex: ${(p) => (p.fullSize ? `1 0 auto` : `0 1 auto`)};
   overflow: auto;
   font-size: ${(props) => props.fontSize}em;
 `;
 
 const SwipeableBox = styled.div`
   height: 100%;
-  width: 100%;
   overflow: hidden;
   outline: 1px solid black;
   outline-offset: -2px;
-  position: absolute;
+  position: relative;
   will-change: opacity, transform;
   z-index: 20;
 `;
@@ -87,8 +92,7 @@ const SwipeCode = styled.div`
 
 const Content = styled.div<{ fontSize: number }>`
   height: 100%;
-  width: 100%;
-  position: absolute;
+  position: relative;
   top: 0;
   font-size: ${(props) => props.fontSize}em;
   box-shadow: 0px 0px 10px 5px var(--background-inversed-fixed);
@@ -178,6 +182,9 @@ const QuestionTask = ({
     annotations = [...annotations, ...addAnnotations];
   }
 
+  const singlePage = unit.unitType === "survey";
+  console.log(unit.unitType);
+
   return (
     <Container className="QuestionContainer" ref={divref}>
       <FeedbackPortal
@@ -187,7 +194,7 @@ const QuestionTask = ({
         fullScreenNode={fullScreenNode}
       />
 
-      <ContentWindow {...textSwipe}>
+      <ContentWindow {...textSwipe} fullSize={singlePage}>
         <SwipeableBox ref={refs.box}>
           {/* This div moves around behind the div containing the document to show the swipe code  */}
           <SwipeCode ref={refs.code} />
@@ -203,7 +210,7 @@ const QuestionTask = ({
           </Content>
         </SwipeableBox>
       </ContentWindow>
-      <QuestionMenu {...menuSwipe} fontSize={settings.lowerTextSize}>
+      <QuestionMenu {...menuSwipe} fontSize={settings.lowerTextSize} fullSize={singlePage}>
         <QuestionForm
           unit={unit}
           questions={questions}

@@ -518,11 +518,12 @@ export interface Progress {
 
 ///// UNIT DATA
 
-export type UnitType = "pre" | "train" | "test" | "unit" | "post";
+export type UnitType = "train" | "test" | "code" | "survey";
 
 /** A unit after it has been prepared by the jobServer. This is for internal use */
 export interface Unit {
   unitId: string; // this is the backend id, not the external id
+  unitType: UnitType;
   unit: UnitContent;
   jobServer?: any;
   status: UnitStatus;

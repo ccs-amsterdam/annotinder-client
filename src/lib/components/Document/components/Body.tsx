@@ -46,6 +46,11 @@ const BodyContainer = styled.div`
   align-items: center;
   overflow: auto;
   scroll-behavior: smooth;
+
+  &.overflow {
+    border-bottom: 2px solid grey;
+    border-top: 2px solid grey;
+  }
 `;
 
 interface BodyProps {
@@ -94,6 +99,16 @@ const Body = ({
   //     scrollToMiddle(containerRef.current, firstTextUnitToken.ref.current, 1 / 3);
   //   }
   // }, [tokens]);
+
+  useEffect(() => {
+    // add "overflow" class to BodyContainer if it overflows
+    const container = containerRef.current;
+    if (!container) return;
+    const scrollHeight = container.scrollHeight;
+    const clientHeight = container.clientHeight;
+    if (scrollHeight > clientHeight) container.classList.add("overflow");
+    else container.classList.remove("overflow");
+  }, [containerRef, currentUnitReady]);
 
   useEffect(() => {
     if (!tokens) return;

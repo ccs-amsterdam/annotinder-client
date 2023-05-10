@@ -9,22 +9,10 @@ const swipeControl = (
   triggerdist: number = 110
 ) => {
   if (!question) return {};
-  const swipeable = ["annotinder", "confirm"];
+  const swipeable = ["annotinder"];
   if (!swipeable.includes(question.type)) return {};
 
   let swipeOptions = question.swipeOptions;
-  if (question.type === "confirm") {
-    // make confirm questions swipeable in any direction
-    const confirmoption = {
-      code: question?.options?.[0]?.code || "Continue",
-      color: "var(--primary)",
-    };
-    swipeOptions = {
-      left: confirmoption,
-      up: confirmoption,
-      right: confirmoption,
-    };
-  }
 
   const transitionTime = 250;
   let scrolloffset = 0;

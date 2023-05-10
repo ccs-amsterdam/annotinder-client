@@ -30,7 +30,7 @@ const QuestionDiv = styled.div`
   background-color: var(--background);
   padding-top: 0.5rem;
   //border-top: 1px double var(--text);
-  box-shadow: 0px -10px 10px -6px var(--background);
+  //box-shadow: 0px -10px 10px -6px var(--background);
   //border: 1px solid red;
   font-size: inherit;
   z-index: 50;
