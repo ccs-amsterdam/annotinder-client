@@ -59,18 +59,20 @@ const MenuDiv = styled.div`
     flex: 1 1 auto;
     font-size: inherit;
     position: relative;
+    margin-bottom: 0.5rem;
 
     .Question {
       display: inline-block;
       border-bottom-left-radius: 5px;
       border-bottom-right-radius: 5px;
       background: var(--background);
-      box-shadow: 0px 0px 5px 10px var(--background);
+      box-shadow: 0px 0px 5px 5px var(--background);
       color: var(--text);
       align-items: center;
       font-size: clamp(1.8rem, 3vw, 2.5rem);
       font-weight: bold;
       text-align: center;
+      line-height: 2.5rem;
     }
     .Buttons {
       display: inline-block;
@@ -162,6 +164,7 @@ const QuestionForm = ({
         answers,
         questionIndex,
         nextUnit,
+        setAnswers,
         setQuestionIndex,
         setConditionReport,
         (nextUnit: boolean) => startTransition(transition, nextUnit),
@@ -288,6 +291,7 @@ const processAnswer = async (
   answers: Answer[],
   questionIndex: number,
   nextUnit: () => void,
+  setAnswers: SetState<Answer[]>,
   setQuestionIndex: SetState<number>,
   setConditionReport: SetState<ConditionReport>,
   transition: (nextUnit: boolean) => void,
@@ -336,12 +340,13 @@ const processAnswer = async (
       cleanAnnotations,
       status
     );
+    console.log(conditionReport);
 
     conditionReport.reportSuccess = true;
     setConditionReport(conditionReport);
     const action = conditionReport?.evaluation?.[questions[questionIndex].name]?.action;
     if (action === "block") {
-      // pass
+      // TODO to be implemented
     } else if (action === "retry") {
       blockAnswer.current = false;
     } else {
@@ -364,11 +369,13 @@ const processAnswer = async (
         if (action === "block" || action === "retry") newQuestionIndex = i;
       }
 
+      setAnswers([...answers]);
       if (newQuestionIndex !== null) {
         setQuestionIndex(newQuestionIndex);
       } else {
         nextUnit();
       }
+
       blockAnswer.current = false;
     }
   } catch (e) {

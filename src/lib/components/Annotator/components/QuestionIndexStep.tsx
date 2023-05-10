@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Question, Answer, SetState } from "../../../types";
 
 import styled from "styled-components";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaStepForward, FaStepBackward } from "react-icons/fa";
 
 const QuestionIndexDiv = styled.div`
   min-height: 10px;
@@ -51,25 +51,30 @@ export default function QuestionIndexStep({
   const [canSelect, setCanSelect] = useState([]);
 
   useEffect(() => {
-    const cs = answers.map((a: Answer) => {
-      return (
-        a.items[0].values != null &&
-        a.items[0].values.length !== 0 &&
-        a.items[0].values[0] !== "IRRELEVANT"
-      );
+    const done = answers.map((a: Answer) => {
+      for (let item of a.items || []) {
+        if (item.values == null || item.values.length === 0 || item.invalid) return false;
+      }
+      return true;
     });
-    cs[0] = true;
+    const irrelevant = answers.map((a: Answer) => a.items[0].values?.[0] === "IRRELEVANT");
+
+    const cs = answers.map((_, i: number) => {
+      if (i === 0) return true;
+      return done[i - 1] && !irrelevant[i];
+    });
+
     setCanSelect(cs);
   }, [answers, setCanSelect]);
 
-  useEffect(() => {
-    setCanSelect((state) => {
-      const newState = [...state];
-      if (questionIndex >= newState.length) return null;
-      newState[questionIndex] = true;
-      return newState;
-    });
-  }, [questionIndex, setCanSelect]);
+  // useEffect(() => {
+  //   setCanSelect((state) => {
+  //     const newState = [...state];
+  //     if (questionIndex >= newState.length) return null;
+  //     newState[questionIndex] = true;
+  //     return newState;
+  //   });
+  // }, [questionIndex, setCanSelect]);
 
   const previousIndex = getPreviousIndex(questionIndex, canSelect, answers);
   const nextIndex = getNextIndex(questionIndex, canSelect, questions, answers);
@@ -85,7 +90,7 @@ export default function QuestionIndexStep({
         onClick={() => previousIndex !== null && setQuestionIndex(previousIndex)}
         disabled={previousIndex === null}
       >
-        <FaChevronLeft />
+        <FaStepBackward />
       </Icon>
       {children}
 
@@ -94,7 +99,7 @@ export default function QuestionIndexStep({
         onClick={() => nextIndex !== null && setQuestionIndex(nextIndex)}
         disabled={nextIndex === null}
       >
-        <FaChevronRight />
+        <FaStepForward />
       </Icon>
     </QuestionIndexDiv>
   );

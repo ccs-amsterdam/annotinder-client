@@ -12,7 +12,8 @@ const Overlay = styled.div`
   width: 100%;
   height: 100%;
   backdrop-filter: blur(1px);
-  border: 1px solid black;
+  background: var(--background-transparent);
+  //border: 1px solid black;
   z-index: 2;
 `;
 

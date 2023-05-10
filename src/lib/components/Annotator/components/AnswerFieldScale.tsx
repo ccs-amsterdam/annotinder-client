@@ -199,7 +199,6 @@ const Items = ({
     <div
       style={{
         flex: "1 1 auto",
-        //overflow: "auto",
         display: "flex",
         flexDirection: "column",
         position: "relative",
@@ -240,7 +239,7 @@ const ItemButton = styled.div<{
 }>`
   flex: 1 1 auto;
   height: 2.5rem;
-  //border-radius: 4px;
+  border-radius: 4px;
   background: ${(p) => (p.customColor ? "white" : "var(--primary)")};
   border: 2px solid ${(p) => {
     if (p.selected) return "var(--text)";
@@ -292,7 +291,7 @@ const Item = ({
   const colorstep = 90 / options.length;
   const itemlabel = itemObj.label || itemObj.name;
   //const background = itemIndex % 2 !== 0 ? "#6666660b" : "#6666661b";
-  const padding = itemIndex === 0 ? "0px 0px 5px 0px" : "5px 0px 5px 0px";
+  const padding = "0px 0px 10px 0px";
 
   useEffect(() => {
     itemObj.ref = ref;

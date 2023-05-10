@@ -33,6 +33,7 @@ const ContentWindow = styled.div`
   flex-grow: 1;
   min-height: 30%;
   position: relative;
+  z-index: 1;
 
   &::before {
     content: "";
@@ -45,7 +46,7 @@ const ContentWindow = styled.div`
     z-index: 100;
   }
 
-  /* &::after {
+  &::after {
     content: "";
     display: block;
     position: absolute;
@@ -54,7 +55,7 @@ const ContentWindow = styled.div`
     width: 100%;
     background: linear-gradient(transparent, var(--background) 70%);
     z-index: 100;
-  } */
+  }
 `;
 
 const QuestionMenu = styled.div<{
