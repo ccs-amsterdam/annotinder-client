@@ -23,9 +23,7 @@ import unfoldQuestions from "../../../functions/unfoldQuestions";
 
 const Container = styled.div`
   display: flex;
-
   flex-direction: column;
-
   height: 100%;
 
   overflow: auto;
@@ -35,7 +33,7 @@ const Container = styled.div`
 
 const ContentWindow = styled.div<{ fullSize?: boolean }>`
   flex: ${(p) => (p.fullSize ? `1 0 auto` : `1 1 0`)};
-  min-height: ${(p) => (p.fullSize ? "none" : "30%")};
+  min-height: ${(p) => (p.fullSize ? "none" : "40%")};
   position: relative;
   z-index: 1;
 
