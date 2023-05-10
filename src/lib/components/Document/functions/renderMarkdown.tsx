@@ -28,10 +28,11 @@ export default function renderMarkdown(
           //width: "100%",
           fontSize: "1em",
           //alignSelf: "center",
+          textAlign: "justify",
           ...(markdownField.style || {}),
         }}
       >
-        <Markdown style={{ textAlign: "justify", hyphens: "auto" }}>{value}</Markdown>
+        <Markdown style={{ hyphens: "auto" }}>{value}</Markdown>
       </div>
     );
   }
