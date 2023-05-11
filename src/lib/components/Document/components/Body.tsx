@@ -101,14 +101,17 @@ const Body = ({
   // }, [tokens]);
 
   useEffect(() => {
-    // add "overflow" class to BodyContainer if it overflows
     const container = containerRef.current;
-    if (!container) return;
-    const scrollHeight = container.scrollHeight;
-    const clientHeight = container.clientHeight;
-    if (scrollHeight > clientHeight) container.classList.add("overflow");
-    else container.classList.remove("overflow");
-  }, [containerRef, currentUnitReady]);
+    function borderIfOverflow() {
+      if (!container) return;
+      if (container.scrollHeight > container.clientHeight) container.classList.add("overflow");
+      else container.classList.remove("overflow");
+    }
+    setTimeout(borderIfOverflow, 0);
+    // needs to repeat because of dynamic content
+    const interval = setInterval(borderIfOverflow, 1000);
+    return () => clearInterval(interval);
+  }, [containerRef]);
 
   useEffect(() => {
     if (!tokens) return;

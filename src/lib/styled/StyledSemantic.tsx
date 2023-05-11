@@ -19,7 +19,9 @@ const CodeButton = styled.button<{
   afterBackground?: string;
   darkBackground?: boolean;
   compact?: boolean;
-  tooltip?: string;
+  flex?: string;
+  maxWidth?: string;
+  minWidth?: string;
 }>`
   font-size: ${(p) => p.size || 1.5}rem;
   padding: ${(p) => (p.compact ? "0.5rem" : "0.5rem")};
@@ -49,7 +51,9 @@ const CodeButton = styled.button<{
     return "var(--background)";
   }};
   background: ${(p) => p.background || "var(--primary-transparent)"};
-  flex: ${(p) => (p.compact ? "0.2 1 auto" : "1 1 auto")};
+  flex: ${(p) => (p.compact && !p.flex ? "0.2 1 auto" : p.flex || "1 1 auto")};
+  max-width: ${(p) => p.maxWidth || "none"};
+  min-width: ${(p) => p.minWidth || "none"};
 
   & > i {
     margin: 0;

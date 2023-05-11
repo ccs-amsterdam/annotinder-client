@@ -127,15 +127,12 @@ const SelectCode = React.memo(
     }, [onKeydown, blockEvents]);
 
     const mapButtons = () => {
-      let perRow = 4;
-      let minWidth = 100;
-      if (container?.current?.clientWidth) {
-        // make it scale with fontsize
-        const px_per_em = parseFloat(getComputedStyle(container.current).fontSize);
-        minWidth = px_per_em * 6;
-        perRow = Math.floor(container.current.clientWidth / minWidth);
-      }
-      const minWidthStr = vertical ? "100%" : minWidth + "px";
+      vertical = true;
+      let minWidth = "max(10rem, 25%)";
+      if (options.length <= 3) minWidth = "33%";
+      if (options.length <= 2) minWidth = "50%";
+      if (options.length === 1) minWidth = "100%";
+      if (vertical) minWidth = "100%";
 
       return options.map((option, i) => {
         const isCurrent = values.includes(option.code);
@@ -148,7 +145,9 @@ const SelectCode = React.memo(
             current={isCurrent}
             key={option.code}
             value={option.code}
-            //onMouseOver={() => setSelected(i)}
+            minWidth={minWidth}
+            compact={vertical}
+            flex={`0 1 auto`}
             onClick={() => {
               if (speedbump) return;
 
@@ -160,15 +159,8 @@ const SelectCode = React.memo(
                 transition: { color: option.color },
               }); // !multiple tells not to finish unit if multiple is true
             }}
-            style={{
-              flex: `${Math.max(1 / perRow, 1 / options.length)} 1 0px`,
-              display: "flex",
-              minWidth: minWidthStr,
-              width: sameSize ? minWidthStr : null,
-              textAlign: "center",
-            }}
           >
-            {option.code}
+            <div style={{ minWidth, maxWidth: "min-content" }}>{option.code}</div>
           </CodeButton>
         );
       });

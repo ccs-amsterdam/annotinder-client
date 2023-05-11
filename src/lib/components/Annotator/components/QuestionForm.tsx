@@ -22,6 +22,7 @@ import {
 } from "../functions/mapAnswersToAnnotations";
 import AnswerField from "./AnswerField";
 import QuestionIndexStep from "./QuestionIndexStep";
+import overflowBordersEvent from "../../../functions/overflowBordersEvent";
 
 const QuestionDiv = styled.div`
   position: relative;
@@ -29,9 +30,10 @@ const QuestionDiv = styled.div`
   width: 100%;
   background-color: var(--background);
   padding-top: 0.5rem;
-  //border-top: 1px double var(--text);
-  //box-shadow: 0px -10px 10px -6px var(--background);
-  //border: 1px solid red;
+  box-shadow: 0px -10px 10px -6px var(--background);
+  overflow: auto;
+  transition: border 0.2s;
+
   font-size: inherit;
   z-index: 50;
 `;
@@ -44,7 +46,7 @@ const MenuDiv = styled.div`
   //flex-wrap: wrap-reverse;
   justify-content: space-between;
   padding-top: 0.5rem;
-  position: sticky;
+  //position: sticky;
   top: 0;
 
   .Navigator {
@@ -63,10 +65,10 @@ const MenuDiv = styled.div`
 
     .Question {
       display: inline-block;
-      border-bottom-left-radius: 5px;
-      border-bottom-right-radius: 5px;
-      background: var(--background);
-      box-shadow: 0px 0px 5px 5px var(--background);
+      //border-bottom-left-radius: 5px;
+      //border-bottom-right-radius: 5px;
+      //background: var(--background);
+      //box-shadow: 0px 0px 5px 5px var(--background);
       color: var(--text);
       align-items: center;
       font-size: clamp(1.8rem, 3vw, 2.5rem);
@@ -142,8 +144,13 @@ const QuestionForm = ({
   }
 
   useEffect(() => {
-    if (questionRef.current) questionRef.current.scrollTo(0, 0);
-  });
+    const container = questionRef.current;
+    if (!container) return;
+    container.scrollTo(0, 0);
+    const handleScroll = (e: Event) => overflowBordersEvent(container, true, false);
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [questionIndex]);
 
   const onAnswer = useCallback(
     (items: AnswerItem[], onlySave = false, transition?: Transition): void => {
