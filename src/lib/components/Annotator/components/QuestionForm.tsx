@@ -347,7 +347,6 @@ const processAnswer = async (
       cleanAnnotations,
       status
     );
-    console.log(conditionReport);
 
     conditionReport.reportSuccess = true;
     setConditionReport(conditionReport);
