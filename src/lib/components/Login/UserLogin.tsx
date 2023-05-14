@@ -14,9 +14,16 @@ interface UserLoginProps {
 
 const UserLogin = ({ login, hostInfo, searchParams }: UserLoginProps) => {
   const host = hostInfo.host;
-  const userId = searchParams.get("user_id");
+  let userId = searchParams.get("user_id");
   const jobtoken = searchParams.get("jobtoken");
   const asGuest = !!searchParams.get("as_guest");
+
+  // ad-hoc hack for user id from motivaction
+  // should not be used outside of this branch, and implies need for more
+  // flexible solution in the new (nextjs) version
+  const d_number = searchParams.get("d");
+  const k_number = searchParams.get("k");
+  if (d_number && k_number) userId = `d=${d_number}&k=${k_number}`;
 
   if (jobtoken) {
     return (
