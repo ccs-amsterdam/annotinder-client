@@ -88,12 +88,8 @@ const GlobalStyle = createGlobalStyle`
   }
 
   h1 {
-    text-align: center;
-  }
-
-  h1 {
-  min-height: 1em;
-  font-size: 2em;
+    min-height: 1em;
+    font-size: 2em;
   }
 
   h2 {

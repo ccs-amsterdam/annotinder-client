@@ -28,7 +28,8 @@ export default function renderMarkdown(
           //width: "100%",
           fontSize: "1em",
           //alignSelf: "center",
-          textAlign: "justify",
+          //textAlign: "justify",
+          hyphens: "auto",
           ...(markdownField.style || {}),
         }}
       >

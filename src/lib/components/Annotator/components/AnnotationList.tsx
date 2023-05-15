@@ -74,7 +74,7 @@ const StyledDiv = styled.div`
       max-height: 5rem;
       overflow: auto;
       width: calc(100% - 10rem);
-      text-align: justify;
+      //text-align: justify;
       hyphens: auto;
 
       ::-webkit-scrollbar {
