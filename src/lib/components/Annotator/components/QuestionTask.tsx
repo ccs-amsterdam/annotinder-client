@@ -67,7 +67,6 @@ const QuestionMenu = styled.div<{
 }>`
   //max-height: 50%;
   flex: ${(p) => (p.fullSize ? `0 0 auto` : `0 1 auto`)};
-  overflow: auto;
   font-size: ${(props) => props.fontSize}em;
 `;
 
@@ -181,7 +180,6 @@ const QuestionTask = ({
   }
 
   const singlePage = unit.unitType === "survey";
-  console.log(unit.unitType);
 
   return (
     <Container className="QuestionContainer" ref={divref}>

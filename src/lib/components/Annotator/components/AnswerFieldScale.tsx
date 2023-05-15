@@ -207,6 +207,7 @@ const Items = ({
       {items.map((itemObj, itemIndex: number) => {
         return (
           <Item
+            key={itemObj.label + itemIndex}
             itemObj={itemObj}
             answerItems={answerItems}
             selectedItem={selectedItem}

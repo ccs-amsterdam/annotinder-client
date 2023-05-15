@@ -39,18 +39,25 @@ export interface Annotation {
   variable: string;
   value?: string | number;
   field?: string;
+
+  // span type annotations
   offset?: number;
   length?: number;
+  // relation type annotations
   fromId?: string;
   toId?: string;
+  // question type annotations
+  time_question?: string;
+  time_answer?: string;
+  // optional (?)
+  color?: string;
+  comment?: string;
 
+  // intermediate values (not stored in backend)
   index?: number;
   text?: string;
   positions?: Set<number>;
   span?: Span;
-
-  color?: string;
-  comment?: string;
 
   select?: () => void;
 }
@@ -176,6 +183,7 @@ export interface Question {
   same_size?: boolean;
   swipeOptions?: SwipeOptions;
   options?: AnswerOption[];
+  multiple?: boolean;
   fields?: string[];
   /** An array of variable names. If given, unit annotations of this variable are
    * highlighted when this question is asked
@@ -239,6 +247,8 @@ export interface AnswerItem {
   values: (string | number)[];
   optional?: boolean;
   invalid?: boolean;
+  questionTime?: string;
+  answerTime?: string;
 }
 
 /** Answer options used in 'questions' mode */

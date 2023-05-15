@@ -43,18 +43,20 @@ const AnswerField = ({
   swipe,
   blockEvents = false,
 }: AnswerFieldProps) => {
-  const [question, setQuestion] = useState(null);
-  const [answerItems, setAnswerItems] = useState(null);
+  const [question, setQuestion] = useState<Question>(null);
+  const [answerItems, setAnswerItems] = useState<AnswerItem[]>(null);
+  const questionDate = useRef<Date>(new Date());
   const answerRef = useRef(null);
 
   useEffect(() => {
     const currentAnswer = answers?.[questionIndex]?.items;
+    questionDate.current = new Date();
     // Note that currentAnswer:
     // is an array of objects: [{item: 'string of item name', values: [array of unique answer values]}]
     // order and length mathces question.items. If question doesn't have items, it must be an array of length 1
     setAnswerItems(currentAnswer);
     setQuestion(questions[questionIndex]);
-  }, [answers, questions, questionIndex]);
+  }, [answers, questions, questionIndex, questionDate]);
 
   useEffect(() => {
     // if answer changed but has not been saved, warn users when they try to close the app
@@ -116,9 +118,17 @@ const AnswerField = ({
     // each item object has a .value, which is an array of multiple values
     //    if an item can only have 1 value, it is still an array of length 1 for consistency
 
+    if (!answerItems?.[itemIndex]) return;
+
+    answerItems[itemIndex].questionTime = questionDate.current.toISOString();
+    answerItems[itemIndex].answerTime = new Date().toISOString();
+
     if (Array.isArray(value)) {
       // if value is an array, write exact array to answer
-      answerItems[itemIndex] = { ...answerItems[itemIndex], values: value };
+      answerItems[itemIndex] = {
+        ...answerItems[itemIndex],
+        values: value,
+      };
     } else {
       // if a single value, check whether it should be treated as multiple, or add as array of length 1
       if (multiple) {
@@ -186,7 +196,7 @@ const AnswerField = ({
     answerfield = (
       <Scale
         answerItems={answerItems}
-        items={question.items || [""]}
+        items={question.items}
         options={question.options}
         onSelect={onSelect}
         onFinish={onFinish}
