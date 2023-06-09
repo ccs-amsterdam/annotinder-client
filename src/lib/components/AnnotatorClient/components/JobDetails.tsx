@@ -52,7 +52,6 @@ const JobDetails = ({ backend, jobId, setJobs }: JobDetailsProps) => {
 
       for (let ann of unit.annotation) {
         ann.field = ann.field || "";
-        console.log(ann);
         data.push({
           coder_id: unit.coder_id,
           coder: unit.coder,
