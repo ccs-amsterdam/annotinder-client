@@ -42,6 +42,7 @@ const JobDetails = ({ backend, jobId, setJobs }: JobDetailsProps) => {
     const uniqueUnits: Record<string, boolean> = {};
     const progress: Record<string, Record<string, number>> = {};
     const data = [];
+    const dataColumns = new Set<string>();
     for (let unit of units) {
       const coder = unit.coder_id + ". " + unit.coder;
       if (!progress[unit.jobset]) progress[unit.jobset] = {};
@@ -51,6 +52,7 @@ const JobDetails = ({ backend, jobId, setJobs }: JobDetailsProps) => {
 
       for (let ann of unit.annotation) {
         ann.field = ann.field || "";
+        console.log(ann);
         data.push({
           coder_id: unit.coder_id,
           coder: unit.coder,
@@ -59,6 +61,15 @@ const JobDetails = ({ backend, jobId, setJobs }: JobDetailsProps) => {
           unit_status: unit.status,
           ...ann,
         });
+        for (let columnname of Object.keys(ann)) {
+          dataColumns.add(columnname);
+        }
+      }
+    }
+
+    for (let annotation of data) {
+      for (let columnname of dataColumns) {
+        if (!annotation[columnname]) annotation[columnname] = "";
       }
     }
 
