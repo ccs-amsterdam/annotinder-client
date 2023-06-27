@@ -4,15 +4,16 @@ import { scrollToMiddle } from "../../../functions/scroll";
 import { FieldRefs } from "../../../types";
 
 const Overlay = styled.div`
-  background: linear-gradient(135deg, #aaa8 25%, #ddd8 50%, #bbb7 75%, #ccc9 100%);
+  //background: linear-gradient(135deg, #aaa8 25%, #ddd8 50%, #bbb7 75%, #ccc9 100%);
   pointer-events: none;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  backdrop-filter: blur(0.8px);
-  border: 1px solid black;
+  backdrop-filter: blur(1px);
+  background: var(--background-transparent);
+  //border: 1px solid black;
   z-index: 2;
 `;
 

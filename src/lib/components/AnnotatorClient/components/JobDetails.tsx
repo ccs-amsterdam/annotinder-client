@@ -82,7 +82,7 @@ const JobDetails = ({ backend, jobId, setJobs }: JobDetailsProps) => {
   if (!job)
     return (
       <div>
-        <Loader active={true} />
+        <Loader active={true} background="none" blur={0} />
       </div>
     );
 

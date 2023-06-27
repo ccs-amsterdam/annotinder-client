@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef, RefObject } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { moveUp, moveDown } from "../../../functions/refNavigation";
-import { keepInView } from "../../../functions/scroll";
 import { AnswerOption, OnSelectParams } from "../../../types";
 import useSpeedBump from "../../../hooks/useSpeedBump";
 import { CodeButton, StyledButton } from "../../../styled/StyledSemantic";
@@ -26,7 +25,6 @@ interface SelectCodeProps {
   blockEvents: boolean;
   /** The index of the question.  */
   questionIndex: number;
-  scrollRef: RefObject<HTMLDivElement>;
 }
 
 const SelectCode = React.memo(
@@ -40,7 +38,6 @@ const SelectCode = React.memo(
     onFinish,
     blockEvents,
     questionIndex,
-    scrollRef,
   }: SelectCodeProps) => {
     // render buttons for options (an array of objects with keys 'label' and 'color')
     // On selection perform onSelect function with the button label as input
@@ -85,7 +82,7 @@ const SelectCode = React.memo(
           //   behavior: "smooth",
           //   block: "center",
           // });
-          keepInView(scrollRef?.current, buttons?.[selected]?.ref?.current);
+          buttons?.[selected]?.ref?.current?.scrollIntoView();
           return;
         }
 
@@ -110,7 +107,7 @@ const SelectCode = React.memo(
           }
         }
       },
-      [selected, onSelect, multiple, options, onFinish, speedbump, scrollRef]
+      [selected, onSelect, multiple, options, onFinish, speedbump]
     );
 
     useEffect(() => {
@@ -130,15 +127,12 @@ const SelectCode = React.memo(
     }, [onKeydown, blockEvents]);
 
     const mapButtons = () => {
-      let perRow = 4;
-      let minWidth = 100;
-      if (container?.current?.clientWidth) {
-        // make it scale with fontsize
-        const px_per_em = parseFloat(getComputedStyle(container.current).fontSize);
-        minWidth = px_per_em * 6;
-        perRow = Math.floor(container.current.clientWidth / minWidth);
-      }
-      const minWidthStr = vertical ? "100%" : minWidth + "px";
+      //vertical = true;
+      let minWidth = "max(10rem, 25%)";
+      if (options.length <= 3) minWidth = "33%";
+      if (options.length <= 2) minWidth = "50%";
+      if (options.length === 1) minWidth = "100%";
+      if (vertical) minWidth = "100%";
 
       return options.map((option, i) => {
         const isCurrent = values.includes(option.code);
@@ -151,8 +145,9 @@ const SelectCode = React.memo(
             current={isCurrent}
             key={option.code}
             value={option.code}
-            darkBackground
-            //onMouseOver={() => setSelected(i)}
+            minWidth={minWidth}
+            compact={vertical}
+            flex={`0 1 auto`}
             onClick={() => {
               if (speedbump) return;
 
@@ -164,15 +159,8 @@ const SelectCode = React.memo(
                 transition: { color: option.color },
               }); // !multiple tells not to finish unit if multiple is true
             }}
-            style={{
-              flex: `${Math.max(1 / perRow, 1 / options.length)} 1 0px`,
-              display: "flex",
-              minWidth: minWidthStr,
-              width: sameSize ? minWidthStr : null,
-              textAlign: "center",
-            }}
           >
-            {option.code}
+            <div style={{ minWidth, maxWidth: "min-content" }}>{option.code}</div>
           </CodeButton>
         );
       });

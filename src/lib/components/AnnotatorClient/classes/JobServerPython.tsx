@@ -56,7 +56,7 @@ class JobServerPython implements JobServer {
   }
 
   async getDebriefing() {
-    return this.backend.getDebriefing(this.job_id);
+    return await this.backend.getDebriefing(this.job_id);
   }
 }
 

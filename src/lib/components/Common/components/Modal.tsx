@@ -6,6 +6,7 @@ const StyledDiv = styled.div<{ open: boolean }>`
   position: fixed;
   z-index: 9999;
   display: flex;
+  flex-direction: row;
   top: 0;
   left: 0;
   width: 100%;
@@ -24,7 +25,7 @@ const StyledDiv = styled.div<{ open: boolean }>`
         pointer-events: none;
         backdrop-filter: none;
         background: transparent;
-    `}
+        `}
 
   .Modal {
     font-size: var(--font-size);

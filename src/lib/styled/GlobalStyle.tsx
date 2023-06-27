@@ -13,6 +13,7 @@ const GlobalStyle = createGlobalStyle`
     --primary-dark: #3B2667;
     --primary-light: #D1C4E9;
     --primary-text: #c0b1dd;
+    --primary-transparent: #673AB788;
     
     --secondary: #03DAC6;
     --secondary-dark: #018786;
@@ -62,7 +63,7 @@ const GlobalStyle = createGlobalStyle`
     overscroll-behavior: contain;
     background: var(--background);
     color: var(--text);
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif
   }
 
   div::-webkit-scrollbar, p::-webkit-scrollbar {
@@ -87,12 +88,8 @@ const GlobalStyle = createGlobalStyle`
   }
 
   h1 {
-    text-align: center;
-  }
-
-  h1 {
-  min-height: 1em;
-  font-size: 2em;
+    min-height: 1em;
+    font-size: 2em;
   }
 
   h2 {

@@ -39,18 +39,25 @@ export interface Annotation {
   variable: string;
   value?: string | number;
   field?: string;
+
+  // span type annotations
   offset?: number;
   length?: number;
+  // relation type annotations
   fromId?: string;
   toId?: string;
+  // question type annotations
+  time_question?: string;
+  time_answer?: string;
+  // optional (?)
+  color?: string;
+  comment?: string;
 
+  // intermediate values (not stored in backend)
   index?: number;
   text?: string;
   positions?: Set<number>;
   span?: Span;
-
-  color?: string;
-  comment?: string;
 
   select?: () => void;
 }
@@ -176,6 +183,7 @@ export interface Question {
   same_size?: boolean;
   swipeOptions?: SwipeOptions;
   options?: AnswerOption[];
+  multiple?: boolean;
   fields?: string[];
   /** An array of variable names. If given, unit annotations of this variable are
    * highlighted when this question is asked
@@ -219,7 +227,7 @@ export interface QuestionItem {
   rows?: number;
   optional?: boolean;
   autocomplete?: string;
-  ref?: RefObject<HTMLInputElement | HTMLTextAreaElement>;
+  ref?: RefObject<HTMLElement>;
 }
 
 export type QuestionItemType = "email" | "number" | "textarea" | "text";
@@ -239,6 +247,8 @@ export interface AnswerItem {
   values: (string | number)[];
   optional?: boolean;
   invalid?: boolean;
+  questionTime?: string;
+  answerTime?: string;
 }
 
 /** Answer options used in 'questions' mode */
@@ -518,11 +528,12 @@ export interface Progress {
 
 ///// UNIT DATA
 
-export type UnitType = "pre" | "train" | "test" | "unit" | "post";
+export type UnitType = "train" | "test" | "code" | "survey";
 
 /** A unit after it has been prepared by the jobServer. This is for internal use */
 export interface Unit {
   unitId: string; // this is the backend id, not the external id
+  unitType: UnitType;
   unit: UnitContent;
   jobServer?: any;
   status: UnitStatus;

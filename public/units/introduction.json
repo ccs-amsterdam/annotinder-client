@@ -1,7 +1,7 @@
 [
   {
     "id": "1",
-    "type": "unit",
+    "type": "survey",
     "unit": {
       "grid": {
         "columns": "2fr",
@@ -45,7 +45,7 @@
 
   {
     "id": "2",
-    "type": "unit",
+    "type": "survey",
     "unit": {
       "text_fields": [
         {
@@ -92,23 +92,15 @@
   },
   {
     "id": "3",
-    "type": "unit",
+    "type": "survey",
     "unit": {
       "text_fields": [
         {
-          "name": "title",
-          "value": "Branching",
-          "style": {
-            "fontWeight": "bold",
-            "fontSize": "1.2em",
-            "textAlign": "center"
-          }
-        },
-        {
           "name": "text",
-          "value": "You can do some simple branching. ",
+          "value": "Survey questions can have branches for optional questions",
           "style": {
-            "textAlign": "center"
+            "textAlign": "center",
+            "fontStyle": "italic"
           }
         }
       ],
@@ -121,7 +113,7 @@
           {
             "name": "branching",
             "type": "select code",
-            "question": "Do you want so skip the scale question?",
+            "question": "Do you want to skip the scale question?",
             "codes": [
               { "code": "No", "color": "crimson" },
               {
@@ -136,11 +128,12 @@
             "type": "scale",
 
             "same_size": true,
-            "question": "You didn't skip the annoying scale question? Why?",
+            "question": "This sort of stuff is nice for likert scales!",
             "items": [
-              { "name": "like", "label": "I like scale questions!" },
-              { "name": "tricked", "label": "I feel like you tricked me..." },
-              { "name": "moveon", "label": "I'd like to move on now!" }
+              { "name": "labels", "label": "If you pick a score you see the full label" },
+              { "name": "why", "label": "This keeps it nice and tidy" },
+              { "name": "why", "label": "One more for good measure" },
+              { "name": "like", "label": "Once you hit em al, you can continue" }
             ],
 
             "codes": [
@@ -157,10 +150,7 @@
             "name": "back",
             "type": "select code",
             "question": "You can move back with the buttons just above this question",
-            "codes": [
-              { "code": "Oh wow", "color": "red" },
-              { "code": "Yeah, but why would I?", "color": "yellow" }
-            ]
+            "codes": [{ "code": "Sure, but I'd like to move on" }]
           }
         ]
       }
@@ -168,7 +158,7 @@
   },
   {
     "id": "4",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "text_fields": [
         {
@@ -205,12 +195,13 @@
   },
   {
     "id": "5",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "grid": {
         "areas": [["title"], ["subtitle"], ["text1", "text2"]]
       },
-      "text_fields": [
+
+      "markdown_fields": [
         {
           "name": "title",
           "value": "Some news headline",
@@ -230,10 +221,17 @@
         },
         {
           "name": "text1",
+          "style": {
+            "textAlign": "justify"
+          },
           "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         },
         {
           "name": "text2",
+          "style": {
+            "textAlign": "justify"
+          },
+
           "value": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt."
         }
       ],
@@ -261,7 +259,7 @@
   },
   {
     "id": "6",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "image_fields": [
         {
@@ -446,7 +444,7 @@
   },
   {
     "id": "focus",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "grid": {
         "areas": [["text1", "text2"]]
@@ -483,7 +481,7 @@
   },
   {
     "id": "7",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "text_fields": [
         {
@@ -566,7 +564,7 @@
   },
   {
     "id": "8",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "text_fields": [
         {
@@ -645,7 +643,7 @@
 
   {
     "id": "12",
-    "type": "unit",
+    "type": "code",
     "unit": {
       "markdown_fields": [
         {

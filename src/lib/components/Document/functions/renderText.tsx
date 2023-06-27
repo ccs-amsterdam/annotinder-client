@@ -120,8 +120,8 @@ const renderField = (
         padding: "10px 0px 10px 0px",
         margin: "0px 10px 0px 10px",
         //display: "table",
-        textAlign: "justify",
-        hyphens: "auto",
+        //textAlign: "justify",
+        //hyphens: "auto",
         //alignSelf: "center",
         ...(textField.style || {}),
       }}

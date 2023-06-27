@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef, createRef, RefObject } from "react";
-import { keepInView } from "../../../functions/scroll";
+import React, { useState, useEffect, useRef, RefObject } from "react";
 import { OnSelectParams, AnswerOption, AnswerItem, QuestionItem } from "../../../types";
 import { Button } from "../../../styled/StyledSemantic";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
@@ -22,7 +21,6 @@ interface ScaleProps {
   blockEvents: boolean;
   /** The index of the question.  */
   questionIndex: number;
-  scrollRef: RefObject<HTMLDivElement>;
 }
 
 const StyledDiv = styled.div`
@@ -30,8 +28,8 @@ const StyledDiv = styled.div`
   position: relative;
   flex-direction: column;
   justify-content: space-between;
-  background: var(--background-inversed-fixed);
-  color: var(--text-inversed-fixed);
+  background: var(--background);
+  color: var(--text);
   display: flex;
   flex-direction: column;
 
@@ -45,16 +43,7 @@ const StyledDiv = styled.div`
 `;
 
 const Scale = React.memo(
-  ({
-    items,
-    answerItems,
-    options,
-    onSelect,
-    onFinish,
-    blockEvents,
-    questionIndex,
-    scrollRef,
-  }: ScaleProps) => {
+  ({ items, answerItems, options, onSelect, onFinish, blockEvents, questionIndex }: ScaleProps) => {
     // render buttons for options (an array of objects with keys 'label' and 'color')
     // On selection perform onSelect function with the button label as input
     // if canDelete is TRUE, also contains a delete button, which passes null to onSelect
@@ -93,6 +82,7 @@ const Scale = React.memo(
             }
           }
           if (newitem !== null) {
+            items?.[newitem]?.ref?.current?.scrollIntoView();
             setSelectedItem(newitem);
           }
           return;
@@ -141,7 +131,7 @@ const Scale = React.memo(
             display: "flex",
             padding: "5px",
             justifyContent: "space-between",
-            color: "var(--primary-light)",
+            color: "var(--primary-text)",
           }}
         >
           <div className="ScaleLabel ">
@@ -163,7 +153,6 @@ const Scale = React.memo(
           selectedButton={selectedButton}
           onSelect={onSelect}
           continueButtonRef={continueButtonRef}
-          scrollRef={scrollRef}
         />
 
         <Button
@@ -191,7 +180,6 @@ interface ItemsProps {
   selectedButton: number;
   onSelect: (params: OnSelectParams) => void;
   continueButtonRef: RefObject<HTMLDivElement>;
-  scrollRef: RefObject<HTMLDivElement>;
 }
 
 const Items = ({
@@ -202,82 +190,32 @@ const Items = ({
   selectedButton,
   onSelect,
   continueButtonRef,
-  scrollRef,
 }: ItemsProps) => {
-  const rowRefs = useRef([]);
-
   useEffect(() => {
-    rowRefs.current = items.map(() => createRef());
-  }, [items, rowRefs]);
-
-  useEffect(() => {
-    if (selectedItem < 0) {
-      keepInView(scrollRef?.current, continueButtonRef?.current);
-    } else {
-      keepInView(scrollRef?.current, rowRefs?.current?.[selectedItem]?.current);
-    }
-  }, [selectedItem, items, rowRefs, continueButtonRef, scrollRef]);
+    if (selectedItem < 0) continueButtonRef?.current?.scrollIntoView();
+  }, [selectedItem, items, continueButtonRef]);
 
   return (
     <div
       style={{
         flex: "1 1 auto",
-        //overflow: "auto",
         display: "flex",
         flexDirection: "column",
+        position: "relative",
       }}
     >
       {items.map((itemObj, itemIndex: number) => {
-        const itemlabel = itemObj.label || itemObj.name;
-        let margin = "5px";
-        //if (itemIndex === 0) margin = "auto 10px 10px 10px";
-        //if (itemIndex === items.length - 1) margin = "10px 10px auto 10px";
         return (
-          <div key={itemIndex} style={{ paddingTop: "0px", margin }}>
-            <div>
-              <div
-                style={{
-                  width: "100%",
-                  textAlign: "center",
-                  padding: "0px 5px 5px 5px",
-                }}
-              >
-                <b>{itemlabel}</b>
-              </div>
-            </div>
-            <div
-              ref={rowRefs?.current?.[itemIndex]}
-              style={{
-                display: "flex",
-                gap: "0.5rem",
-                margin: "auto",
-                maxWidth: "min(400px, 100%)",
-                padding: "0px 5px",
-                paddingBottom: "5px",
-              }}
-            >
-              <Item
-                answerItems={answerItems}
-                selectedItem={selectedItem}
-                itemIndex={itemIndex}
-                options={options}
-                selectedButton={selectedButton}
-                onSelect={onSelect}
-              />
-            </div>
-            <div
-              style={{
-                minHeight: "2.5rem",
-                textAlign: "center",
-                fontSize: "1.2rem",
-                color: "var(--secondary)",
-              }}
-            >
-              <i>
-                {answerItems?.[itemIndex]?.values?.[0] ? answerItems[itemIndex].values?.[0] : "..."}
-              </i>
-            </div>
-          </div>
+          <Item
+            key={itemObj.label + itemIndex}
+            itemObj={itemObj}
+            answerItems={answerItems}
+            selectedItem={selectedItem}
+            itemIndex={itemIndex}
+            options={options}
+            selectedButton={selectedButton}
+            onSelect={onSelect}
+          />
         );
       })}
     </div>
@@ -285,6 +223,7 @@ const Items = ({
 };
 
 interface ItemProps {
+  itemObj: QuestionItem;
   answerItems: AnswerItem[];
   selectedItem: number;
   itemIndex: number;
@@ -299,11 +238,12 @@ const ItemButton = styled.div<{
   customColor?: string;
   color?: string;
 }>`
-  flex: 1 1 0px;
+  flex: 1 1 auto;
+  height: 2.5rem;
   border-radius: 4px;
   background: ${(p) => (p.customColor ? "white" : "var(--primary)")};
   border: 2px solid ${(p) => {
-    if (p.selected) return "white";
+    if (p.selected) return "var(--text)";
     if (p.current) return "var(--secondary)";
     return p.customColor ? "grey" : "var(--primary)";
   }};
@@ -312,7 +252,7 @@ const ItemButton = styled.div<{
     width: 100%;
     height: 100%;
     padding: 4px 0 2px 0;
-    background-color: ${(p) => (p.current || p.selected ? "var(--secondary)" : p.color)};
+    background-color: ${(p) => (p.current ? "var(--secondary)" : p.color)};
     font-weight: bold;
     font-size: 0.8em;
     text-shadow: 0px 0px 5px #ffffff77,
@@ -320,10 +260,27 @@ const ItemButton = styled.div<{
     border-color: transparent;
     color: ${(p) => (p.customColor || p.current ? "black" : "white")};
     cursor: pointer;
+    position: relative;
+    z-index: 10;
+
+    ::after {
+    content: ${(p) => (p.selected ? '""' : `none`)};
+    position: absolute;
+    top: -0.5rem;
+    left: -0.5rem;
+    height: calc(100% + 1rem);
+    width: calc(100% + 1rem);
+    z-index: 9;
+    border: 0.4rem solid var(--text);
+    border-radius: 4px;
   }
+  }
+
+  
 `;
 
 const Item = ({
+  itemObj,
   answerItems,
   selectedItem,
   itemIndex,
@@ -331,42 +288,85 @@ const Item = ({
   selectedButton,
   onSelect,
 }: ItemProps) => {
+  const ref = useRef<HTMLDivElement>(null);
   const colorstep = 90 / options.length;
+  const itemlabel = itemObj.label || itemObj.name;
+  //const background = itemIndex % 2 !== 0 ? "#6666660b" : "#6666661b";
+  const padding = "0px 0px 10px 0px";
+
+  useEffect(() => {
+    itemObj.ref = ref;
+  }, [itemObj, ref]);
+
   return (
-    <>
-      {options.map((option, buttonIndex: number) => {
-        const isCurrent = options[buttonIndex].code === answerItems?.[itemIndex]?.values[0];
-        const isSelected = buttonIndex === selectedButton && itemIndex === selectedItem;
-
-        // if option doesn't have color, we use primary color as background and
-        // use opacity of buttoncolor to show a gradient
-
-        let color = option.color;
-        if (!color) {
-          const opacity = buttonIndex * colorstep;
-          color = `rgb(0,0,0, ${opacity}%)`;
-        }
-
-        return (
-          <ItemButton
-            key={option.code}
-            selected={isSelected}
-            current={isCurrent}
-            customColor={option.color}
-            color={color}
+    <div key={itemIndex} style={{ padding, borderRadius: "5px" }}>
+      <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            textAlign: "center",
+            fontSize: "1.6rem",
+            padding: "0.2rem",
+          }}
+        >
+          <div
+            style={{
+              padding: "0.3rem",
+              borderRadius: "5px",
+              color: "var(--text)",
+            }}
           >
-            <button
-              ref={option.ref as React.RefObject<HTMLButtonElement>}
-              onClick={() => {
-                onSelect({ value: options[buttonIndex].code, itemIndex });
-              }}
+            {itemlabel}
+          </div>
+        </div>
+      </div>
+      <div
+        ref={ref}
+        style={{
+          display: "flex",
+          scrollMargin: "100px",
+          gap: "0.5rem",
+          margin: "auto",
+          maxWidth: "min(500px, 100%)",
+          padding: "0px 5px",
+          paddingBottom: "2px",
+        }}
+      >
+        {options.map((option, buttonIndex: number) => {
+          const isCurrent = options[buttonIndex].code === answerItems?.[itemIndex]?.values[0];
+          const isSelected = buttonIndex === selectedButton && itemIndex === selectedItem;
+
+          // if option doesn't have color, we use primary color as background and
+          // use opacity of buttoncolor to show a gradient
+
+          let color = option.color;
+          if (!color) {
+            const opacity = buttonIndex * colorstep;
+            color = `rgb(0,0,0, ${opacity}%)`;
+          }
+
+          return (
+            <ItemButton
+              key={option.code}
+              selected={isSelected}
+              current={isCurrent}
+              customColor={option.color}
+              color={color}
             >
-              {buttonIndex + 1}
-            </button>
-          </ItemButton>
-        );
-      })}
-    </>
+              <button
+                ref={option.ref as React.RefObject<HTMLButtonElement>}
+                onClick={() => {
+                  onSelect({ value: options[buttonIndex].code, itemIndex });
+                }}
+              >
+                {isCurrent ? option.code : buttonIndex + 1}
+              </button>
+            </ItemButton>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 

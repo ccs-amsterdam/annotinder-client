@@ -19,6 +19,9 @@ const CodeButton = styled.button<{
   afterBackground?: string;
   darkBackground?: boolean;
   compact?: boolean;
+  flex?: string;
+  maxWidth?: string;
+  minWidth?: string;
 }>`
   font-size: ${(p) => p.size || 1.5}rem;
   padding: ${(p) => (p.compact ? "0.5rem" : "0.5rem")};
@@ -47,8 +50,10 @@ const CodeButton = styled.button<{
     if (p.selected || p.current) return "var(--background-inversed)";
     return "var(--background)";
   }};
-  background: ${(p) => p.background || "var(--primary)"};
-  flex: ${(p) => (p.compact ? "0.2 1 auto" : "1 1 auto")};
+  background: ${(p) => p.background || "var(--primary-transparent)"};
+  flex: ${(p) => (p.compact && !p.flex ? "0.2 1 auto" : p.flex || "1 1 auto")};
+  max-width: ${(p) => p.maxWidth || "none"};
+  min-width: ${(p) => p.minWidth || "none"};
 
   & > i {
     margin: 0;
@@ -75,17 +80,15 @@ const CodeButton = styled.button<{
     height: 100%;
     background: ${(p) => {
       if (!p.selected && !p.current) return "#fff";
-      if (p.selected && p.current) return "#555";
+      if (p.selected && p.current) return "#333";
       return "#999";
     }};
     z-index: -1;
-    /* border: 3px solid
-      ${(p) => {
-      if (!p.selected && !p.current) return "#fff";
-      if (p.selected && p.current) return "#555";
-      return "#999";
-    }}; */
-    //border-radius: 3px;
+  }
+
+  :hover {
+    border-color: ${(p) =>
+      p.darkBackground ? "var(--background-fixed)" : "var(--background-inversed)"};
   }
 
   :disabled {

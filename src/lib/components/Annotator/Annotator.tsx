@@ -111,6 +111,7 @@ const getIndexedUnit = async (jobServer: any, unitIndex: number): Promise<Indexe
   let unit: Unit = {
     jobServer,
     unitId: rawUnit.id,
+    unitType: rawUnit.type,
     status: rawUnit.status,
     report: rawUnit.report,
     unit: unitContent,

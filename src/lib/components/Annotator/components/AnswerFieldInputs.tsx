@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef, RefObject } from "react";
-import { scrollToMiddle } from "../../../functions/scroll";
 import { StyledButton } from "../../../styled/StyledSemantic";
 import { OnSelectParams, AnswerItem, QuestionItem, SetState } from "../../../types";
 
@@ -16,7 +15,6 @@ interface InputsProps {
   blockEvents: boolean;
   /** The index of the question.  */
   questionIndex: number;
-  scrollRef: RefObject<HTMLDivElement>;
 }
 
 /**
@@ -30,12 +28,11 @@ const Inputs = ({
   onFinish,
   blockEvents,
   questionIndex,
-  scrollRef,
 }: InputsProps) => {
-  const [selectedItem, setSelectedItem] = useState(0);
+  const [selectedItem, setSelectedItem] = useState(1);
 
   useEffect(() => {
-    setSelectedItem(0);
+    setSelectedItem(1);
   }, [questionIndex]);
 
   const done =
@@ -63,7 +60,6 @@ const Inputs = ({
         selectedItem={selectedItem}
         setSelectedItem={setSelectedItem}
         blockEvents={blockEvents}
-        scrollRef={scrollRef}
       />
       <StyledButton
         primary
@@ -97,7 +93,6 @@ interface ItemsProps {
   selectedItem: number;
   setSelectedItem: SetState<number>;
   blockEvents: boolean;
-  scrollRef: RefObject<HTMLDivElement>;
 }
 
 const Items = ({
@@ -109,7 +104,6 @@ const Items = ({
   selectedItem,
   setSelectedItem,
   blockEvents,
-  scrollRef,
 }: ItemsProps) => {
   useEffect(() => {
     const onKeydown = (e: KeyboardEvent) => {
@@ -145,13 +139,10 @@ const Items = ({
   }, [blockEvents, done, items, onSelect, onFinish, answerItems, selectedItem, setSelectedItem]);
 
   useEffect(() => {
-    const scrollEl = scrollRef.current;
-    const selectedEl = items?.[selectedItem]?.ref?.current;
-
     function scrollActive() {
-      if (selectedEl && scrollEl) {
+      const selectedEl = items?.[selectedItem]?.ref?.current;
+      if (selectedEl) {
         selectedEl.focus();
-        scrollToMiddle(scrollEl, selectedEl, 0.5);
         selectedEl.scrollIntoView();
       } else {
         if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
@@ -160,7 +151,7 @@ const Items = ({
 
     // repeat with some delays, because on mobile the keyboard can pop up and mess things up
     setTimeout(scrollActive, 10);
-  }, [selectedItem, items, scrollRef]);
+  }, [selectedItem, items]);
 
   return (
     <div
@@ -211,6 +202,29 @@ const Items = ({
     </div>
   );
 };
+
+// TO DO: instead of the excessive scroll into view, we could have the input shown at the
+// top of the screen. This prevents that they keyboard on mobile messes things up and the
+// user can't read the input.
+
+// const InputModal = styled.div`
+//   position: fixed;
+//   z-index: 9999;
+//   display: flex;
+//   justify-content: center;
+//   top: 10rem;
+//   left: 0;
+//   width: 100%;
+//   height: 3rem;
+//   pointer-events: none;
+
+//   .Content {
+//     flex: 1 1 auto;
+//     padding: 1rem;
+//     background: var(--background-inversed);
+//     color: var(--text-inversed);
+//   }
+// `;
 
 interface InputProps {
   answerItems: AnswerItem[];

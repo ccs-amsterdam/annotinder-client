@@ -13,7 +13,7 @@ import { RawUnit, ConditionReport, Annotation, Status, ConditionalAction } from 
 export default function checkConditions(unit: RawUnit): ConditionReport {
   const type = unit.type;
   const cr: ConditionReport = { evaluation: {}, damage: {} };
-  if (type !== "train" && type !== "test" && type !== "pre") return cr;
+  if (type !== "train" && type !== "test") return cr;
   if (!unit.conditionals) return cr;
 
   const annotation: Annotation[] = unit.annotation;
@@ -32,11 +32,11 @@ export default function checkConditions(unit: RawUnit): ConditionReport {
     defaultMessage =
       "### Please retry.\n\nThis is a **training** unit, and the answer you gave was incorrect. \nPlease have another look, and select a different answer";
   }
-  if (type === "pre") {
-    defaultFailAction = "block";
-    defaultMessage =
-      "### Thank you for participating.\n\nBased on your answer for this question we determined that you do not meet the qualifications for this coding job.\nWe sincerely thank you for your time.";
-  }
+  // if (type === "pre") {
+  //   defaultFailAction = "block";
+  //   defaultMessage =
+  //     "### Thank you for participating.\n\nBased on your answer for this question we determined that you do not meet the qualifications for this coding job.\nWe sincerely thank you for your time.";
+  // }
   if (type === "test") {
     defaultDamage = 10;
   }

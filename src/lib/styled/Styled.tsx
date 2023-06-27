@@ -14,6 +14,8 @@ export const Loader = styled.div<{
   radius?: number;
   content?: string;
   transitionTime?: number;
+  background?: string;
+  blur?: number;
 }>`
   --r: ${(p) => (p.radius != null ? p.radius + "px" : "40px")};
   pointer-events: none;
@@ -26,8 +28,8 @@ export const Loader = styled.div<{
   height: 100%;
   width: 100%;
   z-index: 100;
-  background-color: var(--background-transparent);
-  backdrop-filter: blur(3px);
+  background-color: ${(p) => p.background || "var(--background-transparent)"};
+  backdrop-filter: ${(p) => `{p.blur}px` || "blur(3px)"};
 
   ::after {
     content: "";
@@ -36,8 +38,8 @@ export const Loader = styled.div<{
     top: calc(50% - var(--r));
     left: calc(50% - var(--r));
     background: transparent;
-    border: calc(var(--r) / 4) solid var(--grey);
-    border-top: calc(var(--r) / 4) solid var(--secondary);
+    border: calc(var(--r) / 4) solid var(--primary-light);
+    border-top: calc(var(--r) / 4) solid var(--primary);
     border-radius: 50%;
     width: calc(var(--r) * 2);
     height: calc(var(--r) * 2);

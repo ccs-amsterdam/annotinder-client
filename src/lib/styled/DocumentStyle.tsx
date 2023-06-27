@@ -12,6 +12,8 @@ export default css`
     position: relative;
     /* vertical-align: bottom; */
     color: var(--text-light);
+    white-space: nowrap;
+    //background: blue;
     .pre,
     .text,
     .post {
@@ -26,6 +28,10 @@ export default css`
         height: 0.5em;
         background: none;
       }
+    }
+    .pre,
+    .post {
+      white-space: nowrap;
     }
   }
 
