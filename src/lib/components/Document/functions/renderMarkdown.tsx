@@ -31,7 +31,7 @@ export default function renderMarkdown(
           ...(markdownField.style || {}),
         }}
       >
-        <Markdown style={{ textAlign: "justify", hyphens: "auto" }}>{value}</Markdown>
+        <Markdown style={{ textAlign: "left", hyphens: "auto" }}>{value}</Markdown>
       </div>
     );
   }
