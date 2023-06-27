@@ -124,7 +124,8 @@ const Items = ({
         });
       }
 
-      if ((e.keyCode === 32 || e.keyCode === 13) && selectedItem === items.length) {
+      //if ((e.keyCode === 32 || e.keyCode === 13) && selectedItem === items.length) {
+      if (e.keyCode === 13 && selectedItem === items.length) {
         if (done) onFinish();
         return;
       }
