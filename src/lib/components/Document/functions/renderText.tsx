@@ -119,6 +119,7 @@ const renderField = (
         gridArea: textField.grid_area,
         padding: "10px 0px 10px 0px",
         margin: "0px 10px 0px 10px",
+        maxWidth: "100%",
         //display: "table",
         //textAlign: "justify",
         //hyphens: "auto",
