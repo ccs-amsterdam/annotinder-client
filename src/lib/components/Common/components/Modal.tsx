@@ -5,14 +5,22 @@ import styled from "styled-components";
 const StyledDiv = styled.div<{ open: boolean }>`
   position: fixed;
   z-index: 9999;
-  display: flex;
-  flex-direction: row;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  bottom: 0;
+  right: 0;
   padding-top: 50px;
   transition: all 0.2s;
+
+  .SafariWrapper {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
 
   ${(p) =>
     p.open
@@ -130,13 +138,16 @@ const Modal = ({ children, open, setOpen, closeOnSelectKey }: ModalProps) => {
 
   return (
     <StyledDiv open={open} ref={container}>
-      <div className="Modal" ref={modal}>
-        <div className="ModalContent">
-          {children}
-          <br />
-        </div>
-        <div className="closeIcon" ref={closeIcon}>
-          <FaWindowClose size="100%" color="var(--primary)" onClick={() => setOpen(false)} />
+      <div className="SafariWrapper">
+        {/* https://stackoverflow.com/questions/26704903/only-in-safari-positionfixed-child-cut-off-when-parent-is-positionfixed-and */}
+        <div className="Modal" ref={modal}>
+          <div className="ModalContent">
+            {children}
+            <br />
+          </div>
+          <div className="closeIcon" ref={closeIcon}>
+            <FaWindowClose size="100%" color="var(--primary)" onClick={() => setOpen(false)} />
+          </div>
         </div>
       </div>
     </StyledDiv>
