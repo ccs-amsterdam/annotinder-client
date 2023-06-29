@@ -26,9 +26,7 @@ const Container = styled.div`
   flex-direction: column;
   height: 100%;
 
-  overflow: auto;
   background: var(--background);
-  //border-top: 1px solid var(--text);
 `;
 
 const ContentWindow = styled.div<{ fullSize?: boolean }>`
@@ -37,17 +35,6 @@ const ContentWindow = styled.div<{ fullSize?: boolean }>`
   position: relative;
   z-index: 1;
 
-  &::before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 10px;
-    width: 100%;
-    background: linear-gradient(var(--background), transparent 100%);
-    z-index: 100;
-  }
   &::after {
     content: "";
     display: block;
@@ -55,7 +42,7 @@ const ContentWindow = styled.div<{ fullSize?: boolean }>`
     bottom: 0px;
     left: 0px;
     height: 10px;
-    width: 100%;
+    width: calc(100% - 5px);
     background: linear-gradient(transparent, var(--background) 100%);
     z-index: 100;
   }
@@ -65,7 +52,7 @@ const QuestionMenu = styled.div<{
   fontSize: number;
   fullSize?: boolean;
 }>`
-  //max-height: 50%;
+  //overflow: auto;
   flex: ${(p) => (p.fullSize ? `0 0 auto` : `0 1 auto`)};
   font-size: ${(props) => props.fontSize}em;
 `;
@@ -189,7 +176,6 @@ const QuestionTask = ({
         setConditionReport={setConditionReport}
         fullScreenNode={fullScreenNode}
       />
-
       <ContentWindow {...textSwipe} fullSize={singlePage}>
         <SwipeableBox ref={refs.box}>
           {/* This div moves around behind the div containing the document to show the swipe code  */}

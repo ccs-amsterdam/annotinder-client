@@ -31,23 +31,37 @@ const QuestionDiv = styled.div`
   background-color: var(--background);
   padding-top: 0.5rem;
   box-shadow: 0px -10px 10px -6px var(--background);
-  overflow: auto;
   transition: border 0.2s;
+
+  /* display: grid;
+  grid-template-rows: min-content 1fr; */
 
   font-size: inherit;
   z-index: 50;
 `;
 
 const MenuDiv = styled.div`
-  position: relative;
   z-index: 51;
   width: 100%;
   display: flex;
   //flex-wrap: wrap-reverse;
   justify-content: space-between;
   padding-top: 0.5rem;
-  //position: sticky;
+  padding-bottom: 0.5rem;
+
+  // backdrop would be nice, but messes up stacking order
+  //backdrop-filter: blur(3px);
+
+  position: sticky;
   top: 0;
+  left: 0;
+  //background: var(--background-transparent);
+  background: linear-gradient(
+    var(--background) 40%,
+    var(--background-transparent) 75%,
+    transparent 100%
+  );
+  //box-shadow: 0px 10px 5px 0px var(--background-transparent);
 
   .Navigator {
     flex: 1 1 auto;
@@ -65,10 +79,7 @@ const MenuDiv = styled.div`
 
     .Question {
       display: inline-block;
-      //border-bottom-left-radius: 5px;
-      //border-bottom-right-radius: 5px;
-      //background: var(--background);
-      //box-shadow: 0px 0px 5px 5px var(--background);
+
       color: var(--text);
       align-items: center;
       font-size: clamp(1.8rem, 3vw, 2.5rem);
@@ -92,6 +103,8 @@ const BodyDiv = styled.div`
   color: var(--text);
   font-size: inherit;
   min-height: 100px;
+  overflow: auto;
+  position: relative;
 `;
 
 interface QuestionFormProps {

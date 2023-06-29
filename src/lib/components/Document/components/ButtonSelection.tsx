@@ -229,7 +229,7 @@ const ButtonSelection = ({ id, options, onSelect }: ButtonSelectionProps) => {
             className="SearchInput"
             type="text"
             value={search}
-            placeholder="search"
+            placeholder=""
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>

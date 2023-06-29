@@ -30,21 +30,30 @@ const StyledWrapper = styled.div<{ maxWidth: string; maxHeight: string }>`
   height: 100%;
   width: 100%;
   background: var(--background);
-  display: flex;
-  flex-direction: column;
+  overflow: auto;
+  /* display: flex;
+  flex-direction: column; */
 
   .Menubar {
+    position: sticky;
+    top: 0;
+    left: 0;
+
     height: 40px;
     width: 100;
     padding: 3px 5px 0px 5px;
     display: flex;
     justify-content: space-between;
-    background: var(--background);
     color: var(--primary-text);
-    //border-bottom: 3px double var(--background-fixed);
     font-size: 2rem;
-    position: relative;
     z-index: 9000;
+
+    backdrop-filter: blur(2px);
+    background: linear-gradient(
+      var(--background) 10%,
+      var(--background-transparent) 70%,
+      transparent 100%
+    );
 
     .InnerMenuBar {
       margin: 0 auto;

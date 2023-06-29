@@ -42,11 +42,13 @@ const AnnotateGrid = styled.div`
     grid-area: documentContainer;
     overflow: auto;
     height: 100%;
+    display: flex;
+    flex-direction: column;
     //border-right: 1px solid var(--primary-light);
     /* width */
 
     .document {
-      height: calc(100% - 35px);
+      flex: 1 1 auto;
       overflow: auto;
     }
     .bottomBar {
@@ -55,11 +57,11 @@ const AnnotateGrid = styled.div`
       display: flex;
       padding: 0;
       padding-left: 2rem;
-      height: 35px;
       color: var(--text-inversed-fixed);
       background: var(--primary-dark);
       border-radius: 2px;
       align-items: center;
+      min-height: 3.5rem;
 
       button {
         border-top-right-radius: 2px !important;
@@ -223,6 +225,7 @@ const NextUnitButtonStyle = styled.button`
   }
 
   svg {
+    padding-top: 0.3rem;
     font-size: 2rem;
   }
 `;

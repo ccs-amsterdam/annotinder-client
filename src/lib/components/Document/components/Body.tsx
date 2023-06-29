@@ -46,11 +46,6 @@ const BodyContainer = styled.div`
   align-items: center;
   overflow: auto;
   scroll-behavior: smooth;
-
-  &.overflow {
-    border-bottom: 2px solid grey;
-    border-top: 2px solid grey;
-  }
 `;
 
 interface BodyProps {
@@ -86,32 +81,6 @@ const Body = ({
   const fieldRefs: FieldRefs = useMemo(() => ({}), []);
   const containerRef = useRef(null);
   const [imagesLoaded, setImagesLoaded] = useState(true);
-
-  // useEffect(() => {
-  //   // immitates componentdidupdate to scroll to the textUnit after rendering tokens
-  //   const firstTextUnitToken = tokens.find((token) => token.codingUnit);
-  //   const hasContext = tokens.some((token) => !token.codingUnit);
-  //   if (!hasContext) {
-  //     containerRef.current.scrollTop = 0;
-  //     return;
-  //   }
-  //   if (firstTextUnitToken?.ref?.current && containerRef.current) {
-  //     scrollToMiddle(containerRef.current, firstTextUnitToken.ref.current, 1 / 3);
-  //   }
-  // }, [tokens]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    function borderIfOverflow() {
-      if (!container) return;
-      if (container.scrollHeight > container.clientHeight) container.classList.add("overflow");
-      else container.classList.remove("overflow");
-    }
-    setTimeout(borderIfOverflow, 0);
-    // needs to repeat because of dynamic content
-    const interval = setInterval(borderIfOverflow, 1000);
-    return () => clearInterval(interval);
-  }, [containerRef]);
 
   useEffect(() => {
     if (!tokens) return;

@@ -80,35 +80,6 @@ const renderField = (
   field: string,
   fieldRefs: any
 ) => {
-  const fontstyle = (paragraphs: ReactElement[]) => {
-    if (textField) {
-      return (
-        <>
-          {textField.label ? (
-            <span
-              key={field + paragraph_key + "label"}
-              style={{
-                paddingLeft: "10px",
-                color: "grey",
-                fontWeight: "bold",
-              }}
-            >
-              {textField.label}
-            </span>
-          ) : null}
-          <span
-            key={field + paragraph_key}
-            className="noselect"
-            //style={{ textAlign: "justify", ...(textField.style || {}) }}
-          >
-            {paragraphs}
-          </span>
-        </>
-      );
-    }
-    return paragraphs;
-  };
-
   fieldRefs[field] = createRef();
   return (
     <div
@@ -120,14 +91,22 @@ const renderField = (
         padding: "10px 0px 10px 0px",
         margin: "0px 10px 0px 10px",
         maxWidth: "100%",
-        //display: "table",
-        //textAlign: "justify",
-        //hyphens: "auto",
-        //alignSelf: "center",
         ...(textField.style || {}),
       }}
     >
-      {fontstyle(paragraphs)}
+      {textField.label ? (
+        <span
+          key={field + paragraph_key + "label"}
+          style={{
+            paddingLeft: "10px",
+            color: "grey",
+            fontWeight: "bold",
+          }}
+        >
+          {textField.label}
+        </span>
+      ) : null}
+      {paragraphs}
     </div>
   );
 };
@@ -148,10 +127,9 @@ const renderParagraph = (
   return (
     <p
       key={"par" + paragraph_nr}
-      className="paragraph"
+      className="paragraph noselect"
       style={{
         padding: "0px 10px 0px 10px",
-        //display: "table",
       }}
     >
       {tokens}
@@ -166,26 +144,29 @@ const renderToken = (token: Token, codingUnit: boolean, keyChain: number) => {
   }
 
   return (
-    <span
-      key={"token" + token.index + "_" + keyChain}
-      tabIndex={token.index}
-      ref={token.ref}
-      className={codingUnit ? "token codingUnit" : "token"}
-      data-tokenindex={token.arrayIndex}
-      onClick={unFocusAble}
-    >
-      <span key={"pre" + token.index} className="pre">
-        {token.pre}
-        <mark className="relation" />
+    <>
+      {"  "} {/* hack for safari, which doesn't wrap adjacent span tags */}
+      <span
+        key={"token" + token.index + "_" + keyChain}
+        tabIndex={token.index}
+        ref={token.ref}
+        className={codingUnit ? "token codingUnit" : "token"}
+        data-tokenindex={token.arrayIndex}
+        onClick={unFocusAble}
+      >
+        <span key={"pre" + token.index} className="pre">
+          {token.pre}
+          <mark className="relation" />
+        </span>
+        <span key={"text" + token.index} className="text">
+          {token.text}
+          <mark className="relation" />
+        </span>
+        <span key={"post" + token.index} className="post">
+          {token.post}
+          <mark className="relation" />
+        </span>
       </span>
-      <span key={"text" + token.index} className="text">
-        {token.text}
-        <mark className="relation" />
-      </span>
-      <span key={"post" + token.index} className="post">
-        {token.post}
-        <mark className="relation" />
-      </span>
-    </span>
+    </>
   );
 };
