@@ -97,9 +97,9 @@ export const standardizeCodes = (
     if (code.activeParent == null) code.activeParent = true;
     if (code.tree == null) code.tree = [];
     if (code.parent == null) code.parent = "";
+
     if (code.makes_irrelevant == null) code.makes_irrelevant = [];
     if (typeof code.makes_irrelevant !== "object") code.makes_irrelevant = [code.makes_irrelevant];
-
     if (code.required_for == null) code.required_for = [];
     if (typeof code.required_for !== "object") code.required_for = [code.required_for];
 

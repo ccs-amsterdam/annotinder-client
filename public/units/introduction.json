@@ -119,7 +119,7 @@
               {
                 "code": "Yes",
                 "color": "lightgreen",
-                "makes_irrelevant": "annoying_scale_question"
+                "makes_irrelevant": ["annoying_scale_question"]
               }
             ]
           },
