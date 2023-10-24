@@ -126,7 +126,7 @@ const renderParagraph = (
 
   return (
     <p
-      key={"par" + paragraph_nr}
+      key={"par" + textField.name + "_" + paragraph_nr}
       className="paragraph noselect"
       style={{
         padding: "0px 10px 0px 10px",
