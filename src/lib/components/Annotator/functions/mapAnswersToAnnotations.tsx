@@ -71,11 +71,14 @@ const isMatch = (annotation: Annotation, answer: Answer, item = "") => {
 
 export const addAnnotationsFromAnswer = (
   answer: Answer,
-  annotations: Annotation[]
+  annotations: Annotation[],
+  startTime?: number
 ): Annotation[] => {
   // transforms answers to annotations, and either replaces existing annotations or
   // creates new ones.
   if (!annotations) annotations = [];
+  let seconds: number = startTime ? new Date().getTime() - startTime : 0;
+  let offset: number = 0;
 
   const valueMap = answer.items.reduce((obj: any, valueObj: AnswerItem) => {
     // create a map of answers[item][value]
@@ -87,6 +90,9 @@ export const addAnnotationsFromAnswer = (
   for (let item of Object.keys(valueMap)) {
     for (let annotation of annotations) {
       if (isMatch(annotation, answer, item)) {
+        if (annotation.seconds && !offset) offset = annotation.seconds;
+        annotation.seconds = seconds + offset;
+
         // if it is a match, three things can happen.
         // case 1: the annotation value does occur in the answer value, in which case we leave it alone
         // case 2: the annotation value does not occur in the answer values, in which case we delete it
@@ -105,9 +111,10 @@ export const addAnnotationsFromAnswer = (
   for (let item of Object.keys(valueMap)) {
     for (let value of Object.keys(valueMap[item])) {
       if (valueMap[item][value]) continue;
+
       // case 3
       const variable = createVariable(answer.variable, item);
-      const annotation: Annotation = { type: "field", variable, value };
+      const annotation: Annotation = { type: "field", variable, value, seconds: seconds + offset };
       if (answer.field != null) annotation.field = answer.field;
       if (answer.offset != null) annotation.offset = answer.offset;
       if (answer.length != null) annotation.length = answer.length;

@@ -55,6 +55,8 @@ export interface Annotation {
   comment?: string;
 
   select?: () => void;
+
+  seconds?: number;
 }
 
 export interface RelationAnnotation {

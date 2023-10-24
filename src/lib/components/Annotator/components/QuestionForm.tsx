@@ -103,8 +103,10 @@ const QuestionForm = ({
   const blockAnswer = useRef(false); // to prevent answering double (e.g. with swipe events)
   const [answers, setAnswers] = useState<Answer[]>(null);
   const [questionText, setQuestionText] = useState(<div />);
+  const [startTime, setStartTime] = useState(new Date().getTime());
 
   if (useWatchChange([unit, questions])) {
+    setStartTime(new Date().getTime());
     if (questions) setAnswers(getAnswersFromAnnotations(unit, questions));
   }
 
@@ -139,8 +141,11 @@ const QuestionForm = ({
         setQuestionIndex,
         setConditionReport,
         (nextUnit: boolean) => startTransition(transition, nextUnit),
+        startTime,
         blockAnswer
       );
+
+      setStartTime(new Date().getTime());
     },
     [
       answers,
@@ -152,6 +157,8 @@ const QuestionForm = ({
       unit,
       setSwipe,
       startTransition,
+      startTime,
+      setStartTime,
     ]
   );
 
@@ -281,6 +288,7 @@ const processAnswer = async (
   setQuestionIndex: SetState<number>,
   setConditionReport: SetState<ConditionReport>,
   transition: (nextUnit: boolean) => void,
+  startTime: number,
   blockAnswer: any
 ): Promise<void> => {
   if (blockAnswer.current) return null;
@@ -293,7 +301,11 @@ const processAnswer = async (
       questions[questionIndex].options
     );
 
-    unit.unit.annotations = addAnnotationsFromAnswer(answers[questionIndex], unit.unit.annotations);
+    unit.unit.annotations = addAnnotationsFromAnswer(
+      answers[questionIndex],
+      unit.unit.annotations,
+      startTime
+    );
     const irrelevantQuestions = processIrrelevantBranching(unit, questions, answers, questionIndex);
 
     // next (non-irrelevant) question in unit (null if no remaining)
@@ -309,8 +321,8 @@ const processAnswer = async (
 
     const status = newQuestionIndex === null ? "DONE" : "IN_PROGRESS";
     const cleanAnnotations = unit.unit.annotations.map((a: Annotation) => {
-      const { field, offset, length, variable, value } = a;
-      return { field, offset, length, variable, value };
+      const { field, offset, length, variable, value, seconds } = a;
+      return { field, offset, length, variable, value, seconds };
     });
 
     if (onlySave) {
