@@ -77,7 +77,7 @@ export const addAnnotationsFromAnswer = (
   // transforms answers to annotations, and either replaces existing annotations or
   // creates new ones.
   if (!annotations) annotations = [];
-  let seconds: number = startTime ? new Date().getTime() - startTime : 0;
+  let seconds: number = startTime ? (new Date().getTime() - startTime) / 1000 : 0;
   let offset: number = 0;
 
   const valueMap = answer.items.reduce((obj: any, valueObj: AnswerItem) => {
@@ -114,7 +114,20 @@ export const addAnnotationsFromAnswer = (
 
       // case 3
       const variable = createVariable(answer.variable, item);
-      const annotation: Annotation = { type: "field", variable, value, seconds: seconds + offset };
+      const annotation: Annotation = { type: "field", variable, value };
+      if (startTime) {
+        annotation.seconds = seconds + offset;
+        if (offset === 0) {
+          console.log("First annotation created in ", annotation.seconds, " seconds");
+        } else {
+          console.log(
+            "Annotation updated. Incrementing timer from ",
+            offset,
+            " to ",
+            seconds + offset
+          );
+        }
+      }
       if (answer.field != null) annotation.field = answer.field;
       if (answer.offset != null) annotation.offset = answer.offset;
       if (answer.length != null) annotation.length = answer.length;
