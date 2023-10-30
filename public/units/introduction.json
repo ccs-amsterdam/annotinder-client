@@ -7,7 +7,7 @@
         "columns": "2fr",
         "areas": [["title"], ["text"], ["img"]]
       },
-      "text_fields": [
+      "markdown_fields": [
         {
           "name": "title",
           "value": "Welcome to AnnoTinder!",
@@ -19,16 +19,7 @@
         },
         {
           "name": "text",
-          "value": "AnnoTinder is a versatile browser-based application for annotating texts. This is a quick introduction that showcases some of the key features. "
-        }
-      ],
-
-      "image_fields": [
-        {
-          "name": "img",
-          "caption": "",
-          "value": "https://gifdb.com/images/thumbnail/pusheen-cat-welcome-rs7fmtp64fodfdqr.gif",
-          "style": { "margin": "5px" }
+          "value": "AnnoTinder is a versatile browser-based application for `annotating texts`. This is a quick introduction that showcases some of the key features. "
         }
       ],
       "codebook": {
