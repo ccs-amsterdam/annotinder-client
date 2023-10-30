@@ -113,7 +113,6 @@ const Document = ({
     variableMap?.[variable]
   );
 
-
   useEffect(() => {
     returnSelectors && returnSelectors({ span: spanSelector, relation: relationSelector });
   }, [returnSelectors, spanSelector, relationSelector]);

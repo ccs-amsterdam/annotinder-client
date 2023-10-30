@@ -135,6 +135,7 @@ const QuestionTask = ({
     setQuestionIndex(0);
     setConditionReport(unit.report || { evaluation: {}, damage: {} });
     hideUnit(refs.text, refs.box, refs.code); // hide unit until ready
+    setTimeout(() => showUnit(refs.text, refs.box, refs.code), 500); // show unit after 500 in case something fails
   }
 
   const onNewUnit = useCallback(() => {
