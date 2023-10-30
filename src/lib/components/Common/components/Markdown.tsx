@@ -9,7 +9,26 @@ interface MarkdownProps {
 const Markdown = ({ children, style = {} }: MarkdownProps) => {
   return (
     <div style={{ ...style }}>
-      <ReactMarkdown linkTarget={"_blank"}>{children}</ReactMarkdown>
+      <ReactMarkdown // components={{
+        components={{
+          code(props) {
+            const { node, ...rest } = props;
+            return (
+              <span
+                style={{
+                  background: "var(--primary-light)",
+                  padding: "0.3rem",
+                  borderRadius: "5px",
+                }}
+                {...rest}
+              />
+            );
+          },
+        }}
+        linkTarget={"_blank"}
+      >
+        {children}
+      </ReactMarkdown>
     </div>
   );
 };
