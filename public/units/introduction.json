@@ -10,7 +10,7 @@
       "text_fields": [
         {
           "name": "title",
-          "value": "Welcome to AnnoTinder!",
+          "value": "Welcome to AnnoCate!",
           "style": {
             "fontWeight": "bold",
             "fontSize": "1.2em",
@@ -19,7 +19,7 @@
         },
         {
           "name": "text",
-          "value": "AnnoTinder is a versatile browser-based application for annotating texts. This is a quick introduction that showcases some of the key features. "
+          "value": "AnnoCate is a versatile browser-based application for annotating texts. This is a quick introduction that showcases some of the key features. "
         }
       ],
       "codebook": {
@@ -163,7 +163,7 @@
         },
         {
           "name": "text",
-          "value": "Right, so you've probably figured that all those question things can also be used for annotating texts and images. But there are some special annotation features as well.\n\n  One we quite like is the Annotinder function. If you're on mobile, you can swipe this one!\n\nIf you're on desktop, you can also use the arrow keys."
+          "value": "Right, so you've probably figured that all those question things can also be used for annotating texts and images. But there are some special annotation features as well.\n\n  One we quite like is the AnnoTinder function. If you're on mobile, you can swipe this one!\n\nIf you're on desktop, you can also use the arrow keys."
         }
       ],
       "codebook": {
