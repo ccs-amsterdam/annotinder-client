@@ -22,15 +22,6 @@
           "value": "AnnoTinder is a versatile browser-based application for annotating texts. This is a quick introduction that showcases some of the key features. "
         }
       ],
-
-      "image_fields": [
-        {
-          "name": "img",
-          "caption": "",
-          "value": "https://gifdb.com/images/thumbnail/pusheen-cat-welcome-rs7fmtp64fodfdqr.gif",
-          "style": { "margin": "5px" }
-        }
-      ],
       "codebook": {
         "type": "questions",
         "questions": [
@@ -264,8 +255,8 @@
       "image_fields": [
         {
           "name": "title",
-          "caption": "Image from cattime.com",
-          "value": "https://cattime.com/assets/uploads/2016/03/cats-politics-political-office-e1550279975235-650x368.jpg"
+          "caption": "Image from spreadshirt.com.au/",
+          "value": "https://image.spreadshirtmedia.com/image-server/v1/mp/products/T1459A839PA3861PT28D1038490405W8333H10000/views/1,width=800,height=800,appearanceId=839,backgroundColor=F2F2F2/funny-political-cat-design-sticker.jpg"
         }
       ],
 

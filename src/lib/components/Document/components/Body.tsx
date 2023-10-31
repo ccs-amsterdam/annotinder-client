@@ -95,7 +95,10 @@ const Body = ({
     setContent(content);
 
     const timer = setInterval(() => {
-      if (tokens.length > 0 && !tokens[0]?.ref?.current) return;
+      if (tokens.length > 0) {
+        const hasref = tokens.findIndex((token) => token.ref?.current) > -1;
+        if (!hasref) return;
+      }
       onReady();
       clearInterval(timer);
     }, 50);

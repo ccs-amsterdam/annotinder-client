@@ -46,7 +46,7 @@ const DemoJobOverview = () => {
 };
 
 const demo_files: DataPoint[] = [
-  { id: "1", label: "General introduction", units: "introduction", codebook: "dummy" },
+  { id: "1", label: "General introduction", units: "introduction", codebook: "introduction" },
   {
     id: "2",
     label: "Label",
