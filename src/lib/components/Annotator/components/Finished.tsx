@@ -8,22 +8,24 @@ import { useQuery } from "@tanstack/react-query";
 import Markdown from "../../Common/components/Markdown";
 import styled from "styled-components";
 import { FaFlagCheckered } from "react-icons/fa";
+import { useSearchParams } from "react-router-dom";
 
 const StyledDiv = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   height: 100%;
   width: 100%;
   position: relative;
   padding: 2rem;
   line-height: 1.5em;
+  overflow: auto;
 
   font-size: 1.7rem;
 
   .Message {
     display: flex;
+    flex-direction: column;
     gap: 2rem;
     justify-content: center;
     align-items: center;
@@ -55,6 +57,16 @@ interface FinishedProps {
 }
 
 const Finished = ({ jobServer }: FinishedProps) => {
+  const [searchParams] = useSearchParams();
+
+  function prepareLink(link: string, userId: string, searchParams: URLSearchParams) {
+    let x = link;
+    searchParams.forEach((value, key) => {
+      x = x.replace(`{${key}}`, value);
+    });
+    return x.replace("{user_id}", userId);
+  }
+
   const debriefing = useQuery<Debriefing>(
     ["debriefing"],
     () => {
@@ -85,7 +97,7 @@ const Finished = ({ jobServer }: FinishedProps) => {
         <br />
         {debriefing.data.link ? (
           <a
-            href={debriefing.data.link.replace("{user_id}", debriefing.data.user_id)}
+            href={prepareLink(debriefing.data.link, debriefing.data.user_id, searchParams)}
             rel="noopener noreferrer"
           >
             {debriefing.data.link_text || "Click here!"}
