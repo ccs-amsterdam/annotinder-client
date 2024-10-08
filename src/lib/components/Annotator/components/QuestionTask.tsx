@@ -70,7 +70,8 @@ const SwipeableBox = styled.div`
 const SwipeCode = styled.div`
   padding: 0.6em 0.3em;
   width: 100%;
-  font-size: 3em;
+  font-size: 2em;
+  line-height: 1.2;
   position: absolute;
 `;
 

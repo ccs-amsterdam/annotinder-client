@@ -21,8 +21,8 @@ interface AnnotinderProps {
 }
 
 const CodeButtonGroup = styled.div`
-  display: flex;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 `;
 
 const Annotinder = React.memo(
@@ -126,6 +126,7 @@ const AnnotinderStyledButton = ({
   return (
     <CodeButton
       className={`flex`}
+      style={{ wordBreak: "break-word", justifyContent: "start" }}
       key={option.code}
       ref={option.ref as React.RefObject<HTMLButtonElement>}
       background={option.color}
@@ -142,7 +143,7 @@ const AnnotinderStyledButton = ({
     >
       {icon}
 
-      <span>{option?.code || ""}</span>
+      <div style={{ margin: "auto" }}>{option?.code || ""}</div>
     </CodeButton>
   );
 };
